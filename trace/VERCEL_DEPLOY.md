@@ -4,15 +4,16 @@ End-to-end setup for Vercel **Hobby** (60s serverless budget) with **Neon** Post
 
 ## Architecture
 
-- **Vercel**: serves the FastAPI app as a single Python serverless function
-  (`api/index.py` re-exports `app.main:app`). All routes are funnelled there
-  by `vercel.json` rewrites.
+- **Vercel**: serves the FastAPI app via the Python framework preset. Vercel
+  auto-detects `app/main.py` (which exports `app = create_app()`) and deploys
+  the whole app as a single Vercel Function. Routing is handled inside FastAPI.
 - **Neon**: Postgres with `sslmode=require`. Use the **pooled** connection
   string (host contains `-pooler`) — critical for serverless, which opens
   connections on every cold start.
-- **Pipeline**: runs synchronously inside the HTTP request. `maxDuration=60s`
-  enforced. If your strategy needs deeper retrieval, move to Vercel Pro
-  (300s) or switch to a queue (see "Scaling beyond Hobby" below).
+- **Pipeline**: runs synchronously inside the HTTP request. Set
+  **Project Settings → Functions → Max Duration = 60s** (Hobby ceiling).
+  If your strategy needs deeper retrieval, move to Vercel Pro (300s) or
+  switch to a queue (see "Scaling beyond Hobby" below).
 
 Hard limits on Hobby that drove these decisions:
 
@@ -89,14 +90,16 @@ vercel link              # create a new project when prompted; link to `trace`
 Do **not** prefix any of these with `VERCEL_` or `NEXT_PUBLIC_` — they are
 server-only.
 
-### Python runtime
+### Python runtime + function limits
 
-Vercel auto-detects Python from the presence of `api/*.py` and
-`requirements.txt`. No framework preset needed. The function uses:
+Vercel auto-detects Python from `requirements.txt` and activates the FastAPI
+framework preset on `app/main.py`. Framework presets don't accept per-file
+`functions` config in `vercel.json`, so configure limits via the dashboard:
 
+- **Project Settings → General → Root Directory**: `trace`
+- **Project Settings → Functions → Max Duration**: `60` (Hobby ceiling)
 - **Runtime**: `python3.12` (Vercel default; Trace requires `>=3.11`).
-- **maxDuration**: `60` (see `vercel.json`).
-- **Memory**: `1024` MB.
+- **Memory**: `1024` MB (Hobby default).
 
 ## 4. Deploy
 
@@ -138,8 +141,8 @@ open "$BASE/trace/register"
 
 When you outgrow 60s (e.g. 8+ signals × 3 docs × LLM extraction > budget):
 
-1. **Vercel Pro** — bump `maxDuration` to `300` in `vercel.json` and raise
-   `MAX_DOCS_PER_QUERY` / `EXA_CONCURRENCY`. Simplest upgrade.
+1. **Vercel Pro** — bump **Max Duration** to `300` in Project Settings and
+   raise `MAX_DOCS_PER_QUERY` / `EXA_CONCURRENCY`. Simplest upgrade.
 2. **Queue-based pipeline** — introduce Upstash QStash (or Inngest):
    `/search` enqueues a job and returns `run_id` immediately; a separate
    `/api/worker` route receives the webhook and runs the pipeline. The
