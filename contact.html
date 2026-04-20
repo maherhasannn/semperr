@@ -220,37 +220,35 @@
     text-transform: uppercase; color: var(--gold-deep);
   }
 
-  /* Response strip */
-  .response-strip {
+  /* Footer — single dark band, two stacked rows */
+  .contact-foot {
     background: var(--ink); color: var(--paper);
-    padding: 28px 0;
-    position: relative; overflow: hidden;
+    padding: 32px 0 20px;
+    border-top: 1px solid var(--ink-line);
   }
-  .response-inner {
+  .contact-foot-live {
     display: flex; justify-content: space-between; align-items: center;
     gap: 24px; flex-wrap: wrap;
     font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
-    text-transform: uppercase;
+    text-transform: uppercase; color: var(--paper);
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
   }
-  .response-inner span.live-dot-wrap::before {
+  .contact-foot-live .live-dot-wrap::before {
     content: ""; display: inline-block; width: 8px; height: 8px;
     border-radius: 50%; background: var(--gold); margin-right: 10px;
     vertical-align: middle;
     animation: contactPulse 1.8s ease-in-out infinite;
   }
-  .response-inner .gold { color: var(--gold); }
-
-  /* Footer */
-  .contact-foot {
-    padding: 28px 0; background: var(--ink);
-    border-top: 1px solid rgba(255,255,255,0.08);
-    font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
-    text-transform: uppercase; color: #6b7388;
-  }
+  .contact-foot-live .gold { color: var(--gold); }
   .contact-foot-inner {
     display: flex; justify-content: space-between; align-items: center;
+    gap: 20px; flex-wrap: wrap;
+    padding-top: 16px;
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #6b7388;
   }
-  .contact-foot-inner span.gold { color: var(--gold); }
+  .contact-foot-inner .gold { color: var(--gold); }
 
   /* Success state */
   .contact-success {
@@ -516,21 +514,19 @@
   </div>
 </section>
 
-<!-- Live response strip -->
-<section class="response-strip">
-  <div class="container response-inner">
-    <span class="live-dot-wrap">Presently reading mail from NYC</span>
-    <span>3 partners · 8 engineers online</span>
-    <span class="gold">◆ Semper paratus</span>
-  </div>
-</section>
-
 <!-- Footer -->
 <footer class="contact-foot">
-  <div class="container contact-foot-inner">
-    <span>© 2026 Semperr Labs, Inc.</span>
-    <span>Made in NYC · Cork · Austin</span>
-    <span class="gold">◆ Semper paratus</span>
+  <div class="container">
+    <div class="contact-foot-live">
+      <span class="live-dot-wrap">Presently reading mail from NYC</span>
+      <span>3 partners · 8 engineers online</span>
+      <span class="gold">◆ Semper paratus</span>
+    </div>
+    <div class="contact-foot-inner">
+      <span>© 2026 Semperr Labs, Inc.</span>
+      <span>Made in NYC · Cork · Austin</span>
+      <a href="index.html" style="color:inherit;">← Semperr</a>
+    </div>
   </div>
 </footer>
 
