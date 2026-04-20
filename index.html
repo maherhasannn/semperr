@@ -43,6 +43,43 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
+
+/* ——— Mobile (<=768px) ——— */
+.m-only { display: none; }
+@media (max-width: 768px) {
+  :root { --pad: 20px; }
+  .m-only { display: block !important; }
+  .m-hide { display: none !important; }
+
+  /* Collapse multi-column inline grids */
+  section [style*="gridTemplateColumns"],
+  footer [style*="gridTemplateColumns"] { grid-template-columns: 1fr !important; gap: 24px !important; }
+
+  /* Scale down display typography */
+  [style*="clamp(64px"], [style*="clamp(60px"] { font-size: 52px !important; line-height: 0.98 !important; }
+  [style*="clamp(56px"] { font-size: 46px !important; line-height: 1 !important; }
+  [style*="clamp(52px"] { font-size: 42px !important; line-height: 1.02 !important; }
+  [style*="clamp(48px"] { font-size: 40px !important; }
+  [style*="clamp(42px"] { font-size: 36px !important; }
+  [style*="clamp(36px"] { font-size: 30px !important; }
+
+  /* Hero padding */
+  section { padding-top: 48px !important; padding-bottom: 56px !important; }
+
+  /* Masthead */
+  .mast-nav, .mast-eyebrow { display: none !important; }
+  .mast-burger { display: inline-flex !important; }
+  .mast-panel { display: block; }
+
+  /* Product roster: keep desktop grid — but allow two-up for compactness */
+  /* Footer columns stack */
+
+  /* Body text reflow */
+  p { font-size: 16px !important; line-height: 1.55 !important; }
+
+  /* Dev/Trace-style wide tables (inline) — hide the biggest ones */
+  .table-wide { display: none !important; }
+}
 </style>
 
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
@@ -98,13 +135,16 @@ window.Wordmark = Wordmark;
 
 function Masthead({ theme }) {
   const isDark = theme === 'dark';
+  const [open, setOpen] = React.useState(false);
+  const panelBg = isDark ? '#0b1220' : '#f8f6f0';
+  const line = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(11,18,32,0.08)';
   return (
     <header style={{
       position:'sticky', top:0, zIndex:50,
       background: isDark ? 'rgba(11,18,32,0.78)' : 'rgba(248,246,240,0.78)',
       backdropFilter:'blur(14px) saturate(140%)',
       WebkitBackdropFilter:'blur(14px) saturate(140%)',
-      borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(11,18,32,0.08)'}`,
+      borderBottom: `1px solid ${line}`,
     }}>
       <div className="container" style={{
         display:'flex', alignItems:'center', justifyContent:'space-between',
@@ -112,7 +152,7 @@ function Masthead({ theme }) {
       }}>
         <div style={{display:'flex', alignItems:'center', gap:40}}>
           <Wordmark size={24} tone={isDark ? 'paper' : 'ink'} />
-          <nav style={{display:'flex', gap:28, fontSize:13, color: isDark ? '#9099ad' : '#6b7388'}}>
+          <nav className="mast-nav" style={{display:'flex', gap:28, fontSize:13, color: isDark ? '#9099ad' : '#6b7388'}}>
             <a>Products</a>
             <a>Company</a>
             <a>Clients</a>
@@ -120,9 +160,21 @@ function Masthead({ theme }) {
           </nav>
         </div>
         <div style={{display:'flex', alignItems:'center', gap:20}}>
-          <span className="h-eyebrow" style={{color: isDark ? '#c9a961' : '#a68846'}}>
+          <span className="h-eyebrow mast-eyebrow" style={{color: isDark ? '#c9a961' : '#a68846'}}>
             Est. MMXXI · NYC
           </span>
+          <button className="mast-burger" onClick={() => setOpen(o => !o)} aria-label="Menu" style={{
+            display:'none', alignItems:'center', justifyContent:'center',
+            width:40, height:40,
+            border:`1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
+            borderRadius:8, color: isDark ? '#f8f6f0' : '#0b1220',
+          }}>
+            <span style={{display:'grid', gap:4}}>
+              <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
+              <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
+              <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
+            </span>
+          </button>
           <button style={{
             fontSize:13,
             padding:'8px 16px',
@@ -132,6 +184,20 @@ function Masthead({ theme }) {
           }}>Get in touch →</button>
         </div>
       </div>
+      {open && (
+        <div className="mast-panel m-only" style={{
+          background: panelBg, borderTop:`1px solid ${line}`, padding:'16px 20px 24px',
+        }}>
+          <nav style={{display:'grid', gap:14, fontSize:16, color: isDark ? '#c7cdd9' : '#2a3246', fontFamily:'var(--serif)'}}>
+            <a onClick={() => setOpen(false)} href="#">Products</a>
+            <a onClick={() => setOpen(false)} href="Trace.html">Trace</a>
+            <a onClick={() => setOpen(false)} href="Dev.html">Dev</a>
+            <a onClick={() => setOpen(false)} href="charter.html">Charterr</a>
+            <a onClick={() => setOpen(false)} href="#">Company</a>
+            <a onClick={() => setOpen(false)} href="#">Careers</a>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }
@@ -353,7 +419,7 @@ function TraceSection({ variant = 'dealbook' }) {
           </div>
 
           {/* Visual: dealbook */}
-          <TraceDealbook hovered={hovered} />
+          <div className="m-hide"><TraceDealbook hovered={hovered} /></div>
         </div>
       </div>
     </section>
@@ -562,7 +628,7 @@ function CladSection({ variant = 'dossier' }) {
           }}
         >
           {/* Visual: fanned case files */}
-          <CladDossier hovered={hovered} />
+          <div className="m-hide"><CladDossier hovered={hovered} /></div>
 
           {/* Copy */}
           <div>
@@ -855,7 +921,7 @@ function DevSection({ flashLevel = 8 }) {
           </div>
 
           {/* The RIG — the visual centerpiece */}
-          <DevRig hovered={hovered} tick={tick} flashLevel={flashLevel} />
+          <div className="m-hide"><DevRig hovered={hovered} tick={tick} flashLevel={flashLevel} /></div>
         </div>
       </div>
 
