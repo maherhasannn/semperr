@@ -32,10 +32,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .m-hide { display: none !important; }
 
   /* Collapse inline grids */
-  section [style*="gridTemplateColumns"],
-  header [style*="gridTemplateColumns"],
-  footer [style*="gridTemplateColumns"],
-  div [style*="gridTemplateColumns"] { grid-template-columns: 1fr !important; gap: 18px !important; }
+  section [style*="grid-template-columns"],
+  header [style*="grid-template-columns"],
+  footer [style*="grid-template-columns"],
+  div [style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 18px !important; }
 
   /* Exceptions: keep 2-col grids for compact metric bands */
   .m-grid-2 { grid-template-columns: repeat(2, 1fr) !important; gap: 0 !important; }

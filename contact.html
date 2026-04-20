@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Get in touch — Semperr</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+
+<style>
+  .contact-body { background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+  /* ——— Header ——— */
+  .contact-header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(248,246,240,0.82);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .contact-header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .contact-header-left { display: flex; align-items: center; gap: 32px; }
+  .contact-header-back {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: color 0.15s;
+  }
+  .contact-header-back:hover { color: var(--ink); }
+  .contact-wordmark {
+    font-family: var(--serif); font-size: 20px; letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .contact-wordmark em { color: var(--gold); font-style: italic; }
+  .contact-header-nav {
+    display: flex; gap: 24px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .contact-header-nav a { color: var(--muted); transition: color 0.15s; }
+  .contact-header-nav a:hover { color: var(--ink); }
+
+  /* ——— Editorial masthead ——— */
+  .contact-mast { padding: 88px 0 56px; border-bottom: 1px solid var(--paper-line); position: relative; }
+  .contact-slug {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 44px;
+    gap: 24px;
+  }
+  .contact-slug span.live::before {
+    content: ""; display: inline-block; width: 7px; height: 7px;
+    border-radius: 50%; background: var(--gold); margin-right: 8px;
+    vertical-align: middle;
+    animation: contactPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes contactPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.75); }
+  }
+  .contact-eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gold-deep);
+    margin-bottom: 28px;
+  }
+  .contact-title {
+    font-family: var(--serif); font-weight: 400;
+    font-size: clamp(72px, 10vw, 168px); line-height: 0.9;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
+  .contact-title em { font-style: italic; color: var(--gold); }
+  .contact-deck {
+    margin-top: 32px; max-width: 640px;
+    font-size: 19px; line-height: 1.55; color: var(--muted-paper);
+  }
+
+  /* ——— Main grid ——— */
+  .contact-main { padding: 72px 0 96px; }
+  .contact-grid {
+    display: grid; grid-template-columns: 1.25fr 1fr; gap: 80px;
+    align-items: start;
+  }
+
+  /* Inquiry chips */
+  .contact-field-label {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
+  }
+  .contact-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
+  .contact-chip {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 10px 16px; border-radius: 999px;
+    border: 1px solid rgba(11,18,32,0.15); color: var(--muted);
+    cursor: pointer; background: transparent;
+    transition: all 0.15s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .contact-chip .chip-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(11,18,32,0.25); transition: background 0.15s;
+  }
+  .contact-chip:hover { border-color: var(--ink); color: var(--ink); }
+  .contact-chip:hover .chip-dot { background: var(--ink); }
+  .contact-chip.active {
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+  }
+  .contact-chip.active .chip-dot { background: var(--gold); }
+
+  /* Form */
+  .contact-form-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-bottom: 28px;
+  }
+  .contact-field { display: flex; flex-direction: column; gap: 10px; }
+  .contact-field.full { grid-column: 1 / -1; }
+  .contact-field label {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted);
+  }
+  .contact-field input, .contact-field textarea {
+    padding: 12px 0; border: none;
+    border-bottom: 1px solid rgba(11,18,32,0.2);
+    background: transparent; color: var(--ink);
+    font-family: var(--sans); font-size: 17px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .contact-field input:focus, .contact-field textarea:focus {
+    border-bottom-color: var(--gold);
+  }
+  .contact-field textarea {
+    resize: vertical; min-height: 120px;
+    font-family: var(--sans); line-height: 1.5;
+  }
+  .contact-field input::placeholder, .contact-field textarea::placeholder {
+    color: rgba(11,18,32,0.3);
+  }
+
+  .contact-submit-row {
+    margin-top: 40px; display: flex; align-items: center;
+    gap: 28px; flex-wrap: wrap;
+  }
+  .contact-submit {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 28px; border-radius: 999px;
+    background: var(--ink); color: var(--paper);
+    font-family: var(--sans); font-size: 14px; font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+  }
+  .contact-submit:hover { background: var(--ink-soft); transform: translateY(-1px); }
+  .contact-submit-note {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+  }
+
+  /* Sidebar */
+  .contact-sidebar {
+    padding-left: 48px; border-left: 1px solid var(--paper-line);
+  }
+  .contact-card { padding: 0 0 36px; }
+  .contact-card + .contact-card {
+    border-top: 1px solid var(--paper-line);
+    padding-top: 36px;
+  }
+  .contact-card-label {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--gold-deep); margin-bottom: 22px;
+  }
+
+  .direct-line {
+    display: grid; grid-template-columns: 40px 1fr auto; gap: 14px;
+    align-items: center;
+    padding: 14px 0;
+    border-top: 1px solid var(--paper-line);
+    transition: transform 0.15s;
+  }
+  .direct-line:first-of-type { border-top: none; padding-top: 6px; }
+  .direct-line:hover { transform: translateX(2px); }
+  .direct-line:hover .arrow { color: var(--ink); }
+  .direct-line-letter {
+    font-family: var(--serif); font-size: 30px; line-height: 1;
+    color: var(--gold);
+    display: grid; place-items: center;
+    width: 40px; height: 40px;
+  }
+  .direct-line .name { font-size: 14px; color: var(--ink); font-weight: 500; }
+  .direct-line .role {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin-top: 3px;
+  }
+  .direct-line .arrow {
+    font-family: var(--mono); font-size: 13px; color: var(--muted);
+    transition: color 0.15s;
+  }
+
+  /* Offices */
+  .office {
+    padding: 18px 0;
+    border-top: 1px solid var(--paper-line);
+    display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: baseline;
+  }
+  .office:first-of-type { border-top: none; padding-top: 6px; }
+  .office-name {
+    font-family: var(--serif); font-size: 22px; color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .office-addr {
+    font-size: 13px; color: var(--muted-paper); margin-top: 4px;
+    line-height: 1.5;
+  }
+  .office-tz {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--gold-deep);
+  }
+
+  /* Response strip */
+  .response-strip {
+    background: var(--ink); color: var(--paper);
+    padding: 28px 0;
+    position: relative; overflow: hidden;
+  }
+  .response-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 24px; flex-wrap: wrap;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .response-inner span.live-dot-wrap::before {
+    content: ""; display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--gold); margin-right: 10px;
+    vertical-align: middle;
+    animation: contactPulse 1.8s ease-in-out infinite;
+  }
+  .response-inner .gold { color: var(--gold); }
+
+  /* Footer */
+  .contact-foot {
+    padding: 28px 0; background: var(--ink);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #6b7388;
+  }
+  .contact-foot-inner {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .contact-foot-inner span.gold { color: var(--gold); }
+
+  /* Success state */
+  .contact-success {
+    display: none;
+    padding: 48px 40px;
+    border: 1px solid var(--gold);
+    background: rgba(201,169,97,0.05);
+    max-width: 640px;
+  }
+  .contact-success.show { display: block; }
+  .contact-success .mark {
+    font-family: var(--serif); font-size: 56px; color: var(--gold);
+    line-height: 0.8; font-style: italic;
+    margin-bottom: 18px;
+  }
+  .contact-success h3 {
+    font-family: var(--serif); font-size: 36px;
+    letter-spacing: -0.015em; font-weight: 400;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+  .contact-success p {
+    font-size: 16px; color: var(--muted-paper); line-height: 1.55;
+    max-width: 480px;
+  }
+  .contact-success .reset {
+    margin-top: 24px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--muted);
+    border-bottom: 1px solid var(--muted); padding-bottom: 2px;
+    cursor: pointer;
+  }
+  .contact-success .reset:hover { color: var(--ink); border-bottom-color: var(--ink); }
+
+  /* ——— Mobile ——— */
+  @media (max-width: 768px) {
+    .contact-header-inner { height: 56px; }
+    .contact-header-left { gap: 16px; }
+    .contact-header-nav { display: none; }
+    .contact-header-back span { display: none; }
+    .contact-header-back::before { content: "←"; font-size: 14px; }
+    .contact-wordmark { font-size: 17px; }
+
+    .contact-mast { padding: 44px 0 32px; }
+    .contact-slug {
+      flex-direction: column; align-items: flex-start; gap: 8px;
+      margin-bottom: 28px; font-size: 10px;
+    }
+    .contact-title { font-size: 56px; line-height: 0.94; }
+    .contact-deck { font-size: 16px; margin-top: 20px; }
+    .contact-eyebrow { margin-bottom: 20px; }
+
+    .contact-main { padding: 40px 0 64px; }
+    .contact-grid { grid-template-columns: 1fr; gap: 48px; }
+    .contact-sidebar {
+      padding-left: 0; border-left: none;
+      padding-top: 36px; border-top: 1px solid var(--paper-line);
+    }
+    .contact-form-row { grid-template-columns: 1fr; gap: 22px; margin-bottom: 22px; }
+    .contact-field input, .contact-field textarea { font-size: 16px; }
+    .contact-submit-row { gap: 18px; }
+    .contact-chips { gap: 6px; margin-bottom: 32px; }
+    .contact-chip { padding: 8px 12px; font-size: 10px; }
+
+    .response-inner { gap: 12px; font-size: 10px; flex-direction: column; align-items: flex-start; }
+
+    .contact-foot-inner {
+      flex-direction: column; gap: 10px; text-align: center;
+      font-size: 10px;
+    }
+
+    .contact-success { padding: 32px 24px; }
+    .contact-success h3 { font-size: 26px; }
+  }
+</style>
+</head>
+<body class="contact-body">
+
+<!-- Header -->
+<header class="contact-header">
+  <div class="container contact-header-inner">
+    <div class="contact-header-left">
+      <a href="index.html" class="contact-header-back"><span>← Semperr</span></a>
+      <span class="contact-wordmark">Semp<em>err</em></span>
+    </div>
+    <nav class="contact-header-nav">
+      <a href="Trace.html">Trace</a>
+      <a href="Dev.html">Dev</a>
+      <a href="charter.html">Charterr</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Editorial masthead -->
+<section class="contact-mast">
+  <div class="grain"></div>
+  <div class="container">
+    <div class="contact-slug">
+      <span>§ Correspondence</span>
+      <span>Inquiries, introductions, and the occasional complaint</span>
+      <span class="live">Typically read within the hour</span>
+    </div>
+    <div class="contact-eyebrow">❖ &nbsp; Start here</div>
+    <h1 class="contact-title">Say <em>hello</em>.</h1>
+    <p class="contact-deck">
+      Whether you're pricing a buyout on Friday evening, filing a brief Monday morning,
+      or running the shop that opens before the first train — write to us. A partner will read it,
+      and a partner will reply.
+    </p>
+  </div>
+</section>
+
+<!-- Main: form + sidebar -->
+<section class="contact-main">
+  <div class="container">
+    <div class="contact-grid">
+      <!-- Form -->
+      <div>
+        <form class="contact-form" id="contactForm" onsubmit="submitForm(event)">
+          <div class="contact-field-label">What brings you here?</div>
+          <div class="contact-chips" id="chips">
+            <button type="button" class="contact-chip active" data-kind="trace"><span class="chip-dot"></span>Trace · PE data</button>
+            <button type="button" class="contact-chip" data-kind="clad"><span class="chip-dot"></span>Clad · Law</button>
+            <button type="button" class="contact-chip" data-kind="dev"><span class="chip-dot"></span>Dev · Small business</button>
+            <button type="button" class="contact-chip" data-kind="careers"><span class="chip-dot"></span>Careers</button>
+            <button type="button" class="contact-chip" data-kind="press"><span class="chip-dot"></span>Press</button>
+            <button type="button" class="contact-chip" data-kind="other"><span class="chip-dot"></span>Something else</button>
+          </div>
+
+          <input type="hidden" name="kind" id="kindField" value="trace"/>
+
+          <div class="contact-form-row">
+            <div class="contact-field">
+              <label for="name">Your name</label>
+              <input type="text" id="name" name="name" required placeholder="Eleanor Voss" autocomplete="name"/>
+            </div>
+            <div class="contact-field">
+              <label for="firm">Firm / Company</label>
+              <input type="text" id="firm" name="firm" placeholder="Bridgehaven Partners" autocomplete="organization"/>
+            </div>
+          </div>
+
+          <div class="contact-form-row">
+            <div class="contact-field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required placeholder="you@firm.com" autocomplete="email"/>
+            </div>
+            <div class="contact-field">
+              <label for="role">Role</label>
+              <input type="text" id="role" name="role" placeholder="Partner, analyst, owner…" autocomplete="organization-title"/>
+            </div>
+          </div>
+
+          <div class="contact-form-row">
+            <div class="contact-field full">
+              <label for="message">What's on your mind?</label>
+              <textarea id="message" name="message" required placeholder="A sentence or three is plenty. We'll ask if we need more."></textarea>
+            </div>
+          </div>
+
+          <div class="contact-submit-row">
+            <button type="submit" class="contact-submit">Send it over ↗</button>
+            <span class="contact-submit-note">We reply from a real address. No noreply.</span>
+          </div>
+        </form>
+
+        <div class="contact-success" id="success">
+          <div class="mark">✓</div>
+          <h3>Received.</h3>
+          <p>
+            A partner will read this within the hour during the workweek, and by Monday
+            otherwise. If it's urgent, our direct lines are on the right.
+          </p>
+          <span class="reset" onclick="resetForm()">Send another message</span>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="contact-sidebar">
+        <div class="contact-card">
+          <div class="contact-card-label">Direct lines</div>
+          <a class="direct-line" href="mailto:anya@semperr.co">
+            <span class="direct-line-letter">A</span>
+            <div>
+              <div class="name">Anya Reyes</div>
+              <div class="role">Head of Trace · PE</div>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+          <a class="direct-line" href="mailto:jules@semperr.co">
+            <span class="direct-line-letter">J</span>
+            <div>
+              <div class="name">Jules Hartwell</div>
+              <div class="role">Head of Clad · Law</div>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+          <a class="direct-line" href="mailto:marco@semperr.co">
+            <span class="direct-line-letter">M</span>
+            <div>
+              <div class="name">Marco Adair</div>
+              <div class="role">Head of Dev · SMB</div>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+          <a class="direct-line" href="mailto:press@semperr.co">
+            <span class="direct-line-letter">P</span>
+            <div>
+              <div class="name">Press & enquiries</div>
+              <div class="role">Editorial desk</div>
+            </div>
+            <span class="arrow">→</span>
+          </a>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-label">Offices</div>
+          <div class="office">
+            <div>
+              <div class="office-name">New York</div>
+              <div class="office-addr">128 Lafayette Street, Floor 7<br/>NY 10013 · Headquarters</div>
+            </div>
+            <span class="office-tz">ET</span>
+          </div>
+          <div class="office">
+            <div>
+              <div class="office-name">Cork</div>
+              <div class="office-addr">The Quayside Building<br/>Lapp's Quay · Ireland</div>
+            </div>
+            <span class="office-tz">GMT</span>
+          </div>
+          <div class="office">
+            <div>
+              <div class="office-name">Austin</div>
+              <div class="office-addr">501 South Congress<br/>Texas 78704</div>
+            </div>
+            <span class="office-tz">CT</span>
+          </div>
+          <div class="office">
+            <div>
+              <div class="office-name">Toronto</div>
+              <div class="office-addr">325 Front Street West<br/>ON M5V 2Y1</div>
+            </div>
+            <span class="office-tz">ET</span>
+          </div>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-card-label">In a hurry?</div>
+          <p style="font-size:15px; color:var(--muted-paper); line-height:1.6; margin-bottom:14px;">
+            Dev clients with an active engagement can call the after-hours line.
+            Everyone else, email is faster than you'd expect.
+          </p>
+          <a href="tel:+16462005420" style="font-family:var(--serif); font-size:28px; color:var(--ink); letter-spacing:-0.01em;">
+            +1 (646) 200-5420
+          </a>
+          <div style="font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-top:6px;">
+            NYC · Mon–Fri · 8 AM – 8 PM ET
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Live response strip -->
+<section class="response-strip">
+  <div class="container response-inner">
+    <span class="live-dot-wrap">Presently reading mail from NYC</span>
+    <span>3 partners · 8 engineers online</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="contact-foot">
+  <div class="container contact-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+<script>
+  // Inquiry chip selector
+  const chips = document.querySelectorAll('.contact-chip');
+  const kindField = document.getElementById('kindField');
+  chips.forEach(c => c.addEventListener('click', () => {
+    chips.forEach(x => x.classList.remove('active'));
+    c.classList.add('active');
+    kindField.value = c.dataset.kind;
+  }));
+
+  // Deep-link via hash (?kind=trace) — lets landing/product CTAs preselect
+  const params = new URLSearchParams(location.search);
+  const pre = params.get('kind');
+  if (pre) {
+    const target = document.querySelector(`.contact-chip[data-kind="${pre}"]`);
+    if (target) target.click();
+  }
+
+  function submitForm(e) {
+    e.preventDefault();
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('success').classList.add('show');
+    window.scrollTo({
+      top: document.querySelector('.contact-main').offsetTop - 40,
+      behavior: 'smooth'
+    });
+  }
+
+  function resetForm() {
+    const f = document.getElementById('contactForm');
+    f.reset();
+    f.style.display = '';
+    document.getElementById('success').classList.remove('show');
+    chips.forEach(c => c.classList.remove('active'));
+    chips[0].classList.add('active');
+    kindField.value = chips[0].dataset.kind;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

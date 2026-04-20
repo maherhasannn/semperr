@@ -32,7 +32,7 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
 ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:10px}
 @keyframes devPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.85)}}
 @media (max-width:1100px){
-  section [style*="gridTemplateColumns"]{grid-template-columns:1fr !important}
+  section [style*="grid-template-columns"]{grid-template-columns:1fr !important}
 }
 
 /* ——— Mobile (<=768px) ——— */
@@ -42,9 +42,9 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
   .m-only { display: block !important; }
   .m-hide { display: none !important; }
 
-  section [style*="gridTemplateColumns"],
-  header [style*="gridTemplateColumns"],
-  footer [style*="gridTemplateColumns"] { grid-template-columns: 1fr !important; gap: 20px !important; }
+  section [style*="grid-template-columns"],
+  header [style*="grid-template-columns"],
+  footer [style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 20px !important; }
 
   [style*="clamp(64px"], [style*="clamp(60px"], [style*="clamp(52px"] { font-size: 46px !important; line-height: 0.98 !important; }
   [style*="clamp(56px"] { font-size: 44px !important; line-height: 1 !important; }
@@ -269,10 +269,67 @@ function DevHero({ variant = 'swarm' }) {
             </div>
           </div>
 
-          {/* Stage: logo swarm */}
-          {variant === 'swarm' && <LogoSwarm/>}
-          {variant === 'calls' && <CallsStage/>}
-          {variant === 'terminal' && <TerminalStage/>}
+          {/* Stage: logo swarm — desktop only */}
+          <div className="m-hide" style={{position:'relative'}}>
+            {variant === 'swarm' && <LogoSwarm/>}
+            {variant === 'calls' && <CallsStage/>}
+            {variant === 'terminal' && <TerminalStage/>}
+          </div>
+
+          {/* Mobile-only simplified hero card */}
+          <div className="m-only" style={{
+            background:'#fbf9f2',
+            border:'1px solid rgba(11,18,32,0.12)',
+            padding:'24px 20px',
+            boxShadow:'0 20px 40px -20px rgba(11,18,32,0.15)',
+          }}>
+            <div style={{
+              display:'flex', alignItems:'center', gap:8,
+              fontFamily:'JetBrains Mono, monospace', fontSize:10,
+              color:'#7a7466', letterSpacing:'0.12em', textTransform:'uppercase',
+              marginBottom:14,
+            }}>
+              <span style={{
+                display:'inline-block', width:7, height:7, borderRadius:'50%',
+                background:'#b8502a',
+              }}/>
+              ◉ Building live · 6 shops this week
+            </div>
+            <div style={{fontFamily:'Instrument Serif, serif', fontSize:22, color:'#0b1220', lineHeight:1.2, marginBottom:14}}>
+              From Brennan's Bakery to Orozco Plumbing.
+            </div>
+            <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:12}}>
+              {[
+                { icon:'🥐', name:"Brennan's",   tone:'#c9a961' },
+                { icon:'🐾', name:"Dr. Halper",  tone:'#4a7a5c' },
+                { icon:'🔧', name:"Orozco",      tone:'#4a7fc1' },
+                { icon:'❀', name:"Fern & Thyme", tone:'#8a3a1f' },
+              ].map((s, i) => (
+                <div key={i} style={{
+                  display:'flex', alignItems:'center', gap:10,
+                  padding:'10px 12px',
+                  border:`1px solid ${s.tone}30`,
+                  background:'rgba(255,255,255,0.5)',
+                }}>
+                  <span style={{
+                    width:28, height:28, display:'grid', placeItems:'center',
+                    background: s.tone + '1a', color: s.tone,
+                    fontSize:15, fontFamily:'Instrument Serif, serif',
+                  }}>{s.icon}</span>
+                  <span style={{fontFamily:'Instrument Serif, serif', fontSize:14, color:'#0b1220'}}>{s.name}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{
+              fontFamily:'JetBrains Mono, monospace', fontSize:10,
+              color:'#7a7466', letterSpacing:'0.1em', textTransform:'uppercase',
+              marginTop:14, paddingTop:14, borderTop:'1px solid rgba(11,18,32,0.08)',
+              display:'flex', justifyContent:'space-between',
+            }}>
+              <span>◆ 34 engineers online</span>
+              <span>Avg reply 4 min</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -52,8 +52,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .m-hide { display: none !important; }
 
   /* Collapse multi-column inline grids */
-  section [style*="gridTemplateColumns"],
-  footer [style*="gridTemplateColumns"] { grid-template-columns: 1fr !important; gap: 24px !important; }
+  section [style*="grid-template-columns"],
+  footer [style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 24px !important; }
 
   /* Scale down display typography */
   [style*="clamp(64px"], [style*="clamp(60px"] { font-size: 52px !important; line-height: 0.98 !important; }
@@ -175,13 +175,13 @@ function Masthead({ theme }) {
               <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
             </span>
           </button>
-          <button style={{
+          <a href="contact.html" style={{
             fontSize:13,
             padding:'8px 16px',
             border:`1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
             borderRadius:999,
             color: isDark ? '#f8f6f0' : '#0b1220',
-          }}>Get in touch →</button>
+          }}>Get in touch →</a>
         </div>
       </div>
       {open && (
@@ -195,6 +195,7 @@ function Masthead({ theme }) {
             <a onClick={() => setOpen(false)} href="charter.html">Charterr</a>
             <a onClick={() => setOpen(false)} href="#">Company</a>
             <a onClick={() => setOpen(false)} href="#">Careers</a>
+            <a onClick={() => setOpen(false)} href="contact.html" style={{color:'var(--gold)', marginTop:4}}>Get in touch →</a>
           </nav>
         </div>
       )}
@@ -1398,7 +1399,7 @@ function Outro({ theme }) {
             ['Dev',   'Technical services', 'Dev.html'],
           ]}/>
           <FootCol title="Company" rows={[
-            ['About'], ['Careers'], ['Press'], ['Contact'],
+            ['About'], ['Careers'], ['Press'], ['Contact', '', 'contact.html'],
           ]}/>
           <FootCol title="Legal" rows={[
             ['Terms'], ['Privacy'], ['Security'], ['Responsible AI'],
