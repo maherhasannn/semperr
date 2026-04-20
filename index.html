@@ -329,7 +329,7 @@ function Hero({ variant = 'editorial', theme = 'light' }) {
 function ProductRoster({ ink, muted, gold, isDark, large }) {
   const rows = [
     { letter:'T', name:'Trace', tag:'Data for private equity', color: gold, href:'Trace.html' },
-    { letter:'C', name:'Clad', tag:'Intelligence for law firms', color: '#4a7fc1', href:'#clad' },
+    { letter:'C', name:'Clad', tag:'Intelligence for law firms', color: '#4a7fc1', href:'Clad.html' },
     { letter:'D', name:'Dev', tag:'Technical services · human led', color: '#b8502a', href:'Dev.html' },
   ];
   return (
@@ -653,7 +653,7 @@ function CladSection({ variant = 'dossier' }) {
               <StatInk n="< 2s" l="Citation lookup" c/>
             </div>
 
-            <a style={{
+            <a href="Clad.html" style={{
               display:'inline-flex', alignItems:'center', gap:10, marginTop:48,
               padding:'14px 22px', borderRadius:999,
               background:'#0b1220', color:'#f8f6f0', fontSize:14, fontWeight:500,
@@ -1395,7 +1395,7 @@ function Outro({ theme }) {
           </div>
           <FootCol title="Products" rows={[
             ['Trace', 'Data for PE',       'Trace.html'],
-            ['Clad',  'Intelligence for law', '#clad'],
+            ['Clad',  'Intelligence for law', 'Clad.html'],
             ['Dev',   'Technical services', 'Dev.html'],
           ]}/>
           <FootCol title="Company" rows={[
