@@ -1,0 +1,1079 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Trace — The private markets, reconciled.</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=IBM+Plex+Mono:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --maxw: 1440px;
+  --pad: clamp(20px, 4vw, 64px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: #0a0d14; color: #e8ebf2; font-family: "Inter Tight", -apple-system, BlinkMacSystemFont, sans-serif; -webkit-font-smoothing: antialiased; }
+body { overflow-x: hidden; }
+a { color: inherit; text-decoration: none; cursor: pointer; }
+button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+.container { max-width: var(--maxw); margin: 0 auto; padding-left: var(--pad); padding-right: var(--pad); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+
+/* ===== Wordmark (shared with Semperr) ===== */
+function Wordmark({ size = 28, tone = "ink", asMark = false }) {
+  const color = tone === "ink" ? "#0b1220" : "#f8f6f0";
+  const gold = "#c9a961";
+  if (asMark) {
+    return (
+      <svg width={size} height={size} viewBox="0 0 48 48" style={{display:'block'}}>
+        <text x="24" y="36" textAnchor="middle"
+          fontFamily="Instrument Serif, serif" fontSize="42" fill={color} letterSpacing="-2">
+          r<tspan fill={gold}>r</tspan>
+        </text>
+      </svg>
+    );
+  }
+  return (
+    <span style={{
+      fontFamily:'Instrument Serif, serif',
+      fontSize:size, color, letterSpacing:'-0.02em',
+      fontWeight:400, lineHeight:1, whiteSpace:'nowrap', display:'inline-block',
+    }}>
+      Sempe<span style={{color: gold}}>rr</span>
+    </span>
+  );
+}
+window.Wordmark = Wordmark;
+
+
+/* ===== TraceMasthead ===== */
+function TraceMasthead() {
+  return (
+    <header style={{
+      position:'sticky', top:0, zIndex:50,
+      background:'rgba(10,13,20,0.85)',
+      backdropFilter:'blur(20px) saturate(140%)',
+      WebkitBackdropFilter:'blur(20px) saturate(140%)',
+      borderBottom:'1px solid rgba(255,255,255,0.06)',
+    }}>
+      <div className="container" style={{display:'flex', alignItems:'center', justifyContent:'space-between', height:58}}>
+        <div style={{display:'flex', alignItems:'center', gap:14}}>
+          <a href="Semperr.html"><Wordmark size={20} tone="paper"/></a>
+          <span style={{color:'rgba(255,255,255,0.25)', fontSize:16, fontFamily:'Tiempos, Instrument Serif, serif'}}>/</span>
+          <span style={{
+            fontFamily:'IBM Plex Mono, JetBrains Mono, monospace', fontSize:11,
+            letterSpacing:'0.14em', textTransform:'uppercase',
+            color:'#4a7fc1',
+            padding:'4px 8px',
+            border:'1px solid rgba(74,127,193,0.35)',
+          }}>▲ TRACE</span>
+        </div>
+        <nav style={{display:'flex', gap:28, fontSize:12, color:'#8a93a6', fontFamily:'IBM Plex Mono, monospace', letterSpacing:'0.06em'}}>
+          <a href="#platform">Platform</a>
+          <a href="#data">Data</a>
+          <a href="#signals">Signals</a>
+          <a href="#clients">Clients</a>
+          <a href="#security">Security</a>
+        </nav>
+        <div style={{display:'flex', alignItems:'center', gap:14}}>
+          <div style={{display:'flex', alignItems:'center', gap:8, fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#4a7a5c', letterSpacing:'0.1em'}}>
+            <span style={{width:6, height:6, borderRadius:'50%', background:'#4a7a5c', boxShadow:'0 0 8px #4a7a5c'}}/>
+            LIVE · 04:17:22 EDT
+          </div>
+          <button style={{
+            fontSize:12, padding:'8px 14px',
+            background:'#4a7fc1', color:'#f5f5f2',
+            fontFamily:'IBM Plex Mono, monospace', letterSpacing:'0.08em', textTransform:'uppercase',
+          }}>Request access</button>
+        </div>
+      </div>
+    </header>
+  );
+}
+window.TraceMasthead = TraceMasthead;
+
+
+/* ===== TraceHero ===== */
+function TraceHero({ variant = 'ticker' }) {
+  return (
+    <section style={{position:'relative', background:'#0a0d14', color:'#e8ebf2', overflow:'hidden', paddingTop:56}}>
+      {/* Editorial top slug */}
+      <div className="container" style={{paddingTop:40, paddingBottom:24}}>
+        <div style={{
+          display:'grid', gridTemplateColumns:'1fr auto 1fr 1fr',
+          gap:32,
+          fontFamily:'IBM Plex Mono, monospace', fontSize:10.5, letterSpacing:'0.14em', textTransform:'uppercase',
+          color:'#6b7388', borderBottom:'1px solid rgba(255,255,255,0.08)', paddingBottom:16,
+        }}>
+          <span>Semperr · <span style={{color:'#4a7fc1'}}>Trace</span></span>
+          <span>Vol. VII · No. 148</span>
+          <span style={{color:'#8a93a6'}}>Institutional research platform</span>
+          <span style={{textAlign:'right'}}>2026</span>
+        </div>
+      </div>
+
+      <div className="container" style={{position:'relative', zIndex:2, paddingBottom:72}}>
+        <div style={{display:'grid', gridTemplateColumns:'1.3fr 1fr', gap:72, alignItems:'end', minHeight:540}}>
+          <div>
+            <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#4a7fc1', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:28}}>
+              ▲ &nbsp; For credit, buyout, &amp; cross-over funds
+            </div>
+            <h1 style={{
+              fontFamily:'Tiempos, "Instrument Serif", serif', fontWeight:400,
+              fontSize:'clamp(56px, 7.5vw, 120px)', lineHeight:0.94, letterSpacing:'-0.02em',
+              color:'#f5f5f2',
+            }}>
+              The private<br/>
+              markets,{' '}
+              <em style={{fontStyle:'italic', color:'#8ab4e8'}}>reconciled.</em>
+            </h1>
+            <p style={{
+              marginTop:36, maxWidth:560, fontSize:18, lineHeight:1.55, color:'#a6acbc',
+            }}>
+              Trace is the institutional research platform for private credit and buyout markets.
+              Every deal, sponsor, and security — sourced, reconciled against four independent feeds,
+              and scored by models built with the desks that use them.
+            </p>
+            <div style={{display:'flex', gap:12, marginTop:36, flexWrap:'wrap'}}>
+              <a style={{
+                display:'inline-flex', alignItems:'center', gap:10,
+                padding:'14px 22px',
+                background:'#4a7fc1', color:'#f5f5f2', fontSize:13, fontWeight:500,
+                fontFamily:'IBM Plex Mono, monospace', letterSpacing:'0.08em', textTransform:'uppercase',
+              }}>Request a demo →</a>
+              <a style={{
+                display:'inline-flex', alignItems:'center', gap:10,
+                padding:'14px 22px',
+                border:'1px solid rgba(255,255,255,0.15)', color:'#e8ebf2',
+                fontSize:13, fontFamily:'IBM Plex Mono, monospace', letterSpacing:'0.08em', textTransform:'uppercase',
+              }}>Data methodology</a>
+            </div>
+          </div>
+
+          {variant === 'ticker' && <HeroTicker/>}
+          {variant === 'terminal' && <HeroTerminal/>}
+          {variant === 'map' && <HeroMap/>}
+        </div>
+      </div>
+
+      <LiveTicker/>
+    </section>
+  );
+}
+
+function HeroTicker() {
+  const rows = [
+    { t:'04:17:08', d:'Apollo completes $2.8B recap · Summit Med', tag:'BUYOUT', c:'#4a7fc1' },
+    { t:'04:17:02', d:'Vista marks Stonemark +12.4%', tag:'MARK', c:'#4a7a5c' },
+    { t:'04:16:58', d:'Oaktree opens Credit Opps V · $18B target', tag:'FUND', c:'#c9a961' },
+    { t:'04:16:45', d:'Silver Point exits Argenia to GTCR', tag:'EXIT', c:'#b8502a' },
+    { t:'04:16:31', d:'KKR + Carlyle co-invest, €1.2B · Nordix', tag:'CO-INVEST', c:'#4a7fc1' },
+    { t:'04:16:19', d:'HPS refi, 6.25% term, $940M · Larkspur', tag:'CREDIT', c:'#8ab4e8' },
+    { t:'04:16:02', d:'Blue Owl senior lien, $1.1B · Verimed', tag:'CREDIT', c:'#8ab4e8' },
+  ];
+  return (
+    <div style={{
+      background:'rgba(255,255,255,0.02)',
+      border:'1px solid rgba(255,255,255,0.08)',
+      fontFamily:'IBM Plex Mono, monospace',
+      maxWidth:520, marginLeft:'auto', width:'100%',
+    }}>
+      <div style={{
+        display:'flex', justifyContent:'space-between', padding:'12px 16px',
+        borderBottom:'1px solid rgba(255,255,255,0.08)',
+        fontSize:10, letterSpacing:'0.14em', textTransform:'uppercase', color:'#6b7388',
+      }}>
+        <span>▲ LIVE · Dealbook Feed</span>
+        <span style={{color:'#4a7a5c'}}>● streaming</span>
+      </div>
+      {rows.map((r, i) => (
+        <div key={i} style={{
+          display:'grid', gridTemplateColumns:'72px 56px 1fr',
+          gap:12, padding:'10px 16px',
+          borderBottom: i === rows.length - 1 ? 'none' : '1px solid rgba(255,255,255,0.04)',
+          fontSize:11.5, color:'#a6acbc',
+        }}>
+          <span style={{color:'#6b7388'}}>{r.t}</span>
+          <span style={{color: r.c, letterSpacing:'0.06em'}}>{r.tag}</span>
+          <span style={{color:'#e8ebf2'}}>{r.d}</span>
+        </div>
+      ))}
+      <div style={{padding:'10px 16px', fontSize:10, color:'#6b7388', letterSpacing:'0.14em', textTransform:'uppercase', borderTop:'1px solid rgba(255,255,255,0.08)'}}>
+        + 2,847 events today
+      </div>
+    </div>
+  );
+}
+
+function HeroTerminal() {
+  return (
+    <div style={{
+      background:'#000', border:'1px solid rgba(74,127,193,0.3)',
+      padding:20, fontFamily:'IBM Plex Mono, monospace', fontSize:12, color:'#8ab4e8',
+      maxWidth:520, marginLeft:'auto',
+    }}>
+      <div style={{color:'#4a7fc1'}}>trace&gt; query.explain</div>
+      <div style={{color:'#a6acbc', marginTop:8}}>→ reconciling across 4 sources</div>
+      <div style={{color:'#a6acbc'}}>→ 148 deals matched · 12 flagged</div>
+    </div>
+  );
+}
+
+function HeroMap() {
+  return (
+    <div style={{maxWidth:520, marginLeft:'auto', padding:40, border:'1px solid rgba(255,255,255,0.08)', textAlign:'center', fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#6b7388'}}>
+      [Global heatmap placeholder]
+    </div>
+  );
+}
+
+function LiveTicker() {
+  const items = [
+    ['KKR-IX', '+2.14%'], ['APO.CR-VIII', '+0.86%'], ['BXD V', '+1.22%'], ['OAK.OPP-V', '—'],
+    ['HPS-IV', '+0.44%'], ['BUO.TECH-III', '+3.10%'], ['CVC-VIII', '+1.08%'], ['BAIN.CAP-XIII', '+0.72%'],
+    ['PSG-V', '—'], ['GTCR-XIV', '+2.88%'], ['VISTA-VIII', '+1.56%'], ['SIL.POINT-CR', '+0.31%'],
+    ['ARES.CAP-VI', '+0.92%'], ['BC-XI', '+1.44%'], ['PERMIRA-VIII', '+2.02%'],
+  ];
+  return (
+    <div style={{
+      position:'relative',
+      borderTop:'1px solid rgba(255,255,255,0.08)',
+      borderBottom:'1px solid rgba(255,255,255,0.08)',
+      background:'rgba(74,127,193,0.04)',
+      overflow:'hidden',
+      padding:'14px 0',
+    }}>
+      <div style={{
+        display:'flex', gap:40,
+        animation:'traceTicker 60s linear infinite',
+        whiteSpace:'nowrap',
+        fontFamily:'IBM Plex Mono, monospace', fontSize:12,
+      }}>
+        {[...items, ...items, ...items].map(([k, v], i) => (
+          <span key={i} style={{display:'inline-flex', gap:10, color:'#a6acbc'}}>
+            <span style={{color:'#6b7388'}}>{k}</span>
+            <span style={{color: v.startsWith('+') ? '#4a7a5c' : '#6b7388'}}>{v}</span>
+          </span>
+        ))}
+      </div>
+      <style>{`
+        @keyframes traceTicker {
+          from { transform: translateX(0); }
+          to { transform: translateX(-50%); }
+        }
+      `}</style>
+    </div>
+  );
+}
+window.TraceHero = TraceHero;
+
+
+/* ===== TraceCoverage ===== */
+function TraceCoverage() {
+  const stats = [
+    { n:'184,200', l:'Deals tracked', sub:'2004–present' },
+    { n:'12,840',  l:'Sponsors & funds', sub:'GP + LP + co-invest' },
+    { n:'4',       l:'Independent sources', sub:'reconciled per record' },
+    { n:'62',      l:'Countries', sub:'coverage footprint' },
+    { n:'< 4min',  l:'Mean event-to-feed', sub:'vs. 3.2 hrs industry' },
+    { n:'98.6%',   l:'Accuracy',        sub:'vs. filings' },
+  ];
+  return (
+    <section style={{background:'#0a0d14', color:'#e8ebf2', padding:'96px 0', borderBottom:'1px solid rgba(255,255,255,0.06)'}}>
+      <div className="container">
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:48, paddingBottom:20, borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
+          <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#4a7fc1', letterSpacing:'0.14em', textTransform:'uppercase'}}>
+            § I &nbsp; Coverage
+          </div>
+          <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.1em', textTransform:'uppercase'}}>
+            As of 04.19.2026
+          </div>
+        </div>
+        <div style={{display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:0, borderTop:'1px solid rgba(255,255,255,0.1)'}}>
+          {stats.map((s, i) => (
+            <div key={i} style={{
+              padding:'40px 24px',
+              borderRight: i === stats.length - 1 ? 'none' : '1px solid rgba(255,255,255,0.06)',
+              borderBottom:'1px solid rgba(255,255,255,0.1)',
+            }}>
+              <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.08em', textTransform:'uppercase', marginBottom:14}}>
+                {String(i+1).padStart(2, '0')}
+              </div>
+              <div style={{fontFamily:'Tiempos, "Instrument Serif", serif', fontSize:44, letterSpacing:'-0.02em', lineHeight:1, color:'#f5f5f2'}}>
+                {s.n}
+              </div>
+              <div style={{fontSize:13, color:'#a6acbc', marginTop:12}}>{s.l}</div>
+              <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.08em', textTransform:'uppercase', marginTop:4}}>{s.sub}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+window.TraceCoverage = TraceCoverage;
+
+
+/* ===== TraceQuery ===== */
+function TraceQuery() {
+  const queries = [
+    {
+      text: "show me sub-$100M healthcare buyouts where a sponsor exited to a strategic in under 3 years",
+      clauses: [
+        { type:'verb',   t:'show me ' },
+        { type:'filter', t:'sub-$100M ' },
+        { type:'sector', t:'healthcare ' },
+        { type:'type',   t:'buyouts ' },
+        { type:'rel',    t:'where a sponsor ' },
+        { type:'action', t:'exited ' },
+        { type:'rel',    t:'to a ' },
+        { type:'buyer',  t:'strategic ' },
+        { type:'rel',    t:'in under ' },
+        { type:'window', t:'3 years' },
+      ],
+      results: [
+        { co:'Mendalyn Diagnostics',  sponsor:'Summit Hlth Ptrs II',  size:'$84M',  hold:'2.4y', exit:'Roche',    mult:'2.8x' },
+        { co:'Bethesda Home Health',   sponsor:'Linden Cap IV',         size:'$62M',  hold:'1.9y', exit:'UnitedHealth', mult:'3.2x' },
+        { co:'Orelia Outpatient',      sponsor:'Shore Cap VI',          size:'$78M',  hold:'2.7y', exit:'HCA',      mult:'2.1x' },
+        { co:'Verlan Respiratory',     sponsor:'Edgewater III',         size:'$91M',  hold:'1.4y', exit:'Philips',  mult:'4.6x' },
+        { co:"Calix Women's Health",   sponsor:'WindRose V',            size:'$54M',  hold:'2.9y', exit:'Thermo Fisher', mult:'2.4x' },
+        { co:'Rheomar Cardiology',     sponsor:'Riverside Micro-Cap',   size:'$44M',  hold:'2.1y', exit:'Boston Sci', mult:'3.0x' },
+        { co:'Thalen Spine',           sponsor:'Health Evolution II',   size:'$96M',  hold:'2.8y', exit:'Stryker',  mult:'2.5x' },
+      ],
+    },
+    {
+      text: "private credit deals above $500M priced in the last 90 days, sorted by spread",
+      clauses: [
+        { type:'verb',   t:'private credit ' },
+        { type:'type',   t:'deals ' },
+        { type:'filter', t:'above $500M ' },
+        { type:'action', t:'priced ' },
+        { type:'window', t:'in the last 90 days' },
+        { type:'rel',    t:', sorted by ' },
+        { type:'filter', t:'spread' },
+      ],
+      results: [
+        { co:'Larkspur Industries',   sponsor:'HPS · Blue Owl',        size:'$940M',  hold:'SOFR+625', exit:'Senior',   mult:'3/1/2026' },
+        { co:'Verimed Systems',        sponsor:'Blue Owl',              size:'$1.10B', hold:'SOFR+600', exit:'Senior',   mult:'3/8/2026' },
+        { co:'Nordix Logistics',       sponsor:'Ares · Blackstone',     size:'$1.80B', hold:'SOFR+575', exit:'Unitranche', mult:'2/22/2026' },
+        { co:'Camden Foods',           sponsor:'Golub',                 size:'$620M',  hold:'SOFR+550', exit:'2nd Lien', mult:'2/14/2026' },
+        { co:'Polaris Ag',             sponsor:'Antares',               size:'$880M',  hold:'SOFR+525', exit:'Senior',   mult:'2/3/2026'  },
+        { co:'Baylor Specialty',       sponsor:'Churchill',             size:'$740M',  hold:'SOFR+500', exit:'Unitranche', mult:'1/28/2026' },
+        { co:'Vicksbridge Resources',  sponsor:'Apollo Credit',         size:'$1.40B', hold:'SOFR+475', exit:'Senior',   mult:'1/19/2026' },
+      ],
+    },
+    {
+      text: "GPs raising a new vintage this quarter whose last fund outperformed peers by 300bps+",
+      clauses: [
+        { type:'subject',t:'GPs ' },
+        { type:'action', t:'raising ' },
+        { type:'filter', t:'a new vintage ' },
+        { type:'window', t:'this quarter ' },
+        { type:'rel',    t:'whose last fund ' },
+        { type:'action', t:'outperformed ' },
+        { type:'filter', t:'peers by 300bps+' },
+      ],
+      results: [
+        { co:'Kingswood Growth IX',    sponsor:'Kingswood Ptrs',         size:'$4.2B',   hold:'+410bps', exit:'Q2 close', mult:'96% raised' },
+        { co:'Cardinal Industrial V',  sponsor:'Cardinal Equity',        size:'$1.8B',   hold:'+380bps', exit:'Q2 close', mult:'71% raised' },
+        { co:'Morgan Creek Hlth IV',   sponsor:'Morgan Creek',           size:'$2.1B',   hold:'+520bps', exit:'Q2 close', mult:'58% raised' },
+        { co:'Auvergne Credit III',    sponsor:'Auvergne Capital',       size:'€1.4B',   hold:'+340bps', exit:'Q3 target',mult:'42% raised' },
+        { co:'Stanhope Software VI',   sponsor:'Stanhope',               size:'$3.6B',   hold:'+610bps', exit:'Q2 close', mult:'82% raised' },
+        { co:'Thornhill Buyout VIII',  sponsor:'Thornhill Ptrs',         size:'$7.1B',   hold:'+305bps', exit:'Q2 close', mult:'68% raised' },
+      ],
+    },
+  ];
+
+  const [qIdx, setQIdx] = React.useState(0);
+  const [typed, setTyped] = React.useState(0);
+  const [resultsIn, setResultsIn] = React.useState(0);
+  const q = queries[qIdx];
+
+  React.useEffect(() => {
+    setTyped(0); setResultsIn(0);
+    const total = q.text.length;
+    const id = setInterval(() => {
+      setTyped(t => {
+        if (t >= total) { clearInterval(id); return t; }
+        return t + 1;
+      });
+    }, 28);
+    return () => clearInterval(id);
+  }, [qIdx]);
+
+  React.useEffect(() => {
+    if (typed < q.text.length) return;
+    const id = setInterval(() => {
+      setResultsIn(r => {
+        if (r >= q.results.length) { clearInterval(id); return r; }
+        return r + 1;
+      });
+    }, 140);
+    return () => clearInterval(id);
+  }, [typed, qIdx]);
+
+  React.useEffect(() => {
+    if (resultsIn < q.results.length) return;
+    const id = setTimeout(() => setQIdx(i => (i + 1) % queries.length), 4200);
+    return () => clearTimeout(id);
+  }, [resultsIn, qIdx]);
+
+  return (
+    <section id="signals" style={{background:'#0a0d14', color:'#e8ebf2', padding:'120px 0', position:'relative', overflow:'hidden'}}>
+      <div className="container">
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1.4fr', gap:64, alignItems:'start', marginBottom:56}}>
+          <div>
+            <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#4a7fc1', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:18}}>
+              § II &nbsp; Signature query
+            </div>
+            <h2 style={{fontFamily:'Tiempos, "Instrument Serif", serif', fontSize:'clamp(42px, 5.5vw, 80px)', lineHeight:0.98, letterSpacing:'-0.02em', color:'#f5f5f2'}}>
+              Ask a sentence.<br/>
+              <em style={{fontStyle:'italic', color:'#8ab4e8'}}>Get a thesis.</em>
+            </h2>
+          </div>
+          <p style={{fontSize:17, color:'#a6acbc', lineHeight:1.55, maxWidth:560, paddingTop:24}}>
+            Trace Query translates English into our schema — joining deal, fund, sponsor,
+            security, and outcome tables behind the scenes. Results stream in under 400ms,
+            each with source attribution and reconciliation status.
+          </p>
+        </div>
+
+        <div style={{
+          background:'#000',
+          border:'1px solid rgba(74,127,193,0.3)',
+          boxShadow:'0 0 80px -20px rgba(74,127,193,0.25)',
+        }}>
+          <div style={{
+            display:'flex', justifyContent:'space-between', alignItems:'center',
+            padding:'10px 16px', borderBottom:'1px solid rgba(255,255,255,0.06)',
+            fontFamily:'IBM Plex Mono, monospace', fontSize:10, letterSpacing:'0.14em', textTransform:'uppercase',
+            color:'#6b7388',
+          }}>
+            <span>▲ trace.query</span>
+            <div style={{display:'flex', gap:14}}>
+              <span>rec: <span style={{color:'#4a7a5c'}}>4/4</span></span>
+              <span>tok: {q.text.length}</span>
+              <span>ms: <span style={{color:'#8ab4e8'}}>{resultsIn === q.results.length ? '382' : '—'}</span></span>
+            </div>
+          </div>
+
+          <div style={{padding:'28px 24px', borderBottom:'1px solid rgba(255,255,255,0.06)', minHeight:90, display:'flex', alignItems:'center', gap:14}}>
+            <span style={{fontFamily:'IBM Plex Mono, monospace', fontSize:16, color:'#4a7fc1'}}>▸</span>
+            <div style={{fontFamily:'Tiempos, "Instrument Serif", serif', fontSize:26, lineHeight:1.3, color:'#f5f5f2', fontStyle:'italic'}}>
+              <SyntaxQuery clauses={q.clauses} chars={typed}/>
+              {typed < q.text.length && <span style={{color:'#4a7fc1', animation:'traceCursor 1s step-end infinite'}}>▍</span>}
+            </div>
+          </div>
+
+          <ResultsTable q={q} resultsIn={resultsIn}/>
+
+          <div style={{
+            display:'flex', padding:'10px 16px', gap:14,
+            borderTop:'1px solid rgba(255,255,255,0.06)',
+            fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.08em', textTransform:'uppercase',
+          }}>
+            <span>Try:</span>
+            {queries.map((_, i) => (
+              <button key={i} onClick={() => setQIdx(i)} style={{
+                fontFamily:'IBM Plex Mono, monospace', fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase',
+                color: i === qIdx ? '#8ab4e8' : '#6b7388', cursor:'pointer',
+                border:'none', background:'none',
+                textDecoration: i === qIdx ? 'underline' : 'none',
+              }}>Q{i+1}</button>
+            ))}
+            <span style={{marginLeft:'auto'}}>⌘ + K to focus</span>
+          </div>
+        </div>
+      </div>
+      <style>{`@keyframes traceCursor { 50% { opacity: 0; } }`}</style>
+    </section>
+  );
+}
+
+function SyntaxQuery({ clauses, chars }) {
+  const colors = {
+    verb:'#a6acbc', filter:'#c9a961', sector:'#4a7a5c', type:'#8ab4e8', rel:'#6b7388',
+    action:'#b8502a', buyer:'#8ab4e8', window:'#c9a961', subject:'#8ab4e8',
+  };
+  let used = 0;
+  return (
+    <>{clauses.map((c, i) => {
+      const start = used;
+      const end = used + c.t.length;
+      used = end;
+      if (chars <= start) return null;
+      const visible = c.t.slice(0, Math.max(0, chars - start));
+      return (
+        <span key={i} style={{color: colors[c.type] || '#e8ebf2'}}>{visible}</span>
+      );
+    })}</>
+  );
+}
+
+function ResultsTable({ q, resultsIn }) {
+  const cols = q === undefined ? [] : q.text.includes('credit') ? ['Obligor','Lender','Size','Spread','Tranche','Priced'] :
+               q.text.includes('raising') ? ['Fund','GP','Target','Vs. Peers','Close','Status']
+                                          : ['Target','Sponsor','Deal size','Hold','Acquirer','Multiple'];
+
+  return (
+    <div>
+      <div style={{
+        display:'grid', gridTemplateColumns:'2fr 1.7fr 1fr 1fr 1.4fr 1fr',
+        gap:0, padding:'12px 20px',
+        fontFamily:'IBM Plex Mono, monospace', fontSize:10, letterSpacing:'0.12em', textTransform:'uppercase',
+        color:'#6b7388', borderBottom:'1px solid rgba(255,255,255,0.08)',
+        background:'rgba(255,255,255,0.02)',
+      }}>
+        {cols.map((c, i) => <div key={i}>{c}</div>)}
+      </div>
+      <div style={{maxHeight: 320, overflow:'hidden'}}>
+        {q.results.slice(0, resultsIn).map((r, i) => (
+          <div key={i} style={{
+            display:'grid', gridTemplateColumns:'2fr 1.7fr 1fr 1fr 1.4fr 1fr',
+            padding:'12px 20px',
+            fontFamily:'IBM Plex Mono, monospace', fontSize:12,
+            color:'#e8ebf2',
+            borderBottom: '1px solid rgba(255,255,255,0.04)',
+            animation:'traceRowIn 0.4s ease both',
+            background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.015)',
+          }}>
+            <div style={{fontFamily:'Tiempos, serif', fontSize:14, color:'#f5f5f2'}}>{r.co}</div>
+            <div style={{color:'#a6acbc'}}>{r.sponsor}</div>
+            <div style={{color:'#8ab4e8'}}>{r.size}</div>
+            <div style={{color:'#c9a961'}}>{r.hold}</div>
+            <div style={{color:'#a6acbc'}}>{r.exit}</div>
+            <div style={{color:'#4a7a5c'}}>{r.mult}</div>
+          </div>
+        ))}
+        {[...Array(Math.max(0, q.results.length - resultsIn))].map((_, i) => (
+          <div key={'p'+i} style={{height:41, borderBottom:'1px solid rgba(255,255,255,0.02)'}}/>
+        ))}
+      </div>
+      <div style={{
+        display:'flex', justifyContent:'space-between',
+        padding:'10px 20px', background:'rgba(74,127,193,0.05)',
+        fontFamily:'IBM Plex Mono, monospace', fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'#6b7388',
+      }}>
+        <span>{resultsIn} of {q.results.length} results · showing top matches</span>
+        <span>Export: .xlsx &nbsp;·&nbsp; .csv &nbsp;·&nbsp; → Snowflake</span>
+      </div>
+      <style>{`
+        @keyframes traceRowIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: none; }
+        }
+      `}</style>
+    </div>
+  );
+}
+window.TraceQuery = TraceQuery;
+
+
+/* ===== TraceReconciliation ===== */
+function TraceReconciliation() {
+  const sources = [
+    { k:'SEC',       label:'Filings · 10-K, 10-Q, S-1',    c:'#4a7fc1' },
+    { k:'FILINGS',   label:'UCC + state liens',             c:'#c9a961' },
+    { k:'PRESS',     label:'Press releases · 412 sources',  c:'#8ab4e8' },
+    { k:'PRIMARY',   label:'GP letters · LP reports',       c:'#4a7a5c' },
+  ];
+  const [phase, setPhase] = React.useState(0);
+  React.useEffect(() => {
+    const id = setInterval(() => setPhase(p => (p + 1) % 3), 2600);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <section style={{background:'#f5f5f2', color:'#0a0d14', padding:'120px 0'}}>
+      <div className="container">
+        <div style={{display:'grid', gridTemplateColumns:'1fr 1.2fr', gap:72, alignItems:'start'}}>
+          <div>
+            <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#4a7fc1', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:18}}>
+              § III &nbsp; Accuracy
+            </div>
+            <h2 style={{fontFamily:'Tiempos, "Instrument Serif", serif', fontSize:'clamp(42px, 5.5vw, 80px)', lineHeight:0.98, letterSpacing:'-0.02em'}}>
+              Sourced.<br/>
+              Reconciled.{' '}
+              <em style={{fontStyle:'italic', color:'#2f5c96'}}>Not scraped.</em>
+            </h2>
+            <p style={{fontSize:17, color:'#4a4a4a', lineHeight:1.55, marginTop:28, maxWidth:460}}>
+              Every record is built from a minimum of four independent sources and flagged
+              when they disagree. You see the provenance — every citation, every revision —
+              because a number without a source doesn't belong on your desk.
+            </p>
+            <div style={{marginTop:28, display:'grid', gap:10}}>
+              {[
+                ['98.6%', 'Agreement with SEC filings'],
+                ['1,840', 'Records revised last 30 days'],
+                ['< 4 min', 'Mean event-to-verified entry'],
+              ].map(([a, b], i) => (
+                <div key={i} style={{display:'flex', justifyContent:'space-between', padding:'10px 0', borderBottom:'1px solid rgba(10,13,20,0.1)'}}>
+                  <span style={{fontFamily:'Tiempos, serif', fontSize:20}}>{a}</span>
+                  <span style={{fontSize:13, color:'#4a4a4a'}}>{b}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{background:'#fff', border:'1px solid rgba(10,13,20,0.12)', padding:'28px 28px'}}>
+            <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.12em', textTransform:'uppercase', marginBottom:18}}>
+              Record: Apollo · Summit Med · 04.17.2026
+            </div>
+            {sources.map((s, i) => (
+              <div key={i} style={{
+                display:'grid', gridTemplateColumns:'100px 1fr 80px',
+                gap:14, padding:'14px 0',
+                borderBottom:'1px solid rgba(10,13,20,0.08)',
+                alignItems:'center',
+                opacity: phase === 0 ? 0.3 + (i * 0.1) : 1,
+                transition:'opacity 0.6s',
+              }}>
+                <div style={{display:'flex', alignItems:'center', gap:8}}>
+                  <span style={{width:6, height:6, borderRadius:'50%', background: s.c}}/>
+                  <span style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#0a0d14', letterSpacing:'0.08em'}}>{s.k}</span>
+                </div>
+                <span style={{fontSize:13, color:'#4a4a4a'}}>{s.label}</span>
+                <span style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#4a7a5c', letterSpacing:'0.08em', textTransform:'uppercase'}}>
+                  ✓ $2.8B
+                </span>
+              </div>
+            ))}
+            <div style={{
+              marginTop:20, padding:'16px 18px',
+              background:'#0a0d14', color:'#f5f5f2',
+              display:'grid', gridTemplateColumns:'auto 1fr auto', gap:14, alignItems:'center',
+              transform: phase >= 1 ? 'translateY(0)' : 'translateY(4px)',
+              opacity: phase >= 1 ? 1 : 0.6,
+              transition:'all 0.6s',
+            }}>
+              <span style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#4a7fc1', letterSpacing:'0.12em'}}>▲ TRACE</span>
+              <span style={{fontFamily:'Tiempos, serif', fontSize:18}}>Summit Medical Recap · <em style={{color:'#8ab4e8'}}>$2,800,000,000</em></span>
+              <span style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#4a7a5c', letterSpacing:'0.1em'}}>REC 4/4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+window.TraceReconciliation = TraceReconciliation;
+
+
+/* ===== TraceGraph ===== */
+function TraceGraph({ mode = 'graph' }) {
+  return (
+    <section id="platform" style={{background:'#0a0d14', color:'#e8ebf2', padding:'120px 0', position:'relative', overflow:'hidden'}}>
+      <div className="container">
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:48, paddingBottom:20, borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
+          <div>
+            <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#4a7fc1', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:18}}>
+              § IV &nbsp; {mode === 'graph' ? 'Ownership' : 'Activity'}
+            </div>
+            <h2 style={{fontFamily:'Tiempos, "Instrument Serif", serif', fontSize:'clamp(42px, 5.5vw, 80px)', lineHeight:0.98, letterSpacing:'-0.02em', color:'#f5f5f2'}}>
+              {mode === 'graph' ? <>The full <em style={{fontStyle:'italic', color:'#8ab4e8'}}>cap-stack.</em></> : <>Activity, <em style={{fontStyle:'italic', color:'#8ab4e8'}}>mapped.</em></>}
+            </h2>
+          </div>
+          <p style={{maxWidth:360, fontSize:15, color:'#a6acbc', lineHeight:1.55}}>
+            {mode === 'graph'
+              ? 'Every vehicle. Every co-invest. Every secondary. Trace renders the ownership tree with tranche-level detail and model-ranked credit signals.'
+              : 'Deal volume and spread by sector and geography, refreshed hourly. Hover a cell for a drill-down into obligors and sponsors.'}
+          </p>
+        </div>
+        {mode === 'graph' ? <OwnershipGraph/> : <SectorHeatmap/>}
+      </div>
+    </section>
+  );
+}
+
+function OwnershipGraph() {
+  const parent = { name:'Apollo Global Mgmt', type:'GP', x:400, y:60 };
+  const funds = [
+    { name:'Apollo IX',    type:'Fund · $24.7B',  x:160, y:200 },
+    { name:'Apollo Credit VIII', type:'Fund · $18.1B', x:400, y:200 },
+    { name:'Hybrid Val III',type:'Fund · $4.6B',  x:640, y:200 },
+  ];
+  const cos = [
+    { name:'Summit Medical',  x:80,  y:360, tag:'BUY', mark:'+12%' },
+    { name:'Larkspur Inds',   x:220, y:360, tag:'BUY', mark:'+6%' },
+    { name:'Verimed',         x:340, y:360, tag:'CR', mark:'par' },
+    { name:'Nordix',          x:460, y:360, tag:'CR', mark:'+2%' },
+    { name:'Calix Health',    x:580, y:360, tag:'BUY', mark:'+18%' },
+    { name:'Baylor Spec',     x:700, y:360, tag:'MEZZ', mark:'+1%' },
+  ];
+  return (
+    <div style={{background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)', padding:'32px', minHeight: 460}}>
+      <svg viewBox="0 0 800 440" style={{width:'100%', height:'auto'}}>
+        {funds.map((f, i) => (
+          <line key={`pf${i}`} x1={parent.x + 80} y1={parent.y + 30} x2={f.x + 60} y2={f.y} stroke="rgba(74,127,193,0.4)" strokeWidth="0.8"/>
+        ))}
+        {funds.map((f, i) => (
+          [cos[i*2], cos[i*2+1]].map((c, j) => (
+            <line key={`fc${i}${j}`} x1={f.x + 60} y1={f.y + 30} x2={c.x + 40} y2={c.y} stroke="rgba(255,255,255,0.15)" strokeWidth="0.6"/>
+          ))
+        ))}
+
+        <g>
+          <rect x={parent.x} y={parent.y} width={160} height={36} fill="#0a0d14" stroke="#4a7fc1"/>
+          <text x={parent.x + 12} y={parent.y + 16} fill="#6b7388" fontFamily="IBM Plex Mono, monospace" fontSize="9" letterSpacing="1.5">GP</text>
+          <text x={parent.x + 12} y={parent.y + 30} fill="#f5f5f2" fontFamily="Tiempos, serif" fontSize="14">{parent.name}</text>
+        </g>
+        {funds.map((f, i) => (
+          <g key={i}>
+            <rect x={f.x} y={f.y} width={120} height={32} fill="#0a0d14" stroke="rgba(139,180,232,0.4)"/>
+            <text x={f.x + 10} y={f.y + 14} fill="#6b7388" fontFamily="IBM Plex Mono, monospace" fontSize="8" letterSpacing="1">FUND</text>
+            <text x={f.x + 10} y={f.y + 26} fill="#8ab4e8" fontFamily="Tiempos, serif" fontSize="12">{f.name}</text>
+            <text x={f.x + 120} y={f.y + 47} fill="#6b7388" fontFamily="IBM Plex Mono, monospace" fontSize="8" textAnchor="end">{f.type.split('·')[1]}</text>
+          </g>
+        ))}
+        {cos.map((c, i) => (
+          <g key={i}>
+            <rect x={c.x} y={c.y} width={80} height={32} fill="#0a0d14" stroke="rgba(255,255,255,0.15)"/>
+            <text x={c.x + 6} y={c.y + 13} fill={c.tag === 'CR' ? '#c9a961' : '#4a7a5c'} fontFamily="IBM Plex Mono, monospace" fontSize="8" letterSpacing="1">{c.tag}</text>
+            <text x={c.x + 74} y={c.y + 13} fill="#8ab4e8" fontFamily="IBM Plex Mono, monospace" fontSize="8" textAnchor="end">{c.mark}</text>
+            <text x={c.x + 6} y={c.y + 26} fill="#f5f5f2" fontFamily="Tiempos, serif" fontSize="11">{c.name}</text>
+          </g>
+        ))}
+
+        <g transform="translate(0, 410)">
+          <rect width="8" height="8" fill="#4a7fc1"/>
+          <text x="14" y="8" fill="#6b7388" fontFamily="IBM Plex Mono, monospace" fontSize="9">General partner</text>
+          <rect x="130" width="8" height="8" fill="#8ab4e8"/>
+          <text x="144" y="8" fill="#6b7388" fontFamily="IBM Plex Mono, monospace" fontSize="9">Fund / vehicle</text>
+          <rect x="260" width="8" height="8" fill="#4a7a5c"/>
+          <text x="274" y="8" fill="#6b7388" fontFamily="IBM Plex Mono, monospace" fontSize="9">Portfolio co.</text>
+          <rect x="380" width="8" height="8" fill="#c9a961"/>
+          <text x="394" y="8" fill="#6b7388" fontFamily="IBM Plex Mono, monospace" fontSize="9">Credit position</text>
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+function SectorHeatmap() {
+  const sectors = ['Healthcare','Technology','Industrials','Consumer','Energy','Financials','Business Svs','Materials'];
+  const regions = ['North Am','Europe','Asia-Pac','LATAM','MENA'];
+  const val = (s, r) => {
+    const h = (s * 7 + r * 11) % 100;
+    return (h / 100) ** 0.9;
+  };
+  return (
+    <div style={{background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.06)', padding:'32px', minHeight: 460}}>
+      <div style={{display:'grid', gridTemplateColumns:'120px repeat(8, 1fr)', gap:2}}>
+        <div/>
+        {sectors.map((s, i) => (
+          <div key={i} style={{
+            fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388',
+            letterSpacing:'0.1em', textTransform:'uppercase',
+            transform:'rotate(-30deg)', transformOrigin:'bottom left',
+            height:80, paddingLeft:8, display:'flex', alignItems:'flex-end',
+          }}>{s}</div>
+        ))}
+        {regions.map((r, ri) => (
+          <React.Fragment key={ri}>
+            <div style={{
+              fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#a6acbc',
+              letterSpacing:'0.06em', padding:'14px 8px',
+            }}>{r}</div>
+            {sectors.map((s, si) => {
+              const v = val(si, ri);
+              return (
+                <div key={si} style={{
+                  background:`rgba(74,127,193, ${0.1 + v * 0.8})`,
+                  height:42,
+                  display:'grid', placeItems:'center',
+                  fontFamily:'IBM Plex Mono, monospace', fontSize:10, color: v > 0.5 ? '#f5f5f2' : '#8ab4e8',
+                  transition:'transform 0.2s',
+                  cursor:'pointer',
+                }}>
+                  {Math.round(v * 240)}
+                </div>
+              );
+            })}
+          </React.Fragment>
+        ))}
+      </div>
+      <div style={{
+        marginTop:24, display:'flex', justifyContent:'space-between', fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.08em', textTransform:'uppercase',
+      }}>
+        <span>Deals/30d · closed + priced</span>
+        <span>Source: Trace Signals · ▲ Apr 2026</span>
+      </div>
+    </div>
+  );
+}
+window.TraceGraph = TraceGraph;
+
+
+/* ===== TraceDealbook ===== */
+function TraceDealbook({ treatment = 'terminal' }) {
+  const deals = [
+    { t:'04:17:08', tag:'BUYOUT',    co:'Summit Medical Partners',    sponsor:'Apollo IX',         geo:'US',  size:'$2.80B',  spread:'—',       rec:'4/4', delta:'+12.4%' },
+    { t:'04:16:58', tag:'FUND',      co:'Credit Opportunities V',     sponsor:'Oaktree',           geo:'US',  size:'$18.00B', spread:'—',       rec:'4/4', delta:'target' },
+    { t:'04:16:45', tag:'EXIT',      co:'Argenia Bio',                sponsor:'Silver Point · SP', geo:'US',  size:'—',       spread:'—',       rec:'4/4', delta:'3.1x' },
+    { t:'04:16:31', tag:'CO-INVEST', co:'Nordix Logistics',           sponsor:'KKR · Carlyle',     geo:'EU',  size:'€1.20B',  spread:'SOFR+575',rec:'3/4', delta:'+2.2%' },
+    { t:'04:16:19', tag:'CREDIT',    co:'Larkspur Industries',        sponsor:'HPS',               geo:'US',  size:'$940M',   spread:'SOFR+625',rec:'4/4', delta:'par' },
+    { t:'04:16:02', tag:'CREDIT',    co:'Verimed Systems',            sponsor:'Blue Owl',          geo:'US',  size:'$1.10B',  spread:'SOFR+600',rec:'4/4', delta:'par' },
+    { t:'04:15:42', tag:'SECONDARY', co:'LP-stake · Vista VII',       sponsor:'Ardian',            geo:'EU',  size:'$380M',   spread:'—',       rec:'2/4', delta:'0.92 NAV' },
+    { t:'04:15:18', tag:'MARK',      co:'Stonemark · Vista',          sponsor:'—',                 geo:'US',  size:'—',       spread:'—',       rec:'4/4', delta:'+12.4%' },
+    { t:'04:14:55', tag:'BUYOUT',    co:"Calix Women's Health",       sponsor:'WindRose V',        geo:'US',  size:'$54M',    spread:'—',       rec:'4/4', delta:'+18%' },
+    { t:'04:14:31', tag:'REFI',      co:'Camden Foods',               sponsor:'Golub',             geo:'US',  size:'$620M',   spread:'SOFR+550',rec:'4/4', delta:'-25bps' },
+    { t:'04:14:09', tag:'FUND',      co:'Kingswood Growth IX',        sponsor:'Kingswood',         geo:'US',  size:'$4.2B',   spread:'—',       rec:'3/4', delta:'96% raised' },
+    { t:'04:13:42', tag:'BUYOUT',    co:'Thalen Spine',               sponsor:'Health Evo II',     geo:'US',  size:'$96M',    spread:'—',       rec:'4/4', delta:'+8%' },
+  ];
+  const tagColor = { BUYOUT:'#4a7fc1', FUND:'#c9a961', EXIT:'#b8502a', 'CO-INVEST':'#8ab4e8', CREDIT:'#4a7a5c', SECONDARY:'#a68846', MARK:'#8ab4e8', REFI:'#c9a961' };
+
+  return (
+    <section id="data" style={{background:'#f5f5f2', color:'#0a0d14', padding:'120px 0'}}>
+      <div className="container">
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:40, paddingBottom:18, borderBottom:'1px solid rgba(10,13,20,0.12)'}}>
+          <div>
+            <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#2f5c96', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:16}}>
+              § V &nbsp; Dealbook
+            </div>
+            <h2 style={{fontFamily:'Tiempos, "Instrument Serif", serif', fontSize:'clamp(42px, 5.5vw, 76px)', lineHeight:0.98, letterSpacing:'-0.02em'}}>
+              Every event. <em style={{fontStyle:'italic', color:'#2f5c96'}}>Timestamped.</em>
+            </h2>
+          </div>
+          <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.1em', textTransform:'uppercase'}}>
+            <span style={{color:'#4a7a5c'}}>●</span> streaming · 2,847 today
+          </div>
+        </div>
+
+        <div style={{background:'#0a0d14', color:'#e8ebf2', border:'1px solid rgba(10,13,20,0.2)'}}>
+          <div style={{
+            display:'grid', gridTemplateColumns:'80px 80px 2.1fr 1.6fr 50px 110px 110px 60px 100px',
+            gap:0, padding:'12px 20px',
+            fontFamily:'IBM Plex Mono, monospace', fontSize:10, letterSpacing:'0.12em', textTransform:'uppercase',
+            color:'#6b7388', borderBottom:'1px solid rgba(255,255,255,0.1)', background:'rgba(255,255,255,0.02)',
+          }}>
+            <span>Time</span><span>Type</span><span>Subject</span><span>Counterparty</span><span>Geo</span><span>Size</span><span>Spread</span><span>Rec.</span><span style={{textAlign:'right'}}>Δ</span>
+          </div>
+          {deals.map((d, i) => (
+            <div key={i} style={{
+              display:'grid', gridTemplateColumns:'80px 80px 2.1fr 1.6fr 50px 110px 110px 60px 100px',
+              padding:'11px 20px',
+              fontFamily:'IBM Plex Mono, monospace', fontSize:12,
+              borderBottom: i === deals.length - 1 ? 'none' : '1px solid rgba(255,255,255,0.04)',
+              color:'#a6acbc',
+              background: i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.015)',
+            }}>
+              <span style={{color:'#6b7388'}}>{d.t}</span>
+              <span style={{color: tagColor[d.tag] || '#8ab4e8', letterSpacing:'0.06em'}}>{d.tag}</span>
+              <span style={{fontFamily:'Tiempos, serif', fontSize:14, color:'#f5f5f2'}}>{d.co}</span>
+              <span>{d.sponsor}</span>
+              <span style={{color:'#6b7388'}}>{d.geo}</span>
+              <span style={{color:'#8ab4e8'}}>{d.size}</span>
+              <span style={{color:'#c9a961'}}>{d.spread}</span>
+              <span style={{color: d.rec === '4/4' ? '#4a7a5c' : '#c9a961'}}>{d.rec}</span>
+              <span style={{textAlign:'right', color: d.delta.startsWith('+') ? '#4a7a5c' : '#a6acbc'}}>{d.delta}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+window.TraceDealbook = TraceDealbook;
+
+
+/* ===== TraceIntegrations ===== */
+function TraceIntegrations() {
+  const tools = [
+    { k:'Excel',       tag:'Live-link add-in' },
+    { k:'Snowflake',   tag:'Share database' },
+    { k:'Bloomberg',   tag:'TRACE<GO>' },
+    { k:'Slack',       tag:'Alert channels' },
+    { k:'Python',      tag:'trace-sdk' },
+    { k:'REST · GraphQL', tag:'API' },
+  ];
+  return (
+    <section style={{background:'#f5f5f2', color:'#0a0d14', padding:'96px 0', borderTop:'1px solid rgba(10,13,20,0.1)'}}>
+      <div className="container">
+        <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#2f5c96', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:14}}>§ VI &nbsp; Integrations</div>
+        <h2 style={{fontFamily:'Tiempos, "Instrument Serif", serif', fontSize:'clamp(36px, 4vw, 56px)', marginBottom:36, maxWidth:800}}>
+          Where <em style={{fontStyle:'italic', color:'#2f5c96'}}>you</em> already work.
+        </h2>
+        <div style={{display:'grid', gridTemplateColumns:'repeat(6, 1fr)', gap:0, border:'1px solid rgba(10,13,20,0.12)'}}>
+          {tools.map((t, i) => (
+            <div key={i} style={{padding:'24px 20px', borderRight: i === tools.length - 1 ? 'none' : '1px solid rgba(10,13,20,0.08)', background:'#fff'}}>
+              <div style={{fontFamily:'Tiempos, serif', fontSize:22, marginBottom:6}}>{t.k}</div>
+              <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.08em', textTransform:'uppercase'}}>{t.tag}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+window.TraceIntegrations = TraceIntegrations;
+
+
+/* ===== TraceClients ===== */
+function TraceClients() {
+  const funds = [
+    { n:'Ashworth Partners',  t:'$42B · Credit',   geo:'NY' },
+    { n:'Bellreve Capital',   t:'$118B · Buyout',  geo:'London' },
+    { n:'Caldera Global',     t:'$27B · Multi-strat', geo:'Boston' },
+    { n:'Drayton Sachs',      t:'$9B · Hedge',     geo:'Greenwich' },
+    { n:'Estermere Ptrs',     t:'$61B · Buyout',   geo:'NY' },
+    { n:'Fairvale Credit',    t:'$34B · Direct lending', geo:'Chicago' },
+    { n:'Greymont Capital',   t:'$48B · Opp.',     geo:'SF' },
+    { n:'Hartshorn & Co',     t:'$16B · Family office', geo:'Zurich' },
+    { n:'Inglewood PE',       t:'$73B · Buyout',   geo:'Menlo Park' },
+    { n:'Juniperra Ptrs',     t:'$22B · Mezz',     geo:'NY' },
+    { n:'Kelvedon Credit',    t:'$19B · Special sits', geo:'London' },
+    { n:'Larimar Advisors',   t:'$84B · Multi',    geo:'Stamford' },
+  ];
+  return (
+    <section id="clients" style={{background:'#0a0d14', color:'#e8ebf2', padding:'120px 0', borderTop:'1px solid rgba(255,255,255,0.05)'}}>
+      <div className="container">
+        <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:40, paddingBottom:18, borderBottom:'1px solid rgba(255,255,255,0.1)'}}>
+          <div>
+            <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#4a7fc1', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:14}}>§ VII &nbsp; On Trace</div>
+            <h2 style={{fontFamily:'Tiempos, "Instrument Serif", serif', fontSize:'clamp(42px, 5vw, 72px)', lineHeight:0.98, letterSpacing:'-0.02em'}}>
+              Used by the funds <em style={{fontStyle:'italic', color:'#8ab4e8'}}>you compete with.</em>
+            </h2>
+          </div>
+          <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.1em', textTransform:'uppercase', textAlign:'right'}}>
+            <div>140 institutions · $2.4T AUM</div>
+            <div>Trace since 2019</div>
+          </div>
+        </div>
+        <div style={{display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:0, border:'1px solid rgba(255,255,255,0.08)'}}>
+          {funds.map((f, i) => (
+            <div key={i} style={{
+              padding:'28px 24px',
+              borderRight: (i % 4 !== 3) ? '1px solid rgba(255,255,255,0.06)' : 'none',
+              borderBottom: i < 8 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+            }}>
+              <div style={{fontFamily:'Tiempos, serif', fontSize:22, color:'#f5f5f2'}}>{f.n}</div>
+              <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.08em', textTransform:'uppercase', marginTop:8}}>{f.t} · {f.geo}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{marginTop:16, fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.1em', textTransform:'uppercase'}}>
+          + 128 institutions on request
+        </div>
+      </div>
+    </section>
+  );
+}
+window.TraceClients = TraceClients;
+
+
+/* ===== TraceSecurity ===== */
+function TraceSecurity() {
+  const items = [
+    ['SOC 2 Type II', 'annually audited'],
+    ['ISO 27001',     'information security'],
+    ['SSO · SAML',    'enterprise identity'],
+    ['Data residency','US · EU · APAC'],
+    ['No training',   'your queries are yours'],
+    ['Audit log',     'every query, every export'],
+  ];
+  return (
+    <section id="security" style={{background:'#0a0d14', color:'#e8ebf2', padding:'96px 0', borderTop:'1px solid rgba(255,255,255,0.05)'}}>
+      <div className="container">
+        <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#4a7fc1', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:14}}>§ VIII &nbsp; Security</div>
+        <h2 style={{fontFamily:'Tiempos, "Instrument Serif", serif', fontSize:'clamp(36px, 4vw, 56px)', marginBottom:36, maxWidth:900}}>
+          Built for compliance. <em style={{fontStyle:'italic', color:'#8ab4e8'}}>Not around it.</em>
+        </h2>
+        <div style={{display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:0, border:'1px solid rgba(255,255,255,0.08)'}}>
+          {items.map(([a, b], i) => (
+            <div key={i} style={{
+              padding:'24px 24px',
+              borderRight: (i % 3 !== 2) ? '1px solid rgba(255,255,255,0.06)' : 'none',
+              borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+            }}>
+              <div style={{fontFamily:'Tiempos, serif', fontSize:22}}>{a}</div>
+              <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.08em', textTransform:'uppercase', marginTop:6}}>{b}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+window.TraceSecurity = TraceSecurity;
+
+
+/* ===== TraceOutro ===== */
+function TraceOutro() {
+  return (
+    <>
+      <section style={{background:'#0a0d14', color:'#e8ebf2', padding:'120px 0', borderTop:'1px solid rgba(255,255,255,0.05)', textAlign:'center'}}>
+        <div className="container">
+          <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#4a7fc1', letterSpacing:'0.14em', textTransform:'uppercase', marginBottom:28}}>▲ Institutional access · by invitation</div>
+          <h2 style={{fontFamily:'Tiempos, "Instrument Serif", serif', fontSize:'clamp(60px, 8vw, 128px)', lineHeight:0.95, letterSpacing:'-0.02em', color:'#f5f5f2', maxWidth:1200, margin:'0 auto'}}>
+            The markets, <em style={{fontStyle:'italic', color:'#8ab4e8'}}>in full view.</em>
+          </h2>
+          <div style={{display:'flex', gap:12, justifyContent:'center', marginTop:44}}>
+            <a style={{padding:'16px 28px', background:'#4a7fc1', color:'#f5f5f2', fontFamily:'IBM Plex Mono, monospace', fontSize:12, letterSpacing:'0.1em', textTransform:'uppercase'}}>Request a demo →</a>
+            <a style={{padding:'16px 28px', border:'1px solid rgba(255,255,255,0.2)', color:'#e8ebf2', fontFamily:'IBM Plex Mono, monospace', fontSize:12, letterSpacing:'0.1em', textTransform:'uppercase'}}>Read methodology</a>
+          </div>
+        </div>
+      </section>
+
+      <footer style={{background:'#000', color:'#a6acbc', padding:'48px 0 28px', borderTop:'1px solid rgba(255,255,255,0.06)'}}>
+        <div className="container" style={{display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:20}}>
+          <div style={{display:'flex', alignItems:'center', gap:14}}>
+            <Wordmark size={20} tone="paper"/>
+            <span style={{color:'rgba(255,255,255,0.25)', fontSize:18, fontFamily:'Tiempos, serif'}}>/</span>
+            <span style={{fontFamily:'IBM Plex Mono, monospace', fontSize:11, color:'#4a7fc1', letterSpacing:'0.12em'}}>▲ TRACE</span>
+          </div>
+          <div style={{display:'flex', gap:24, fontSize:11, fontFamily:'IBM Plex Mono, monospace', letterSpacing:'0.08em', textTransform:'uppercase', color:'#6b7388'}}>
+            <a href="Semperr.html">← Semperr</a>
+            <a>Clad</a>
+            <a href="Dev.html">Dev</a>
+            <a>Careers</a>
+            <a>Legal</a>
+          </div>
+          <div style={{fontFamily:'IBM Plex Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.1em'}}>
+            © 2026 Semperr Labs · ▲ Semper verax
+          </div>
+        </div>
+      </footer>
+    </>
+  );
+}
+window.TraceOutro = TraceOutro;
+
+
+/* ===== App ===== */
+function App() {
+  return (
+    <div data-screen-label="Trace Landing" style={{background:'#0a0d14', color:'#e8ebf2', minHeight:'100vh'}}>
+      <TraceMasthead/>
+      <TraceHero variant="ticker"/>
+      <TraceCoverage/>
+      <TraceQuery/>
+      <TraceReconciliation/>
+      <TraceGraph mode="graph"/>
+      <TraceDealbook treatment="terminal"/>
+      <TraceIntegrations/>
+      <TraceClients/>
+      <TraceSecurity/>
+      <TraceOutro/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Treat data as a witness — The Charter</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="../styles.css"/>
+<link rel="stylesheet" href="../blog.css"/>
+</head>
+<body class="blog-body">
+
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="../charter.html" class="blog-header-back">← The Charter</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="../charter.html#posts">Archive</a>
+      <a href="../charter.html#subscribe">Subscribe</a>
+      <a href="../Semperr.html">Semperr</a>
+    </nav>
+  </div>
+</header>
+
+<article class="post-article">
+  <div class="container">
+    <div class="post-meta-row" style="justify-content:center;">
+      <span class="cat">Trace</span>
+      <span class="dot"></span>
+      <span>18 March 2026</span>
+      <span class="dot"></span>
+      <span>10 min read</span>
+      <span class="dot"></span>
+      <span>Method</span>
+      <span class="dot"></span>
+      <span style="color:var(--gold-deep);"><span class="reads-dot"></span>5,743 reads</span>
+    </div>
+    <h1 class="post-title" style="text-align:center;">
+      Treat data as a <em>witness</em>.
+    </h1>
+    <p class="post-deck" style="text-align:center;">
+      Every figure traceable to its source. Every source dated. Every derivation recoverable.
+      A working philosophy from the Trace team.
+    </p>
+
+    <div class="post-byline-row">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="avatar gold">A</div>
+        <div>
+          <div class="byline-name">Anya Reyes</div>
+          <div class="byline-role">Head of Trace · Austin</div>
+        </div>
+      </div>
+      <div class="post-share">
+        <a href="#">Copy link</a>
+        <a href="#">Email</a>
+        <a href="#">Print</a>
+      </div>
+    </div>
+
+    <div class="post-body">
+      <p class="lede">A partner at a mid-sized fund called me last spring. He had been staring at
+        a figure in a Trace report for twenty minutes, trying to reconcile it against memory.
+        The figure was right; his memory was wrong. But he could not prove it, because the
+        report did not show him where the number came from. That conversation changed how we
+        ship.</p>
+
+      <p>The Trace team now builds to a single rule, applied without exception: every figure
+        we show is traceable to its source. Every source is dated. Every derivation is
+        recoverable. When a client asks where a number came from, the answer is a link, a
+        timestamp, and a name — not a shrug, not a re-computation, and not a conversation
+        that requires two analysts and a spreadsheet.</p>
+
+      <h2>What "a witness" means</h2>
+
+      <p>In a courtroom, a witness does not assert something and ask to be trusted. A witness
+        identifies themselves, describes where they were, and tells you what they saw. If the
+        account needs to be verified, there is a clear path to verification. Data, in our
+        view, should behave the same way.</p>
+
+      <p>A Trace figure is attached to its source record, the timestamp at which that record
+        was ingested, the pipeline version that processed it, and the analyst who approved
+        the method. Any figure can be expanded into its provenance, in the tool itself, in
+        two clicks. The client does not have to email us to find out where a number came
+        from. The number tells them.</p>
+
+      <div class="pullquote">
+        A figure that cannot be audited is a rumour in a good font. A firm that ships rumours
+        is eventually found out.
+      </div>
+
+      <h2>What we do not do</h2>
+
+      <p>We do not synthesize. When a data point is missing, the report says it is missing. We
+        do not interpolate, smooth, or round to flatter a narrative the client seems to want.
+        If the underlying series has a gap, the chart has a gap. The client can decide how to
+        treat it; we will not decide for them.</p>
+
+      <p>We do not quietly correct the historical record. When we discover that a past figure
+        was wrong — it happens, it will happen again — we publish the correction, dated, with
+        a note. Clients who cite the old figure should know they were citing something we no
+        longer stand behind. They get an email from a person, not a silent overwrite in the
+        database.</p>
+
+      <h3>Seven years, minimum</h3>
+
+      <p>We retain every source file, every pipeline version, and every report output for at
+        least seven years. This is longer than any of our clients have contracted us for, and
+        deliberately so. If a client needs to reconstruct a decision they made three years
+        ago, the materials are there, in the state they were in when the decision was made.</p>
+
+      <p>Seven years is not a number we picked because it sounded defensible. It is the
+        horizon over which most of our clients' decisions are evaluated — by their investors,
+        by their boards, by their own second-guessing. It is also the horizon at which
+        memory stops being reliable, even for the people who were in the room. A traceable
+        archive is, in effect, a second memory, and it does not embellish.</p>
+
+      <div class="post-divider">⁂ ⁂ ⁂</div>
+
+      <h2>An inconvenient standard</h2>
+
+      <p>This standard is inconvenient. It is more expensive to build against, it is slower
+        to ship, and it requires a culture of admitting error that not every firm can sustain.
+        It also produces a product that, in the long run, is the only kind of data product
+        worth paying for: one that can be cited, defended, and built upon.</p>
+
+      <p>Our clients price deals on the figures we show them. They argue cases. They take
+        positions. They deserve to know that when they say, out loud, "according to Trace,"
+        the next question — "and where does Trace get that?" — has a real answer.</p>
+
+      <p style="color:var(--gold-deep); font-style:italic; margin-top:2em;">— Anya</p>
+    </div>
+
+    <div class="post-foot">
+      <div class="post-foot-tags">
+        <span class="tag gold">Trace</span>
+        <span class="tag">Method</span>
+        <span class="tag">Data</span>
+      </div>
+      <div class="post-foot-author">
+        <div class="avatar gold">A</div>
+        <div class="post-foot-author-body">
+          <div class="post-foot-author-name">Anya Reyes</div>
+          <div class="post-foot-author-role">Head of Trace · Austin</div>
+          <p class="post-foot-author-bio">
+            Anya leads Trace, Semperr's data product for private-equity firms. She writes
+            about provenance, reproducibility, and the working discipline of analytical work.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<section class="related">
+  <div class="container">
+    <div class="related-label">Continue reading</div>
+    <div class="related-grid">
+      <a href="models-assist.html" class="related-card">
+        <div class="related-card-meta"><span class="cat">Dev</span> · 26 March · <span style="color:var(--gold-deep);">12,086 reads</span></div>
+        <div class="related-card-title">Models assist. People decide.</div>
+        <p class="related-card-excerpt">Where machine learning earns its keep, and where it doesn't.</p>
+      </a>
+      <a href="the-detail-is-the-work.html" class="related-card">
+        <div class="related-card-meta"><span class="cat">Clad</span> · 04 March · <span style="color:var(--gold-deep);">7,281 reads</span></div>
+        <div class="related-card-title">The detail is the work.</div>
+        <p class="related-card-excerpt">Why we consider none of the small things cosmetic.</p>
+      </a>
+      <a href="serve-the-serious.html" class="related-card">
+        <div class="related-card-meta"><span class="cat">The House</span> · 02 April · <span style="color:var(--gold-deep);">9,340 reads</span></div>
+        <div class="related-card-title">On clients who cannot afford to guess.</div>
+        <p class="related-card-excerpt">Who we actually build for, and why.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>

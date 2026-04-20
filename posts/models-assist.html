@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Models assist. People decide. — The Charter</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="../styles.css"/>
+<link rel="stylesheet" href="../blog.css"/>
+</head>
+<body class="blog-body">
+
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="../charter.html" class="blog-header-back">← The Charter</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="../charter.html#posts">Archive</a>
+      <a href="../charter.html#subscribe">Subscribe</a>
+      <a href="../Semperr.html">Semperr</a>
+    </nav>
+  </div>
+</header>
+
+<article class="post-article">
+  <div class="container">
+    <div class="post-meta-row" style="justify-content:center;">
+      <span class="cat">Dev</span>
+      <span class="dot"></span>
+      <span>26 March 2026</span>
+      <span class="dot"></span>
+      <span>9 min read</span>
+      <span class="dot"></span>
+      <span>Policy</span>
+      <span class="dot"></span>
+      <span style="color:var(--gold-deep);"><span class="reads-dot"></span>12,086 reads</span>
+    </div>
+    <h1 class="post-title" style="text-align:center;">
+      Models assist. <em>People</em> decide.
+    </h1>
+    <p class="post-deck" style="text-align:center;">
+      Our position on machine learning in client deliverables — where it earns its keep,
+      where it doesn't, and why every output at Semperr carries a human signature.
+    </p>
+
+    <div class="post-byline-row">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="avatar rust">M</div>
+        <div>
+          <div class="byline-name">Marco Adair</div>
+          <div class="byline-role">Head of Dev · Cork</div>
+        </div>
+      </div>
+      <div class="post-share">
+        <a href="#">Copy link</a>
+        <a href="#">Email</a>
+        <a href="#">Print</a>
+      </div>
+    </div>
+
+    <div class="post-body">
+      <p class="lede">We use machine learning at Semperr. We have used it quietly for years, in the
+        corners of our products where it measurably improves the work and where the cost of
+        being wrong is borne by us, not by a client. Where those conditions do not hold, we
+        do not use it. The distinction is worth spelling out, because our clients increasingly
+        ask.</p>
+
+      <p>The short version: models assist; people decide. No model writes a client memo
+        without a human name attached. No model files on our behalf. No model is permitted to
+        be the last pair of eyes on anything that leaves the firm.</p>
+
+      <h2>Where the models earn their keep</h2>
+
+      <p>Summarization, search, classification, and first-pass document review. These are the
+        tasks at which the current generation of models is genuinely good — not because the
+        models are perfect, but because the downstream human can verify the work in less time
+        than doing it from scratch. The math works out. The client gets the same deliverable
+        faster, and the human who signs it still signs it.</p>
+
+      <p>We also use models to surface anomalies. A Trace pipeline runs a statistical check
+        against a client's historical data and flags rows that look unusual. A human analyst
+        decides whether the flag is real. The model narrows the haystack. The human finds the
+        needle.</p>
+
+      <div class="pullquote">
+        The useful question about any tool is not whether it is impressive. It is who bears the
+        cost when it is wrong.
+      </div>
+
+      <h2>Where we do not use them</h2>
+
+      <p>We do not use models to generate the final text of a client deliverable. A memo, a
+        brief, an investment note, a legal summary — these leave the firm under a human name,
+        and they were written by that human. If a model drafted a version that helped the
+        human think, the draft is not the deliverable.</p>
+
+      <p>We do not use models to price a deal, render a figure for a report, or decide a
+        citation. The cost of being wrong in those settings is high, the ambiguity is real,
+        and the appropriate accountability structure is a person, not a probability
+        distribution.</p>
+
+      <p>And we do not use models we cannot explain. A black-box recommender embedded in a
+        client-facing tool is a liability our clients did not agree to take on. If we cannot,
+        in a meeting, describe how the thing works and why we trust it, we do not ship it.</p>
+
+      <h3>Disclosure, in plain terms</h3>
+
+      <p>We tell clients where we use automation. Not in a terms-of-service footnote — in the
+        deliverable itself, where it matters. If a Clad report used a model to pre-classify
+        documents before a human reviewed them, the report says so. If a Trace flag came from
+        a statistical anomaly detector rather than a human analyst, the flag says so.</p>
+
+      <p>We keep a copy of every model output we shipped or nearly shipped. If the tooling
+        changes in a way that matters, we tell the clients it affects, and we tell them
+        before the next deliverable, not after.</p>
+
+      <div class="post-divider">⁂ ⁂ ⁂</div>
+
+      <h2>A note on the next few years</h2>
+
+      <p>Some of what we do today, we will automate tomorrow. Some of what we think of as
+        requiring a human will, on closer inspection, turn out not to. We will move the line.
+        We intend to move it slowly, publicly, and with the clients it affects in the room.</p>
+
+      <p>What will not move is the rule that every output leaving the firm carries a human
+        signature. That is not a technical claim about what models can do. It is a claim
+        about accountability, and about what a firm owes the people who rely on it. At
+        Semperr, both claims resolve the same way: to a person, with a name, who picked up
+        the phone.</p>
+
+      <p style="color:var(--rust); font-style:italic; margin-top:2em;">— Marco</p>
+    </div>
+
+    <div class="post-foot">
+      <div class="post-foot-tags">
+        <span class="tag rust">Dev</span>
+        <span class="tag">Policy</span>
+        <span class="tag">AI</span>
+      </div>
+      <div class="post-foot-author">
+        <div class="avatar rust">M</div>
+        <div class="post-foot-author-body">
+          <div class="post-foot-author-name">Marco Adair</div>
+          <div class="post-foot-author-role">Head of Dev · Cork</div>
+          <p class="post-foot-author-bio">
+            Marco leads Dev, Semperr's technical-services arm. He writes mostly about
+            engineering practice and the quiet, unglamorous work of keeping things correct.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<section class="related">
+  <div class="container">
+    <div class="related-label">Continue reading</div>
+    <div class="related-grid">
+      <a href="build-things-that-work.html" class="related-card">
+        <div class="related-card-meta"><span class="cat">Craft</span> · 09 April · <span style="color:var(--gold-deep);">6,127 reads</span></div>
+        <div class="related-card-title">Build things that work the first time.</div>
+        <p class="related-card-excerpt">Correctness is the floor. Why we prefer boring technology.</p>
+      </a>
+      <a href="treat-data-as-a-witness.html" class="related-card">
+        <div class="related-card-meta"><span class="cat">Trace</span> · 18 March · <span style="color:var(--gold-deep);">5,743 reads</span></div>
+        <div class="related-card-title">Treat data as a witness.</div>
+        <p class="related-card-excerpt">Every figure traceable. Every source dated.</p>
+      </a>
+      <a href="five-years-in.html" class="related-card">
+        <div class="related-card-meta"><span class="cat">The House</span> · 14 April · <span style="color:var(--gold-deep);">8,420 reads</span></div>
+        <div class="related-card-title">Five years in, and the same answer.</div>
+        <p class="related-card-excerpt">On discipline, size, and the cost of remaining small.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>

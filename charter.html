@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>The Charterr — A publication from Semperr</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+</head>
+<body class="blog-body">
+
+<!-- Header -->
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="Semperr.html" class="blog-header-back">← Semperr</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="#posts">Archive</a>
+      <a href="#subscribe">Subscribe</a>
+      <a href="mailto:editor@semperr.co">Write to us</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Publication masthead -->
+<section class="pub-mast">
+  <div class="container">
+    <div class="pub-mast-slug">
+      <span>Vol. V · No. 11</span>
+      <span>A publication from Semperr</span>
+      <span>April · MMXXVI</span>
+    </div>
+    <h1 class="pub-mast-title">The <em>Charterr</em>.</h1>
+    <p class="pub-mast-deck">
+      Dispatches on software, data, and the people who rely on both.
+      Written by the partners and staff of Semperr, with occasional guests from the field.
+      Published on no particular schedule.
+    </p>
+  </div>
+</section>
+
+<!-- Filter bar -->
+<section class="container">
+  <div class="filter-bar">
+    <div class="filter-chips">
+      <button class="chip active" data-filter="all">All dispatches</button>
+      <button class="chip" data-filter="house">The House</button>
+      <button class="chip" data-filter="trace">Trace</button>
+      <button class="chip" data-filter="clad">Clad</button>
+      <button class="chip" data-filter="dev">Dev</button>
+      <button class="chip" data-filter="craft">Craft</button>
+    </div>
+    <div class="filter-count"><span id="count">6</span> &nbsp;·&nbsp; All time</div>
+  </div>
+</section>
+
+<!-- Featured -->
+<section class="featured">
+  <div class="container">
+    <div class="featured-eyebrow">❖ &nbsp; This issue — Featured</div>
+    <div class="featured-grid">
+      <div>
+        <div class="featured-meta">
+          <span class="cat">The House</span>
+          <span class="dot"></span>
+          <span>14 April 2026</span>
+          <span class="dot"></span>
+          <span>11 min read</span>
+          <span class="dot"></span>
+          <span style="color:var(--gold-deep);"><span class="reads-dot"></span>8,420 reads</span>
+        </div>
+        <a href="posts/five-years-in.html" class="featured-title">
+          Five years in, and the <em>same</em> answer to the same question.
+        </a>
+        <p class="featured-excerpt">
+          When we started Semperr, a friend asked what would keep us from turning into every other
+          software firm. Half a decade later, the answer has not changed — and, more importantly,
+          neither has the practice of it. A note on discipline, size, and the cost of remaining small.
+        </p>
+        <div class="featured-byline">
+          <div class="avatar gold">E</div>
+          <div>
+            <div class="byline-name">Eleanor Voss</div>
+            <div class="byline-role">Partner · New York</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="featured-side">
+        <div class="featured-side-label">Also this week</div>
+
+        <a href="posts/build-things-that-work.html" class="side-item">
+          <div class="side-item-meta"><span class="cat">Craft</span> · 09 April · <span style="color:var(--gold-deep);">6,127 reads</span></div>
+          <div class="side-item-title">Build things that work the first time.</div>
+        </a>
+
+        <a href="posts/serve-the-serious.html" class="side-item">
+          <div class="side-item-meta"><span class="cat">The House</span> · 02 April · <span style="color:var(--gold-deep);">9,340 reads</span></div>
+          <div class="side-item-title">On clients who cannot afford to guess.</div>
+        </a>
+
+        <a href="posts/models-assist.html" class="side-item">
+          <div class="side-item-meta"><span class="cat">Dev</span> · 26 March · <span style="color:var(--gold-deep);">12,086 reads</span></div>
+          <div class="side-item-title">Models assist. People decide.</div>
+        </a>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Post list -->
+<section class="post-list" id="posts">
+  <div class="container">
+    <div class="post-list-label">The archive</div>
+
+    <a href="posts/five-years-in.html" class="post-row" data-tags="house">
+      <div>
+        <div class="post-row-date">14 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>8,420 reads</div>
+      </div>
+      <div>
+        <div class="post-row-title">Five years in, and the <em>same</em> answer to the same question.</div>
+        <p class="post-row-excerpt">
+          Half a decade of building software for people who notice. A note on discipline,
+          size, and why we still answer the phone.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">The House</span>
+          <span class="tag">Essay</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/build-things-that-work.html" class="post-row" data-tags="craft">
+      <div>
+        <div class="post-row-date">09 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>6,127 reads</div>
+      </div>
+      <div>
+        <div class="post-row-title">Build things that work the <em>first</em> time.</div>
+        <p class="post-row-excerpt">
+          Correctness is the floor, not the ceiling. Why we prefer boring technology, small
+          tools, and the extra afternoon.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag rust">Craft</span>
+          <span class="tag">Engineering</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar rust">M</div>
+        <div>
+          <div class="byline-name">Marco Adair</div>
+          <div class="byline-role">Head of Dev</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/serve-the-serious.html" class="post-row" data-tags="house">
+      <div>
+        <div class="post-row-date">02 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>9,340 reads</div>
+      </div>
+      <div>
+        <div class="post-row-title">On clients who cannot afford to <em>guess</em>.</div>
+        <p class="post-row-excerpt">
+          PE analysts pricing on Friday evening, law-firm partners filing Monday, and the
+          shop that opens before the first train. Who we actually build for, and why.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">The House</span>
+          <span class="tag">Letter</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar">H</div>
+        <div>
+          <div class="byline-name">Henry Okafor</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/models-assist.html" class="post-row" data-tags="dev">
+      <div>
+        <div class="post-row-date">26 · III · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>12,086 reads</div>
+      </div>
+      <div>
+        <div class="post-row-title">Models assist. <em>People</em> decide.</div>
+        <p class="post-row-excerpt">
+          Our position on machine learning in client deliverables — where it earns its keep,
+          where it doesn't, and why every output carries a human signature.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag rust">Dev</span>
+          <span class="tag">Policy</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar rust">M</div>
+        <div>
+          <div class="byline-name">Marco Adair</div>
+          <div class="byline-role">Head of Dev</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/treat-data-as-a-witness.html" class="post-row" data-tags="trace">
+      <div>
+        <div class="post-row-date">18 · III · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>5,743 reads</div>
+      </div>
+      <div>
+        <div class="post-row-title">Treat data as a <em>witness</em>.</div>
+        <p class="post-row-excerpt">
+          Every figure traceable to its source. Every source dated. Every derivation recoverable.
+          A working philosophy from the Trace team.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Trace</span>
+          <span class="tag">Method</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">A</div>
+        <div>
+          <div class="byline-name">Anya Reyes</div>
+          <div class="byline-role">Head of Trace</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/the-detail-is-the-work.html" class="post-row" data-tags="craft clad">
+      <div>
+        <div class="post-row-date">04 · III · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>7,281 reads</div>
+      </div>
+      <div>
+        <div class="post-row-title">The <em>detail</em> is the work.</div>
+        <p class="post-row-excerpt">
+          The column alignment, the time-zone conversion, the font that renders on a partner's
+          old monitor. Why we consider none of it cosmetic.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag steel">Clad</span>
+          <span class="tag rust">Craft</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar steel">J</div>
+        <div>
+          <div class="byline-name">Jules Hartwell</div>
+          <div class="byline-role">Design Lead</div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- Subscribe -->
+<section class="subscribe" id="subscribe">
+  <div class="grain"></div>
+  <div class="container">
+    <div class="subscribe-inner">
+      <div>
+        <div class="h-eyebrow" style="color:var(--gold); margin-bottom:20px;">❖ &nbsp; The Charter, by post</div>
+        <h2 class="subscribe-title">
+          Read it in your <em>inbox</em>,<br/>
+          when there is something worth reading.
+        </h2>
+        <p class="subscribe-deck">
+          One dispatch at a time, on no particular schedule. No tracking pixels, no drip campaigns,
+          no re-marketing. Unsubscribe from the email itself.
+        </p>
+        <form class="subscribe-form" onsubmit="event.preventDefault(); this.querySelector('button').textContent='✓ Received';">
+          <input type="email" placeholder="your.name@firm.com" class="subscribe-input" required/>
+          <button type="submit" class="subscribe-btn">Subscribe ↗</button>
+        </form>
+        <div class="subscribe-note">Typically sent once or twice a month · Plain text · No spam</div>
+      </div>
+      <div class="subscribe-stats">
+        <div>
+          <div class="stat-n">6</div>
+          <div class="stat-l">Dispatches this year</div>
+        </div>
+        <div>
+          <div class="stat-n">4,812</div>
+          <div class="stat-l">Readers on the list</div>
+        </div>
+        <div>
+          <div class="stat-n">MMXXI</div>
+          <div class="stat-l">Founded</div>
+        </div>
+        <div>
+          <div class="stat-n">0</div>
+          <div class="stat-l">Outside investors</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+<script>
+  // Filter chips
+  const chips = document.querySelectorAll('.chip');
+  const rows = document.querySelectorAll('.post-row');
+  const countEl = document.getElementById('count');
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const filter = chip.dataset.filter;
+      let visible = 0;
+      rows.forEach(row => {
+        const tags = (row.dataset.tags || '').split(' ');
+        const show = filter === 'all' || tags.includes(filter);
+        row.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      countEl.textContent = visible;
+    });
+  });
+</script>
+
+</body>
+</html>
