@@ -110,46 +110,48 @@ vercel --prod
 First deploy takes ~90s (cold-builds the wheel for `psycopg[binary]`,
 `argon2-cffi`, etc.). Subsequent deploys reuse the build cache.
 
-## 5. Custom domain (`app.semperr.com`)
+## 5. Custom domain (`trace.semperr.com`)
 
 Two Vercel projects, two hostnames off the same root domain:
 
 | Vercel project | Hostname | What it serves |
 |---|---|---|
 | `semperr` (marketing) | `semperr.com`, `www.semperr.com` | Static site |
-| `trace` (this project) | `app.semperr.com` | Trace FastAPI app |
+| `trace` (this project) | `trace.semperr.com` | Trace FastAPI app |
 
 Steps:
 
 1. Vercel → **semperr** project → **Settings → Domains** → add
    `semperr.com` + `www.semperr.com`. Vercel shows the DNS records to add.
 2. Vercel → **trace** project → **Settings → Domains** → add
-   `app.semperr.com`.
+   `trace.semperr.com`.
 3. At your domain registrar's DNS panel, add the records Vercel shows:
    - Apex `semperr.com` → **A** record → `76.76.21.21`
    - `www` → **CNAME** → `cname.vercel-dns.com`
-   - `app` → **CNAME** → `cname.vercel-dns.com`
+   - `trace` → **CNAME** → `cname.vercel-dns.com`
 4. Wait ~5 min for DNS propagation. Vercel auto-provisions SSL certificates
    once each record resolves (Let's Encrypt, renewed automatically).
 5. The marketing site's sign-in links already point at
-   `https://app.semperr.com/trace/login` — no further code change needed
+   `https://trace.semperr.com/login` — no further code change needed
    once DNS is live. The Trace dashboard footer has a back-link to
-   `https://semperr.com`.
+   `https://semperr.com`. The subdomain identifies the product, so routes
+   inside the app are un-prefixed: `/login`, `/register`, `/dashboard`,
+   `/strategies/*`, `/runs/*`, `/companies/*`. The JSON API is under `/api/*`.
 
 ## 6. Smoke test
 
 ```bash
 # Once DNS is live:
-export BASE=https://app.semperr.com
+export BASE=https://trace.semperr.com
 
 # Or on the raw Vercel hostname while DNS propagates:
 # export BASE=https://<trace-project>.vercel.app
 
 # 1. Dashboard loads and redirects to login.
-curl -sI "$BASE/trace/dashboard" | head -1    # 302 to /trace/login
+curl -sI "$BASE/dashboard" | head -1    # 302 to /login
 
 # 2. Register (via the dashboard in a browser — easier, handles CSRF).
-open "$BASE/trace/register"
+open "$BASE/register"
 # Enter email, password, and your INVITE_CODE.
 
 # 3. Create a strategy, add signals (e.g. covenant_breach w=2, missed_payment w=1.5),
@@ -175,7 +177,7 @@ When you outgrow 60s (e.g. 8+ signals × 3 docs × LLM extraction > budget):
 2. **Queue-based pipeline** — introduce Upstash QStash (or Inngest):
    `/search` enqueues a job and returns `run_id` immediately; a separate
    `/api/worker` route receives the webhook and runs the pipeline. The
-   dashboard already polls `/trace/runs/{id}/status` — that poller will
+   dashboard already polls `/runs/{id}/status` — that poller will
    continue to work unchanged. This is the V2 upgrade path.
 
 ## Security reminders (unchanged from local)
@@ -198,5 +200,5 @@ interferes with it:
 cp .env.example .env && $EDITOR .env
 docker compose up -d --build
 docker compose exec api alembic upgrade head
-open http://localhost:8000/trace/register
+open http://localhost:8000/register
 ```

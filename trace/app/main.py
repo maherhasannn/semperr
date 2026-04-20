@@ -95,12 +95,12 @@ class CSRFMiddleware(BaseHTTPMiddleware):
         if cookie_token and (csrf_equal(cookie_token, header_token) or csrf_equal(cookie_token, form_token)):
             return await call_next(request)
 
-        # For first-time register/login POST, accept when path is /auth/login,/auth/register or
-        # /trace/login,/trace/register AND cookie_token matches submitted token.
+        # For first-time register/login POST, accept when path is one of the auth bootstrap
+        # endpoints AND cookie_token matches submitted token.
         path = request.url.path
         allow_bootstrap = path in {
-            "/auth/login", "/auth/register",
-            "/trace/login", "/trace/register",
+            "/api/auth/login", "/api/auth/register",
+            "/login", "/register",
         }
         if allow_bootstrap and cookie_token and (csrf_equal(cookie_token, form_token) or csrf_equal(cookie_token, header_token)):
             return await call_next(request)
@@ -140,9 +140,15 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 # ---- Ensure CSRF cookie is present on GET to auth pages ----
 
 class CSRFBootstrapMiddleware(BaseHTTPMiddleware):
+    # Paths that need a CSRF cookie seeded on GET (dashboard HTML pages).
+    _SEED_PREFIXES = ("/login", "/register", "/dashboard", "/strategies",
+                      "/runs", "/companies")
+
     async def dispatch(self, request: Request, call_next):
         response: Response = await call_next(request)
-        if request.method == "GET" and request.url.path.startswith("/trace"):
+        p = request.url.path
+        if request.method == "GET" and (p in {"/login", "/register"} or
+                                         any(p.startswith(pref) for pref in self._SEED_PREFIXES)):
             from app.security import new_csrf_token
 
             if not request.cookies.get(CSRF_COOKIE):
@@ -172,30 +178,30 @@ def create_app() -> FastAPI:
     static_dir = Path(__file__).parent / "dashboard" / "static"
     app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
-    # API
-    app.include_router(auth_api.router)
-    app.include_router(strategies_api.router)
-    app.include_router(runs_api.router)
-    app.include_router(analyze_api.router)
+    # API (JSON) — prefixed with /api so it doesn't shadow dashboard HTML routes.
+    app.include_router(auth_api.router, prefix="/api")
+    app.include_router(strategies_api.router, prefix="/api")
+    app.include_router(runs_api.router, prefix="/api")
+    app.include_router(analyze_api.router, prefix="/api")
 
     # Dashboard
     app.include_router(dashboard_routes.router)
 
     @app.get("/", include_in_schema=False)
     def index():
-        return RedirectResponse("/trace/dashboard", status_code=302)
+        return RedirectResponse("/dashboard", status_code=302)
 
     @app.get("/health", include_in_schema=False)
     def health():
         return {"status": "ok"}
 
     # Dashboard auth gate: redirect to login when no session
+    _GATED_PREFIXES = ("/dashboard", "/strategies", "/runs", "/companies")
+
     @app.middleware("http")
     async def _dashboard_auth_gate(request: Request, call_next):
         path = request.url.path
-        if path.startswith("/trace") and not path.startswith(
-            ("/trace/login", "/trace/register", "/trace/logout")
-        ):
+        if any(path.startswith(pref) for pref in _GATED_PREFIXES):
             # let the route dependencies handle it, BUT we want HTML 302 instead of 401
             # We duplicate the session check cheaply.
             from app.security import verify_session_token
@@ -203,7 +209,7 @@ def create_app() -> FastAPI:
             token = request.cookies.get("trace_session")
             uid = verify_session_token(token) if token else None
             if uid is None:
-                return RedirectResponse("/trace/login", status_code=302)
+                return RedirectResponse("/login", status_code=302)
         response = await call_next(request)
         return response
 
@@ -215,10 +221,10 @@ def create_app() -> FastAPI:
     @app.middleware("http")
     async def _rl(request: Request, call_next):
         p = request.url.path
-        if p.startswith("/auth/") or p.startswith("/trace/login") or p.startswith("/trace/register"):
+        if (p.startswith("/api/auth/") or p in {"/login", "/register"}):
             if request.method == "POST" and _rate_limited(request, "auth", max_per_min=5):
                 return JSONResponse({"detail": "rate limit"}, status_code=429)
-        elif p == "/search" and request.method == "POST":
+        elif p == "/api/search" and request.method == "POST":
             if _rate_limited(request, "search", max_per_min=10):
                 return JSONResponse({"detail": "rate limit"}, status_code=429)
         return await call_next(request)

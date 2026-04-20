@@ -20,8 +20,8 @@ docker compose up -d --build
 docker compose exec api alembic upgrade head
 ```
 
-Open <http://localhost:8000/trace/register>, register with your `INVITE_CODE`,
-then you'll be signed in and routed to `/trace/dashboard`.
+Open <http://localhost:8000/register>, register with your `INVITE_CODE`,
+then you'll be signed in and routed to `/dashboard`.
 
 ### Offline / tests only
 
@@ -35,13 +35,17 @@ The test suite mocks Gemini and Exa — no network calls, no real keys required.
 
 ## API surface (JSON)
 
-- `POST /auth/register` — invite-gated
-- `POST /auth/login`, `POST /auth/logout`
-- `GET/POST /strategies`, `GET/PATCH/DELETE /strategies/{id}`
-- `POST /strategies/{id}/suggest-signals` — Gemini-assisted
-- `POST /search` `{strategy_id, query?}` → `{run_id}`
-- `GET /runs`, `GET /runs/{id}`
-- `POST /analyze` — ad-hoc structured intelligence from raw Exa payload
+All JSON API routes are mounted under `/api` so they don't collide with the
+HTML dashboard routes at the root. The dashboard HTML pages live at `/login`,
+`/register`, `/dashboard`, `/strategies/*`, `/runs/*`, `/companies/*`.
+
+- `POST /api/auth/register` — invite-gated
+- `POST /api/auth/login`, `POST /api/auth/logout`
+- `GET/POST /api/strategies`, `GET/PATCH/DELETE /api/strategies/{id}`
+- `POST /api/strategies/{id}/suggest-signals` — Gemini-assisted
+- `POST /api/search` `{strategy_id, query?}` → `{run_id}`
+- `GET /api/runs`, `GET /api/runs/{id}`
+- `POST /api/analyze` — ad-hoc structured intelligence from raw Exa payload
 
 ## Pipeline
 
@@ -78,8 +82,8 @@ for that run before writing.
   prompt. All LLM responses are parsed as JSON and validated against a Pydantic
   schema before any persistence or render. Free-form model text is never
   executed or rendered unescaped (Jinja autoescape on everywhere).
-- **Rate limiting**: in-process sliding-window — 5/min on `/auth/*` and
-  `/trace/login|register` POSTs, 10/min on `/search`. Single-host by design
+- **Rate limiting**: in-process sliding-window — 5/min on `/api/auth/*` and
+  `/login|/register` POSTs, 10/min on `/api/search`. Single-host by design
   for V1; swap to Redis-backed if horizontally scaled.
 - **CORS**: disabled. Dashboard and API share origin.
 - **Security headers**: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`,
@@ -110,14 +114,14 @@ repos:
 2. `docker compose -f trace/docker-compose.yml up -d --build` → both healthy.
 3. `docker compose exec api alembic upgrade head` → schema created.
 4. `pytest trace/tests -q` → all green (no network).
-5. Register at `/trace/register` with your invite code → dashboard.
+5. Register at `/register` with your invite code → dashboard.
 6. Create a strategy, add signals (or click "Suggest signals"), save.
 7. Click "Run search" → run detail with ranked companies, math, analyst memos.
 8. Re-run → delta chips show on changed scores.
-9. Ad-hoc: `curl -X POST http://localhost:8000/analyze -H 'Content-Type: application/json'
+9. Ad-hoc: `curl -X POST http://localhost:8000/api/analyze -H 'Content-Type: application/json'
    --cookie "trace_session=...; trace_csrf=..." -H "X-CSRF-Token: ..."
    -d @payload.json`.
-10. Security smoke: `/trace/dashboard` without session → 302; 6th rapid
+10. Security smoke: `/dashboard` without session → 302; 6th rapid
     login attempt → 429; `git check-ignore trace/.env` → confirms ignored.
 
 ## Out of scope (V2)

@@ -25,7 +25,7 @@
           <td>{{ x.run.status.value }}</td>
           <td>{{ x.top.company if x.top else "—" }}</td>
           <td>{% if x.top %}<span class="score">{{ "%.1f"|format(x.top.score) }}</span>{% else %}—{% endif %}</td>
-          <td><a class="btn ghost" href="/trace/runs/{{ x.run.id }}">Open</a></td>
+          <td><a class="btn ghost" href="/runs/{{ x.run.id }}">Open</a></td>
         </tr>
         {% endfor %}
       </tbody>

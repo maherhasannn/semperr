@@ -6,10 +6,10 @@ from fastapi.testclient import TestClient
 
 def _register(client: TestClient, email="op@example.com", pw="correct-horse-battery"):
     # Hit login page to seed CSRF cookie
-    client.get("/trace/register")
+    client.get("/register")
     csrf = client.cookies.get("trace_csrf") or ""
     r = client.post(
-        "/auth/register",
+        "/api/auth/register",
         json={"email": email, "password": pw, "invite_code": "test-invite"},
         headers={"X-CSRF-Token": csrf} if csrf else {},
     )
@@ -17,10 +17,10 @@ def _register(client: TestClient, email="op@example.com", pw="correct-horse-batt
 
 
 def test_register_requires_invite_code(client):
-    client.get("/trace/register")
+    client.get("/register")
     csrf = client.cookies.get("trace_csrf") or ""
     r = client.post(
-        "/auth/register",
+        "/api/auth/register",
         json={"email": "a@b.co", "password": "correct-horse-battery", "invite_code": "WRONG"},
         headers={"X-CSRF-Token": csrf} if csrf else {},
     )
@@ -33,7 +33,7 @@ def test_register_and_session_flow(client):
     # Cookie present
     assert client.cookies.get("trace_session")
     # Access dashboard
-    r2 = client.get("/trace/dashboard")
+    r2 = client.get("/dashboard")
     assert r2.status_code == 200
     assert "Your sourcing mandates" in r2.text
 
@@ -41,39 +41,39 @@ def test_register_and_session_flow(client):
 def test_login_logout(client):
     _register(client, email="u1@example.com")
     # Login
-    client.get("/trace/login")
+    client.get("/login")
     csrf = client.cookies.get("trace_csrf") or ""
     r = client.post(
-        "/auth/login",
+        "/api/auth/login",
         json={"email": "u1@example.com", "password": "correct-horse-battery"},
         headers={"X-CSRF-Token": csrf} if csrf else {},
     )
     assert r.status_code == 200
     # Logout
     csrf = client.cookies.get("trace_csrf") or ""
-    r = client.post("/auth/logout", headers={"X-CSRF-Token": csrf})
+    r = client.post("/api/auth/logout", headers={"X-CSRF-Token": csrf})
     assert r.status_code == 204
     # After logout, dashboard redirects to login
-    r = client.get("/trace/dashboard")
+    r = client.get("/dashboard")
     assert r.status_code == 302
-    assert r.headers["location"].endswith("/trace/login")
+    assert r.headers["location"].endswith("/login")
 
 
 def test_dashboard_auth_gate_redirects(client):
-    # Fresh client; no session -> should be redirected to /trace/login
-    r = client.get("/trace/dashboard")
+    # Fresh client; no session -> should be redirected to /login
+    r = client.get("/dashboard")
     assert r.status_code == 302
-    assert r.headers["location"].endswith("/trace/login")
+    assert r.headers["location"].endswith("/login")
 
 
 def test_invalid_credentials(client):
     _register(client, email="good@example.com")
     # Clear cookies to simulate fresh attempt
     client.cookies.clear()
-    client.get("/trace/login")
+    client.get("/login")
     csrf = client.cookies.get("trace_csrf") or ""
     r = client.post(
-        "/auth/login",
+        "/api/auth/login",
         json={"email": "good@example.com", "password": "wrong-password-value"},
         headers={"X-CSRF-Token": csrf} if csrf else {},
     )

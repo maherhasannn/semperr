@@ -14,21 +14,21 @@
 <body>
   <div class="topbar">
     <div class="brand">
-      <a href="/trace/dashboard">Sempe<span class="rr">rr</span></a>
+      <a href="/dashboard">Sempe<span class="rr">rr</span></a>
       <span class="sep">///</span><span class="trace">Trace</span>
     </div>
     <nav class="nav">
       {% if user %}
-        <a href="/trace/dashboard" class="{% if request.url.path == '/trace/dashboard' or request.url.path.startswith('/trace/strategies') %}active{% endif %}">Strategies</a>
-        <a href="/trace/runs" class="{% if request.url.path.startswith('/trace/runs') %}active{% endif %}">Runs</a>
+        <a href="/dashboard" class="{% if request.url.path == '/dashboard' or request.url.path.startswith('/strategies') %}active{% endif %}">Strategies</a>
+        <a href="/runs" class="{% if request.url.path.startswith('/runs') %}active{% endif %}">Runs</a>
         <span class="label">{{ user.email }}</span>
-        <form method="post" action="/trace/logout" style="display:inline;">
+        <form method="post" action="/logout" style="display:inline;">
           <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
           <button class="btn ghost" type="submit">Sign out</button>
         </form>
       {% else %}
-        <a href="/trace/login">Sign in</a>
-        <a href="/trace/register">Request access</a>
+        <a href="/login">Sign in</a>
+        <a href="/register">Request access</a>
       {% endif %}
     </nav>
   </div>

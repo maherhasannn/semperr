@@ -7,7 +7,7 @@
       <div class="eyebrow">Strategies</div>
       <div class="serif" style="font-size:28px; margin-top:4px;">Your sourcing mandates</div>
     </div>
-    <a href="/trace/strategies/new" class="btn gold">New strategy</a>
+    <a href="/strategies/new" class="btn gold">New strategy</a>
   </header>
   <div class="body" style="padding:0;">
     {% if rows %}
@@ -25,7 +25,7 @@
         {% for r in rows %}
         <tr>
           <td>
-            <a href="/trace/strategies/{{ r.strategy.id }}" style="color:var(--paper);">
+            <a href="/strategies/{{ r.strategy.id }}" style="color:var(--paper);">
               <span class="serif" style="font-size:17px;">{{ r.strategy.name }}</span>
             </a>
             <div class="note" style="margin-top:4px;">{{ r.strategy.description[:110] }}</div>
@@ -42,7 +42,7 @@
           </td>
           <td>{{ r.last_run.started_at.strftime("%Y-%m-%d %H:%M") if r.last_run else "—" }}</td>
           <td>{% if r.top_score is not none %}<span class="score">{{ "%.1f"|format(r.top_score) }}</span>{% else %}—{% endif %}</td>
-          <td><a href="/trace/strategies/{{ r.strategy.id }}" class="btn ghost">Open</a></td>
+          <td><a href="/strategies/{{ r.strategy.id }}" class="btn ghost">Open</a></td>
         </tr>
         {% endfor %}
       </tbody>

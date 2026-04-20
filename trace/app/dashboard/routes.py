@@ -31,7 +31,7 @@ _TPL_DIR = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(_TPL_DIR))
 templates.env.autoescape = True
 
-router = APIRouter(prefix="/trace", tags=["dashboard"])
+router = APIRouter(tags=["dashboard"])
 
 
 def _ctx(request: Request, user: User | None = None, **extra) -> dict:
@@ -70,17 +70,10 @@ def _set_session(resp: Response, user_id: int, request: Request) -> None:
 
 # ---- Auth pages ----
 
-@router.get("", response_class=HTMLResponse)
-def root(request: Request, user: User | None = Depends(current_user)) -> Response:
-    if user is None:
-        return RedirectResponse("/trace/login", status_code=302)
-    return RedirectResponse("/trace/dashboard", status_code=302)
-
-
 @router.get("/login", response_class=HTMLResponse)
 def login_page(request: Request, user: User | None = Depends(current_user)) -> Response:
     if user is not None:
-        return RedirectResponse("/trace/dashboard", status_code=302)
+        return RedirectResponse("/dashboard", status_code=302)
     return templates.TemplateResponse("login.html", _ctx(request))
 
 
@@ -98,7 +91,7 @@ def login_submit(
             _ctx(request, error="invalid credentials"),
             status_code=401,
         )
-    resp = RedirectResponse("/trace/dashboard", status_code=303)
+    resp = RedirectResponse("/dashboard", status_code=303)
     _set_session(resp, user.id, request)
     return resp
 
@@ -106,7 +99,7 @@ def login_submit(
 @router.get("/register", response_class=HTMLResponse)
 def register_page(request: Request, user: User | None = Depends(current_user)) -> Response:
     if user is not None:
-        return RedirectResponse("/trace/dashboard", status_code=302)
+        return RedirectResponse("/dashboard", status_code=302)
     return templates.TemplateResponse("register.html", _ctx(request))
 
 
@@ -138,14 +131,14 @@ def register_submit(
     db.add(user)
     db.commit()
     db.refresh(user)
-    resp = RedirectResponse("/trace/dashboard", status_code=303)
+    resp = RedirectResponse("/dashboard", status_code=303)
     _set_session(resp, user.id, request)
     return resp
 
 
 @router.post("/logout")
 def logout(request: Request) -> Response:
-    resp = RedirectResponse("/trace/login", status_code=303)
+    resp = RedirectResponse("/login", status_code=303)
     resp.delete_cookie(SESSION_COOKIE, path="/")
     resp.delete_cookie(CSRF_COOKIE, path="/")
     return resp
@@ -217,7 +210,7 @@ def strategy_create(
     db.add(strat)
     db.commit()
     db.refresh(strat)
-    return RedirectResponse(f"/trace/strategies/{strat.id}", status_code=303)
+    return RedirectResponse(f"/strategies/{strat.id}", status_code=303)
 
 
 def _load_owned_strategy(db: Session, user: User, strategy_id: int) -> Strategy:
@@ -281,7 +274,7 @@ async def strategy_save_signals(
             SignalDef(name=n, weight=max(0.0, min(10.0, wf)), description=(d or "")[:1000])
         )
     db.commit()
-    return RedirectResponse(f"/trace/strategies/{strat.id}", status_code=303)
+    return RedirectResponse(f"/strategies/{strat.id}", status_code=303)
 
 
 @router.post("/strategies/{strategy_id}/suggest-signals", response_class=HTMLResponse)
@@ -328,7 +321,7 @@ async def strategy_run(
     db.refresh(run)
     run_id = run.id
     await run_pipeline(run_id)
-    return RedirectResponse(f"/trace/runs/{run_id}", status_code=303)
+    return RedirectResponse(f"/runs/{run_id}", status_code=303)
 
 
 # ---- Runs ----

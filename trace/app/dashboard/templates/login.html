@@ -7,7 +7,7 @@
     <h1>Sign in</h1>
     <p class="sub">Credential-gated access. Sessions last 8 hours.</p>
     {% if error %}<div class="error">{{ error }}</div>{% endif %}
-    <form method="post" action="/trace/login">
+    <form method="post" action="/login">
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
       <div class="field">
         <label for="email">Email</label>
@@ -18,7 +18,7 @@
         <input id="password" name="password" type="password" required autocomplete="current-password"/>
       </div>
       <button class="btn" type="submit">Enter</button>
-      <span class="note" style="margin-left:14px;">No account? <a href="/trace/register" style="color:var(--accent);">Register</a></span>
+      <span class="note" style="margin-left:14px;">No account? <a href="/register" style="color:var(--accent);">Register</a></span>
     </form>
   </div>
 </div>

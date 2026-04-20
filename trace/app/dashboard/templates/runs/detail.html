@@ -8,7 +8,7 @@
       <div class="serif" style="font-size:28px; margin-top:4px;">Pipeline output</div>
       <div class="note" style="margin-top:6px;">Started {{ run.started_at.strftime("%Y-%m-%d %H:%M:%S") }}{% if run.finished_at %} · finished {{ run.finished_at.strftime("%Y-%m-%d %H:%M:%S") }}{% endif %}</div>
     </div>
-    <div data-run-status="{{ run.status.value }}" data-run-status-url="/trace/runs/{{ run.id }}/status">
+    <div data-run-status="{{ run.status.value }}" data-run-status-url="/runs/{{ run.id }}/status">
       {% include "partials/run_status.html" %}
     </div>
   </header>
@@ -32,7 +32,7 @@
         {% elif d is not none %}
           <span class="chip delta-flat">● flat</span>
         {% endif %}
-        <a href="/trace/companies/{{ r.company }}" class="note" style="margin-left:10px;">history →</a>
+        <a href="/companies/{{ r.company }}" class="note" style="margin-left:10px;">history →</a>
       </div>
       <div>
         <span class="chip {% if r.label == 'High' %}high{% elif r.label == 'Medium' %}med{% else %}low{% endif %}">{{ r.label }}</span>
