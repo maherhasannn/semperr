@@ -1,0 +1,1 @@
+<span class="chip {% if run.status.value == 'completed' %}low{% elif run.status.value == 'failed' %}high{% else %}med{% endif %}">{{ run.status.value }}</span>

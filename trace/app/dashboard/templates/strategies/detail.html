@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}{{ strategy.name }} · Trace{% endblock %}
+{% block content %}
+<div class="panel" style="margin-bottom:18px;">
+  <header>
+    <div>
+      <div class="eyebrow">Strategy · #{{ strategy.id }}</div>
+      <div class="serif" style="font-size:32px; margin-top:4px;">{{ strategy.name }}</div>
+      <div class="note" style="margin-top:6px;">{{ strategy.description }}</div>
+    </div>
+    <form method="post" action="/trace/strategies/{{ strategy.id }}/run">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+      <button class="btn gold" type="submit">Run search</button>
+    </form>
+  </header>
+
+  <div class="body">
+    <div class="eyebrow" style="margin-bottom:10px;">Signals (canonical vocabulary)</div>
+
+    <form method="post" action="/trace/strategies/{{ strategy.id }}/save-signals" id="signals-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+      <table class="deal" id="signals-table">
+        <thead>
+          <tr>
+            <th style="width:30%;">Signal</th>
+            <th style="width:14%;">Weight</th>
+            <th>Description</th>
+            <th style="width:40px;"></th>
+          </tr>
+        </thead>
+        <tbody id="signals-body">
+          {% for s in strategy.signals %}
+          <tr>
+            <td>
+              <select name="sig_name">
+                {% for c in canonical_signals %}
+                  <option value="{{ c }}" {% if c == s.name %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td><input name="sig_weight" type="number" min="0" max="10" step="0.1" value="{{ s.weight }}"/></td>
+            <td><input name="sig_desc" type="text" value="{{ s.description }}"/></td>
+            <td><button type="button" class="btn ghost" onclick="this.closest('tr').remove(); updateWeightSum();">×</button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div style="margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <button type="button" class="btn ghost" onclick="addSignalRow()">+ Add row</button>
+        <button type="submit" class="btn">Save signals</button>
+        <span class="label">Weight sum: <span id="weight-sum">0.0</span></span>
+      </div>
+    </form>
+
+    <hr style="border:none; border-top:1px solid var(--hair); margin:22px 0;"/>
+
+    <div class="eyebrow" style="margin-bottom:10px;">AI-assisted suggestion</div>
+    <form hx-post="/trace/strategies/{{ strategy.id }}/suggest-signals"
+          hx-target="#suggested"
+          hx-swap="innerHTML"
+          hx-headers='{"X-CSRF-Token": "{{ csrf_token }}"}'>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+      <div class="field">
+        <label for="sdesc">Describe what you want to find</label>
+        <textarea id="sdesc" name="description" placeholder="e.g. Small-cap consumer retailers showing restructuring and ceo churn in the last 6 months">{{ strategy.description }}</textarea>
+      </div>
+      <button class="btn" type="submit">Suggest signals</button>
+    </form>
+    <div id="suggested" style="margin-top:12px;"></div>
+  </div>
+</div>
+
+<div class="panel">
+  <header>
+    <div class="eyebrow">Recent runs</div>
+  </header>
+  <div class="body" style="padding:0;">
+    {% if runs %}
+    <table class="deal">
+      <thead>
+        <tr><th>Run</th><th>Started</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for r in runs %}
+        <tr>
+          <td>#{{ r.id }}</td>
+          <td>{{ r.started_at.strftime("%Y-%m-%d %H:%M") }}</td>
+          <td>{{ r.status.value }}</td>
+          <td><a class="btn ghost" href="/trace/runs/{{ r.id }}">Open</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <div style="padding:16px;"><span class="note">No runs yet.</span></div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  const CANON = {{ canonical_signals|tojson }};
+  function addSignalRow(name, weight, desc) {
+    const tbody = document.getElementById('signals-body');
+    const tr = document.createElement('tr');
+    const options = CANON.map(c => `<option value="${c}"${c===name?' selected':''}>${c}</option>`).join('');
+    tr.innerHTML = `
+      <td><select name="sig_name">${options}</select></td>
+      <td><input name="sig_weight" type="number" min="0" max="10" step="0.1" value="${weight ?? 1.0}"/></td>
+      <td><input name="sig_desc" type="text" value="${(desc||'').replace(/"/g,'&quot;')}"/></td>
+      <td><button type="button" class="btn ghost" onclick="this.closest('tr').remove(); updateWeightSum();">×</button></td>
+    `;
+    tbody.appendChild(tr);
+    updateWeightSum();
+  }
+  function updateWeightSum() {
+    const weights = document.querySelectorAll('#signals-body input[name="sig_weight"]');
+    let sum = 0;
+    weights.forEach(w => { const n = parseFloat(w.value); if (!isNaN(n)) sum += n; });
+    const el = document.getElementById('weight-sum');
+    if (el) el.textContent = sum.toFixed(1);
+  }
+  document.addEventListener('input', (e) => {
+    if (e.target && e.target.name === 'sig_weight') updateWeightSum();
+  });
+  updateWeightSum();
+</script>
+{% endblock %}

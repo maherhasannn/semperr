@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Run #{{ run.id }} · Trace{% endblock %}
+{% block content %}
+<div class="panel" style="margin-bottom:18px;">
+  <header>
+    <div>
+      <div class="eyebrow">Run · #{{ run.id }} · strategy #{{ run.strategy_id }}</div>
+      <div class="serif" style="font-size:28px; margin-top:4px;">Pipeline output</div>
+      <div class="note" style="margin-top:6px;">Started {{ run.started_at.strftime("%Y-%m-%d %H:%M:%S") }}{% if run.finished_at %} · finished {{ run.finished_at.strftime("%Y-%m-%d %H:%M:%S") }}{% endif %}</div>
+    </div>
+    <div data-run-status="{{ run.status.value }}" data-run-status-url="/trace/runs/{{ run.id }}/status">
+      {% include "partials/run_status.html" %}
+    </div>
+  </header>
+  {% if run.error %}
+  <div class="body"><div class="error">Error: {{ run.error }}</div></div>
+  {% endif %}
+</div>
+
+{% if results %}
+<div class="eyebrow" style="margin:10px 0;">Ranked companies · {{ results|length }}</div>
+{% for r in results %}
+  <details class="result">
+    <summary>
+      <div>
+        <span class="co">{{ r.company }}</span>
+        {% set d = deltas.get(r.company) %}
+        {% if d is not none and d != 0 %}
+          <span class="chip {% if d > 0 %}delta-up{% else %}delta-down{% endif %}">
+            {% if d > 0 %}▲{% else %}▼{% endif %} {{ "%.1f"|format(d) }}
+          </span>
+        {% elif d is not none %}
+          <span class="chip delta-flat">● flat</span>
+        {% endif %}
+        <a href="/trace/companies/{{ r.company }}" class="note" style="margin-left:10px;">history →</a>
+      </div>
+      <div>
+        <span class="chip {% if r.label == 'High' %}high{% elif r.label == 'Medium' %}med{% else %}low{% endif %}">{{ r.label }}</span>
+        <span class="score" style="margin-left:10px;">{{ "%.1f"|format(r.score) }}</span>
+      </div>
+    </summary>
+    <div class="body">
+      {% if r.summary %}<p class="analyst-p">{{ r.summary }}</p>{% endif %}
+      {% if r.why_now %}<p class="analyst-p"><span class="label">Why now · </span>{{ r.why_now }}</p>{% endif %}
+      {% if r.opportunity_angle %}<p class="analyst-p"><span class="label">Angle · </span>{{ r.opportunity_angle }}</p>{% endif %}
+
+      <div class="findings">
+        <div class="row label">
+          <div>Signal</div><div>Confidence</div><div>Date</div><div>Source</div>
+        </div>
+        {% set math_total = namespace(v=0.0) %}
+        {% for f in r.findings %}
+          {% set math_total.v = math_total.v + (f.weight_applied * f.confidence) %}
+          <div class="row">
+            <div>{{ f.signal_type }}</div>
+            <div>{{ "%.2f"|format(f.confidence) }} · w{{ "%.1f"|format(f.weight_applied) }}</div>
+            <div>{{ f.event_date.strftime("%Y-%m-%d") if f.event_date else "—" }}</div>
+            <div><a href="{{ f.source_url }}" rel="noopener noreferrer" target="_blank" style="color:var(--accent); word-break:break-all;">{{ f.source_url[:80] }}</a></div>
+          </div>
+        {% endfor %}
+        <div class="note" style="margin-top:8px;">
+          Σ weight × confidence = {{ "%.2f"|format(math_total.v) }} · scaled × 10 · capped 0–100
+        </div>
+      </div>
+    </div>
+  </details>
+{% endfor %}
+{% elif run.status.value in ['pending', 'running'] %}
+  <div class="panel"><div class="body"><span class="note">Pipeline running. This page refreshes automatically.</span></div></div>
+{% else %}
+  <div class="panel"><div class="body"><span class="note">No companies found for this run.</span></div></div>
+{% endif %}
+{% endblock %}

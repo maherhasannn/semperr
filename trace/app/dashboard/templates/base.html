@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="referrer" content="strict-origin-when-cross-origin"/>
+  <title>{% block title %}Trace · Semperr{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/trace.css"/>
+  <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand">
+      <a href="/trace/dashboard">Sempe<span class="rr">rr</span></a>
+      <span class="sep">///</span><span class="trace">Trace</span>
+    </div>
+    <nav class="nav">
+      {% if user %}
+        <a href="/trace/dashboard" class="{% if request.url.path == '/trace/dashboard' or request.url.path.startswith('/trace/strategies') %}active{% endif %}">Strategies</a>
+        <a href="/trace/runs" class="{% if request.url.path.startswith('/trace/runs') %}active{% endif %}">Runs</a>
+        <span class="label">{{ user.email }}</span>
+        <form method="post" action="/trace/logout" style="display:inline;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+          <button class="btn ghost" type="submit">Sign out</button>
+        </form>
+      {% else %}
+        <a href="/trace/login">Sign in</a>
+        <a href="/trace/register">Request access</a>
+      {% endif %}
+    </nav>
+  </div>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <span>Semperr // Trace</span>
+    <span style="margin-left:16px;">Operator console — internal use only</span>
+  </footer>
+
+  <script src="/static/trace.js"></script>
+</body>
+</html>
