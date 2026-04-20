@@ -67,7 +67,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   section { padding-top: 48px !important; padding-bottom: 56px !important; }
 
   /* Masthead */
-  .mast-nav, .mast-eyebrow { display: none !important; }
+  .mast-nav, .mast-eyebrow, .mast-signin { display: none !important; }
   .mast-burger { display: inline-flex !important; }
   .mast-panel { display: block; }
 
@@ -175,6 +175,11 @@ function Masthead({ theme }) {
               <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
             </span>
           </button>
+          <a href="https://app.semperr.com/trace/login" className="mast-signin" style={{
+            fontSize:13,
+            color: isDark ? '#c7cdd9' : '#2a3246',
+            letterSpacing:'0.02em',
+          }}>Sign in</a>
           <a href="contact.html" style={{
             fontSize:13,
             padding:'8px 16px',
@@ -195,6 +200,7 @@ function Masthead({ theme }) {
             <a onClick={() => setOpen(false)} href="charter.html">Charterr</a>
             <a onClick={() => setOpen(false)} href="#">Company</a>
             <a onClick={() => setOpen(false)} href="#">Careers</a>
+            <a onClick={() => setOpen(false)} href="https://app.semperr.com/trace/login" style={{marginTop:4}}>Sign in</a>
             <a onClick={() => setOpen(false)} href="contact.html" style={{color:'var(--gold)', marginTop:4}}>Get in touch →</a>
           </nav>
         </div>

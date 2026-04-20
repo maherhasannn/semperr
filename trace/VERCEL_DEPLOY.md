@@ -110,11 +110,40 @@ vercel --prod
 First deploy takes ~90s (cold-builds the wheel for `psycopg[binary]`,
 `argon2-cffi`, etc.). Subsequent deploys reuse the build cache.
 
-## 5. Smoke test
+## 5. Custom domain (`app.semperr.com`)
+
+Two Vercel projects, two hostnames off the same root domain:
+
+| Vercel project | Hostname | What it serves |
+|---|---|---|
+| `semperr` (marketing) | `semperr.com`, `www.semperr.com` | Static site |
+| `trace` (this project) | `app.semperr.com` | Trace FastAPI app |
+
+Steps:
+
+1. Vercel → **semperr** project → **Settings → Domains** → add
+   `semperr.com` + `www.semperr.com`. Vercel shows the DNS records to add.
+2. Vercel → **trace** project → **Settings → Domains** → add
+   `app.semperr.com`.
+3. At your domain registrar's DNS panel, add the records Vercel shows:
+   - Apex `semperr.com` → **A** record → `76.76.21.21`
+   - `www` → **CNAME** → `cname.vercel-dns.com`
+   - `app` → **CNAME** → `cname.vercel-dns.com`
+4. Wait ~5 min for DNS propagation. Vercel auto-provisions SSL certificates
+   once each record resolves (Let's Encrypt, renewed automatically).
+5. The marketing site's sign-in links already point at
+   `https://app.semperr.com/trace/login` — no further code change needed
+   once DNS is live. The Trace dashboard footer has a back-link to
+   `https://semperr.com`.
+
+## 6. Smoke test
 
 ```bash
-# Replace with your *.vercel.app hostname
-export BASE=https://trace-<hash>.vercel.app
+# Once DNS is live:
+export BASE=https://app.semperr.com
+
+# Or on the raw Vercel hostname while DNS propagates:
+# export BASE=https://<trace-project>.vercel.app
 
 # 1. Dashboard loads and redirects to login.
 curl -sI "$BASE/trace/dashboard" | head -1    # 302 to /trace/login
@@ -128,7 +157,7 @@ open "$BASE/trace/register"
 # ranked companies when the pipeline finishes.
 ```
 
-## 6. Monitoring
+## 7. Monitoring
 
 - **Vercel → Logs** streams stdout from the function. Trace emits JSON
   structured logs (`app.logging`), so filter by `event` or `level`.
