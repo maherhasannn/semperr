@@ -100,7 +100,7 @@ class NeonAuthClient:
 
     def __init__(self, settings: Settings | None = None) -> None:
         self._settings = settings or get_settings()
-        self._jwks_client = PyJWKClient(self._settings.neon_auth_jwks_url)
+        self._jwks_client = PyJWKClient(self._settings.resolved_neon_auth_jwks_url())
 
     def verify_jwt(self, token: str) -> VerifiedClaims:
         if not token or not isinstance(token, str):
@@ -110,19 +110,31 @@ class NeonAuthClient:
         except PyJWKClientError as e:
             # Covers both "unable to fetch JWKS" and "kid not in JWKS"
             raise NeonAuthJWKSUnavailable(str(e)) from e
+
+        # Audience enforcement is conditional: Neon-hosted Auth doesn't always
+        # set `aud` on its JWTs. When `resolved_neon_auth_audience` returns
+        # None we skip the check entirely; when it returns a string we enforce
+        # exact equality. Stack Auth SaaS deployments always return the
+        # project_id, preserving the previous behaviour.
+        audience = self._settings.resolved_neon_auth_audience()
+        required = ["exp", "sub", "iss"]
+        decode_kwargs: dict[str, Any] = {
+            "algorithms": ["RS256"],
+            "issuer": self._settings.resolved_neon_auth_issuer(),
+        }
+        if audience is not None:
+            decode_kwargs["audience"] = audience
+            required.append("aud")
+        decode_kwargs["options"] = {"require": required}
+
         try:
             payload: dict[str, Any] = jwt.decode(
-                token,
-                signing_key.key,
-                algorithms=["RS256"],
-                issuer=self._settings.neon_auth_issuer,
-                audience=self._settings.neon_auth_project_id,
-                options={"require": ["exp", "sub", "iss", "aud"]},
+                token, signing_key.key, **decode_kwargs
             )
         except InvalidTokenError as e:
             raise NeonAuthInvalidToken(str(e)) from e
         sub = payload.get("sub")
-        # Stack Auth may expose email under `primary_email` or `email`.
+        # Stack Auth / Neon Auth may expose email under `primary_email` or `email`.
         email = (
             payload.get("primary_email")
             or payload.get("email")
@@ -137,7 +149,8 @@ class NeonAuthClient:
         params: dict[str, str] = {"return_to": return_to}
         if email:
             params["email"] = email
-        return f"{self._settings.neon_auth_sign_in_url}?{urlencode(params)}"
+        return f"{self._settings.resolved_neon_auth_sign_in_url()}?{urlencode(params)}"
 
     def sign_out_url(self, *, return_to: str) -> str:
-        return f"{self._settings.neon_auth_sign_out_url}?{urlencode({'return_to': return_to})}"
+        base = self._settings.resolved_neon_auth_sign_out_url()
+        return f"{base}?{urlencode({'return_to': return_to})}"
