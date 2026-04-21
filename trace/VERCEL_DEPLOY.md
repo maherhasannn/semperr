@@ -80,12 +80,24 @@ vercel link              # create a new project when prompted; link to `trace`
 | `SECRET_KEY` | `openssl rand -hex 32` output |
 | `INVITE_CODE` | any secret string you'll share with invited operators |
 | `DATABASE_URL` | Neon pooled URL from step 1 |
+| `NEON_AUTH_URL` | "Auth URL" from Neon console → Auth tab (`https://ep-*.neonauth.*.neon.tech/<db>/auth`) |
 | `GEMINI_API_KEY` | from Google AI Studio |
 | `EXA_API_KEY` | from https://dashboard.exa.ai |
 | `ENV` | `prod` |
 | `LOG_LEVEL` | `INFO` |
 | `EXA_CONCURRENCY` | `3` |
 | `MAX_DOCS_PER_QUERY` | `3` |
+
+Before deploying, in the Neon console → Auth tab:
+1. Enable the **Email provider** (Shared sender `auth@mail.myneon.app` works out
+   of the box for beta; swap for SMTP before going public).
+2. Add `trace.semperr.com` (and your Vercel preview URL, if you use one) to
+   **Trusted domains**.
+
+Trace drives Neon Auth's email-OTP endpoints server-to-server — no hosted
+sign-in page, no redirect. The user enters their email + invite code on
+`/invite`, gets a 6-digit code emailed, enters it on `/verify`, and lands
+on `/dashboard`.
 
 Do **not** prefix any of these with `VERCEL_` or `NEXT_PUBLIC_` — they are
 server-only.
@@ -152,8 +164,8 @@ curl -sI "$BASE/dashboard" | head -1    # 302 to /invite
 
 # 2. Request access via the invite page (in a browser — easier, handles CSRF).
 open "$BASE/invite"
-# Enter your email + INVITE_CODE; you'll be redirected to Neon Auth's hosted
-# sign-in page. Complete the magic link to land on /dashboard.
+# Enter your email + INVITE_CODE; we'll email you a 6-digit code. Enter
+# the code on the /verify page to land on /dashboard.
 
 # 3. Create a strategy, add signals (e.g. covenant_breach w=2, missed_payment w=1.5),
 # click "Run search". The request will hang up to 60s; the results page renders
@@ -191,8 +203,10 @@ When you outgrow 60s (e.g. 8+ signals × 3 docs × LLM extraction > budget):
 - Rotate `SECRET_KEY` by redeploying with a new value — this invalidates all
   active sessions (users must re-authenticate via Neon Auth).
 - Rotate `INVITE_CODE` after the invited cohort has signed up.
-- `NEON_AUTH_PROJECT_ID` and `NEON_AUTH_SECRET_SERVER_KEY` live in Vercel env
-  vars. The JWKS URL is derived from the project id.
+- `NEON_AUTH_URL` lives in Vercel env vars. It points at Neon's Better
+  Auth endpoints for your project/branch; no secret key is needed for the
+  public email-OTP flow, but the URL itself should not be committed to
+  the repo.
 
 ## Local dev (unchanged)
 

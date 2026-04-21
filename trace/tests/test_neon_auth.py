@@ -1,40 +1,62 @@
-"""Neon Auth flow tests — invite gate, JWT callback, session issuance.
+"""Neon Auth (Better Auth) email-OTP flow tests.
 
-All Neon Auth network calls are mocked; verify_jwt is monkeypatched to return
-pre-built claims so we never hit the JWKS endpoint.
+All HTTP calls to Better Auth are mocked at `app.auth.neon.httpx.post` so
+the test suite never touches the network. The mock accepts `(url, *,
+json, timeout)` and returns a stub Response with configurable status +
+body.
 """
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from typing import Any, Callable
 
 import pytest
 
 from app.auth import invite as invite_mod
 from app.auth import neon as neon_mod
-from app.auth.neon import NeonAuthInvalidToken, VerifiedClaims
-
-
-@dataclass
-class _FakeClaims:
-    sub: str
-    email: str
-    exp: int
-
-
-def _patch_verify(monkeypatch, claims: VerifiedClaims | Exception):
-    def _fake(self, token):  # noqa: ARG001
-        if isinstance(claims, Exception):
-            raise claims
-        return claims
-
-    monkeypatch.setattr(neon_mod.NeonAuthClient, "verify_jwt", _fake)
 
 
 # TestClient's default Host header is `testserver`; send a matching Origin
 # so CSRF middleware accepts the POST. Browsers always set Origin on state-
 # changing requests; tests must too.
 _ORIGIN = {"Origin": "http://testserver"}
+
+
+@dataclass
+class _StubResp:
+    status_code: int = 200
+    _json: Any = field(default_factory=dict)
+    text: str = ""
+
+    def json(self) -> Any:
+        return self._json
+
+
+@dataclass
+class _FakePoster:
+    """Records calls to httpx.post and returns preprogrammed responses keyed
+    by the endpoint path suffix."""
+
+    responses: dict[str, _StubResp] = field(default_factory=dict)
+    # Default for any path not in `responses`
+    default: _StubResp = field(default_factory=_StubResp)
+    calls: list[tuple[str, dict[str, Any]]] = field(default_factory=list)
+
+    def __call__(self, url: str, *, json: dict, timeout=None) -> _StubResp:  # noqa: A002
+        self.calls.append((url, json))
+        for suffix, resp in self.responses.items():
+            if url.endswith(suffix):
+                return resp
+        return self.default
+
+
+@pytest.fixture
+def fake_post(monkeypatch):
+    """Patch httpx.post inside app.auth.neon and return the recorder."""
+    poster = _FakePoster()
+    monkeypatch.setattr(neon_mod.httpx, "post", poster)
+    return poster
 
 
 def _invite_post(client, email="op@example.com", code="test-invite"):
@@ -50,92 +72,201 @@ def _invite_post(client, email="op@example.com", code="test-invite"):
     )
 
 
-def test_invite_valid_code_redirects_to_neon(client):
+def _verify_post(client, otp="123456"):
+    # /verify also needs a CSRF cookie; it was seeded by the /verify GET
+    # redirect landing after /invite. For tests calling it directly, we
+    # re-seed via GET /verify.
+    client.get("/verify")
+    csrf = client.cookies.get("trace_csrf") or ""
+    headers = dict(_ORIGIN)
+    if csrf:
+        headers["X-CSRF-Token"] = csrf
+    return client.post(
+        "/verify",
+        data={"otp": otp, "csrf_token": csrf},
+        headers=headers,
+    )
+
+
+# ---- /invite -----------------------------------------------------------
+
+
+def test_invite_valid_code_sends_otp_and_redirects_to_verify(client, fake_post):
     r = _invite_post(client)
     assert r.status_code == 303
-    assert r.headers["location"].startswith("https://")
-    assert "accounts.stack-auth.com/sign-in" in r.headers["location"]
+    assert r.headers["location"] == "/verify"
+    # We called Better Auth's send-verification-otp endpoint once
+    paths = [url for url, _ in fake_post.calls]
+    assert any(p.endswith("/email-otp/send-verification-otp") for p in paths)
+    sent = [body for url, body in fake_post.calls
+            if url.endswith("/email-otp/send-verification-otp")][0]
+    assert sent["email"] == "op@example.com"
+    assert sent["type"] == "sign-in"
     # Invite cookie set
     assert client.cookies.get("trace_invite")
 
 
-def test_invite_invalid_code_returns_403(client):
+def test_invite_invalid_code_returns_403_and_does_not_call_upstream(client, fake_post):
     r = _invite_post(client, code="WRONG")
     assert r.status_code == 403
     assert "invalid invite code" in r.text
     assert not client.cookies.get("trace_invite")
+    # Upstream not called
+    assert fake_post.calls == []
+
+
+def test_invite_invalid_email_returns_400(client, fake_post):
+    r = _invite_post(client, email="not-an-email")
+    assert r.status_code == 400
+    assert "valid email required" in r.text
+    assert fake_post.calls == []
+
+
+def test_invite_upstream_5xx_returns_503(client, fake_post):
+    fake_post.responses["/email-otp/send-verification-otp"] = _StubResp(
+        status_code=502, text="bad gateway"
+    )
+    r = _invite_post(client)
+    assert r.status_code == 503
+    assert "unreachable" in r.text
+    # No invite cookie on failure
+    assert not client.cookies.get("trace_invite")
+
+
+def test_invite_upstream_4xx_returns_400_with_generic_message(client, fake_post):
+    fake_post.responses["/email-otp/send-verification-otp"] = _StubResp(
+        status_code=400, text='{"error":"invalid email"}'
+    )
+    r = _invite_post(client)
+    assert r.status_code == 400
+    assert "could not send code" in r.text
+    assert not client.cookies.get("trace_invite")
+
+
+# ---- /verify -----------------------------------------------------------
+
+
+def test_verify_without_invite_cookie_redirects_to_invite(client):
+    r = client.get("/verify")
+    assert r.status_code == 302
+    assert r.headers["location"].endswith("/invite")
+
+
+def test_verify_happy_path_creates_user_and_session(client, fake_post):
+    _invite_post(client, email="op@example.com")
+    fake_post.responses["/sign-in/email-otp"] = _StubResp(
+        status_code=200,
+        _json={"data": {"user": {"id": "ba-user-abc", "email": "op@example.com"}}},
+    )
+    r = _verify_post(client, otp="123456")
+    assert r.status_code == 303, r.text
+    assert r.headers["location"] == "/dashboard"
+    assert client.cookies.get("trace_session")
+    # We actually called sign-in with the expected payload
+    sent = [body for url, body in fake_post.calls
+            if url.endswith("/sign-in/email-otp")][0]
+    assert sent == {"email": "op@example.com", "otp": "123456"}
+    # Dashboard loads for the fresh session.
+    r2 = client.get("/dashboard", follow_redirects=False)
+    assert r2.status_code == 200
+
+
+def test_verify_bad_otp_returns_401(client, fake_post):
+    _invite_post(client, email="op@example.com")
+    fake_post.responses["/sign-in/email-otp"] = _StubResp(
+        status_code=401, text='{"error":"invalid otp"}'
+    )
+    r = _verify_post(client, otp="000000")
+    assert r.status_code == 401
+    assert "invalid or expired code" in r.text
+    assert not client.cookies.get("trace_session")
+
+
+def test_verify_upstream_5xx_returns_503(client, fake_post):
+    _invite_post(client, email="op@example.com")
+    fake_post.responses["/sign-in/email-otp"] = _StubResp(status_code=503)
+    r = _verify_post(client, otp="123456")
+    assert r.status_code == 503
+    assert "unreachable" in r.text
+
+
+def test_verify_empty_otp_returns_400_without_upstream_call(client, fake_post):
+    _invite_post(client, email="op@example.com")
+    pre_calls = list(fake_post.calls)  # after /invite
+    r = _verify_post(client, otp="")
+    assert r.status_code == 400
+    # No extra call to sign-in
+    post_calls = [c for c in fake_post.calls if c not in pre_calls]
+    assert all(not url.endswith("/sign-in/email-otp") for url, _ in post_calls)
+
+
+def test_verify_rejects_provider_email_mismatch(client, fake_post):
+    """Belt-and-braces login-CSRF defense: even if Better Auth accepts the
+    OTP, refuse to mint a session when the echoed email doesn't match the
+    invite cookie's email."""
+    _invite_post(client, email="victim@example.com")
+    fake_post.responses["/sign-in/email-otp"] = _StubResp(
+        status_code=200,
+        _json={"data": {"user": {"id": "x", "email": "attacker@example.com"}}},
+    )
+    r = _verify_post(client, otp="123456")
+    assert r.status_code == 403
+    assert "identity mismatch" in r.text
+    assert not client.cookies.get("trace_session")
+
+
+def test_verify_upsert_is_idempotent_across_sessions(client, fake_post):
+    from app import database
+    from app.models.user import User
+
+    _invite_post(client, email="op@example.com")
+    fake_post.responses["/sign-in/email-otp"] = _StubResp(
+        status_code=200,
+        _json={"data": {"user": {"id": "ba-1", "email": "op@example.com"}}},
+    )
+    r1 = _verify_post(client, otp="111111")
+    assert r1.status_code == 303
+
+    # Sign in again in a fresh browser session — still one user row.
+    client.cookies.clear()
+    _invite_post(client, email="op@example.com")
+    fake_post.responses["/sign-in/email-otp"] = _StubResp(
+        status_code=200,
+        _json={"data": {"user": {"id": "ba-1", "email": "op@example.com"}}},
+    )
+    r2 = _verify_post(client, otp="222222")
+    assert r2.status_code == 303
+
+    with database.SessionLocal() as s:
+        users = s.query(User).all()
+        assert len(users) == 1
+        assert users[0].email == "op@example.com"
+
+
+# ---- Invite cookie expiry ---------------------------------------------
 
 
 def test_invite_cookie_expires_after_5min(monkeypatch):
-    # Freeze issue time, then verify past the max age.
     token = invite_mod.issue_invite_cookie("a@b.co")
     real_time = time.time
 
     def _later():
         return real_time() + invite_mod.INVITE_MAX_AGE_SECONDS + 10
 
-    # itsdangerous reads `time.time` indirectly; patch the module's reference.
     monkeypatch.setattr(invite_mod.time, "time", _later)
     assert invite_mod.verify_invite_cookie(token) is None
 
 
-def test_callback_with_valid_jwt_creates_user_and_session(client, monkeypatch):
+# ---- /logout -----------------------------------------------------------
+
+
+def test_logout_clears_cookies(client, fake_post):
     _invite_post(client, email="op@example.com")
-    _patch_verify(
-        monkeypatch,
-        VerifiedClaims(sub="neon-uuid-abc", email="op@example.com", exp=int(time.time()) + 300),
+    fake_post.responses["/sign-in/email-otp"] = _StubResp(
+        status_code=200,
+        _json={"data": {"user": {"id": "ba-1", "email": "op@example.com"}}},
     )
-    r = client.get("/auth/callback?token=fake.jwt.token")
-    assert r.status_code == 303, r.text
-    assert r.headers["location"] == "/dashboard"
-    assert client.cookies.get("trace_session")
-    # Invite cookie was cleared
-    # (TestClient may still hold the old value until set-cookie Max-Age=0 is processed —
-    # we assert the dashboard loads instead.)
-    r2 = client.get("/dashboard", follow_redirects=False)
-    assert r2.status_code == 200
-
-
-def test_callback_without_invite_cookie_returns_403(client, monkeypatch):
-    # Do NOT hit /invite first.
-    _patch_verify(
-        monkeypatch,
-        VerifiedClaims(sub="neon-uuid", email="x@y.co", exp=int(time.time()) + 300),
-    )
-    r = client.get("/auth/callback?token=fake.jwt.token")
-    assert r.status_code == 403
-    assert "Invite session expired" in r.text
-
-
-def test_callback_with_expired_jwt_returns_401(client, monkeypatch):
-    _invite_post(client)
-    _patch_verify(monkeypatch, NeonAuthInvalidToken("token expired"))
-    r = client.get("/auth/callback?token=expired.jwt")
-    assert r.status_code == 401
-    assert "invalid or expired" in r.text
-
-
-def test_callback_with_wrong_issuer_returns_401(client, monkeypatch):
-    _invite_post(client)
-    _patch_verify(monkeypatch, NeonAuthInvalidToken("issuer mismatch"))
-    r = client.get("/auth/callback?token=wrong.issuer.jwt")
-    assert r.status_code == 401
-
-
-def test_callback_missing_token_returns_401(client):
-    _invite_post(client)
-    r = client.get("/auth/callback")
-    assert r.status_code == 401
-    assert "Missing sign-in token" in r.text
-
-
-def test_logout_clears_cookies(client, monkeypatch):
-    _invite_post(client)
-    _patch_verify(
-        monkeypatch,
-        VerifiedClaims(sub="neon-uuid-1", email="op@example.com", exp=int(time.time()) + 300),
-    )
-    client.get("/auth/callback?token=fake.jwt")
+    _verify_post(client, otp="123456")
     assert client.cookies.get("trace_session")
 
     csrf = client.cookies.get("trace_csrf") or ""
@@ -145,8 +276,8 @@ def test_logout_clears_cookies(client, monkeypatch):
         headers={"X-CSRF-Token": csrf, **_ORIGIN},
     )
     assert r.status_code == 303
-    assert "accounts.stack-auth.com/sign-out" in r.headers["location"]
-    # Dashboard requires auth again
+    assert r.headers["location"] == "/invite"
+    # Dashboard requires auth again.
     client.cookies.clear()
     r2 = client.get("/dashboard")
     assert r2.status_code == 302
@@ -159,41 +290,10 @@ def test_dashboard_auth_gate_redirects_to_invite(client):
     assert r.headers["location"].endswith("/invite")
 
 
-def test_callback_rejects_jwt_email_mismatch(client, monkeypatch):
-    """Login-CSRF defense: JWT email must match the invite cookie's email."""
-    _invite_post(client, email="victim@example.com")
-    _patch_verify(
-        monkeypatch,
-        VerifiedClaims(
-            sub="attacker-uuid",
-            email="attacker@example.com",
-            exp=int(time.time()) + 300,
-        ),
-    )
-    r = client.get("/auth/callback?token=attacker.controlled.jwt")
-    assert r.status_code == 403
-    assert "did not match" in r.text
-    # No session was issued.
-    assert not client.cookies.get("trace_session")
+# ---- Rate limits & CSRF (unchanged from previous suite) ---------------
 
 
-def test_callback_email_match_is_case_insensitive(client, monkeypatch):
-    _invite_post(client, email="Op@Example.com")
-    _patch_verify(
-        monkeypatch,
-        VerifiedClaims(
-            sub="neon-uuid-case",
-            email="OP@example.COM",
-            exp=int(time.time()) + 300,
-        ),
-    )
-    r = client.get("/auth/callback?token=ok.jwt")
-    assert r.status_code == 303
-    assert client.cookies.get("trace_session")
-
-
-def test_invite_rate_limited_after_5_posts(client):
-    # Fresh rate-limit state; 6 failed attempts should trip the bucket.
+def test_invite_rate_limited_after_5_posts(client, fake_post):
     from app import main
 
     main._RL_STATE.clear()
@@ -204,40 +304,41 @@ def test_invite_rate_limited_after_5_posts(client):
     assert r.status_code == 429
 
 
+def test_verify_rate_limited_after_10_posts(client, fake_post):
+    from app import main
+
+    _invite_post(client, email="op@example.com")
+    main._RL_STATE.clear()
+    fake_post.responses["/sign-in/email-otp"] = _StubResp(
+        status_code=401, text="bad otp"
+    )
+    for _ in range(10):
+        r = _verify_post(client, otp="000000")
+        assert r.status_code == 401
+    r = _verify_post(client, otp="000000")
+    assert r.status_code == 429
+
+
 def test_csrf_origin_mismatch_rejected(client):
-    # A cross-origin POST with a crafted Origin header must be rejected even
-    # if the Host header is a substring of Origin.
     r = client.post(
         "/invite",
         data={"email": "x@y.co", "invite_code": "test-invite"},
-        headers={
-            "Origin": "https://testserver.evil.com",
-            # testserver is the default Host set by TestClient
-        },
+        headers={"Origin": "https://testserver.evil.com"},
     )
     assert r.status_code == 403
     assert "origin" in r.text.lower()
 
 
 def test_csrf_missing_origin_and_referer_rejected(client):
-    """State-changing requests with neither Origin nor Referer must be rejected.
-
-    Browsers always set Origin on POST; absence is a signal of a non-browser
-    client or a stripped proxy. Required defense: some legacy CSRF attacks
-    rely on Origin being omitted.
-    """
     r = client.post(
         "/invite",
         data={"email": "x@y.co", "invite_code": "test-invite"},
-        # No Origin, no Referer.
     )
     assert r.status_code == 403
     assert "origin" in r.text.lower() or "referer" in r.text.lower()
 
 
-def test_csrf_accepts_matching_referer_when_origin_absent(client):
-    """If Origin is absent but Referer host matches Host, the request passes
-    the Origin/Referer gate (downstream CSRF cookie checks still run)."""
+def test_csrf_accepts_matching_referer_when_origin_absent(client, fake_post):
     client.get("/invite")
     csrf = client.cookies.get("trace_csrf") or ""
     r = client.post(
@@ -248,44 +349,36 @@ def test_csrf_accepts_matching_referer_when_origin_absent(client):
             "Referer": "http://testserver/invite",
         },
     )
-    # Valid invite code + matching referer → redirect to Neon Auth (303).
+    # Valid invite code + matching referer → OTP sent → redirect to /verify.
     assert r.status_code == 303
+    assert r.headers["location"] == "/verify"
 
 
-def test_company_detail_rejects_oversized_path(client, monkeypatch):
-    """/companies/{company} path parameter is length- and charset-bounded."""
+def test_company_detail_rejects_oversized_path(client, fake_post):
     _invite_post(client, email="op@example.com")
-    _patch_verify(
-        monkeypatch,
-        VerifiedClaims(sub="neon-uuid-co", email="op@example.com", exp=int(time.time()) + 300),
+    fake_post.responses["/sign-in/email-otp"] = _StubResp(
+        status_code=200,
+        _json={"data": {"user": {"id": "ba-1", "email": "op@example.com"}}},
     )
-    client.get("/auth/callback?token=fake.jwt")
-    # Over length ceiling
+    _verify_post(client, otp="123456")
     r = client.get("/companies/" + ("A" * 500))
     assert r.status_code == 400, r.text
-    # Disallowed characters (e.g., shell / path metacharacters)
     r = client.get("/companies/" + "acme;rm%20-rf")
     assert r.status_code == 400
 
 
 def test_rate_limiter_sweeps_stale_buckets():
-    """Stale (window-expired) buckets are pruned on subsequent calls."""
     from app import main
 
     main._RL_STATE.clear()
     main._RL_LAST_SWEEP[0] = 0.0
-    # Stuff a fake stale bucket well before the 60s window.
     main._RL_STATE[("stale-client", "invite")] = [1.0]
-    # Force the sweeper to run on the next call.
     main._RL_LAST_SWEEP[0] = 0.0
-    # Calling the guarded path triggers the cleanup path.
     from fastapi.testclient import TestClient
     from app.main import app as _app
 
     c = TestClient(_app, follow_redirects=False)
-    c.get("/invite")  # no-op GET to drive middleware
-    # After any rate-limited call the stale bucket should be gone.
-    # The GET path does not hit _rate_limited; simulate a POST instead.
+    c.get("/invite")
     csrf = c.cookies.get("trace_csrf") or ""
     c.post(
         "/invite",
@@ -295,32 +388,30 @@ def test_rate_limiter_sweeps_stale_buckets():
     assert ("stale-client", "invite") not in main._RL_STATE
 
 
-def test_second_callback_same_user_updates_not_duplicates(client, monkeypatch):
-    from app import database
-    from app.models.user import User
+# ---- NeonAuthClient unit coverage -------------------------------------
 
-    _invite_post(client, email="op@example.com")
-    _patch_verify(
-        monkeypatch,
-        VerifiedClaims(sub="neon-uuid-same", email="op@example.com", exp=int(time.time()) + 300),
+
+def test_neon_client_requires_url(monkeypatch):
+    """Instantiating the client with an empty NEON_AUTH_URL is a loud fail."""
+    from app.config import Settings
+
+    s = Settings(
+        secret_key="x" * 32,
+        invite_code="test-invite",
+        database_url="sqlite+pysqlite:///:memory:",
+        neon_auth_url="",
     )
-    r1 = client.get("/auth/callback?token=fake.jwt.1")
-    assert r1.status_code == 303
+    with pytest.raises(neon_mod.NeonAuthError):
+        neon_mod.NeonAuthClient(s)
 
-    # Fresh invite round-trip. Same Neon user, user updates email in Neon Auth
-    # and types the new email at /invite; the email-binding check must pass
-    # because the invite email matches the JWT email.
-    client.cookies.clear()
-    _invite_post(client, email="op2@example.com")
-    _patch_verify(
-        monkeypatch,
-        VerifiedClaims(sub="neon-uuid-same", email="op2@example.com", exp=int(time.time()) + 300),
-    )
-    r2 = client.get("/auth/callback?token=fake.jwt.2")
-    assert r2.status_code == 303
 
-    with database.SessionLocal() as s:
-        users = s.query(User).all()
-        assert len(users) == 1
-        assert users[0].auth_user_id == "neon-uuid-same"
-        assert users[0].email == "op2@example.com"
+def test_neon_client_network_error_becomes_unavailable(monkeypatch):
+    import httpx
+
+    def _raise(*a, **kw):
+        raise httpx.ConnectError("dns failure")
+
+    monkeypatch.setattr(neon_mod.httpx, "post", _raise)
+    c = neon_mod.NeonAuthClient()
+    with pytest.raises(neon_mod.NeonAuthUnavailable):
+        c.send_otp("a@b.co")

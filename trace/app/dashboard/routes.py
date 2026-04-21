@@ -21,9 +21,9 @@ from app.auth.invite import (
 )
 from app.auth.neon import (
     NeonAuthClient,
-    NeonAuthInvalidToken,
-    NeonAuthJWKSUnavailable,
-    consume_token_once,
+    NeonAuthError,
+    NeonAuthRejected,
+    NeonAuthUnavailable,
 )
 from app.config import get_settings
 from app.database import get_db
@@ -79,7 +79,18 @@ def _set_session(resp: Response, user_id: int, request: Request) -> None:
     )
 
 
-# ---- Auth pages (invite gate + Neon Auth callback) ----
+# ---- Auth pages (invite gate + email-OTP verify) ----
+#
+# Flow:
+#   GET  /invite  -> email + invite-code form
+#   POST /invite  -> validate invite code, ask Neon/Better Auth to email an
+#                    OTP to `email`, set short-lived invite cookie binding
+#                    the email, redirect to /verify
+#   GET  /verify  -> OTP entry form (email read from invite cookie)
+#   POST /verify  -> verify (email, otp) via Better Auth, upsert user by
+#                    email, mint session cookie, redirect to /dashboard
+#   POST /logout  -> clear our cookies. Better Auth's session (if any) was
+#                    discarded at /verify time; nothing to roundtrip.
 
 def _set_invite_cookie(resp: Response, token: str) -> None:
     s = get_settings()
@@ -94,7 +105,7 @@ def _set_invite_cookie(resp: Response, token: str) -> None:
     )
 
 
-@router.get("/invite", response_class=HTMLResponse)
+@router.get("/invite", response_class=HTMLResponse, name="invite_page")
 def invite_page(request: Request, user: User | None = Depends(current_user)) -> Response:
     if user is not None:
         return RedirectResponse("/dashboard", status_code=302)
@@ -122,115 +133,129 @@ def invite_submit(
             _ctx(request, error="invalid invite code", email=email),
             status_code=403,
         )
-    callback = str(request.url_for("auth_callback"))
-    neon = NeonAuthClient(s)
-    resp = RedirectResponse(
-        neon.sign_in_url(return_to=callback, email=email),
-        status_code=303,
-    )
+
+    try:
+        NeonAuthClient(s).send_otp(email)
+    except NeonAuthUnavailable:
+        return templates.TemplateResponse(
+            "invite.html",
+            _ctx(
+                request,
+                error="auth provider temporarily unreachable — try again",
+                email=email,
+            ),
+            status_code=503,
+        )
+    except NeonAuthRejected:
+        # Don't leak upstream detail (invalid-email vs rate-limit vs other).
+        # Generic message avoids address-enumeration side-channels.
+        return templates.TemplateResponse(
+            "invite.html",
+            _ctx(request, error="could not send code — try again", email=email),
+            status_code=400,
+        )
+    except NeonAuthError:
+        return templates.TemplateResponse(
+            "invite.html",
+            _ctx(request, error="auth misconfigured — contact support", email=email),
+            status_code=500,
+        )
+
+    resp = RedirectResponse("/verify", status_code=303)
     _set_invite_cookie(resp, issue_invite_cookie(email))
     return resp
 
 
-def _harden_callback_response(resp: Response) -> Response:
-    """The callback URL carries a bearer token in its query string. Prevent
-    the browser from caching the page, replaying it from bfcache, or leaking
-    the URL via the Referer header of any sub-resource or subsequent nav."""
-    resp.headers["Cache-Control"] = "no-store, no-cache, max-age=0, must-revalidate"
-    resp.headers["Pragma"] = "no-cache"
-    resp.headers["Referrer-Policy"] = "no-referrer"
-    return resp
-
-
-@router.get("/auth/callback", response_class=HTMLResponse, name="auth_callback")
-def auth_callback(
-    request: Request,
-    db: Session = Depends(get_db),
-) -> Response:
-    # Closed-beta gate: the invite cookie proves they passed /invite on our side.
+@router.get("/verify", response_class=HTMLResponse, name="verify_page")
+def verify_page(request: Request, user: User | None = Depends(current_user)) -> Response:
+    if user is not None:
+        return RedirectResponse("/dashboard", status_code=302)
     invite = verify_invite_cookie(request.cookies.get(INVITE_COOKIE))
     if invite is None:
-        return _harden_callback_response(
-            templates.TemplateResponse(
-                "auth_error.html",
-                _ctx(request, message="Invite session expired. Please start again."),
-                status_code=403,
-            )
+        # No (or expired) invite cookie — start over.
+        return RedirectResponse("/invite", status_code=302)
+    return templates.TemplateResponse(
+        "verify.html",
+        _ctx(request, email=str(invite.get("email", ""))),
+    )
+
+
+@router.post("/verify", response_class=HTMLResponse)
+def verify_submit(
+    request: Request,
+    otp: str = Form(...),
+    db: Session = Depends(get_db),
+) -> Response:
+    s = get_settings()
+    invite = verify_invite_cookie(request.cookies.get(INVITE_COOKIE))
+    if invite is None:
+        # Invite cookie dropped / expired — kick back to /invite without
+        # attempting verification (no oracle for attackers).
+        return RedirectResponse("/invite", status_code=302)
+
+    email = str(invite.get("email", "")).strip().lower()
+    otp = (otp or "").strip()
+    # Better Auth email-OTP codes are numeric 6-digit by default. Be lax on
+    # length so we don't have to track Neon's config, but reject empties
+    # and obvious garbage before hitting the network.
+    if not email or not otp or len(otp) > 16 or not otp.isascii():
+        return templates.TemplateResponse(
+            "verify.html",
+            _ctx(request, email=email, error="enter the code from your email"),
+            status_code=400,
         )
 
-    token = request.query_params.get("token") or request.query_params.get("access_token")
-    if not token:
-        return _harden_callback_response(
-            templates.TemplateResponse(
-                "auth_error.html",
-                _ctx(request, message="Missing sign-in token."),
-                status_code=401,
-            )
-        )
-
-    neon = NeonAuthClient(get_settings())
     try:
-        claims = neon.verify_jwt(token)
-    except NeonAuthJWKSUnavailable:
-        return _harden_callback_response(
-            templates.TemplateResponse(
-                "auth_error.html",
-                _ctx(request, message="Auth provider temporarily unreachable. Try again."),
-                status_code=503,
-            )
+        verified = NeonAuthClient(s).verify_otp(email, otp)
+    except NeonAuthRejected:
+        return templates.TemplateResponse(
+            "verify.html",
+            _ctx(request, email=email, error="invalid or expired code"),
+            status_code=401,
         )
-    except NeonAuthInvalidToken:
-        return _harden_callback_response(
-            templates.TemplateResponse(
-                "auth_error.html",
-                _ctx(request, message="Sign-in link invalid or expired."),
-                status_code=401,
-            )
+    except NeonAuthUnavailable:
+        return templates.TemplateResponse(
+            "verify.html",
+            _ctx(
+                request,
+                email=email,
+                error="auth provider temporarily unreachable — try again",
+            ),
+            status_code=503,
         )
-
-    # Replay defense: a bearer token in a URL lives forever in edge/CDN logs,
-    # browser history, and potentially Referer headers. Accept each verified
-    # token exactly once — any re-presentation of the same token (even within
-    # its `exp` window) is rejected as invalid.
-    if not consume_token_once(token, claims.exp):
-        return _harden_callback_response(
-            templates.TemplateResponse(
-                "auth_error.html",
-                _ctx(request, message="Sign-in link already used."),
-                status_code=401,
-            )
+    except NeonAuthError:
+        return templates.TemplateResponse(
+            "verify.html",
+            _ctx(request, email=email, error="auth misconfigured — contact support"),
+            status_code=500,
         )
 
-    # Login-CSRF defense: the JWT email must match the invite cookie's email.
-    # Otherwise an attacker with their own valid Neon JWT could bait a victim
-    # (who just passed /invite) into signing into the attacker's account.
-    invite_email = str(invite.get("email", "")).strip().lower()
-    jwt_email = claims.email.strip().lower()
-    if not invite_email or invite_email != jwt_email:
-        return _harden_callback_response(
-            templates.TemplateResponse(
-                "auth_error.html",
-                _ctx(
-                    request,
-                    message="Sign-in identity did not match the invited email.",
-                ),
-                status_code=403,
-            )
+    # Login-CSRF defense: even though Better Auth verified the OTP for
+    # `email`, we also require that email to match the one the invite
+    # cookie was issued against — otherwise an attacker who somehow
+    # steered the victim's browser to POST /verify with a different email
+    # in the body could bait a session for someone else. Our form doesn't
+    # expose `email`, but a cross-site POST could. Belt-and-braces: pin
+    # to the cookie's email.
+    if verified.email.strip().lower() != email:
+        return templates.TemplateResponse(
+            "verify.html",
+            _ctx(request, email=email, error="identity mismatch — start again"),
+            status_code=403,
         )
 
-    # Upsert by Neon Auth user UUID. Email may change; auth_user_id is the stable key.
+    # Upsert user by email (the stable key now that the provider's user id
+    # is no longer front-loaded in a JWT).
     user = db.execute(
-        select(User).where(User.auth_user_id == claims.sub)
+        select(User).where(User.email == email)
     ).scalar_one_or_none()
     if user is None:
         user = User(
-            email=claims.email,
-            auth_user_id=claims.sub,
+            email=email,
             email_verified_at=datetime.now(tz=timezone.utc),
         )
         db.add(user)
     else:
-        user.email = claims.email
         user.email_verified_at = datetime.now(tz=timezone.utc)
     db.commit()
     db.refresh(user)
@@ -238,15 +263,12 @@ def auth_callback(
     resp = RedirectResponse("/dashboard", status_code=303)
     resp.delete_cookie(INVITE_COOKIE, path="/")
     _set_session(resp, user.id, request)
-    return _harden_callback_response(resp)
+    return resp
 
 
 @router.post("/logout")
 def logout(request: Request) -> Response:
-    s = get_settings()
-    neon = NeonAuthClient(s)
-    invite_url = str(request.url_for("invite_page"))
-    resp = RedirectResponse(neon.sign_out_url(return_to=invite_url), status_code=303)
+    resp = RedirectResponse("/invite", status_code=303)
     resp.delete_cookie(SESSION_COOKIE, path="/")
     resp.delete_cookie(CSRF_COOKIE, path="/")
     resp.delete_cookie(INVITE_COOKIE, path="/")

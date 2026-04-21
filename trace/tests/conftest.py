@@ -8,7 +8,7 @@ os.environ.setdefault("INVITE_CODE", "test-invite")
 os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite:///:memory:")
 os.environ.setdefault("GEMINI_API_KEY", "test-key")
 os.environ.setdefault("EXA_API_KEY", "test-key")
-os.environ.setdefault("NEON_AUTH_PROJECT_ID", "test-project")
+os.environ.setdefault("NEON_AUTH_URL", "https://auth.test.local/testdb/auth")
 os.environ.setdefault("ENV", "test")
 
 import pytest
@@ -46,17 +46,12 @@ def _clean_tables(_setup_schema):
     """Wipe tables + rate-limit state between tests to keep them independent."""
     yield
     from app import database, main
-    from app.auth import neon as _neon
     from app.database import Base
 
     with database.engine.begin() as conn:
         for t in reversed(Base.metadata.sorted_tables):
             conn.execute(t.delete())
     main._RL_STATE.clear()
-    # The callback replay defense is process-global by design; reset it
-    # between tests so reusing a fixed fake JWT across cases doesn't
-    # trigger one-time-use rejection.
-    _neon._CONSUMED.clear()
 
 
 @pytest.fixture

@@ -11,10 +11,9 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    # Email is the stable identity on our side. Neon Auth (Better Auth)
+    # proves control of this email via the email-OTP flow.
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
-    auth_user_id: Mapped[str] = mapped_column(
-        String(128), unique=True, index=True, nullable=False
-    )
     email_verified_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )

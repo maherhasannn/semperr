@@ -83,7 +83,7 @@ def user_and_strategy():
     from app.database import SessionLocal
 
     db = SessionLocal()
-    u = User(email="p@example.com", auth_user_id="neon-test-uuid-pipeline")
+    u = User(email="p@example.com")
     db.add(u)
     db.commit()
     db.refresh(u)

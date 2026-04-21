@@ -5,7 +5,7 @@
   <div class="auth-card">
     <div class="eyebrow">Trace // Invitation Required</div>
     <h1>Request access</h1>
-    <p class="sub">Closed beta. Enter your invite code and email — we'll send a magic sign-in link.</p>
+    <p class="sub">Closed beta. Enter your invite code and email — we'll email you a one-time code.</p>
     {% if error %}<div class="error">{{ error }}</div>{% endif %}
     <form method="post" action="/invite">
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
@@ -17,8 +17,8 @@
         <label for="invite_code">Invite code</label>
         <input id="invite_code" name="invite_code" type="text" required autocomplete="off"/>
       </div>
-      <button class="btn gold" type="submit">Continue</button>
-      <span class="note" style="margin-left:14px;">No password needed — we'll email a sign-in link.</span>
+      <button class="btn gold" type="submit">Send code</button>
+      <span class="note" style="margin-left:14px;">No password needed — we'll email a 6-digit code.</span>
     </form>
   </div>
 </div>

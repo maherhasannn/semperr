@@ -1,156 +1,126 @@
-"""Neon Auth (Stack Auth) JWT verifier.
+"""Neon Auth (Better Auth) email-OTP REST client.
 
-Neon Auth ships no first-party Python SDK. We verify tokens by fetching the
-project JWKS and validating the RS256 signature, issuer, and expiry with PyJWT.
+Neon Auth is powered by Better Auth. We drive its email-OTP plugin
+server-to-server: our backend asks Better Auth to email a code, then
+verifies `(email, code)` against Better Auth. We throw away Better
+Auth's own session cookie — we only use the call as a *verifier* that
+the user proved control of the email. On success we mint our own
+session cookie (see app.security.issue_session_token) keyed by the
+DB user id.
 
-The JWKS client caches keys in-process; Vercel cold starts pay a one-time
-~100ms penalty. No Redis needed.
+Two endpoints are used (standard Better Auth paths under NEON_AUTH_URL):
+
+- POST {base}/email-otp/send-verification-otp  body {"email","type":"sign-in"}
+- POST {base}/sign-in/email-otp                body {"email","otp"}
+
+Both return 2xx on success and 4xx on failure. We treat 2xx as
+authoritative proof-of-email.
 """
 from __future__ import annotations
 
-import hashlib
-import threading
-import time
 from dataclasses import dataclass
 from typing import Any
-from urllib.parse import urlencode
 
-import jwt
-from jwt import PyJWKClient, PyJWKClientError
-from jwt.exceptions import InvalidTokenError
+import httpx
 
 from app.config import Settings, get_settings
 
-# ---- One-time JWT consumption -------------------------------------------------
-#
-# Stack Auth delivers the access token as a URL query parameter on /auth/callback.
-# URL query strings are captured by every layer that touches the request
-# (CDN/edge logs, browser history, Referer headers from sub-resources loaded
-# by an error page). A bearer token with minutes of validity is a replay
-# credential for that window. We defend by recording the SHA-256 of each
-# token on first successful verification and refusing to mint a session for
-# the same hash twice.
-#
-# Entries are held in-process only; a cold start resets the set. The TTL
-# upper bound is the token's own `exp`, so the set can never outgrow the
-# population of unexpired tokens the app has ever seen.
-_CONSUMED_LOCK = threading.Lock()
-_CONSUMED: dict[str, float] = {}
-# Hard cap so a burst of attacker-supplied garbage tokens that *do* verify
-# (which shouldn't happen, but defense in depth) cannot grow unbounded.
-_CONSUMED_MAX = 10_000
-
-
-def _token_fingerprint(token: str) -> str:
-    return hashlib.sha256(token.encode("utf-8")).hexdigest()
-
-
-def consume_token_once(token: str, exp: int) -> bool:
-    """Record a verified token as consumed. Returns True if this is the
-    first time we've seen it (caller should proceed), False if it has
-    already been consumed (caller MUST reject).
-
-    Must be called only after signature/issuer/audience verification — we
-    do not want to populate the set with attacker-supplied garbage.
-    """
-    fp = _token_fingerprint(token)
-    now = time.time()
-    with _CONSUMED_LOCK:
-        # Opportunistic prune of expired entries.
-        if _CONSUMED:
-            stale = [k for k, e in _CONSUMED.items() if e < now]
-            for k in stale:
-                _CONSUMED.pop(k, None)
-        # Cap eviction: drop the oldest-expiring entries.
-        if len(_CONSUMED) >= _CONSUMED_MAX:
-            for k, _ in sorted(_CONSUMED.items(), key=lambda kv: kv[1])[
-                : len(_CONSUMED) - _CONSUMED_MAX + 1
-            ]:
-                _CONSUMED.pop(k, None)
-        if fp in _CONSUMED:
-            return False
-        _CONSUMED[fp] = float(exp)
-        return True
-
 
 class NeonAuthError(Exception):
-    """Base error for Neon Auth failures."""
+    """Base error for Neon/Better Auth failures."""
 
 
-class NeonAuthJWKSUnavailable(NeonAuthError):
-    """JWKS endpoint could not be reached (network / 5xx)."""
+class NeonAuthUnavailable(NeonAuthError):
+    """Upstream unreachable (network error or 5xx)."""
 
 
-class NeonAuthInvalidToken(NeonAuthError):
-    """JWT failed verification (signature, issuer, audience, expiry, format)."""
+class NeonAuthRejected(NeonAuthError):
+    """Upstream refused the request (4xx — bad OTP, expired, rate-limited)."""
 
 
 @dataclass(frozen=True)
-class VerifiedClaims:
-    sub: str  # Neon Auth user UUID
+class VerifiedEmail:
     email: str
-    exp: int
+    # The provider's user id if returned in the response body. May be empty.
+    # We do NOT rely on this for identity — email is the stable key on our
+    # side — but surface it for logging / future consolidation.
+    provider_user_id: str
 
 
 class NeonAuthClient:
-    """Verifies Neon Auth JWTs against the project's JWKS endpoint.
-
-    One instance per process is sufficient — PyJWKClient caches signing keys.
-    """
+    """Talks to Neon Auth's Better Auth REST API for email-OTP."""
 
     def __init__(self, settings: Settings | None = None) -> None:
         self._settings = settings or get_settings()
-        self._jwks_client = PyJWKClient(self._settings.resolved_neon_auth_jwks_url())
+        base = (self._settings.neon_auth_url or "").rstrip("/")
+        if not base:
+            raise NeonAuthError("NEON_AUTH_URL is not configured")
+        self._base = base
+        # 10s covers Neon's magic-link email dispatch; we're on a 60s
+        # Vercel budget so we can't block much longer anyway.
+        self._timeout = httpx.Timeout(10.0, connect=5.0)
 
-    def verify_jwt(self, token: str) -> VerifiedClaims:
-        if not token or not isinstance(token, str):
-            raise NeonAuthInvalidToken("empty token")
+    def _post(self, path: str, payload: dict[str, Any]) -> dict[str, Any]:
+        url = f"{self._base}{path}"
         try:
-            signing_key = self._jwks_client.get_signing_key_from_jwt(token)
-        except PyJWKClientError as e:
-            # Covers both "unable to fetch JWKS" and "kid not in JWKS"
-            raise NeonAuthJWKSUnavailable(str(e)) from e
-
-        # Audience enforcement is conditional: Neon-hosted Auth doesn't always
-        # set `aud` on its JWTs. When `resolved_neon_auth_audience` returns
-        # None we skip the check entirely; when it returns a string we enforce
-        # exact equality. Stack Auth SaaS deployments always return the
-        # project_id, preserving the previous behaviour.
-        audience = self._settings.resolved_neon_auth_audience()
-        required = ["exp", "sub", "iss"]
-        decode_kwargs: dict[str, Any] = {
-            "algorithms": ["RS256"],
-            "issuer": self._settings.resolved_neon_auth_issuer(),
-        }
-        if audience is not None:
-            decode_kwargs["audience"] = audience
-            required.append("aud")
-        decode_kwargs["options"] = {"require": required}
-
-        try:
-            payload: dict[str, Any] = jwt.decode(
-                token, signing_key.key, **decode_kwargs
+            r = httpx.post(url, json=payload, timeout=self._timeout)
+        except httpx.HTTPError as e:
+            raise NeonAuthUnavailable(f"network error calling {path}: {e}") from e
+        if 500 <= r.status_code < 600:
+            raise NeonAuthUnavailable(
+                f"upstream {r.status_code} from {path}: {r.text[:200]}"
             )
-        except InvalidTokenError as e:
-            raise NeonAuthInvalidToken(str(e)) from e
-        sub = payload.get("sub")
-        # Stack Auth / Neon Auth may expose email under `primary_email` or `email`.
-        email = (
-            payload.get("primary_email")
-            or payload.get("email")
-            or ""
+        if 400 <= r.status_code < 500:
+            raise NeonAuthRejected(
+                f"upstream {r.status_code} from {path}: {r.text[:200]}"
+            )
+        try:
+            data = r.json()
+        except Exception:
+            data = {}
+        if not isinstance(data, dict):
+            data = {}
+        return data
+
+    def send_otp(self, email: str) -> None:
+        """Ask Better Auth to email a one-time code to `email`.
+
+        Returns normally on 2xx. Raises NeonAuthRejected on 4xx (e.g. rate
+        limit, invalid email format accepted by us but rejected upstream)
+        and NeonAuthUnavailable on network / 5xx.
+        """
+        self._post(
+            "/email-otp/send-verification-otp",
+            {"email": email, "type": "sign-in"},
         )
-        exp = payload.get("exp")
-        if not sub or not email or not exp:
-            raise NeonAuthInvalidToken("missing required claims (sub/email/exp)")
-        return VerifiedClaims(sub=str(sub), email=str(email), exp=int(exp))
 
-    def sign_in_url(self, *, return_to: str, email: str | None = None) -> str:
-        params: dict[str, str] = {"return_to": return_to}
-        if email:
-            params["email"] = email
-        return f"{self._settings.resolved_neon_auth_sign_in_url()}?{urlencode(params)}"
+    def verify_otp(self, email: str, otp: str) -> VerifiedEmail:
+        """Verify `(email, otp)`. Raises on any failure.
 
-    def sign_out_url(self, *, return_to: str) -> str:
-        base = self._settings.resolved_neon_auth_sign_out_url()
-        return f"{base}?{urlencode({'return_to': return_to})}"
+        On success returns a VerifiedEmail with the provider's user id when
+        present in the response (Better Auth typically returns
+        `{"data": {"user": {"id": "...", "email": "..."}, "session": {...}}}`
+        but we don't depend on the exact shape — any 2xx is proof).
+        """
+        data = self._post(
+            "/sign-in/email-otp",
+            {"email": email, "otp": otp},
+        )
+        # Best-effort extraction of the provider user id for logging.
+        user = {}
+        if isinstance(data.get("data"), dict):
+            user = data["data"].get("user") or {}
+        elif isinstance(data.get("user"), dict):
+            user = data["user"]
+        provider_user_id = ""
+        if isinstance(user, dict):
+            uid = user.get("id")
+            if isinstance(uid, str):
+                provider_user_id = uid
+            # Some Better Auth responses echo the email here too — prefer
+            # the upstream one when it comes back, but fall back to the
+            # email we submitted if it doesn't.
+            resp_email = user.get("email")
+            if isinstance(resp_email, str) and resp_email:
+                email = resp_email
+        return VerifiedEmail(email=email, provider_user_id=provider_user_id)

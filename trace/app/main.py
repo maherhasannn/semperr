@@ -217,13 +217,13 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 class CSRFBootstrapMiddleware(BaseHTTPMiddleware):
     # Paths that need a CSRF cookie seeded on GET (dashboard HTML pages).
-    _SEED_PREFIXES = ("/invite", "/auth/callback", "/dashboard", "/strategies",
+    _SEED_PREFIXES = ("/invite", "/verify", "/dashboard", "/strategies",
                       "/runs", "/companies")
 
     async def dispatch(self, request: Request, call_next):
         response: Response = await call_next(request)
         p = request.url.path
-        if request.method == "GET" and (p in {"/invite", "/auth/callback"} or
+        if request.method == "GET" and (p in {"/invite", "/verify"} or
                                          any(p.startswith(pref) for pref in self._SEED_PREFIXES)):
             from app.security import new_csrf_token
 
@@ -292,15 +292,22 @@ def create_app() -> FastAPI:
     async def _val_err(request: Request, exc: RequestValidationError):
         return JSONResponse({"detail": exc.errors()}, status_code=status.HTTP_400_BAD_REQUEST)
 
-    # Rate limits (in-process, per-client window). Neon Auth throttles magic-link
-    # dispatch upstream, but the /invite POST is entirely local (validates the
-    # invite code on our side), so we still cap it to defeat invite-code brute-
-    # force. 10/min keeps the search endpoint honest too.
+    # Rate limits (in-process, per-client window). Neon Auth throttles OTP
+    # dispatch and verification upstream, but:
+    #   - /invite POST is entirely local (validates invite_code on our side)
+    #     before ever reaching Neon, so cap it here to defeat invite-code
+    #     brute-force.
+    #   - /verify POST forwards to Neon Auth; cap it too so a guessed-OTP
+    #     attacker can't burn through our budget (Neon's limit is global
+    #     per-email; ours is per-client-IP-per-minute).
     @app.middleware("http")
     async def _rl(request: Request, call_next):
         p = request.url.path
         if p == "/invite" and request.method == "POST":
             if _rate_limited(request, "invite", max_per_min=5):
+                return JSONResponse({"detail": "rate limit"}, status_code=429)
+        elif p == "/verify" and request.method == "POST":
+            if _rate_limited(request, "verify", max_per_min=10):
                 return JSONResponse({"detail": "rate limit"}, status_code=429)
         elif p == "/api/search" and request.method == "POST":
             if _rate_limited(request, "search", max_per_min=10):

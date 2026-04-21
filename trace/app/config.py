@@ -53,29 +53,13 @@ class Settings(BaseSettings):
     gemini_api_key: str = "test-key"
     exa_api_key: str = "test-key"
 
-    # Neon Auth — magic-link hosted pages.
+    # Neon Auth (Better Auth) — email-OTP REST base URL.
     #
-    # Two supported topologies:
-    #
-    # A. Neon-hosted Auth (endpoints served off your Neon compute at
-    #    `ep-*.neonauth.*.neon.tech/<db>/auth`). Set the explicit URLs:
-    #       NEON_AUTH_JWKS_URL, NEON_AUTH_ISSUER,
-    #       NEON_AUTH_SIGN_IN_URL, NEON_AUTH_SIGN_OUT_URL,
-    #       NEON_AUTH_AUDIENCE (if Neon sets `aud` on the JWT; else leave empty).
-    #
-    # B. Stack Auth SaaS shortcut (api.stack-auth.com / *.accounts.stack-auth.com).
-    #    Just set NEON_AUTH_PROJECT_ID; every URL is derived from it and the
-    #    audience defaults to the project id.
-    #
-    # A takes precedence over B per-field: any explicit URL wins over the
-    # derived one. Leave project_id at its default when using A.
-    neon_auth_project_id: str = "test-project"
-    neon_auth_secret_server_key: str = ""
-    neon_auth_jwks_url: str = ""
-    neon_auth_issuer: str = ""
-    neon_auth_audience: str = ""
-    neon_auth_sign_in_url: str = ""
-    neon_auth_sign_out_url: str = ""
+    # Copy the "Auth URL" from the Neon console -> Auth tab. It looks like:
+    #   https://ep-<name>-<region>.neonauth.<cloud>.neon.tech/<db>/auth
+    # We POST to {base}/email-otp/send-verification-otp and
+    # {base}/sign-in/email-otp server-to-server.
+    neon_auth_url: str = ""
 
     # Defaults tuned for Vercel Hobby (60s) — keep the pipeline under budget.
     exa_concurrency: int = 3
@@ -94,42 +78,6 @@ class Settings(BaseSettings):
     @classmethod
     def _coerce_db_url(cls, v: str) -> str:
         return _normalize_db_url(v)
-
-    # Resolvers: prefer the explicit env value; fall back to deriving from
-    # project_id using the Stack Auth SaaS URL scheme.
-
-    def resolved_neon_auth_jwks_url(self) -> str:
-        return self.neon_auth_jwks_url or (
-            f"https://api.stack-auth.com/api/v1/projects/"
-            f"{self.neon_auth_project_id}/.well-known/jwks.json"
-        )
-
-    def resolved_neon_auth_issuer(self) -> str:
-        return self.neon_auth_issuer or (
-            f"https://api.stack-auth.com/api/v1/projects/{self.neon_auth_project_id}"
-        )
-
-    def resolved_neon_auth_audience(self) -> str | None:
-        """Return the audience to enforce, or None to skip the `aud` check.
-
-        Empty string + the placeholder project_id default = skip. Any other
-        non-empty value is enforced exactly.
-        """
-        if self.neon_auth_audience:
-            return self.neon_auth_audience
-        if self.neon_auth_project_id and self.neon_auth_project_id != "test-project":
-            return self.neon_auth_project_id
-        return None
-
-    def resolved_neon_auth_sign_in_url(self) -> str:
-        return self.neon_auth_sign_in_url or (
-            f"https://{self.neon_auth_project_id}.accounts.stack-auth.com/sign-in"
-        )
-
-    def resolved_neon_auth_sign_out_url(self) -> str:
-        return self.neon_auth_sign_out_url or (
-            f"https://{self.neon_auth_project_id}.accounts.stack-auth.com/sign-out"
-        )
 
 
 @lru_cache(maxsize=1)
