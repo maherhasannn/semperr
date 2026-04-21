@@ -14,7 +14,7 @@
 <body>
   <div class="topbar">
     <div class="brand">
-      <a href="/dashboard">Sempe<span class="rr">rr</span></a>
+      <a href="{% if user %}/dashboard{% else %}https://semperr.com{% endif %}">Sempe<span class="rr">rr</span></a>
       <span class="sep">///</span><span class="trace">Trace</span>
     </div>
     <nav class="nav">
