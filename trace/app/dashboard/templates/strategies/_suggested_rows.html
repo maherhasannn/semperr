@@ -3,7 +3,10 @@
 <div style="display:flex; flex-wrap:wrap; gap:6px;">
   {% for s in suggested %}
     <button type="button" class="chip"
-            onclick='addSignalRow({{ s.name|tojson }}, {{ s.weight|tojson }}, {{ s.description|tojson }})'>
+            data-action="add-suggested-signal"
+            data-signal-name="{{ s.name }}"
+            data-signal-weight="{{ s.weight }}"
+            data-signal-desc="{{ s.description }}">
       + {{ s.name }} · {{ "%.1f"|format(s.weight) }}
     </button>
   {% endfor %}

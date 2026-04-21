@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -10,7 +11,6 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.api import analyze as analyze_api
-from app.api import auth as auth_api
 from app.api import runs as runs_api
 from app.api import strategies as strategies_api
 from app.config import get_settings
@@ -28,14 +28,57 @@ import time
 
 _RL_LOCK = threading.Lock()
 _RL_STATE: dict[tuple[str, str], list[float]] = {}
+# Hard cap on distinct (client, bucket) keys held in memory. Beyond this we
+# evict the oldest entries. ~10k keys × 10 timestamps × 8 bytes ≈ 1 MB.
+_RL_MAX_KEYS = 10_000
+# Last time the sweeper ran (monotonic-ish; time.time is fine for seconds).
+_RL_LAST_SWEEP: list[float] = [0.0]
+_RL_SWEEP_INTERVAL = 30.0
 
 
 def _client_key(request: Request) -> str:
-    # Prefer X-Forwarded-For when present (we pass --proxy-headers)
-    xf = request.headers.get("x-forwarded-for", "")
-    if xf:
-        return xf.split(",")[0].strip()
+    """Resolve the client identity for per-client rate limiting.
+
+    X-Forwarded-For is entirely attacker-controlled unless the app knows how
+    many trusted hops prepended it. We walk (hops) entries in from the right
+    — that is, past our own trusted edge — and take that address as the
+    client. When hops == 0 we ignore XFF altogether and use the TCP peer,
+    which the client cannot spoof.
+    """
+    hops = max(0, get_settings().trusted_proxy_hops)
+    if hops > 0:
+        xf = request.headers.get("x-forwarded-for", "")
+        if xf:
+            parts = [p.strip() for p in xf.split(",") if p.strip()]
+            # For hops=1 we want parts[-1] (the single IP our edge inserted
+            # was the client). For hops=N we step N in from the right, which
+            # is the leftmost entry our own infra is responsible for.
+            idx = len(parts) - hops
+            if 0 <= idx < len(parts):
+                return parts[idx]
+            # XFF shorter than expected — fall through to the TCP peer
+            # rather than accepting a spoofable leftmost value.
     return request.client.host if request.client else "unknown"
+
+
+def _rl_sweep(now: float, window: float) -> None:
+    """Drop buckets whose last hit is older than the window, then enforce cap.
+
+    Must be called under `_RL_LOCK`.
+    """
+    cutoff = now - window
+    stale = [k for k, hist in _RL_STATE.items() if not hist or hist[-1] < cutoff]
+    for k in stale:
+        _RL_STATE.pop(k, None)
+    if len(_RL_STATE) > _RL_MAX_KEYS:
+        # Evict oldest-last-seen first until under the cap.
+        ordered = sorted(
+            _RL_STATE.items(),
+            key=lambda kv: (kv[1][-1] if kv[1] else 0.0),
+        )
+        drop_n = len(_RL_STATE) - _RL_MAX_KEYS
+        for k, _ in ordered[:drop_n]:
+            _RL_STATE.pop(k, None)
 
 
 def _rate_limited(request: Request, bucket: str, *, max_per_min: int) -> bool:
@@ -43,6 +86,12 @@ def _rate_limited(request: Request, bucket: str, *, max_per_min: int) -> bool:
     window = 60.0
     key = (_client_key(request), bucket)
     with _RL_LOCK:
+        if (
+            now - _RL_LAST_SWEEP[0] > _RL_SWEEP_INTERVAL
+            or len(_RL_STATE) > _RL_MAX_KEYS
+        ):
+            _rl_sweep(now, window)
+            _RL_LAST_SWEEP[0] = now
         hist = _RL_STATE.get(key, [])
         hist = [t for t in hist if now - t < window]
         if len(hist) >= max_per_min:
@@ -85,31 +134,54 @@ class CSRFMiddleware(BaseHTTPMiddleware):
             except Exception:
                 form_token = None
 
-        # Origin check (defense in depth)
+        # Origin/Referer enforcement. State-changing requests must carry one
+        # of Origin or Referer and its host must match Host *exactly*
+        # (substring matching would wrongly accept
+        # `https://trace.semperr.com.evil.com`). If neither header is present
+        # we reject — modern browsers always set Origin on non-GET, so
+        # absence indicates a non-browser client or a stripped proxy.
         origin = request.headers.get("origin")
+        referer = request.headers.get("referer")
         host = request.headers.get("host", "")
-        if origin and host and host not in origin:
+        if not host:
+            return JSONResponse({"detail": "host header required"}, status_code=400)
+
+        source_host: str | None = None
+        if origin:
+            try:
+                source_host = urlsplit(origin).netloc
+            except Exception:
+                return JSONResponse({"detail": "invalid origin"}, status_code=403)
+        elif referer:
+            try:
+                source_host = urlsplit(referer).netloc
+            except Exception:
+                return JSONResponse({"detail": "invalid referer"}, status_code=403)
+
+        if source_host is None:
+            log.warning("csrf.reject_no_origin", path=request.url.path)
+            return JSONResponse(
+                {"detail": "origin or referer required"}, status_code=403
+            )
+        if source_host != host:
             return JSONResponse({"detail": "origin mismatch"}, status_code=403)
 
-        # Allow when both sides match
-        if cookie_token and (csrf_equal(cookie_token, header_token) or csrf_equal(cookie_token, form_token)):
+        # Token must be present in a cookie AND a matching value must be
+        # echoed in either the header or the form field (double-submit).
+        # There is no bootstrap bypass: every state-changing request — /invite
+        # included — must carry the cookie. CSRFBootstrapMiddleware seeds it
+        # on every GET of the auth pages, so any legitimate browser flow has
+        # already obtained one before POSTing. A POST without the cookie is
+        # either a client that skipped the form (non-browser tooling) or a
+        # cross-site request from a context where cookies were not sent;
+        # both should be rejected rather than implicitly trusted.
+        if cookie_token and (
+            csrf_equal(cookie_token, header_token)
+            or csrf_equal(cookie_token, form_token)
+        ):
             return await call_next(request)
 
-        # For first-time register/login POST, accept when path is one of the auth bootstrap
-        # endpoints AND cookie_token matches submitted token.
-        path = request.url.path
-        allow_bootstrap = path in {
-            "/api/auth/login", "/api/auth/register",
-            "/login", "/register",
-        }
-        if allow_bootstrap and cookie_token and (csrf_equal(cookie_token, form_token) or csrf_equal(cookie_token, header_token)):
-            return await call_next(request)
-        # Bootstrap: if there is NO session cookie AND no csrf cookie yet (first visit POST),
-        # let it through for the auth endpoints only. This avoids a chicken-and-egg loop.
-        if allow_bootstrap and not cookie_token:
-            return await call_next(request)
-
-        log.warning("csrf.reject", path=path, has_cookie=bool(cookie_token))
+        log.warning("csrf.reject", path=request.url.path, has_cookie=bool(cookie_token))
         return JSONResponse({"detail": "csrf check failed"}, status_code=403)
 
 
@@ -121,11 +193,15 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers.setdefault("X-Content-Type-Options", "nosniff")
         response.headers.setdefault("X-Frame-Options", "DENY")
         response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
-        # CSP: self + font origins used by dashboard; allow HTMX from unpkg
+        # CSP: self + font origins used by dashboard; allow HTMX from a
+        # specific pinned path on unpkg (SRI on the <script> tag pins the
+        # exact bytes). No `'unsafe-inline'` on script-src — all dashboard
+        # JS is bundled in /static/trace.js and wired with event delegation
+        # so no inline `<script>` or `onclick=` handlers exist.
         response.headers.setdefault(
             "Content-Security-Policy",
             "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline' https://unpkg.com; "
+            "script-src 'self' https://unpkg.com/htmx.org@2.0.3/dist/htmx.min.js; "
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
             "font-src 'self' https://fonts.gstatic.com; "
             "img-src 'self' data:; "
@@ -141,13 +217,13 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
 class CSRFBootstrapMiddleware(BaseHTTPMiddleware):
     # Paths that need a CSRF cookie seeded on GET (dashboard HTML pages).
-    _SEED_PREFIXES = ("/login", "/register", "/dashboard", "/strategies",
+    _SEED_PREFIXES = ("/invite", "/auth/callback", "/dashboard", "/strategies",
                       "/runs", "/companies")
 
     async def dispatch(self, request: Request, call_next):
         response: Response = await call_next(request)
         p = request.url.path
-        if request.method == "GET" and (p in {"/login", "/register"} or
+        if request.method == "GET" and (p in {"/invite", "/auth/callback"} or
                                          any(p.startswith(pref) for pref in self._SEED_PREFIXES)):
             from app.security import new_csrf_token
 
@@ -179,7 +255,6 @@ def create_app() -> FastAPI:
     app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
     # API (JSON) — prefixed with /api so it doesn't shadow dashboard HTML routes.
-    app.include_router(auth_api.router, prefix="/api")
     app.include_router(strategies_api.router, prefix="/api")
     app.include_router(runs_api.router, prefix="/api")
     app.include_router(analyze_api.router, prefix="/api")
@@ -209,7 +284,7 @@ def create_app() -> FastAPI:
             token = request.cookies.get("trace_session")
             uid = verify_session_token(token) if token else None
             if uid is None:
-                return RedirectResponse("/login", status_code=302)
+                return RedirectResponse("/invite", status_code=302)
         response = await call_next(request)
         return response
 
@@ -217,12 +292,15 @@ def create_app() -> FastAPI:
     async def _val_err(request: Request, exc: RequestValidationError):
         return JSONResponse({"detail": exc.errors()}, status_code=status.HTTP_400_BAD_REQUEST)
 
-    # Rate limits (in-process, per-client window)
+    # Rate limits (in-process, per-client window). Neon Auth throttles magic-link
+    # dispatch upstream, but the /invite POST is entirely local (validates the
+    # invite code on our side), so we still cap it to defeat invite-code brute-
+    # force. 10/min keeps the search endpoint honest too.
     @app.middleware("http")
     async def _rl(request: Request, call_next):
         p = request.url.path
-        if (p.startswith("/api/auth/") or p in {"/login", "/register"}):
-            if request.method == "POST" and _rate_limited(request, "auth", max_per_min=5):
+        if p == "/invite" and request.method == "POST":
+            if _rate_limited(request, "invite", max_per_min=5):
                 return JSONResponse({"detail": "rate limit"}, status_code=429)
         elif p == "/api/search" and request.method == "POST":
             if _rate_limited(request, "search", max_per_min=10):

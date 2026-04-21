@@ -20,8 +20,9 @@ docker compose up -d --build
 docker compose exec api alembic upgrade head
 ```
 
-Open <http://localhost:8000/register>, register with your `INVITE_CODE`,
-then you'll be signed in and routed to `/dashboard`.
+Open <http://localhost:8000/invite>, enter your `INVITE_CODE` + email,
+and you'll be redirected to Neon Auth to sign in via magic link. After
+clicking the link you'll land on `/dashboard`.
 
 ### Offline / tests only
 
@@ -36,11 +37,12 @@ The test suite mocks Gemini and Exa — no network calls, no real keys required.
 ## API surface (JSON)
 
 All JSON API routes are mounted under `/api` so they don't collide with the
-HTML dashboard routes at the root. The dashboard HTML pages live at `/login`,
-`/register`, `/dashboard`, `/strategies/*`, `/runs/*`, `/companies/*`.
+HTML dashboard routes at the root. The dashboard HTML pages live at `/invite`,
+`/auth/callback`, `/dashboard`, `/strategies/*`, `/runs/*`, `/companies/*`.
 
-- `POST /api/auth/register` — invite-gated
-- `POST /api/auth/login`, `POST /api/auth/logout`
+Auth is handled by Neon Auth (magic-link hosted pages); there is no
+first-party `/api/auth/*` surface anymore.
+
 - `GET/POST /api/strategies`, `GET/PATCH/DELETE /api/strategies/{id}`
 - `POST /api/strategies/{id}/suggest-signals` — Gemini-assisted
 - `POST /api/search` `{strategy_id, query?}` → `{run_id}`
@@ -68,10 +70,14 @@ for that run before writing.
 
 - **Secrets**: `.env.example` only; real `.env` is gitignored. No keys in commits.
   Suggested hook: `pre-commit` with `detect-secrets`.
-- **Passwords**: Argon2id (`argon2-cffi`), never logged, constant-time verify.
-- **Sessions**: `itsdangerous` signed token in `HttpOnly; Secure; SameSite=Lax`
-  cookie (Secure is off in `ENV=dev` so you can test over http://localhost).
-  8-hour idle expiry, rotated on login.
+- **Auth**: Neon Auth (Stack Auth) magic-link hosted pages. Backend verifies
+  RS256 JWTs against the project JWKS with `pyjwt[crypto]`. No passwords
+  stored locally. An invite-code gate (`/invite`) must be passed before
+  reaching Neon Auth; the gate issues a signed 5-minute `trace_invite`
+  cookie that is checked at `/auth/callback`.
+- **Sessions**: After callback verification we issue our own `itsdangerous`
+  signed token in `HttpOnly; Secure; SameSite=Lax` cookie (Secure is off in
+  `ENV=dev`). 8-hour idle expiry. Subsequent requests never re-hit Neon Auth.
 - **CSRF**: double-submit token — `trace_csrf` cookie must match either the
   `X-CSRF-Token` header (HTMX/JSON) or the `csrf_token` form field (HTML forms).
   Bootstrap exception for first-time register/login when no prior session exists.
@@ -82,9 +88,9 @@ for that run before writing.
   prompt. All LLM responses are parsed as JSON and validated against a Pydantic
   schema before any persistence or render. Free-form model text is never
   executed or rendered unescaped (Jinja autoescape on everywhere).
-- **Rate limiting**: in-process sliding-window — 5/min on `/api/auth/*` and
-  `/login|/register` POSTs, 10/min on `/api/search`. Single-host by design
-  for V1; swap to Redis-backed if horizontally scaled.
+- **Rate limiting**: in-process sliding-window — 10/min on `/api/search`.
+  Auth abuse is throttled upstream by Neon Auth (magic-link dispatch).
+  Single-host by design for V1; swap to Redis-backed if horizontally scaled.
 - **CORS**: disabled. Dashboard and API share origin.
 - **Security headers**: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`,
   `Referrer-Policy: strict-origin-when-cross-origin`, strict CSP with only the
@@ -114,15 +120,16 @@ repos:
 2. `docker compose -f trace/docker-compose.yml up -d --build` → both healthy.
 3. `docker compose exec api alembic upgrade head` → schema created.
 4. `pytest trace/tests -q` → all green (no network).
-5. Register at `/register` with your invite code → dashboard.
+5. Hit `/invite` with your invite code + email, click the Neon Auth magic link → dashboard.
 6. Create a strategy, add signals (or click "Suggest signals"), save.
 7. Click "Run search" → run detail with ranked companies, math, analyst memos.
 8. Re-run → delta chips show on changed scores.
 9. Ad-hoc: `curl -X POST http://localhost:8000/api/analyze -H 'Content-Type: application/json'
    --cookie "trace_session=...; trace_csrf=..." -H "X-CSRF-Token: ..."
    -d @payload.json`.
-10. Security smoke: `/dashboard` without session → 302; 6th rapid
-    login attempt → 429; `git check-ignore trace/.env` → confirms ignored.
+10. Security smoke: `/dashboard` without session → 302 to `/invite`;
+    `/auth/callback` with no invite cookie → 403; `git check-ignore trace/.env`
+    → confirms ignored.
 
 ## Out of scope (V2)
 

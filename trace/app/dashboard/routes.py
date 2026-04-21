@@ -1,14 +1,31 @@
 """Jinja + HTMX dashboard routes. All POSTs CSRF-checked at middleware."""
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, status
+from fastapi import Path as PathParam
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
+from app.auth.invite import (
+    INVITE_COOKIE,
+    INVITE_MAX_AGE_SECONDS,
+    issue_invite_cookie,
+    verify_invite_cookie,
+)
+from app.auth.neon import (
+    NeonAuthClient,
+    NeonAuthInvalidToken,
+    NeonAuthJWKSUnavailable,
+    consume_token_once,
+)
+from app.config import get_settings
 from app.database import get_db
 from app.deps import CSRF_COOKIE, SESSION_COOKIE, current_user, require_user
 from app.models.result import CompanyResult
@@ -16,13 +33,7 @@ from app.models.run import Run, RunStatus
 from app.models.score_history import ScoreSnapshot
 from app.models.strategy import SignalDef, Strategy
 from app.models.user import User
-from app.schemas.auth import RegisterIn
-from app.security import (
-    hash_password,
-    issue_session_token,
-    new_csrf_token,
-    verify_password,
-)
+from app.security import csrf_equal, issue_session_token, new_csrf_token
 from app.services.llm import GeminiClient
 from app.services.normalizer import CANONICAL
 from app.services.pipeline import run_pipeline
@@ -68,79 +79,177 @@ def _set_session(resp: Response, user_id: int, request: Request) -> None:
     )
 
 
-# ---- Auth pages ----
+# ---- Auth pages (invite gate + Neon Auth callback) ----
 
-@router.get("/login", response_class=HTMLResponse)
-def login_page(request: Request, user: User | None = Depends(current_user)) -> Response:
+def _set_invite_cookie(resp: Response, token: str) -> None:
+    s = get_settings()
+    resp.set_cookie(
+        INVITE_COOKIE,
+        token,
+        max_age=INVITE_MAX_AGE_SECONDS,
+        httponly=True,
+        secure=(s.env == "prod"),
+        samesite="lax",
+        path="/",
+    )
+
+
+@router.get("/invite", response_class=HTMLResponse)
+def invite_page(request: Request, user: User | None = Depends(current_user)) -> Response:
     if user is not None:
         return RedirectResponse("/dashboard", status_code=302)
-    return templates.TemplateResponse("login.html", _ctx(request))
+    return templates.TemplateResponse("invite.html", _ctx(request))
 
 
-@router.post("/login", response_class=HTMLResponse)
-def login_submit(
+@router.post("/invite", response_class=HTMLResponse)
+def invite_submit(
     request: Request,
     email: str = Form(...),
-    password: str = Form(...),
-    db: Session = Depends(get_db),
+    invite_code: str = Form(...),
 ) -> Response:
-    user = db.execute(select(User).where(User.email == email)).scalar_one_or_none()
-    if user is None or not verify_password(user.password_hash, password):
+    s = get_settings()
+    email = (email or "").strip().lower()
+    if not email or "@" not in email:
         return templates.TemplateResponse(
-            "login.html",
-            _ctx(request, error="invalid credentials"),
-            status_code=401,
+            "invite.html",
+            _ctx(request, error="valid email required", email=email),
+            status_code=400,
         )
-    resp = RedirectResponse("/dashboard", status_code=303)
-    _set_session(resp, user.id, request)
+    # Constant-time compare to foreclose timing side-channels on the invite code.
+    if not csrf_equal(invite_code, s.invite_code):
+        return templates.TemplateResponse(
+            "invite.html",
+            _ctx(request, error="invalid invite code", email=email),
+            status_code=403,
+        )
+    callback = str(request.url_for("auth_callback"))
+    neon = NeonAuthClient(s)
+    resp = RedirectResponse(
+        neon.sign_in_url(return_to=callback, email=email),
+        status_code=303,
+    )
+    _set_invite_cookie(resp, issue_invite_cookie(email))
     return resp
 
 
-@router.get("/register", response_class=HTMLResponse)
-def register_page(request: Request, user: User | None = Depends(current_user)) -> Response:
-    if user is not None:
-        return RedirectResponse("/dashboard", status_code=302)
-    return templates.TemplateResponse("register.html", _ctx(request))
+def _harden_callback_response(resp: Response) -> Response:
+    """The callback URL carries a bearer token in its query string. Prevent
+    the browser from caching the page, replaying it from bfcache, or leaking
+    the URL via the Referer header of any sub-resource or subsequent nav."""
+    resp.headers["Cache-Control"] = "no-store, no-cache, max-age=0, must-revalidate"
+    resp.headers["Pragma"] = "no-cache"
+    resp.headers["Referrer-Policy"] = "no-referrer"
+    return resp
 
 
-@router.post("/register", response_class=HTMLResponse)
-def register_submit(
+@router.get("/auth/callback", response_class=HTMLResponse, name="auth_callback")
+def auth_callback(
     request: Request,
-    email: str = Form(...),
-    password: str = Form(...),
-    invite_code: str = Form(...),
     db: Session = Depends(get_db),
 ) -> Response:
-    try:
-        payload = RegisterIn(email=email, password=password, invite_code=invite_code)
-    except Exception as e:
-        return templates.TemplateResponse(
-            "register.html", _ctx(request, error=str(e)), status_code=400
+    # Closed-beta gate: the invite cookie proves they passed /invite on our side.
+    invite = verify_invite_cookie(request.cookies.get(INVITE_COOKIE))
+    if invite is None:
+        return _harden_callback_response(
+            templates.TemplateResponse(
+                "auth_error.html",
+                _ctx(request, message="Invite session expired. Please start again."),
+                status_code=403,
+            )
         )
-    from app.config import get_settings
 
-    if payload.invite_code != get_settings().invite_code:
-        return templates.TemplateResponse(
-            "register.html", _ctx(request, error="invalid invite code"), status_code=403
+    token = request.query_params.get("token") or request.query_params.get("access_token")
+    if not token:
+        return _harden_callback_response(
+            templates.TemplateResponse(
+                "auth_error.html",
+                _ctx(request, message="Missing sign-in token."),
+                status_code=401,
+            )
         )
-    if db.execute(select(User).where(User.email == payload.email)).scalar_one_or_none():
-        return templates.TemplateResponse(
-            "register.html", _ctx(request, error="email already registered"), status_code=409
+
+    neon = NeonAuthClient(get_settings())
+    try:
+        claims = neon.verify_jwt(token)
+    except NeonAuthJWKSUnavailable:
+        return _harden_callback_response(
+            templates.TemplateResponse(
+                "auth_error.html",
+                _ctx(request, message="Auth provider temporarily unreachable. Try again."),
+                status_code=503,
+            )
         )
-    user = User(email=str(payload.email), password_hash=hash_password(payload.password))
-    db.add(user)
+    except NeonAuthInvalidToken:
+        return _harden_callback_response(
+            templates.TemplateResponse(
+                "auth_error.html",
+                _ctx(request, message="Sign-in link invalid or expired."),
+                status_code=401,
+            )
+        )
+
+    # Replay defense: a bearer token in a URL lives forever in edge/CDN logs,
+    # browser history, and potentially Referer headers. Accept each verified
+    # token exactly once — any re-presentation of the same token (even within
+    # its `exp` window) is rejected as invalid.
+    if not consume_token_once(token, claims.exp):
+        return _harden_callback_response(
+            templates.TemplateResponse(
+                "auth_error.html",
+                _ctx(request, message="Sign-in link already used."),
+                status_code=401,
+            )
+        )
+
+    # Login-CSRF defense: the JWT email must match the invite cookie's email.
+    # Otherwise an attacker with their own valid Neon JWT could bait a victim
+    # (who just passed /invite) into signing into the attacker's account.
+    invite_email = str(invite.get("email", "")).strip().lower()
+    jwt_email = claims.email.strip().lower()
+    if not invite_email or invite_email != jwt_email:
+        return _harden_callback_response(
+            templates.TemplateResponse(
+                "auth_error.html",
+                _ctx(
+                    request,
+                    message="Sign-in identity did not match the invited email.",
+                ),
+                status_code=403,
+            )
+        )
+
+    # Upsert by Neon Auth user UUID. Email may change; auth_user_id is the stable key.
+    user = db.execute(
+        select(User).where(User.auth_user_id == claims.sub)
+    ).scalar_one_or_none()
+    if user is None:
+        user = User(
+            email=claims.email,
+            auth_user_id=claims.sub,
+            email_verified_at=datetime.now(tz=timezone.utc),
+        )
+        db.add(user)
+    else:
+        user.email = claims.email
+        user.email_verified_at = datetime.now(tz=timezone.utc)
     db.commit()
     db.refresh(user)
+
     resp = RedirectResponse("/dashboard", status_code=303)
+    resp.delete_cookie(INVITE_COOKIE, path="/")
     _set_session(resp, user.id, request)
-    return resp
+    return _harden_callback_response(resp)
 
 
 @router.post("/logout")
 def logout(request: Request) -> Response:
-    resp = RedirectResponse("/login", status_code=303)
+    s = get_settings()
+    neon = NeonAuthClient(s)
+    invite_url = str(request.url_for("invite_page"))
+    resp = RedirectResponse(neon.sign_out_url(return_to=invite_url), status_code=303)
     resp.delete_cookie(SESSION_COOKIE, path="/")
     resp.delete_cookie(CSRF_COOKIE, path="/")
+    resp.delete_cookie(INVITE_COOKIE, path="/")
     return resp
 
 
@@ -404,8 +513,18 @@ def run_status_fragment(
 
 @router.get("/companies/{company}", response_class=HTMLResponse)
 def company_detail(
-    company: str,
     request: Request,
+    # Bound length and restrict to printable, company-name-like characters.
+    # Aggregator upstream writes names via `_canon_company`, which produces
+    # a conservative set: ascii letters/digits/`& - . , ' ` plus spaces.
+    company: Annotated[
+        str,
+        PathParam(
+            min_length=1,
+            max_length=200,
+            pattern=r"^[A-Za-z0-9][A-Za-z0-9 .,'&\-]{0,199}$",
+        ),
+    ],
     db: Session = Depends(get_db),
     user: User = Depends(require_user),
 ) -> Response:

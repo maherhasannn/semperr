@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/static/trace.css"/>
-  <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.min.js" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
 </head>
 <body>
   <div class="topbar">
@@ -27,8 +27,8 @@
           <button class="btn ghost" type="submit">Sign out</button>
         </form>
       {% else %}
-        <a href="/login">Sign in</a>
-        <a href="/register">Request access</a>
+        <a href="/invite">Sign in</a>
+        <a href="/invite">Request access</a>
       {% endif %}
     </nav>
   </div>

@@ -53,14 +53,46 @@ class Settings(BaseSettings):
     gemini_api_key: str = "test-key"
     exa_api_key: str = "test-key"
 
+    # Neon Auth (Stack Auth) — magic-link hosted pages
+    neon_auth_project_id: str = "test-project"
+    neon_auth_secret_server_key: str = ""
+
     # Defaults tuned for Vercel Hobby (60s) — keep the pipeline under budget.
     exa_concurrency: int = 3
     max_docs_per_query: int = 3
+
+    # Number of trusted proxy hops in front of the app. Used to pick the real
+    # client IP from X-Forwarded-For. Vercel's edge appends exactly one hop, so
+    # the default is 1. Set to 0 when running without any trusted proxy (the
+    # app will then use the TCP peer address and ignore XFF entirely).
+    # NEVER trust the leftmost XFF value unconditionally — that value is fully
+    # attacker-controlled and trivially spoofable, which would neuter every
+    # rate limit keyed on client IP.
+    trusted_proxy_hops: int = 1
 
     @field_validator("database_url")
     @classmethod
     def _coerce_db_url(cls, v: str) -> str:
         return _normalize_db_url(v)
+
+    @property
+    def neon_auth_jwks_url(self) -> str:
+        return (
+            f"https://api.stack-auth.com/api/v1/projects/"
+            f"{self.neon_auth_project_id}/.well-known/jwks.json"
+        )
+
+    @property
+    def neon_auth_sign_in_url(self) -> str:
+        return f"https://{self.neon_auth_project_id}.accounts.stack-auth.com/sign-in"
+
+    @property
+    def neon_auth_sign_out_url(self) -> str:
+        return f"https://{self.neon_auth_project_id}.accounts.stack-auth.com/sign-out"
+
+    @property
+    def neon_auth_issuer(self) -> str:
+        return f"https://api.stack-auth.com/api/v1/projects/{self.neon_auth_project_id}"
 
 
 @lru_cache(maxsize=1)

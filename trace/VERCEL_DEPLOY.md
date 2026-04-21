@@ -131,11 +131,11 @@ Steps:
    - `trace` → **CNAME** → `cname.vercel-dns.com`
 4. Wait ~5 min for DNS propagation. Vercel auto-provisions SSL certificates
    once each record resolves (Let's Encrypt, renewed automatically).
-5. The marketing site's sign-in links already point at
-   `https://trace.semperr.com/login` — no further code change needed
+5. The marketing site's sign-in links point at
+   `https://trace.semperr.com/invite` — no further code change needed
    once DNS is live. The Trace dashboard footer has a back-link to
    `https://semperr.com`. The subdomain identifies the product, so routes
-   inside the app are un-prefixed: `/login`, `/register`, `/dashboard`,
+   inside the app are un-prefixed: `/invite`, `/auth/callback`, `/dashboard`,
    `/strategies/*`, `/runs/*`, `/companies/*`. The JSON API is under `/api/*`.
 
 ## 6. Smoke test
@@ -147,12 +147,13 @@ export BASE=https://trace.semperr.com
 # Or on the raw Vercel hostname while DNS propagates:
 # export BASE=https://<trace-project>.vercel.app
 
-# 1. Dashboard loads and redirects to login.
-curl -sI "$BASE/dashboard" | head -1    # 302 to /login
+# 1. Dashboard loads and redirects to the invite gate.
+curl -sI "$BASE/dashboard" | head -1    # 302 to /invite
 
-# 2. Register (via the dashboard in a browser — easier, handles CSRF).
-open "$BASE/register"
-# Enter email, password, and your INVITE_CODE.
+# 2. Request access via the invite page (in a browser — easier, handles CSRF).
+open "$BASE/invite"
+# Enter your email + INVITE_CODE; you'll be redirected to Neon Auth's hosted
+# sign-in page. Complete the magic link to land on /dashboard.
 
 # 3. Create a strategy, add signals (e.g. covenant_breach w=2, missed_payment w=1.5),
 # click "Run search". The request will hang up to 60s; the results page renders
@@ -188,8 +189,10 @@ When you outgrow 60s (e.g. 8+ signals × 3 docs × LLM extraction > budget):
   `fonts.gstatic.com` + `unpkg.com` (htmx). If you move htmx to your own
   bundle, tighten `script-src` to `'self'`.
 - Rotate `SECRET_KEY` by redeploying with a new value — this invalidates all
-  active sessions (users must re-login).
-- Rotate `INVITE_CODE` after the invited cohort has registered.
+  active sessions (users must re-authenticate via Neon Auth).
+- Rotate `INVITE_CODE` after the invited cohort has signed up.
+- `NEON_AUTH_PROJECT_ID` and `NEON_AUTH_SECRET_SERVER_KEY` live in Vercel env
+  vars. The JWKS URL is derived from the project id.
 
 ## Local dev (unchanged)
 
@@ -200,5 +203,5 @@ interferes with it:
 cp .env.example .env && $EDITOR .env
 docker compose up -d --build
 docker compose exec api alembic upgrade head
-open http://localhost:8000/register
+open http://localhost:8000/invite
 ```

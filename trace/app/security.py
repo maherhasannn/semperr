@@ -1,4 +1,4 @@
-"""Password hashing + session token sign/verify. No secrets in logs."""
+"""Session token sign/verify + CSRF helpers. No secrets in logs."""
 from __future__ import annotations
 
 import hmac
@@ -6,33 +6,9 @@ import secrets
 import time
 from typing import Any
 
-from argon2 import PasswordHasher
-from argon2.exceptions import VerifyMismatchError
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 from app.config import get_settings
-
-_hasher = PasswordHasher()  # argon2id, sane defaults
-
-
-def hash_password(plain: str) -> str:
-    return _hasher.hash(plain)
-
-
-def verify_password(hash_: str, plain: str) -> bool:
-    try:
-        return _hasher.verify(hash_, plain)
-    except VerifyMismatchError:
-        return False
-    except Exception:
-        return False
-
-
-def needs_rehash(hash_: str) -> bool:
-    try:
-        return _hasher.check_needs_rehash(hash_)
-    except Exception:
-        return False
 
 
 def _serializer() -> URLSafeTimedSerializer:

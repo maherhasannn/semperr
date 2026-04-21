@@ -12,7 +12,6 @@ from app.models.score_history import ScoreSnapshot
 from app.models.strategy import SignalDef, Strategy
 from app.models.user import User
 from app.schemas.result import ExtractedDoc, ExtractedSignal
-from app.security import hash_password
 from app.services.exa import ExaDoc
 from app.services.llm import GeminiClient
 from app.services.pipeline import run_pipeline
@@ -84,7 +83,7 @@ def user_and_strategy():
     from app.database import SessionLocal
 
     db = SessionLocal()
-    u = User(email="p@example.com", password_hash=hash_password("correct-horse-battery"))
+    u = User(email="p@example.com", auth_user_id="neon-test-uuid-pipeline")
     db.add(u)
     db.commit()
     db.refresh(u)
