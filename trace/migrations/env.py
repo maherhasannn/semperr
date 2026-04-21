@@ -14,9 +14,14 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Inject env DATABASE_URL so we don't have to bake it into alembic.ini
+# Inject env DATABASE_URL so we don't have to bake it into alembic.ini.
+# `settings.database_url` is already pulled from the DATABASE_URL env var
+# by pydantic-settings AND passed through `_normalize_db_url`, which
+# rewrites `postgresql://` to `postgresql+psycopg://` (psycopg v3) and
+# ensures `sslmode=require`. Using the raw env value here would land on
+# SQLAlchemy's default postgres dialect (psycopg2), which isn't installed.
 settings = get_settings()
-config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL", settings.database_url))
+config.set_main_option("sqlalchemy.url", settings.database_url)
 
 target_metadata = Base.metadata
 
