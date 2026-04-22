@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Discovery is broken. Here's how we're fixing it — The Charter</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../styles.css"/>
+<link rel="stylesheet" href="../blog.css"/>
+</head>
+<body class="blog-body">
+
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="../charter.html" class="blog-header-back">← The Charter</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="../charter.html#posts">Archive</a>
+      <a href="../charter.html#subscribe">Subscribe</a>
+      <a href="../index.html">Semperr</a>
+    </nav>
+  </div>
+</header>
+
+<article class="post-article">
+  <div class="container">
+    <div class="post-meta-row" style="justify-content:center;">
+      <span class="cat">Clad</span>
+      <span class="dot"></span>
+      <span>18 April 2026</span>
+      <span class="dot"></span>
+      <span>11 min read</span>
+      <span class="dot"></span>
+      <span style="color:var(--gold-deep);"><span class="reads-dot"></span>9,856 reads</span>
+    </div>
+    <h1 class="post-title" style="text-align:center;">
+      Discovery is broken.<br/>
+      Here's how we're <em>fixing</em> it.
+    </h1>
+    <p class="post-deck" style="text-align:center;">
+      Litigation support teams are drowning in documents. Semantic search isn't enough—you need structured extraction at scale. A dispatch from the Clad team on what's working.
+    </p>
+
+    <div class="post-byline-row">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="avatar">H</div>
+        <div>
+          <div class="byline-name">Henry Okafor</div>
+          <div class="byline-role">Partner · San Francisco</div>
+        </div>
+      </div>
+      <div class="post-share">
+        <a href="#">Copy link</a>
+        <a href="#">Email</a>
+        <a href="#">Print</a>
+      </div>
+    </div>
+
+    <div class="post-body">
+      <p class="lede">A litigation partner at an Am Law 50 firm told us last month that his team had just reviewed 400,000 documents for a single motion. The review took eight weeks, cost $2.1 million, and found 147 responsive documents. When I asked if he thought there were more responsive documents in the set, he said "probably"—but the budget was gone and the deadline had passed.</p>
+
+      <p>This is not an unusual story. Document review in complex litigation has become an industrial process: upload documents to a platform, train associates and contract attorneys on relevance criteria, review in batches, escalate edge cases to partners, produce the set, and hope nothing critical was missed.</p>
+
+      <p>The process is expensive, slow, and—most importantly—it does not actually solve the problem. The goal of discovery is not to review documents. It is to understand what happened, who knew what when, and whether the evidence supports your theory of the case. Document review is a means, not an end.</p>
+
+      <div class="pullquote">
+        Semantic search finds documents that match a query. Structured extraction finds the facts that matter for your case.
+      </div>
+
+      <h2>Why semantic search is not enough</h2>
+
+      <p>The legal tech industry has spent the past five years building semantic search tools for discovery. These tools use embeddings to find documents that are conceptually similar to a search query, even if they do not share exact keywords.</p>
+
+      <p>This is useful. It helps you find the email where the CFO writes "we need to be creative with the numbers this quarter" even if your search query was "accounting fraud." But it does not help you answer the questions that matter: How many times did this happen? Who else was involved? What was the timeline? What were the dollar amounts?</p>
+
+      <p>To answer those questions, you need structured extraction. You need a system that can read 400,000 documents and produce a table that says: these are the fifteen people who discussed revenue recognition between Q2 and Q4 of 2023, these are the thirty-two emails where they used hedge language, and these are the eight documents where specific adjustments were proposed.</p>
+
+      <h2>What structured extraction looks like in practice</h2>
+
+      <p>We built Clad to do exactly this. The system takes an unstructured document set—emails, contracts, presentations, spreadsheets—and extracts structured data according to a schema you define.</p>
+
+      <p>For a contract dispute, the schema might be: party names, contract dates, payment terms, amendment history, breach allegations. For an employment case, it might be: complaint dates, complainant names, alleged conduct, witnesses, remedial actions taken.</p>
+
+      <p>Once the data is extracted, you can query it like a database. Show me every document where Person A and Person B discussed Topic X between Date Y and Date Z. Show me all contracts where payment terms were modified after signing. Show me every complaint that was escalated to HR but not to legal.</p>
+
+      <p>This is not hypothetical. We have run this process on datasets ranging from 50,000 to 3 million documents. The extraction accuracy—measured against manual review—is consistently above 94%. The time savings relative to traditional review is typically 60-80%. And the cost savings are even larger.</p>
+
+      <h2>The human-in-the-loop question</h2>
+
+      <p>Every legal team we work with asks the same question: can we trust the extraction, or do we still need to review everything manually?</p>
+
+      <p>Our answer: you need a human in the loop, but not in the way you think. The human's job is not to review every document. It is to review the extraction <em>schema</em>, validate a statistical sample of extractions, and flag systematic errors that need to be corrected.</p>
+
+      <p>This is fundamentally different from document-by-document review. Instead of asking "is this document responsive," you are asking "is the system correctly extracting the pattern we care about." The latter question is answerable with a 2% sample. The former requires reviewing everything.</p>
+
+      <p style="color:var(--gold-deep); font-style:italic; margin-top:2em;">— Henry</p>
+    </div>
+
+    <div class="post-foot">
+      <div class="post-foot-tags">
+        <span class="tag steel">Clad</span>
+        <span class="tag">Legal Tech</span>
+        <span class="tag">Discovery</span>
+      </div>
+      <div class="post-foot-author">
+        <div class="avatar">H</div>
+        <div class="post-foot-author-body">
+          <div class="post-foot-author-name">Henry Okafor</div>
+          <div class="post-foot-author-role">Partner · San Francisco</div>
+          <p class="post-foot-author-bio">
+            Henry co-founded Semperr in 2021. He leads the firm's legal technology work and writes the Charter on matters concerning Clad. Before Semperr he built document intelligence systems at a litigation analytics company.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<section class="related">
+  <div class="container">
+    <div class="related-label">Continue reading</div>
+    <div class="related-grid">
+      <a href="contract-intelligence.html" class="related-card">
+        <div class="related-card-meta"><span class="cat">Clad</span> · 12 April · <span style="color:var(--gold-deep);">7,203 reads</span></div>
+        <div class="related-card-title">Contract intelligence at scale: what we learned from 2M documents.</div>
+        <p class="related-card-excerpt">Lessons from extracting structured data from two million contracts.</p>
+      </a>
+      <a href="the-detail-is-the-work.html" class="related-card">
+        <div class="related-card-meta"><span class="cat">Clad</span> · 04 March · <span style="color:var(--gold-deep);">7,281 reads</span></div>
+        <div class="related-card-title">The detail is the work.</div>
+        <p class="related-card-excerpt">Column alignment, time-zone conversions, fonts on old monitors. None of it is cosmetic.</p>
+      </a>
+      <a href="jurisdiction-specific-models.html" class="related-card">
+        <div class="related-card-meta"><span class="cat">Clad</span> · 28 March · <span style="color:var(--gold-deep);">6,094 reads</span></div>
+        <div class="related-card-title">The argument for jurisdiction-specific models.</div>
+        <p class="related-card-excerpt">Why generic models fail on cross-border legal research.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>

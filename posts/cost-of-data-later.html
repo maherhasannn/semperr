@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>The real cost of "we'll figure out the data later" — The Charter</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../styles.css"/>
+<link rel="stylesheet" href="../blog.css"/>
+</head>
+<body class="blog-body">
+
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="../charter.html" class="blog-header-back">← The Charter</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="../charter.html#posts">Archive</a>
+      <a href="../charter.html#subscribe">Subscribe</a>
+      <a href="../index.html">Semperr</a>
+    </nav>
+  </div>
+</header>
+
+<article class="post-article">
+  <div class="container">
+    <div class="post-meta-row" style="justify-content:center;">
+      <span class="cat">Trace</span>
+      <span class="dot"></span>
+      <span>29 March 2026</span>
+      <span class="dot"></span>
+      <span>8 min read</span>
+      <span class="dot"></span>
+      <span style="color:var(--gold-deep);"><span class="reads-dot"></span>6,472 reads</span>
+    </div>
+    <h1 class="post-title" style="text-align:center;">
+      The real cost of<br/>
+      "we'll figure out the data <em>later</em>."
+    </h1>
+    <p class="post-deck" style="text-align:center;">
+      Technical debt compounds. Data debt multiplies. Why deferring your data architecture work costs exponentially more than doing it right the first time.
+    </p>
+
+    <div class="post-byline-row">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner · New York</div>
+        </div>
+      </div>
+      <div class="post-share">
+        <a href="#">Copy link</a>
+        <a href="#">Email</a>
+        <a href="#">Print</a>
+      </div>
+    </div>
+
+    <div class="post-body">
+      <p class="lede">A PE firm came to us last year with a problem. They had eight years of portfolio company data—revenue, margins, headcount, customer metrics—all stored in spreadsheets, each with different column names, different update frequencies, and different definitions of what "revenue" actually meant. They wanted us to build them a portfolio intelligence dashboard.</p>
+
+      <p>The dashboard itself took two weeks. Cleaning the data took four months. The total cost: roughly $800,000, most of which went to reconciling data that should never have been entered inconsistently in the first place.</p>
+
+      <p>This is the real cost of "we'll figure out the data later." Not the cost of building the system you should have built years ago. The cost of <em>cleaning up</em> the mess you created by not building it.</p>
+
+      <div class="pullquote">
+        Data debt is different from technical debt. Technical debt slows you down. Data debt makes you wrong.
+      </div>
+
+      <h2>Why data debt multiplies</h2>
+
+      <p>Technical debt compounds linearly. Every month you defer refactoring that messy codebase, it gets a little harder to refactor. But you can still do it. The code is not getting more complicated on its own. It is just aging.</p>
+
+      <p>Data debt multiplies. Every month you defer standardizing your data definitions, you collect another month of inconsistent data. And because data from different periods needs to be comparable, you cannot just "start fresh" with clean data going forward. You have to <em>go back</em> and clean the historical data, or accept that your historical analysis is unreliable.</p>
+
+      <p>The PE firm we worked with wanted to analyze which portfolio companies outperformed their initial revenue projections. But "revenue" in year one included deferred revenue, "revenue" in year three did not, and nobody remembered when the definition changed or why. So the analysis was impossible without manually auditing five years of spreadsheets.</p>
+
+      <h2>The three mistakes that cause data debt</h2>
+
+      <p><strong>Not defining the schema upfront.</strong> When you start collecting data without defining what the fields mean, you end up with fifteen interpretations of "gross margin" and no way to reconcile them without going back to the source.</p>
+
+      <p><strong>Not enforcing validation.</strong> When you let people enter "N/A" in a numeric field, or leave required fields blank, or type dates in six different formats, you create data that cannot be queried programmatically.</p>
+
+      <p><strong>Not versioning definitions.</strong> When you change how you calculate a metric, you need to either recalculate all historical values with the new definition, or document exactly when the definition changed. If you do neither, you have data that looks continuous but is not actually comparable.</p>
+
+      <h2>How to avoid it</h2>
+
+      <p>The firms that avoid data debt treat data entry as a system design problem, not a user training problem. They build systems that make it <em>easier</em> to enter clean data than to enter messy data.</p>
+
+      <p>Dropdown menus instead of free text. Date pickers instead of manual entry. Validation that rejects obviously wrong values before they get saved. Automated imports from source systems instead of manual copy-paste from emails.</p>
+
+      <p>And most importantly: they decide upfront what they care about, define it clearly, and enforce the definition from day one. Because the cost of getting it right at the beginning is a fraction of the cost of fixing it later.</p>
+
+      <p style="color:var(--gold-deep); font-style:italic; margin-top:2em;">— Eleanor</p>
+    </div>
+
+    <div class="post-foot">
+      <div class="post-foot-tags">
+        <span class="tag gold">Trace</span>
+        <span class="tag">Data Architecture</span>
+        <span class="tag">Technical Debt</span>
+      </div>
+      <div class="post-foot-author">
+        <div class="avatar gold">E</div>
+        <div class="post-foot-author-body">
+          <div class="post-foot-author-name">Eleanor Voss</div>
+          <div class="post-foot-author-role">Partner · New York</div>
+          <p class="post-foot-author-bio">
+            Eleanor co-founded Semperr in 2021. She leads the firm's work with private-equity clients and writes the Charter on matters concerning Trace and the House.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>

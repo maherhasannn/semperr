@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Contract intelligence at scale: what we learned from 2M documents — The Charter</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../styles.css"/>
+<link rel="stylesheet" href="../blog.css"/>
+</head>
+<body class="blog-body">
+
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="../charter.html" class="blog-header-back">← The Charter</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="../charter.html#posts">Archive</a>
+      <a href="../charter.html#subscribe">Subscribe</a>
+      <a href="../index.html">Semperr</a>
+    </nav>
+  </div>
+</header>
+
+<article class="post-article">
+  <div class="container">
+    <div class="post-meta-row" style="justify-content:center;">
+      <span class="cat">Clad</span>
+      <span class="dot"></span>
+      <span>12 April 2026</span>
+      <span class="dot"></span>
+      <span>15 min read</span>
+      <span class="dot"></span>
+      <span style="color:var(--gold-deep);"><span class="reads-dot"></span>7,203 reads</span>
+    </div>
+    <h1 class="post-title" style="text-align:center;">
+      Contract intelligence at scale:<br/>
+      what we learned from <em>2M documents</em>.
+    </h1>
+    <p class="post-deck" style="text-align:center;">
+      Lessons from extracting structured data from two million contracts. What works, what doesn't, and why accuracy matters more than speed.
+    </p>
+
+    <div class="post-byline-row">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="avatar">H</div>
+        <div>
+          <div class="byline-name">Henry Okafor</div>
+          <div class="byline-role">Partner · San Francisco</div>
+        </div>
+      </div>
+      <div class="post-share">
+        <a href="#">Copy link</a>
+        <a href="#">Email</a>
+        <a href="#">Print</a>
+      </div>
+    </div>
+
+    <div class="post-body">
+      <p class="lede">Over the past three years, we have processed just over two million contracts through Clad—vendor agreements, employment contracts, NDAs, leases, partnership agreements, and several categories we cannot discuss publicly. The lessons from that volume have changed how we think about contract intelligence.</p>
+
+      <p>The most important lesson: extraction is not a solved problem. Every vendor in this space claims 95%+ accuracy, but when you ask what they are measuring accuracy <em>on</em>, the answer is usually "entity extraction" or "clause classification"—tasks that sound impressive but are not actually useful for contract analytics.</p>
+
+      <p>What matters for contract intelligence is whether you can answer questions like: Which contracts have auto-renewal clauses? Which ones allow termination for convenience? Which ones have uncapped liability? And can you answer those questions with enough accuracy that a general counsel will stake their legal opinion on the results?</p>
+
+      <div class="pullquote">
+        Contract extraction is useful when the output is accurate enough to make decisions. Anything less is expensive pattern recognition.
+      </div>
+
+      <h2>What we measure</h2>
+
+      <p>We measure extraction accuracy on decision-relevant fields. For a commercial contract, that means: contract value, payment terms, renewal terms, termination provisions, liability caps, indemnification scope, governing law, and amendment requirements.</p>
+
+      <p>For each field, we calculate precision (of the clauses we flagged as containing this provision, how many actually do) and recall (of all the clauses that contain this provision, how many did we find). We do not ship a model until both precision and recall are above 92% on a held-out test set.</p>
+
+      <p>This is harder than it sounds. Contracts are written by humans who use different language for the same concept, bury important terms in subordinate clauses, and sometimes contradict themselves across different sections. A model that works perfectly on NDAs will fail catastrophically on joint venture agreements.</p>
+
+      <h2>The schema problem</h2>
+
+      <p>Most contract intelligence platforms use a fixed schema: they extract the same set of fields from every contract. This works for high-volume, standardized agreements like NDAs or employment offers. It breaks down for bespoke agreements where the fields that matter are unique to the deal.</p>
+
+      <p>We built Clad to support custom schemas. The client defines what they care about, we fine-tune the extraction models on their specific contract types, and we validate accuracy on a labeled sample before running the full corpus. This takes longer than off-the-shelf extraction, but it produces results the client can actually use.</p>
+
+      <h2>Why this matters for M&A</h2>
+
+      <p>The most common use case for contract intelligence is M&A diligence. The acquiring company wants to understand what obligations they are inheriting: What are the revenue commitments? Are there change-of-control provisions that could trigger renegotiation? Are there guarantees or indemnities that survive closing?</p>
+
+      <p>Getting this wrong is expensive. We have seen deals where post-close analysis revealed liabilities that were not flagged during diligence, because the extraction system missed a clause or misinterpreted its scope. The cost of that error—renegotiating terms, unwinding the deal, or eating the liability—far exceeds the cost of doing the extraction correctly in the first place.</p>
+
+      <p style="color:var(--gold-deep); font-style:italic; margin-top:2em;">— Henry</p>
+    </div>
+
+    <div class="post-foot">
+      <div class="post-foot-tags">
+        <span class="tag steel">Clad</span>
+        <span class="tag">Contract Intelligence</span>
+        <span class="tag">M&A</span>
+      </div>
+      <div class="post-foot-author">
+        <div class="avatar">H</div>
+        <div class="post-foot-author-body">
+          <div class="post-foot-author-name">Henry Okafor</div>
+          <div class="byline-role">Partner · San Francisco</div>
+          <p class="post-foot-author-bio">
+            Henry co-founded Semperr in 2021. He leads the firm's legal technology work and writes the Charter on matters concerning Clad.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>
