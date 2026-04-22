@@ -3,1550 +3,1054 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Semperr — Software serious businesses run on.</title>
+<title>The Charterr — A publication from Semperr</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
 
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Serif+Display:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,400&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
 
 <style>
 :root {
-  --ink: #0b1220; --ink-soft: #141c2e; --ink-line: #1e2640;
-  --paper: #f8f6f0; --paper-warm: #efeadb; --paper-line: #e4dfcf;
-  --gold: #c9a961; --gold-deep: #a68846;
-  --steel: #4a7fc1; --steel-deep: #2f5c96;
-  --rust: #b8502a; --green: #4a7a5c;
-  --muted: #6b7388; --muted-paper: #7a7466;
+  --ink: #0b1220;
+  --ink-soft: #141c2e;
+  --paper: #f8f6f0;
+  --paper-warm: #efeadb;
+  --paper-line: #e4dfcf;
+  --gold: #c9a961;
+  --gold-deep: #a68846;
+  --muted: #6b7388;
+  --muted-light: #9099ad;
   --serif: "Instrument Serif", "Times New Roman", serif;
-  --sans: "Inter Tight", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
-  --maxw: 1440px; --pad: clamp(20px, 4vw, 64px);
+  --sans: "Inter Tight", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --maxw: 1200px;
+  --pad: clamp(20px, 4vw, 48px);
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { background: var(--paper); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
-body { overflow-x: hidden; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
-.h-display { font-family: var(--serif); font-weight: 400; letter-spacing: -0.02em; line-height: 0.95; }
-.h-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500; }
-.h-serif { font-family: var(--serif); font-weight: 400; line-height: 1.02; letter-spacing: -0.015em; }
-.t-body { font-size: 16px; line-height: 1.55; color: var(--muted-paper); }
-.grain {
-  position: absolute; inset: 0; pointer-events: none; opacity: 0.035; mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
-}
-.hair { border-top: 1px solid var(--paper-line); }
-.container { max-width: var(--maxw); margin: 0 auto; padding-left: var(--pad); padding-right: var(--pad); }
-@media (max-width: 1100px) {
-  .dev-rig-grid { grid-template-columns: 1fr !important; }
-}
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
 
-/* ——— Animations ——— */
-@keyframes scanLine {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(100%); }
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
 }
-@keyframes dataFloat {
-  0% { transform: translateY(0); opacity: 0; }
-  8% { opacity: 1; }
-  88% { opacity: 1; }
-  100% { transform: translateY(-105vh); opacity: 0; }
+.serif { font-family: var(--serif); font-weight: 400; }
+.mono { font-family: var(--mono); }
+
+/* Category pills */
+.cat-pill {
+  display: inline-block;
+  padding: 6px 14px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--paper-line);
+  transition: all 0.2s;
+  cursor: pointer;
 }
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-@keyframes constellationPulse {
-  0%, 100% { r: inherit; opacity: 0.25; }
-  50% { opacity: 0.6; }
-}
-@keyframes constellationDrift {
-  0%, 100% { transform: translate(0, 0); }
-  33% { transform: translate(1.5px, -1px); }
-  66% { transform: translate(-1px, 1.5px); }
-}
-@keyframes sealSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.cat-pill:hover, .cat-pill.active {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
 
-/* ——— Hover classes ——— */
-.proof-card {
-  transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
-              border-color 0.4s ease,
-              box-shadow 0.4s ease !important;
+/* Dispatch card */
+.dispatch-card {
+  display: block;
+  padding: 28px;
+  border: 1px solid var(--paper-line);
+  transition: all 0.25s ease;
+  background: var(--paper);
 }
-.proof-card:hover {
-  transform: translateY(-4px) !important;
-  border-color: rgba(201,169,97,0.35) !important;
-  box-shadow: 0 12px 40px -12px rgba(201,169,97,0.18), 0 0 0 1px rgba(201,169,97,0.1) !important;
+.dispatch-card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 8px 32px -8px rgba(201,169,97,0.15);
+  transform: translateY(-2px);
 }
-.cap-tag {
-  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease !important;
-  cursor: default;
+
+/* Author circle */
+.author-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  background: var(--ink);
+  color: var(--paper);
 }
-.cap-tag:hover {
+
+/* Source badges */
+.source-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 2px;
+}
+.source-badge.semperr { background: var(--gold); color: var(--ink); }
+.source-badge.external { background: rgba(11,18,32,0.08); color: var(--ink); }
+
+/* CTA button */
+.cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 2px;
+  transition: all 0.2s;
+  border: 2px solid var(--ink);
+}
+.cta-primary:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+.cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  border: 2px solid var(--ink);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.cta-secondary:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* Mosaic cards */
+.mosaic-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.mosaic-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.3);
+}
+.mosaic-card:hover img {
+  opacity: 0.85 !important;
+  transition: opacity 0.3s ease;
+}
+
+/* Grid utilities */
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; }
+.article-row { display: grid; grid-template-columns: 200px 1fr; gap: 24px; }
+.article-grid { display: grid; grid-template-columns: 140px 1fr; gap: 20px; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+.quotes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.events-row-2 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+/* Event card hover */
+.event-card:hover {
   border-color: var(--gold) !important;
-  color: var(--gold) !important;
-  background: rgba(201,169,97,0.06) !important;
+  box-shadow: 0 8px 24px -8px rgba(201,169,97,0.2);
+  transform: translateY(-2px);
 }
 
-/* ——— Reduced Motion ——— */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+/* Mobile */
+@media (max-width: 900px) {
+  .grid-2 { grid-template-columns: 1fr !important; }
+  .grid-3 { grid-template-columns: 1fr !important; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-2-1 { grid-template-columns: 1fr !important; }
+  .hide-mobile { display: none !important; }
+  .masthead-grid { grid-template-columns: 1fr !important; text-align: center !important; }
+  .masthead-grid .eyebrow { justify-content: center; }
+  .mosaic-top { grid-template-columns: 1fr !important; }
+  .mosaic-top > div { flex-direction: column !important; }
+  .mosaic-row { grid-template-columns: 1fr !important; }
+  .mosaic-bottom { grid-template-columns: 1fr !important; }
+  .content-split { grid-template-columns: 1fr !important; }
+  .content-split aside { order: -1; }
+  .article-row { grid-template-columns: 1fr !important; }
+  .article-row img { height: 200px !important; }
+  .article-grid { grid-template-columns: 1fr !important; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .quotes-grid { grid-template-columns: 1fr !important; }
+  .events-grid { grid-template-columns: 1fr !important; }
+  .events-row-2 { grid-template-columns: 1fr !important; }
 }
 
-/* ——— Mobile (<=768px) ——— */
-.m-only { display: none; }
-@media (max-width: 768px) {
-  :root { --pad: 20px; }
-  .m-only { display: block !important; }
-  .m-hide { display: none !important; }
-
-  section [style*="grid-template-columns"],
-  footer [style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 24px !important; }
-
-  [style*="clamp(64px"], [style*="clamp(60px"] { font-size: 52px !important; line-height: 0.98 !important; }
-  [style*="clamp(56px"] { font-size: 46px !important; line-height: 1 !important; }
-  [style*="clamp(52px"] { font-size: 42px !important; line-height: 1.02 !important; }
-  [style*="clamp(48px"] { font-size: 40px !important; }
-  [style*="clamp(42px"] { font-size: 36px !important; }
-  [style*="clamp(36px"] { font-size: 30px !important; }
-
-  section { padding-top: 48px !important; padding-bottom: 56px !important; }
-
-  .mast-nav, .mast-eyebrow, .mast-signin { display: none !important; }
-  .mast-burger { display: inline-flex !important; }
-  .mast-panel { display: block; }
-
-  p { font-size: 16px !important; line-height: 1.55 !important; }
-
-  .charter-value-row { grid-template-columns: 1fr !important; gap: 8px !important; }
-  .charter-value-numeral { display: inline !important; margin-right: 8px !important; }
-  .hiring-kinetic { font-size: 48px !important; min-height: 80px !important; margin-top: 32px !important; }
-  .footer-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
-  .data-stream { display: none !important; }
-  .constellation-wrap { display: none !important; }
-  .charter-seal { display: none !important; }
-  .mast-cta { display: none !important; }
-  .proof-headline br { display: none; }
-  .cap-headline br { display: none; }
-  .redacted-name { text-overflow: ellipsis; }
-  .typed-cmd { text-overflow: ellipsis; }
-  .footer-band { flex-wrap: wrap !important; gap: 12px !important; }
-  .footer-band-bottom { flex-wrap: wrap !important; gap: 8px !important; justify-content: center !important; text-align: center !important; }
-  footer { padding: 48px 0 32px !important; }
+@media (max-width: 600px) {
+  .grid-4 { grid-template-columns: 1fr !important; }
+  .stats-grid { grid-template-columns: 1fr !important; }
 }
 </style>
-
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 </head>
 <body>
-<div id="root"></div>
 
-<script type="text/babel">
+<!-- ===== TOP BAR ===== -->
+<div style="background: var(--ink); color: var(--paper); padding: 12px 0;">
+  <div class="container" style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;">
+    <a href="/" class="serif" style="font-size: 16px;">
+      The Charter<span style="color: var(--gold);">r</span> <span style="font-size: 14px; color: var(--muted-light);">by</span> Sempe<span style="color: var(--gold);">rr</span>
+    </a>
+    <span class="eyebrow" style="color: var(--gold);">110K+ SUBSCRIBERS</span>
+    <div style="display: flex; align-items: center; gap: 24px; justify-content: flex-end;">
+      <a href="#subscribe" class="eyebrow" style="color: var(--muted-light);">Subscribe</a>
+      <a href="contact.html" class="eyebrow" style="color: var(--gold);">Work with us →</a>
+    </div>
+  </div>
+</div>
 
-/* ===== Animation Utilities ===== */
 
-function useInView(ref, threshold = 0.15) {
-  const [inView, setInView] = React.useState(false);
-  React.useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setInView(true);
-      return;
-    }
-    if (!ref.current) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.disconnect(); } },
-      { threshold }
-    );
-    obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [ref, threshold]);
-  return inView;
-}
-
-function RevealLine({ delay = 0, color = 'var(--gold)', height = 1, glow = false, style = {} }) {
-  const ref = React.useRef(null);
-  const inView = useInView(ref);
-  return (
-    <div ref={ref} style={{
-      height,
-      background: color,
-      transform: inView ? 'scaleX(1)' : 'scaleX(0)',
-      transformOrigin: 'left',
-      transition: `transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s`,
-      boxShadow: glow && inView ? `0 0 12px ${color}, 0 0 3px ${color}` : 'none',
-      ...style,
-    }} />
-  );
-}
-
-function StaggerReveal({ children, stagger = 0.12, baseDelay = 0 }) {
-  const ref = React.useRef(null);
-  const inView = useInView(ref);
-  return (
-    <div ref={ref}>
-      {React.Children.map(children, (child, i) => (
-        <div style={{
-          opacity: inView ? 1 : 0,
-          transform: inView ? 'translateY(0)' : 'translateY(18px)',
-          transition: `opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${baseDelay + i * stagger}s, transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${baseDelay + i * stagger}s`,
-        }}>
-          {child}
+<!-- ===== MASTHEAD ===== -->
+<header style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+  <div class="container">
+    <div class="masthead-grid" style="display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: end;">
+      <div>
+        <div class="eyebrow" style="color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+          <span>VOL. V · NO. 12</span>
+          <span style="color: var(--paper-line);">·</span>
+          <span>APRIL · MMXXVI</span>
         </div>
-      ))}
-    </div>
-  );
-}
-
-
-/* ===== Visual Components ===== */
-
-/* DataStream — ambient floating monospace characters for Hero */
-function DataStream({ isDark }) {
-  const chars = React.useMemo(() => {
-    const symbols = ['0','1','\u00B7','\u2014','+','\u00A7','\u00B6','\u25B3','\u25CB','\u25AA',':','\u223F','0','1','\u2022','%','$','\u2013'];
-    return Array.from({ length: 40 }, (_, i) => ({
-      char: symbols[i % symbols.length],
-      left: (i * 2.5 + Math.random() * 2) % 100,
-      delay: Math.random() * 18,
-      duration: 18 + Math.random() * 16,
-      size: 10 + Math.random() * 3,
-      opacity: 0.04 + Math.random() * 0.04,
-    }));
-  }, []);
-
-  return (
-    <div className="data-stream" style={{
-      position:'absolute', inset:0, overflow:'hidden', pointerEvents:'none',
-      maskImage:'linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%)',
-      WebkitMaskImage:'linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%)',
-    }}>
-      {chars.map((c, i) => (
-        <span key={i} style={{
-          position:'absolute',
-          left: `${c.left}%`,
-          bottom: '-24px',
-          fontFamily:'var(--mono)',
-          fontSize: c.size,
-          color: isDark ? '#f8f6f0' : '#0b1220',
-          opacity: c.opacity,
-          animation: `dataFloat ${c.duration}s linear ${c.delay}s infinite`,
-          userSelect:'none',
-        }}>{c.char}</span>
-      ))}
-    </div>
-  );
-}
-
-/* AnimatedStat — counts up to target number on scroll */
-function AnimatedStat({ text, inView, delay = 0 }) {
-  const [display, setDisplay] = React.useState(text);
-  const match = text.match(/^(.*?)(\d+)(.*?)$/);
-  const prefersReduced = React.useMemo(
-    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    []
-  );
-
-  React.useEffect(() => {
-    if (!inView || !match || prefersReduced) { setDisplay(text); return; }
-    const target = parseInt(match[2]);
-    const prefix = match[1];
-    const suffix = match[3];
-    const duration = 1400;
-    let raf;
-    let startTime = null;
-
-    const tick = (now) => {
-      if (!startTime) startTime = now;
-      const elapsed = now - startTime - delay * 1000;
-      if (elapsed < 0) { raf = requestAnimationFrame(tick); return; }
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(`${prefix}${Math.floor(eased * target)}${suffix}`);
-      if (progress < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [inView]);
-
-  return display;
-}
-
-/* TypedCommand — types out a terminal command on scroll */
-function TypedCommand({ command, inView, delay = 0 }) {
-  const [n, setN] = React.useState(0);
-  const prefersReduced = React.useMemo(
-    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    []
-  );
-
-  React.useEffect(() => {
-    if (prefersReduced) { setN(command.length); return; }
-    if (!inView) return;
-    let i = 0;
-    let timeout;
-    const startDelay = setTimeout(() => {
-      const type = () => {
-        i++;
-        setN(i);
-        if (i < command.length) timeout = setTimeout(type, 25 + Math.random() * 35);
-      };
-      type();
-    }, delay * 1000);
-    return () => { clearTimeout(startDelay); clearTimeout(timeout); };
-  }, [inView, command, delay, prefersReduced]);
-
-  return (
-    <div className="typed-cmd" style={{
-      fontFamily:'var(--mono)',
-      fontSize:11,
-      marginTop:16,
-      opacity: inView ? 0.55 : 0,
-      transition:'opacity 0.4s ease',
-      whiteSpace:'nowrap',
-      overflow:'hidden',
-    }}>
-      <span style={{color:'var(--gold)', opacity:0.6}}>$ </span>
-      <span style={{color:'inherit'}}>{command.slice(0, n)}</span>
-      {n < command.length && n > 0 && (
-        <span style={{opacity:0.5, animation:'blink 0.8s step-end infinite'}}>{'\u258D'}</span>
-      )}
-    </div>
-  );
-}
-
-/* NotarySeal — circular SVG stamp */
-function NotarySeal({ inView }) {
-  return (
-    <div className="charter-seal" style={{
-      position:'absolute', bottom:40, right:0,
-      opacity: inView ? 0.1 : 0,
-      transform: inView ? 'rotate(0deg) scale(1)' : 'rotate(-20deg) scale(0.85)',
-      transition: 'opacity 1.2s ease 0.8s, transform 1.2s cubic-bezier(0.25,0.46,0.45,0.94) 0.8s',
-      pointerEvents:'none',
-    }}>
-      <svg width="140" height="140" viewBox="0 0 140 140">
-        <circle cx="70" cy="70" r="62" fill="none" stroke="var(--gold)" strokeWidth="1.5" />
-        <circle cx="70" cy="70" r="55" fill="none" stroke="var(--gold)" strokeWidth="0.5" />
-        <circle cx="70" cy="70" r="28" fill="none" stroke="var(--gold)" strokeWidth="0.5" />
-        <defs>
-          <path id="sealArc" d="M 70,70 m -44,0 a 44,44 0 1,1 88,0 a 44,44 0 1,1 -88,0" />
-        </defs>
-        <text fontSize="7.5" fontFamily="var(--mono)" fill="var(--gold)" letterSpacing="4" style={{textTransform:'uppercase'}}>
-          <textPath href="#sealArc" startOffset="2%">
-            SEMPERR LABS {'\u00B7'} SAN FRANCISCO {'\u00B7'}
-          </textPath>
-        </text>
-        <text x="70" y="78" textAnchor="middle" fontFamily="Instrument Serif, serif" fontSize="32" fill="var(--gold)" letterSpacing="-1">
-          rr
-        </text>
-      </svg>
-    </div>
-  );
-}
-
-/* Constellation — subtle dot/line network for HiringSection */
-function Constellation() {
-  const nodes = React.useMemo(() => [
-    {x:15, y:12}, {x:38, y:8}, {x:62, y:18}, {x:85, y:10},
-    {x:25, y:35}, {x:50, y:42}, {x:72, y:32}, {x:92, y:38},
-    {x:10, y:58}, {x:35, y:65}, {x:58, y:55}, {x:82, y:62},
-    {x:20, y:82}, {x:48, y:78}, {x:70, y:85}, {x:90, y:75},
-  ], []);
-
-  const edges = React.useMemo(() => {
-    const e = [];
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const dx = nodes[i].x - nodes[j].x;
-        const dy = nodes[i].y - nodes[j].y;
-        if (Math.sqrt(dx*dx + dy*dy) < 28) e.push([i, j]);
-      }
-    }
-    return e;
-  }, [nodes]);
-
-  return (
-    <div className="constellation-wrap" style={{
-      position:'absolute', inset:0, pointerEvents:'none', overflow:'hidden',
-    }}>
-      <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" style={{
-        width:'100%', height:'100%', position:'absolute', inset:0,
-      }}>
-        {edges.map(([a, b], i) => (
-          <line key={i}
-            x1={nodes[a].x} y1={nodes[a].y}
-            x2={nodes[b].x} y2={nodes[b].y}
-            stroke="var(--gold)" strokeWidth="0.15" opacity="0.2"
-          />
-        ))}
-        {nodes.map((n, i) => (
-          <g key={i} style={{
-            animation: `constellationDrift ${6 + i * 0.5}s ease-in-out ${i * 0.3}s infinite`,
-          }}>
-            <circle
-              cx={n.x} cy={n.y} r={0.8 + (i % 3) * 0.4}
-              fill="var(--gold)"
-              opacity="0.3"
-              style={{
-                animation: `constellationPulse ${3 + (i % 4) * 0.8}s ease-in-out ${i * 0.2}s infinite`,
-              }}
-            />
-          </g>
-        ))}
-      </svg>
-    </div>
-  );
-}
-
-
-/* ===== components/Wordmark.jsx ===== */
-
-function Wordmark({ size = 28, tone = "ink", asMark = false }) {
-  const color = tone === "ink" ? "#0b1220" : "#f8f6f0";
-  const gold = "#c9a961";
-
-  if (asMark) {
-    return (
-      <svg width={size} height={size} viewBox="0 0 48 48" style={{display:'block'}}>
-        <text x="24" y="36" textAnchor="middle"
-          fontFamily="Instrument Serif, serif" fontSize="42" fill={color} letterSpacing="-2">
-          r<tspan fill={gold}>r</tspan>
-        </text>
-      </svg>
-    );
-  }
-
-  return (
-    <span style={{
-      fontFamily:'Instrument Serif, serif',
-      fontSize:size,
-      color,
-      letterSpacing:'-0.02em',
-      fontWeight:400,
-      lineHeight:1,
-      whiteSpace:'nowrap',
-      display:'inline-block',
-    }}>
-      Sempe<span style={{color: gold}}>rr</span>
-    </span>
-  );
-}
-
-window.Wordmark = Wordmark;
-
-
-/* ===== components/Masthead.jsx ===== */
-
-function Masthead({ theme }) {
-  const isDark = theme === 'dark';
-  const [open, setOpen] = React.useState(false);
-  const panelBg = isDark ? '#0b1220' : '#f8f6f0';
-  const line = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(11,18,32,0.08)';
-  return (
-    <header style={{
-      position:'sticky', top:0, zIndex:50,
-      background: isDark ? 'rgba(11,18,32,0.78)' : 'rgba(248,246,240,0.78)',
-      backdropFilter:'blur(14px) saturate(140%)',
-      WebkitBackdropFilter:'blur(14px) saturate(140%)',
-      borderBottom: `1px solid ${line}`,
-    }}>
-      <div className="container" style={{
-        display:'flex', alignItems:'center', justifyContent:'space-between',
-        height:64,
-      }}>
-        <div style={{display:'flex', alignItems:'center', gap:40}}>
-          <Wordmark size={24} tone={isDark ? 'paper' : 'ink'} />
-          <nav className="mast-nav" style={{display:'flex', gap:28, fontSize:13, color: isDark ? '#9099ad' : '#6b7388'}}>
-            <a href="charter.html">Charter</a>
-            <a href="capabilities.html">Capabilities</a>
-            <a href="company.html">Company</a>
-            <a href="careers.html">Careers</a>
-          </nav>
+        <h1 class="serif" style="font-size: clamp(48px, 8vw, 96px); letter-spacing: -0.03em; line-height: 0.95;">
+          The Charter<span style="color: var(--gold);">r</span><span style="color: var(--gold);">.</span>
+        </h1>
+        <div style="margin-top: 12px; display: flex; align-items: center; gap: 12px;">
+          <span class="eyebrow" style="color: var(--muted);">by</span>
+          <a href="about.html" class="serif" style="font-size: 24px; color: var(--ink); letter-spacing: -0.02em;">
+            Sempe<span style="color: var(--gold);">rr</span>
+          </a>
         </div>
-        <div style={{display:'flex', alignItems:'center', gap:20}}>
-          <span className="h-eyebrow mast-eyebrow" style={{color: isDark ? '#c9a961' : '#a68846'}}>
-            based in San Francisco
-          </span>
-          <button className="mast-burger" onClick={() => setOpen(o => !o)} aria-label="Menu" style={{
-            display:'none', alignItems:'center', justifyContent:'center',
-            width:40, height:40,
-            border:`1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
-            borderRadius:8, color: isDark ? '#f8f6f0' : '#0b1220',
-          }}>
-            <span style={{display:'grid', gap:4}}>
-              <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
-              <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
-              <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
-            </span>
-          </button>
-          <a href="contact.html" className="mast-cta" style={{
-            fontSize:13,
-            padding:'8px 16px',
-            border:`1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
-            borderRadius:999,
-            color: isDark ? '#f8f6f0' : '#0b1220',
-          }}>Get in touch →</a>
-        </div>
-      </div>
-      {open && (
-        <div className="mast-panel m-only" style={{
-          background: panelBg, borderTop:`1px solid ${line}`, padding:'16px 20px 24px',
-        }}>
-          <nav style={{display:'grid', gap:14, fontSize:16, color: isDark ? '#c7cdd9' : '#2a3246', fontFamily:'var(--serif)'}}>
-            <a onClick={() => setOpen(false)} href="charter.html">Charter</a>
-            <a onClick={() => setOpen(false)} href="capabilities.html">Capabilities</a>
-            <a onClick={() => setOpen(false)} href="company.html">Company</a>
-            <a onClick={() => setOpen(false)} href="careers.html">Careers</a>
-            <a onClick={() => setOpen(false)} href="contact.html" style={{color:'var(--gold)', marginTop:4}}>Get in touch →</a>
-          </nav>
-        </div>
-      )}
-    </header>
-  );
-}
-
-window.Masthead = Masthead;
-
-
-/* ===== Client Testimonial — pixel portrait with dissolve ===== */
-
-function ClientTestimonial({ isDark }) {
-  const testimonials = [
-    {
-      name: 'Rebecca Torres',
-      role: 'Managing Director · Whitfield Capital',
-      quote: 'We switched from a Big Four analytics platform. Semperr is smaller, faster, and every number ties back to a source.',
-      hair: '#1a1510', skin: '#f1c2a3', shirt: '#2f5c96',
-    },
-    {
-      name: 'Daniel Ochoa',
-      role: 'General Counsel · Harding & Associates',
-      quote: 'Our due-diligence timelines got cut in half. When something looks off, I call their engineer directly — not a help desk.',
-      hair: '#0e0e10', skin: '#c48a5a', shirt: '#3a3a44',
-    },
-    {
-      name: 'Sarah Lindqvist',
-      role: 'COO · Bellweather Group',
-      quote: 'We are a 30-person firm that needs institutional-grade reporting. Semperr treats us like we are their only client.',
-      hair: '#5a3828', skin: '#f5d4b8', shirt: '#8a3a1f',
-    },
-    {
-      name: 'James Whitfield',
-      role: 'Founder · Ridgeline Ventures',
-      quote: 'Trace is the first tool where I trust the output enough to put it in front of my LPs without re-checking it.',
-      hair: '#2a2a34', skin: '#d8a87a', shirt: '#4a7a5c',
-    },
-    {
-      name: 'Mika Sato',
-      role: 'Partner · Northpoint Advisors',
-      quote: 'They built a custom reconciliation pipeline for our fund in three weeks. At our last shop, that request would have died in a backlog.',
-      hair: '#0e0e10', skin: '#f0d0a8', shirt: '#b8502a',
-    },
-  ];
-
-  const GRID = 18, CELL = 8;
-  const portraitRaw = [
-    '..................',
-    '..................',
-    '.......hhhhh......',
-    '.....hhhhhhhhh....',
-    '....hhsssssshh....',
-    '....hssssssssh....',
-    '....hsssssssss....',
-    '....hssdssdsss....',
-    '....hseeeseess....',
-    '....hssssssss.....',
-    '.....hsssssss.....',
-    '.....hsscccss.....',
-    '.....hssmmmss.....',
-    '......hsssss......',
-    '......sssss.......',
-    '.....tttttttt.....',
-    '....tttttttttt....',
-    '...tttttttttttt...',
-  ];
-  const charMap = {'.':null,'s':'skin','h':'hair','t':'shirt','e':'eye','m':'mouth','c':'cheek','d':'shadow'};
-  const grid = React.useMemo(() => portraitRaw.map(r => r.split('').map(ch => charMap[ch])), []);
-
-  const [current, setCurrent] = React.useState(0);
-  const [pixelColors, setPixelColors] = React.useState(null);
-  const timerRef = React.useRef(null);
-
-  const filledCells = React.useMemo(() => {
-    const cells = [];
-    grid.forEach((row, y) => row.forEach((cell, x) => {
-      if (cell) cells.push({ x, y, cell });
-    }));
-    return cells;
-  }, []);
-
-  function getColors(t) {
-    return {
-      skin: t.skin, hair: t.hair, shirt: t.shirt,
-      eye: '#1e1410', mouth: '#8a3a1f', cheek: '#e89579', shadow: '#c99874',
-    };
-  }
-
-  React.useEffect(() => {
-    const colors = getColors(testimonials[0]);
-    const map = {};
-    filledCells.forEach(({ x, y, cell }) => {
-      map[x + ',' + y] = colors[cell] || colors.skin;
-    });
-    setPixelColors(map);
-  }, []);
-
-  React.useEffect(() => {
-    if (!pixelColors) return;
-    const t = testimonials[current];
-    const newColors = getColors(t);
-    const order = [...Array(filledCells.length).keys()];
-    for (let i = order.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [order[i], order[j]] = [order[j], order[i]];
-    }
-    const stagger = 12;
-    const ids = [];
-    order.forEach((idx, step) => {
-      ids.push(setTimeout(() => {
-        setPixelColors(prev => {
-          const next = { ...prev };
-          const c = filledCells[idx];
-          next[c.x + ',' + c.y] = newColors[c.cell] || newColors.skin;
-          return next;
-        });
-      }, step * stagger));
-    });
-    return () => ids.forEach(clearTimeout);
-  }, [current]);
-
-  React.useEffect(() => {
-    timerRef.current = setInterval(() => {
-      setCurrent(c => (c + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(timerRef.current);
-  }, []);
-
-  function goTo(i) {
-    setCurrent(i);
-    clearInterval(timerRef.current);
-    timerRef.current = setInterval(() => {
-      setCurrent(c => (c + 1) % testimonials.length);
-    }, 5000);
-  }
-
-  const tData = testimonials[current];
-  const quoteColor = isDark ? '#d4dbe8' : 'var(--ink)';
-  const mutedColor = isDark ? '#6b7388' : 'var(--muted)';
-  const nameColor = isDark ? '#f8f6f0' : 'var(--ink)';
-  const lineColor = isDark ? 'rgba(255,255,255,0.08)' : 'var(--paper-line)';
-  const pipInactive = isDark ? 'rgba(255,255,255,0.12)' : 'var(--paper-line)';
-
-  return (
-    <div className="hero-testimonial" style={{
-      display:'flex', flexDirection:'column', alignItems:'center',
-      paddingTop: 0,
-    }}>
-      <div style={{ position:'relative', marginBottom:20 }}>
-        <div style={{
-          position:'absolute', inset:-12,
-          background: `radial-gradient(circle at 50% 55%, ${tData.shirt}33, transparent 65%)`,
-          filter:'blur(10px)', transition:'background 0.8s',
-        }}/>
-        <svg width={GRID * CELL} height={GRID * CELL} style={{position:'relative', display:'block'}}>
-          {pixelColors && filledCells.map(({ x, y }) => (
-            <rect key={x+','+y}
-              x={x * CELL} y={y * CELL}
-              width={CELL + 0.4} height={CELL + 0.4}
-              fill={pixelColors[x+','+y] || '#4a4852'}
-              style={{ transition:'fill 0.4s ease' }}
-            />
-          ))}
-          <g style={{opacity:0.12, pointerEvents:'none'}}>
-            {[...Array(Math.floor(GRID * CELL / 3))].map((_, i) => (
-              <rect key={i} x="0" y={i*3} width={GRID*CELL} height="1" fill="rgba(0,0,0,0.3)"/>
-            ))}
-          </g>
-        </svg>
-      </div>
-      <div style={{
-        position:'relative', maxWidth:320, textAlign:'center',
-        marginBottom:14,
-      }}>
-        <span style={{
-          fontFamily:'var(--serif)', fontSize:40, lineHeight:1,
-          color:'var(--gold)', opacity:0.25,
-          position:'absolute', top:-10, left:'50%', transform:'translateX(-50%)',
-        }}>{'\u201C'}</span>
-        <p style={{
-          fontFamily:'var(--serif)', fontStyle:'italic',
-          fontSize:15, lineHeight:1.45, color: quoteColor,
-          letterSpacing:'-0.01em', minHeight:62,
-        }}>{tData.quote}</p>
-      </div>
-      <div style={{
-        textAlign:'center', paddingTop:12,
-        borderTop:`1px solid ${lineColor}`, width:'100%', maxWidth:280,
-      }}>
-        <div style={{fontSize:13, fontWeight:500, color:nameColor}}>{tData.name}</div>
-        <div style={{
-          fontFamily:'var(--mono)', fontSize:9, letterSpacing:'0.12em',
-          textTransform:'uppercase', color:mutedColor, marginTop:3,
-        }}>{tData.role}</div>
-      </div>
-      <div style={{display:'flex', gap:6, marginTop:12}}>
-        {testimonials.map((_, i) => (
-          <span key={i} onClick={() => goTo(i)} style={{
-            width:6, height:6, borderRadius:'50%', cursor:'pointer',
-            background: i === current ? 'var(--gold)' : pipInactive,
-            transition:'background 0.3s',
-          }}/>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-window.ClientTestimonial = ClientTestimonial;
-
-
-/* ===== components/Hero.jsx ===== */
-
-function Hero({ theme = 'light' }) {
-  const isDark = theme === 'dark';
-  const ink = isDark ? '#f8f6f0' : '#0b1220';
-  const muted = isDark ? '#9099ad' : '#6b7388';
-  const gold = 'var(--gold)';
-
-  const [revealed, setRevealed] = React.useState(false);
-  React.useEffect(() => {
-    const t = setTimeout(() => setRevealed(true), 100);
-    return () => clearTimeout(t);
-  }, []);
-
-  const prefersReduced = React.useMemo(
-    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    []
-  );
-  const show = prefersReduced || revealed;
-
-  const t = (delay) => prefersReduced ? {} : {
-    opacity: show ? 1 : 0,
-    transform: show ? 'translateY(0)' : 'translateY(18px)',
-    transition: `opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s`,
-  };
-
-  return (
-    <section style={{
-      position:'relative',
-      background: isDark ? 'var(--ink)' : 'var(--paper)',
-      padding: '48px 0 56px',
-      overflow:'hidden',
-    }}>
-      <div className="grain" />
-      <DataStream isDark={isDark} />
-
-      <div className="container" style={{position:'relative', zIndex:1}}>
-        <div className="hero-home-grid" style={{
-          display:'grid', gridTemplateColumns:'2fr 1fr', gap:48, alignItems:'center',
-        }}>
-          <div>
-            <div className="h-eyebrow" style={{
-              color: gold, marginBottom:20,
-              ...t(0.1),
-            }}>
-              Quiet tools for loud decisions
-            </div>
-
-            <h1 className="h-display" style={{
-              fontSize:'clamp(52px, 6.5vw, 120px)',
-              color: ink,
-            }}>
-              <span style={{display:'block', ...t(0.2)}}>Custom systems,</span>
-              <span style={{display:'block', ...t(0.35)}}>data <em style={{
-                fontStyle:'italic',
-                color: show ? 'var(--gold)' : (isDark ? '#6b7388' : '#9099ad'),
-                transition: prefersReduced ? 'none' : 'color 0.6s cubic-bezier(0.25,0.46,0.45,0.94) 0.5s',
-              }}>infrastructure,</em></span>
-              <span style={{display:'block', ...t(0.5)}}>technical workflows.</span>
-            </h1>
-
-            <div style={{marginTop:16, maxWidth:600}}>
-              <RevealLine delay={0.6} color={gold} height={2} glow />
-            </div>
-
-            <p style={{
-              marginTop:20, maxWidth:620, fontSize:18, lineHeight:1.5,
-              color: muted,
-              ...t(0.8),
-            }}>
-              Semperr builds and operates the software that private-equity firms, law practices,
-              and owner-run businesses depend on when the answer has to be right.
-            </p>
-
-            <div style={{
-              display:'flex', gap:12, marginTop:28,
-              ...t(1.0),
-            }}>
-              <a href="charter.html" style={{
-                display:'inline-flex', alignItems:'center', gap:10,
-                padding:'14px 22px', borderRadius:999,
-                background: ink, color: isDark ? '#0b1220' : '#f8f6f0',
-                fontSize:14, fontWeight:500,
-              }}>Read the charter <span style={{opacity:0.5}}>→</span></a>
-              <a href="contact.html" style={{
-                display:'inline-flex', alignItems:'center', gap:10,
-                padding:'14px 22px', borderRadius:999,
-                border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
-                color: ink, fontSize:14, fontWeight:500,
-              }}>Get in touch</a>
-            </div>
-          </div>
-
-          <ClientTestimonial isDark={isDark} />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-window.Hero = Hero;
-
-
-/* ===== Section Divider ===== */
-
-function SectionDivider({ color = 'var(--gold)' }) {
-  return (
-    <div style={{position:'relative', zIndex:2}}>
-      <RevealLine delay={0} color={color} height={2} glow />
-    </div>
-  );
-}
-
-
-/* ===== components/CharterSection.jsx ===== */
-
-function CharterSection({ theme = 'light' }) {
-  const isDark = theme === 'dark';
-  const bg = isDark ? 'var(--ink-soft)' : 'var(--paper-warm)';
-  const ink = isDark ? '#f8f6f0' : '#0b1220';
-  const muted = isDark ? '#9099ad' : '#6b7388';
-  const gold = 'var(--gold)';
-  const lineColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(11,18,32,0.1)';
-
-  const ref = React.useRef(null);
-  const inView = useInView(ref);
-
-  const values = [
-    { num: 'I', name: 'Rigor', desc: 'Every figure traceable. Every source dated. Every derivation recoverable.' },
-    { num: 'II', name: 'Discretion', desc: 'Client data is treated as testimony\u2009—\u2009never shared, never inferred, never sold.' },
-    { num: 'III', name: 'Durability', desc: "We build for the decade, not the quarter. If it can\u2019t survive a regime change, it doesn\u2019t ship." },
-    { num: 'IV', name: 'Clarity', desc: 'Plain language, honest timelines, no jargon designed to obscure.' },
-    { num: 'V', name: 'Accountability', desc: 'A name on every deliverable. A partner on every engagement.' },
-  ];
-
-  return (
-    <section id="charter" ref={ref} style={{
-      background: bg, padding: '120px 0 140px', position:'relative', overflow:'hidden',
-    }}>
-      <div className="grain" />
-      <div className="container" style={{position:'relative'}}>
-        <div className="h-eyebrow" style={{
-          color: gold, marginBottom:24,
-          opacity: inView ? 1 : 0,
-          transition: 'opacity 0.6s ease 0.1s',
-        }}>
-          I. &nbsp; The Charter
-        </div>
-
-        <h2 className="h-display" style={{
-          fontSize:'clamp(42px, 5.5vw, 80px)', color: ink, marginBottom:20,
-          opacity: inView ? 1 : 0,
-          transform: inView ? 'translateY(0)' : 'translateY(18px)',
-          transition: 'opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s',
-        }}>
-          Five principles. No exceptions.
-        </h2>
-
-        <p style={{
-          maxWidth:620, fontSize:18, lineHeight:1.55, color: muted, marginBottom:56,
-          opacity: inView ? 1 : 0,
-          transition: 'opacity 0.6s ease 0.25s',
-        }}>
-          Every engagement, every hire, every line of code is measured against the same standard.
+        <p style="font-size: 17px; color: var(--muted); margin-top: 20px; max-width: 560px; line-height: 1.6;">
+          Dispatches on data infrastructure, software, and the institutions that depend on both — with curated intelligence from across the field.
         </p>
-
-        <RevealLine delay={0.3} color={lineColor} height={2} />
-
-        {/* Values list with scan line */}
-        <div style={{position:'relative'}}>
-          {/* Scan line — 2px, more visible */}
-          <div style={{
-            position:'absolute', top:0, left:0, right:0, height:2,
-            background: `linear-gradient(90deg, transparent 10%, var(--gold) 50%, transparent 90%)`,
-            opacity: inView ? 0.7 : 0,
-            animation: inView ? 'scanLine 2.5s ease-in-out 0.5s forwards' : 'none',
-            pointerEvents: 'none',
-            zIndex: 2,
-            boxShadow: '0 0 12px var(--gold), 0 0 4px var(--gold)',
-          }} />
-
-          {values.map((v, i) => (
-            <div key={v.num} className="charter-value-row" style={{
-              display:'grid', gridTemplateColumns:'48px 160px 1fr', gap:24, alignItems:'baseline',
-              padding:'28px 0',
-              borderBottom: `1px solid ${lineColor}`,
-              position:'relative',
-              opacity: inView ? 1 : 0,
-              transform: inView ? 'translateY(0)' : 'translateY(14px)',
-              transition: `opacity 0.5s ease ${0.35 + i * 0.12}s, transform 0.5s ease ${0.35 + i * 0.12}s`,
-            }}>
-              {/* Gold progress bar behind each row */}
-              <div style={{
-                position:'absolute', left:0, bottom:0, height:2,
-                background: 'var(--gold)',
-                opacity: 0.15,
-                width: inView ? '100%' : '0%',
-                transition: `width 0.8s cubic-bezier(0.25,0.46,0.45,0.94) ${0.5 + i * 0.15}s`,
-              }} />
-              <span className="charter-value-numeral h-eyebrow" style={{color: gold, fontSize:12}}>{v.num}</span>
-              <span className="h-serif" style={{fontSize:24, color: ink}}>{v.name}</span>
-              <span style={{fontSize:16, lineHeight:1.55, color: muted}}>{v.desc}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* CTA */}
-        <div style={{
-          marginTop:48,
-          opacity: inView ? 1 : 0,
-          transition: 'opacity 0.6s ease 1s',
-        }}>
-          <a href="charter.html" style={{
-            display:'inline-flex', alignItems:'center', gap:10,
-            padding:'14px 22px', borderRadius:999,
-            border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
-            color: ink, fontSize:14, fontWeight:500,
-          }}>Read the full charter <span style={{opacity:0.5}}>→</span></a>
-        </div>
-
-        {/* Notary seal */}
-        <NotarySeal inView={inView} />
       </div>
-    </section>
-  );
-}
-
-window.CharterSection = CharterSection;
-
-
-/* ===== components/ProofSection.jsx ===== */
-
-function ProofSection({ theme = 'light' }) {
-  const isDark = theme === 'dark';
-  const muted = '#9099ad';
-  const gold = 'var(--gold)';
-  const cardBorder = 'rgba(255,255,255,0.1)';
-
-  const ref = React.useRef(null);
-  const inView = useInView(ref);
-
-  const redactedNames = [
-    '\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 Capital',
-    '\u2588\u2588\u2588\u2588\u2588\u2588 & Chase LLP',
-    '\u2588\u2588\u2588\u2588\u2588\u2588\u2588 Provisions',
-    'The \u2588\u2588\u2588\u2588\u2588\u2588 Trust',
-  ];
-
-  const cards = [
-    { title: 'Private Equity', desc: 'Mid-market and growth funds pricing acquisitions and portfolio ops.', stat: '40+ funds served' },
-    { title: 'Law Firms', desc: 'Litigation, regulatory, and transactional practices needing precedent at speed.', stat: 'AmLaw 200 coverage' },
-    { title: 'Owner-Operated Businesses', desc: 'Restaurants, clinics, trades\u2009—\u2009the businesses that open before the first train.', stat: '300+ active accounts' },
-    { title: 'Family Offices & Advisors', desc: 'Multi-generational stewards who prize discretion and accuracy equally.', stat: 'Referral-only intake' },
-  ];
-
-  return (
-    <section id="company" ref={ref} style={{
-      background: isDark ? '#080d18' : 'var(--ink)', color:'#f8f6f0',
-      padding:'120px 0 140px', position:'relative', overflow:'hidden',
-    }}>
-      <div className="grain" />
-      <div className="container">
-        <div className="h-eyebrow" style={{
-          color: gold, marginBottom:24,
-          opacity: inView ? 1 : 0,
-          transition: 'opacity 0.6s ease 0.1s',
-        }}>
-          II. &nbsp; Who we serve
-        </div>
-
-        <h2 className="h-display proof-headline" style={{
-          fontSize:'clamp(42px, 5.5vw, 80px)', color:'#f8f6f0', marginBottom:20,
-          opacity: inView ? 1 : 0,
-          transform: inView ? 'translateY(0)' : 'translateY(18px)',
-          transition: 'opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s',
-        }}>
-          Built for institutions that<br/>cannot afford to guess.
-        </h2>
-
-        <p style={{
-          maxWidth:660, fontSize:18, lineHeight:1.55, color: muted, marginBottom:64,
-          opacity: inView ? 1 : 0,
-          transition: 'opacity 0.6s ease 0.25s',
-        }}>
-          Our clients don't evaluate software — they evaluate risk. We serve the organizations
-          where a wrong number has real consequences.
-        </p>
-
-        {/* Card grid */}
-        <div style={{
-          display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:20,
-        }}>
-          {cards.map((c, i) => (
-            <div key={c.title} className="proof-card" style={{
-              border: `1px solid ${cardBorder}`,
-              padding:'32px 24px',
-              display:'flex', flexDirection:'column', justifyContent:'space-between',
-              minHeight:280,
-              opacity: inView ? 1 : 0,
-              transform: inView ? 'translateY(0)' : 'translateY(24px)',
-              transition: `opacity 0.6s ease ${0.3 + i * 0.15}s, transform 0.6s ease ${0.3 + i * 0.15}s`,
-            }}>
-              <div>
-                {/* Redacted client name */}
-                <div className="redacted-name" style={{
-                  fontFamily:'var(--mono)', fontSize:9, letterSpacing:'0.06em',
-                  color:'rgba(255,255,255,0.2)',
-                  marginBottom:14,
-                  overflow:'hidden',
-                  whiteSpace:'nowrap',
-                }}>
-                  {redactedNames[i]}
-                </div>
-                <h3 className="h-serif" style={{fontSize:22, color:'#f8f6f0', marginBottom:14}}>{c.title}</h3>
-                <p style={{fontSize:14, lineHeight:1.55, color:'#9099ad'}}>{c.desc}</p>
-              </div>
-              <div style={{
-                marginTop:24,
-                fontFamily:'var(--mono)', fontSize:13, letterSpacing:'0.06em',
-                color: 'var(--gold)',
-                fontWeight:500,
-                overflow:'hidden',
-              }}>
-                <span style={{
-                  display:'inline-block',
-                  transform: inView ? 'translateX(0)' : 'translateX(-100%)',
-                  transition: `transform 0.6s ease ${0.6 + i * 0.15}s`,
-                }}>
-                  <AnimatedStat text={c.stat} inView={inView} delay={0.6 + i * 0.15} />
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-window.ProofSection = ProofSection;
-
-
-/* ===== components/CapabilitySection.jsx ===== */
-
-function CapabilitySection({ theme = 'light' }) {
-  const isDark = theme === 'dark';
-  const bg = isDark ? 'var(--ink)' : 'var(--paper-warm)';
-  const ink = isDark ? '#f8f6f0' : '#0b1220';
-  const muted = isDark ? '#9099ad' : '#6b7388';
-  const gold = 'var(--gold)';
-  const lineColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(11,18,32,0.1)';
-  const chipBorder = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(11,18,32,0.12)';
-  const chipBg = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(11,18,32,0.02)';
-
-  const ref = React.useRef(null);
-  const inView = useInView(ref);
-
-  const capabilities = [
-    {
-      name: 'Custom Systems',
-      desc: 'Dealbook platforms, case-management tools, client portals\u2009—\u2009software shaped to the institution.',
-      tags: ['Data platforms', 'Internal tools', 'Client portals', 'Reporting engines'],
-      cmd: 'deploy --env production --service dealbook',
-    },
-    {
-      name: 'Data Infrastructure',
-      desc: 'Ingestion, reconciliation, graph construction, and delivery\u2009—\u2009the plumbing underneath every decision.',
-      tags: ['ETL pipelines', 'Entity resolution', 'Graph databases', 'API layers'],
-      cmd: 'trace reconcile --source sec-edgar --format graph',
-    },
-    {
-      name: 'Technical Workflows',
-      desc: 'Websites, automations, AI-assisted operations, and back-office systems.',
-      tags: ['Websites', 'Automations', 'AI receptionists', 'CRM', 'Phone systems'],
-      cmd: 'dev build --client brennans --type website',
-    },
-  ];
-
-  return (
-    <section id="capabilities" ref={ref} style={{
-      background: bg, padding:'120px 0 140px', position:'relative', overflow:'hidden',
-    }}>
-      <div className="grain" />
-      <div className="container">
-        <div className="h-eyebrow" style={{
-          color: gold, marginBottom:24,
-          opacity: inView ? 1 : 0,
-          transition: 'opacity 0.6s ease 0.1s',
-        }}>
-          III. &nbsp; What we build
-        </div>
-
-        <h2 className="h-display cap-headline" style={{
-          fontSize:'clamp(42px, 5.5vw, 80px)', color: ink, marginBottom:20,
-          opacity: inView ? 1 : 0,
-          transform: inView ? 'translateY(0)' : 'translateY(18px)',
-          transition: 'opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s',
-        }}>
-          Custom systems. Data infrastructure.<br/>Technical workflows.
-        </h2>
-
-        <p style={{
-          maxWidth:680, fontSize:18, lineHeight:1.55, color: muted, marginBottom:56,
-          opacity: inView ? 1 : 0,
-          transition: 'opacity 0.6s ease 0.25s',
-        }}>
-          We don't sell licenses. We design, build, and operate the technical infrastructure
-          our clients depend on — then stay to make sure it works.
-        </p>
-
-        <RevealLine delay={0.3} color={lineColor} height={2} />
-
-        {capabilities.map((cap, i) => (
-          <div key={cap.name}>
-            <div style={{
-              display:'grid', gridTemplateColumns:'1fr 1fr', gap:48, alignItems:'start',
-              padding:'40px 0',
-              opacity: inView ? 1 : 0,
-              transform: inView ? 'translateY(0)' : 'translateY(16px)',
-              transition: `opacity 0.6s ease ${0.35 + i * 0.15}s, transform 0.6s ease ${0.35 + i * 0.15}s`,
-            }}>
-              <div>
-                <h3 className="h-serif" style={{fontSize:28, color: ink, marginBottom:12}}>{cap.name}</h3>
-                <p style={{fontSize:16, lineHeight:1.55, color: muted}}>{cap.desc}</p>
-                <TypedCommand command={cap.cmd} inView={inView} delay={0.6 + i * 0.4} />
-              </div>
-              <div style={{display:'flex', flexWrap:'wrap', gap:8, paddingTop:6}}>
-                {cap.tags.map((tag, j) => (
-                  <span key={tag} className="cap-tag" style={{
-                    padding:'8px 14px',
-                    fontSize:12,
-                    fontFamily:'var(--mono)',
-                    letterSpacing:'0.04em',
-                    border: `1px solid ${chipBorder}`,
-                    background: chipBg,
-                    color: ink,
-                    opacity: inView ? 1 : 0,
-                    transform: inView ? 'translateX(0)' : 'translateX(12px)',
-                    transition: `opacity 0.4s ease ${0.5 + i * 0.15 + j * 0.06}s, transform 0.4s ease ${0.5 + i * 0.15 + j * 0.06}s`,
-                  }}>{tag}</span>
-                ))}
-              </div>
-            </div>
-            {i < capabilities.length - 1 && (
-              <div style={{height:1, background: lineColor}} />
-            )}
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-window.CapabilitySection = CapabilitySection;
-
-
-/* ===== components/HiringSection.jsx ===== */
-
-function HiringSection({ theme = 'light' }) {
-  const isDark = theme === 'dark';
-  const ink = '#f8f6f0';
-  const muted = '#9099ad';
-  const gold = 'var(--gold)';
-
-  const ref = React.useRef(null);
-  const inView = useInView(ref);
-
-  const words = ['quality', 'judgment', 'standards', 'rigor', 'craft'];
-  const [wordIndex, setWordIndex] = React.useState(0);
-  const [visible, setVisible] = React.useState(true);
-
-  const prefersReduced = React.useMemo(
-    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-    []
-  );
-
-  React.useEffect(() => {
-    if (prefersReduced || !inView) return;
-    const cycle = () => {
-      setVisible(false);
-      setTimeout(() => {
-        setWordIndex(i => (i + 1) % words.length);
-        setVisible(true);
-      }, 300);
-    };
-    const id = setInterval(cycle, 1900);
-    return () => clearInterval(id);
-  }, [inView, prefersReduced]);
-
-  return (
-    <section id="careers" ref={ref} style={{
-      background: isDark ? '#080d18' : 'var(--ink)', color:'#f8f6f0',
-      padding:'120px 0 140px', position:'relative', overflow:'hidden',
-    }}>
-      <div className="grain" />
-      <Constellation />
-
-      <div className="container" style={{position:'relative', zIndex:1}}>
-        <div style={{
-          display:'grid', gridTemplateColumns:'1fr 1fr', gap:64, alignItems:'center',
-        }}>
-          {/* Left: copy */}
-          <div>
-            <div className="h-eyebrow" style={{
-              color: gold, marginBottom:24,
-              opacity: inView ? 1 : 0,
-              transition: 'opacity 0.6s ease 0.1s',
-            }}>
-              IV. &nbsp; The team
-            </div>
-
-            <h2 className="h-display" style={{
-              fontSize:'clamp(42px, 5.5vw, 80px)', color: ink, marginBottom:24,
-              opacity: inView ? 1 : 0,
-              transform: inView ? 'translateY(0)' : 'translateY(18px)',
-              transition: 'opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s',
-            }}>
-              We hire for<br/><em style={{fontStyle:'italic', color: gold}}>judgment.</em>
-            </h2>
-
-            <p style={{
-              maxWidth:480, fontSize:18, lineHeight:1.55, color: muted, marginBottom:40,
-              opacity: inView ? 1 : 0,
-              transition: 'opacity 0.6s ease 0.3s',
-            }}>
-              Semperr is deliberately small. Every engineer, analyst, and designer is here
-              because they refused to ship something they weren't proud of.
-            </p>
-
-            <div style={{
-              opacity: inView ? 1 : 0,
-              transition: 'opacity 0.6s ease 0.5s',
-            }}>
-              <a href="careers.html" style={{
-                display:'inline-flex', alignItems:'center', gap:10,
-                padding:'14px 22px', borderRadius:999,
-                background:'#f8f6f0', color:'#0b1220', fontSize:14, fontWeight:500,
-              }}>See open roles <span style={{opacity:0.5}}>↗</span></a>
-            </div>
-          </div>
-
-          {/* Right: kinetic type zone — larger */}
-          <div className="hiring-kinetic" style={{
-            display:'flex', alignItems:'center', justifyContent:'center',
-            minHeight:320,
-            position:'relative',
-          }}>
-            {prefersReduced ? (
-              <div style={{display:'flex', flexDirection:'column', gap:12, textAlign:'center'}}>
-                {words.map(w => (
-                  <span key={w} className="h-display" style={{
-                    fontSize:'clamp(36px, 5vw, 72px)',
-                    color: gold,
-                    fontStyle:'italic',
-                  }}>{w}</span>
-                ))}
-              </div>
-            ) : (
-              <span className="h-display" style={{
-                fontSize:'clamp(56px, 7vw, 112px)',
-                color: gold,
-                fontStyle:'italic',
-                opacity: visible && inView ? 1 : 0,
-                transform: visible && inView ? 'translateY(0) scale(1)' : 'translateY(8px) scale(0.97)',
-                transition: 'opacity 0.4s ease, transform 0.4s ease',
-                textShadow: visible && inView ? '0 0 60px rgba(201,169,97,0.15)' : 'none',
-              }}>
-                {words[wordIndex]}
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-window.HiringSection = HiringSection;
-
-
-/* ===== components/Footer.jsx ===== */
-
-function Footer({ theme }) {
-  const isDark = theme === 'dark';
-  const bg = isDark ? '#05090f' : '#0b1220';
-  const lineColor = 'rgba(255,255,255,0.1)';
-  const muted = '#6b7388';
-  const gold = 'var(--gold)';
-
-  const ref = React.useRef(null);
-  const inView = useInView(ref);
-
-  return (
-    <footer ref={ref} style={{
-      background: bg, color:'#f8f6f0',
-      padding:'80px 0 48px', position:'relative', overflow:'hidden',
-      opacity: inView ? 1 : 0,
-      transition: 'opacity 0.6s ease 0.1s',
-    }}>
-      <div className="grain" />
-      <div className="container">
-        <div className="footer-band" style={{
-          display:'flex', justifyContent:'space-between', alignItems:'center',
-          paddingBottom:48,
-          borderBottom: `1px solid ${lineColor}`,
-          lineHeight:1,
-        }}>
-          <Wordmark size={28} tone="paper" />
-          <div className="m-hide" style={{display:'flex', alignItems:'center', gap:24}}>
-            <span className="h-eyebrow" style={{color: gold, letterSpacing:'0.16em'}}>Semper paratus</span>
-            <span style={{color: lineColor}}>·</span>
-            <span className="h-eyebrow" style={{color: muted}}>San Francisco</span>
-          </div>
-        </div>
-
-        <RevealLine delay={0.2} color={lineColor} height={2} glow style={{marginTop:-1}} />
-
-        <div className="footer-grid" style={{
-          display:'grid', gridTemplateColumns:'1.5fr 1fr 1fr 1fr',
-          gap:48, padding:'48px 0', alignItems:'start',
-        }}>
-          <div>
-            <p style={{fontSize:13, color: muted, maxWidth:280, lineHeight:1.5}}>
-              A holding company for software & data that serious businesses run on.
-              Headquartered in San Francisco.
-            </p>
-          </div>
-          <FootCol title="Navigate" rows={[
-            ['Charter', '', 'charter.html'],
-            ['Capabilities', '', 'capabilities.html'],
-            ['Contact', '', 'contact.html'],
-          ]}/>
-          <FootCol title="Company" rows={[
-            ['About', '', 'about.html'], ['Careers', '', 'careers.html'], ['Press', '', 'press.html'],
-          ]}/>
-          <FootCol title="Legal" rows={[
-            ['Terms'], ['Privacy'], ['Security'],
-          ]}/>
-        </div>
-
-        <div className="footer-band-bottom" style={{
-          display:'flex', justifyContent:'center', alignItems:'center',
-          paddingTop:28, borderTop: `1px solid ${lineColor}`,
-          fontFamily:'var(--mono)', fontSize:11, lineHeight:1,
-          color: muted, letterSpacing:'0.08em', textTransform:'uppercase',
-        }}>
-          <span>&copy; 2026 Semperr, Inc.</span>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FootCol({ title, rows }) {
-  return (
-    <div>
-      <div className="h-eyebrow" style={{color:'var(--gold)', marginBottom:18}}>{title}</div>
-      {rows.map((r, i) => (
-        <a key={i} href={r[2]} style={{
-          display:'block',
-          padding:'8px 0',
-          fontSize:14, color:'#d4dbe8',
-        }}>
-          {r[0]}
+      <div class="hide-mobile" style="text-align: right;">
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">A Publication from</div>
+        <a href="about.html" class="serif" style="font-size: 28px; letter-spacing: -0.02em;">
+          Sempe<span style="color: var(--gold);">rr</span>
         </a>
-      ))}
-    </div>
-  );
-}
-
-window.Footer = Footer;
-
-
-/* ===== components/TweaksPanel.jsx ===== */
-
-function TweaksPanel({ state, setState, visible }) {
-  if (!visible) return null;
-
-  const set = (k, v) => {
-    setState(s => ({...s, [k]: v}));
-    window.parent.postMessage({type:'__edit_mode_set_keys', edits:{[k]: v}}, '*');
-  };
-
-  const Row = ({label, children}) => (
-    <div style={{
-      display:'grid', gridTemplateColumns:'86px 1fr', gap:12, alignItems:'center',
-      padding:'10px 0', borderBottom:'1px solid rgba(11,18,32,0.06)',
-    }}>
-      <div style={{
-        fontFamily:'JetBrains Mono, monospace', fontSize:10,
-        letterSpacing:'0.08em', textTransform:'uppercase', color:'#6b7388',
-      }}>{label}</div>
-      <div>{children}</div>
-    </div>
-  );
-
-  const Seg = ({value, onChange, opts}) => (
-    <div style={{display:'flex', gap:4, flexWrap:'wrap'}}>
-      {opts.map(o => (
-        <button key={o.v} onClick={() => onChange(o.v)} style={{
-          padding:'6px 10px', fontSize:11,
-          border: `1px solid ${value === o.v ? '#0b1220' : 'rgba(11,18,32,0.15)'}`,
-          background: value === o.v ? '#0b1220' : '#fff',
-          color: value === o.v ? '#f8f6f0' : '#0b1220',
-          cursor:'pointer', borderRadius:2,
-          fontFamily:'JetBrains Mono, monospace', letterSpacing:'0.04em',
-        }}>{o.l}</button>
-      ))}
-    </div>
-  );
-
-  return (
-    <div style={{
-      position:'fixed', bottom:20, right:20, zIndex:100,
-      width:320,
-      background:'#f8f6f0',
-      border:'1px solid rgba(11,18,32,0.15)',
-      boxShadow:'0 30px 60px -20px rgba(0,0,0,0.3)',
-      borderRadius:4,
-      overflow:'hidden',
-      fontFamily:'Inter Tight, sans-serif',
-    }}>
-      <div style={{
-        padding:'14px 16px',
-        borderBottom:'1px solid rgba(11,18,32,0.1)',
-        background:'#0b1220', color:'#f8f6f0',
-        display:'flex', justifyContent:'space-between', alignItems:'center',
-      }}>
-        <span style={{fontFamily:'Instrument Serif, serif', fontSize:20}}>Tweaks</span>
-        <span style={{fontFamily:'JetBrains Mono, monospace', fontSize:10, color:'#c9a961', letterSpacing:'0.1em'}}>SEMPERR</span>
-      </div>
-      <div style={{padding:'8px 16px 16px'}}>
-        <Row label="Theme">
-          <Seg value={state.theme} onChange={v => set('theme', v)}
-            opts={[{v:'light', l:'Paper'}, {v:'dark', l:'Ink'}]}/>
-        </Row>
-        <Row label="Accent">
-          <Seg value={state.accent} onChange={v => set('accent', v)}
-            opts={[{v:'gold', l:'Gold'}, {v:'rust', l:'Rust'}, {v:'steel', l:'Steel'}]}/>
-        </Row>
-        <Row label="Type">
-          <Seg value={state.type} onChange={v => set('type', v)}
-            opts={[{v:'instrument', l:'Instrument'}, {v:'dmserif', l:'DM Serif'}, {v:'fraunces', l:'Fraunces'}]}/>
-        </Row>
+        <div class="eyebrow" style="color: var(--muted); margin-top: 8px;">Est. MMXXI · San Francisco</div>
       </div>
     </div>
-  );
-}
-
-window.TweaksPanel = TweaksPanel;
+  </div>
+</header>
 
 
-</script>
-
-<script type="text/babel">
-const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "theme": "light",
-  "accent": "gold",
-  "type": "instrument"
-}/*EDITMODE-END*/;
-
-function applyType(t) {
-  const map = {
-    instrument: '"Instrument Serif", "Times New Roman", serif',
-    dmserif:    '"DM Serif Display", "Times New Roman", serif',
-    fraunces:   '"Fraunces", "Times New Roman", serif',
-  };
-  document.documentElement.style.setProperty('--serif', map[t] || map.instrument);
-}
-function applyAccent(a) {
-  const map = {
-    gold:  { a:'#c9a961', d:'#a68846' },
-    rust:  { a:'#b8502a', d:'#8a3a1f' },
-    steel: { a:'#4a7fc1', d:'#2f5c96' },
-  };
-  const c = map[a] || map.gold;
-  document.documentElement.style.setProperty('--gold', c.a);
-  document.documentElement.style.setProperty('--gold-deep', c.d);
-}
-
-function App() {
-  const [state, setState] = React.useState(TWEAK_DEFAULTS);
-  const [tweaksOn, setTweaksOn] = React.useState(false);
-
-  React.useEffect(() => {
-    applyType(state.type);
-    applyAccent(state.accent);
-  }, [state.type, state.accent]);
-
-  React.useEffect(() => {
-    const handler = (e) => {
-      if (e.data?.type === '__activate_edit_mode') setTweaksOn(true);
-      if (e.data?.type === '__deactivate_edit_mode') setTweaksOn(false);
-    };
-    window.addEventListener('message', handler);
-    window.parent.postMessage({type:'__edit_mode_available'}, '*');
-    return () => window.removeEventListener('message', handler);
-  }, []);
-
-  const isDark = state.theme === 'dark';
-
-  return (
-    <div data-screen-label="Semperr Landing" style={{
-      background: isDark ? 'var(--ink)' : 'var(--paper)',
-      color: isDark ? 'var(--paper)' : 'var(--ink)',
-      minHeight:'100vh',
-    }}>
-      <Masthead theme={state.theme}/>
-      <Hero theme={state.theme}/>
-      <SectionDivider color={isDark ? 'rgba(255,255,255,0.08)' : 'rgba(11,18,32,0.08)'} />
-      <CharterSection theme={state.theme}/>
-      <SectionDivider color="var(--gold)" />
-      <ProofSection theme={state.theme}/>
-      <SectionDivider color="var(--gold)" />
-      <CapabilitySection theme={state.theme}/>
-      <SectionDivider color={isDark ? 'rgba(255,255,255,0.08)' : 'rgba(11,18,32,0.08)'} />
-      <HiringSection theme={state.theme}/>
-      <Footer theme={state.theme}/>
-
-      <TweaksPanel state={state} setState={setState} visible={tweaksOn}/>
+<!-- ===== CATEGORY NAV ===== -->
+<div style="border-bottom: 1px solid var(--paper-line); padding: 20px 0; position: sticky; top: 0; background: var(--paper); z-index: 100;">
+  <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+      <span class="cat-pill active">All</span>
+      <span class="cat-pill">Trace</span>
+      <span class="cat-pill">Clad</span>
+      <span class="cat-pill">Craft</span>
+      <span class="cat-pill">Curated</span>
     </div>
-  );
-}
+    <div class="hide-mobile eyebrow" style="color: var(--muted);">
+      <span style="color: var(--gold);">110K+</span> Subscribers
+    </div>
+  </div>
+</div>
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
-</script>
+
+<!-- ===== MOSAIC GRID ===== -->
+<section style="padding: 48px 0;">
+  <div class="container">
+
+    <!-- Top Row: Hero + 2 Stacked -->
+    <div class="mosaic-top" style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; margin-bottom: 20px;">
+
+      <!-- Hero Article -->
+      <a href="#" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="" style="width: 100%; height: 420px; object-fit: cover; opacity: 0.7;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 32px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <span class="source-badge semperr">Semperr</span>
+            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Trace · 12 min</span>
+          </div>
+          <h2 class="serif" style="font-size: 32px; line-height: 1.2; color: var(--paper); margin-bottom: 12px;">
+            Why most PE firms are still getting portfolio data architecture wrong.
+          </h2>
+          <p style="font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.5; max-width: 90%;">
+            The edge no longer comes from model access — it comes from proprietary context.
+          </p>
+          <div style="display: flex; align-items: center; gap: 10px; margin-top: 16px;">
+            <div class="author-circle" style="width: 32px; height: 32px; font-size: 13px;">Ev</div>
+            <span style="color: rgba(255,255,255,0.7); font-size: 14px;">Eleanor Voss</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Stacked Right -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <a href="#" class="mosaic-card" style="display: block; position: relative; overflow: hidden; flex: 1; background: var(--ink);">
+          <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7; position: absolute;"/>
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+              <span class="source-badge semperr">Semperr</span>
+              <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Clad</span>
+            </div>
+            <h3 class="serif" style="font-size: 22px; line-height: 1.25; color: var(--paper);">
+              The hidden cost of cross-jurisdiction legal research.
+            </h3>
+          </div>
+        </a>
+        <a href="#" class="mosaic-card" style="display: block; position: relative; overflow: hidden; flex: 1; background: var(--ink);">
+          <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7; position: absolute;"/>
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+              <span class="source-badge semperr">Semperr</span>
+              <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Craft</span>
+            </div>
+            <h3 class="serif" style="font-size: 22px; line-height: 1.25; color: var(--paper);">
+              Build things that work the first time.
+            </h3>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Second Row: 3 Equal -->
+    <div class="mosaic-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px;">
+      <a href="https://www.mckinsey.com/industries/private-capital/our-insights/global-private-markets-report" target="_blank" rel="noopener" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt="" style="width: 100%; height: 240px; object-fit: cover; opacity: 0.7;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="source-badge external">McKinsey</span>
+          </div>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">
+            Global Private Markets Report 2026
+          </h3>
+        </div>
+      </a>
+      <a href="https://a16z.com/ai-data-infrastructure/" target="_blank" rel="noopener" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);">
+        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&q=80" alt="" style="width: 100%; height: 240px; object-fit: cover; opacity: 0.7;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="source-badge external">a16z</span>
+          </div>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">
+            Your data agents need context.
+          </h3>
+        </div>
+      </a>
+      <a href="https://www.sequoiacap.com/article/generative-ai-a-creative-new-world/" target="_blank" rel="noopener" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);">
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80" alt="" style="width: 100%; height: 240px; object-fit: cover; opacity: 0.7;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="source-badge external">Sequoia</span>
+          </div>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">
+            Services: The new software.
+          </h3>
+        </div>
+      </a>
+    </div>
+
+    <!-- Third Row: 2 Wide + 1 Tall -->
+    <div class="mosaic-bottom" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+      <a href="#" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);">
+        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=500&q=80" alt="" style="width: 100%; height: 200px; object-fit: cover; opacity: 0.7;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="source-badge external">Bloomberg Law</span>
+          </div>
+          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">
+            Key legal AI trends in 2026.
+          </h3>
+        </div>
+      </a>
+      <a href="#" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);">
+        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&q=80" alt="" style="width: 100%; height: 200px; object-fit: cover; opacity: 0.7;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="source-badge external">TechCrunch</span>
+          </div>
+          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">
+            The billion-dollar infrastructure deals powering AI.
+          </h3>
+        </div>
+      </a>
+      <a href="#" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);">
+        <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=500&q=80" alt="" style="width: 100%; height: 200px; object-fit: cover; opacity: 0.7;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="source-badge external">Crunchbase</span>
+          </div>
+          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">
+            Q1 2026 shatters venture funding records.
+          </h3>
+        </div>
+      </a>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px;">
+      <a href="#" class="cta-secondary">View all dispatches <span style="opacity: 0.5;">→</span></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== TRENDING + LATEST SPLIT ===== -->
+<section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+  <div class="container">
+    <div class="content-split" style="display: grid; grid-template-columns: 1fr 340px; gap: 48px;">
+
+      <!-- Main Content: Latest -->
+      <div>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 24px;">Latest Dispatches</div>
+
+        <article style="display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px solid var(--paper-line);">
+          <a href="#"><img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?w=400&q=80" alt="" style="width: 100%; height: 140px; object-fit: cover;"/></a>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span class="source-badge semperr">Semperr</span>
+              <span class="eyebrow" style="color: var(--muted);">Trace</span>
+            </div>
+            <a href="#"><h3 class="serif" style="font-size: 22px; line-height: 1.3; margin-bottom: 8px;">The case for unified portfolio intelligence platforms.</h3></a>
+            <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">Why the next generation of PE operating partners are demanding real-time visibility across their entire portfolio stack.</p>
+            <div class="eyebrow" style="color: var(--muted); margin-top: 12px;">Eleanor Voss · 9 min read</div>
+          </div>
+        </article>
+
+        <article style="display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px solid var(--paper-line);">
+          <a href="#"><img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80" alt="" style="width: 100%; height: 140px; object-fit: cover;"/></a>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span class="source-badge semperr">Semperr</span>
+              <span class="eyebrow" style="color: var(--muted);">Clad</span>
+            </div>
+            <a href="#"><h3 class="serif" style="font-size: 22px; line-height: 1.3; margin-bottom: 8px;">Discovery is broken. Here's how we're fixing it.</h3></a>
+            <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">Litigation support teams are drowning in documents. Semantic search isn't enough—you need structured extraction at scale.</p>
+            <div class="eyebrow" style="color: var(--muted); margin-top: 12px;">Henry Okafor · 11 min read</div>
+          </div>
+        </article>
+
+        <article style="display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px solid var(--paper-line);">
+          <a href="#"><img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&q=80" alt="" style="width: 100%; height: 140px; object-fit: cover;"/></a>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span class="source-badge semperr">Semperr</span>
+              <span class="eyebrow" style="color: var(--muted);">Craft</span>
+            </div>
+            <a href="#"><h3 class="serif" style="font-size: 22px; line-height: 1.3; margin-bottom: 8px;">On choosing boring technology (again).</h3></a>
+            <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">PostgreSQL, Python, and patience. Why we resist the new and shiny—and why our clients thank us later.</p>
+            <div class="eyebrow" style="color: var(--muted); margin-top: 12px;">Marco Adair · 7 min read</div>
+          </div>
+        </article>
+
+        <article style="display: grid; grid-template-columns: 200px 1fr; gap: 24px;">
+          <a href="#"><img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&q=80" alt="" style="width: 100%; height: 140px; object-fit: cover;"/></a>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <span class="source-badge semperr">Semperr</span>
+              <span class="eyebrow" style="color: var(--muted);">Trace</span>
+            </div>
+            <a href="#"><h3 class="serif" style="font-size: 22px; line-height: 1.3; margin-bottom: 8px;">What LPs actually want from their GPs' data rooms.</h3></a>
+            <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">After 200+ LP interviews, we've learned that the data room problem isn't about data—it's about trust.</p>
+            <div class="eyebrow" style="color: var(--muted); margin-top: 12px;">Anya Reyes · 14 min read</div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Sidebar: Trending -->
+      <aside>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 24px;">Most Read This Week</div>
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <a href="#" style="display: flex; gap: 16px; align-items: flex-start;">
+            <span class="serif" style="font-size: 32px; color: var(--paper-line); line-height: 1;">01</span>
+            <div>
+              <h4 class="serif" style="font-size: 16px; line-height: 1.35; margin-bottom: 4px;">Why most PE firms are still getting portfolio data architecture wrong.</h4>
+              <span class="eyebrow" style="color: var(--muted);">14,280 reads</span>
+            </div>
+          </a>
+          <a href="#" style="display: flex; gap: 16px; align-items: flex-start;">
+            <span class="serif" style="font-size: 32px; color: var(--paper-line); line-height: 1;">02</span>
+            <div>
+              <h4 class="serif" style="font-size: 16px; line-height: 1.35; margin-bottom: 4px;">The case for unified portfolio intelligence platforms.</h4>
+              <span class="eyebrow" style="color: var(--muted);">11,420 reads</span>
+            </div>
+          </a>
+          <a href="#" style="display: flex; gap: 16px; align-items: flex-start;">
+            <span class="serif" style="font-size: 32px; color: var(--paper-line); line-height: 1;">03</span>
+            <div>
+              <h4 class="serif" style="font-size: 16px; line-height: 1.35; margin-bottom: 4px;">Discovery is broken. Here's how we're fixing it.</h4>
+              <span class="eyebrow" style="color: var(--muted);">9,856 reads</span>
+            </div>
+          </a>
+          <a href="#" style="display: flex; gap: 16px; align-items: flex-start;">
+            <span class="serif" style="font-size: 32px; color: var(--paper-line); line-height: 1;">04</span>
+            <div>
+              <h4 class="serif" style="font-size: 16px; line-height: 1.35; margin-bottom: 4px;">What LPs actually want from their GPs' data rooms.</h4>
+              <span class="eyebrow" style="color: var(--muted);">8,234 reads</span>
+            </div>
+          </a>
+          <a href="#" style="display: flex; gap: 16px; align-items: flex-start;">
+            <span class="serif" style="font-size: 32px; color: var(--paper-line); line-height: 1;">05</span>
+            <div>
+              <h4 class="serif" style="font-size: 16px; line-height: 1.35; margin-bottom: 4px;">The hidden cost of cross-jurisdiction legal research.</h4>
+              <span class="eyebrow" style="color: var(--muted);">7,102 reads</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Mini Newsletter -->
+        <div style="margin-top: 40px; padding: 24px; background: var(--ink); color: var(--paper);">
+          <div class="eyebrow" style="color: var(--gold); margin-bottom: 12px;">Newsletter</div>
+          <p class="serif" style="font-size: 18px; line-height: 1.4; margin-bottom: 16px;">Get dispatches delivered to your inbox.</p>
+          <input type="email" placeholder="you@firm.com" style="width: 100%; padding: 12px; font-size: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--paper); margin-bottom: 12px;"/>
+          <button style="width: 100%; padding: 12px; font-size: 13px; font-weight: 500; background: var(--gold); color: var(--ink); border: none; cursor: pointer;">Subscribe →</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== BY THE NUMBERS ===== -->
+<section style="padding: 64px 0; background: var(--ink); color: var(--paper);">
+  <div class="container">
+    <div style="text-align: center; margin-bottom: 48px;">
+      <div class="eyebrow" style="color: var(--gold); margin-bottom: 12px;">By the Numbers</div>
+      <h2 class="serif" style="font-size: 32px;">This week in institutional technology.</h2>
+    </div>
+    <div class="stats-grid" style="text-align: center;">
+      <div style="padding: 32px; border: 1px solid rgba(255,255,255,0.1);">
+        <div class="serif" style="font-size: 48px; color: var(--gold); margin-bottom: 8px;">$4.2T</div>
+        <div style="font-size: 15px; color: var(--muted-light); margin-bottom: 12px;">Global PE AUM projected by 2028</div>
+        <div class="eyebrow" style="color: var(--muted);">McKinsey</div>
+      </div>
+      <div style="padding: 32px; border: 1px solid rgba(255,255,255,0.1);">
+        <div class="serif" style="font-size: 48px; color: var(--gold); margin-bottom: 8px;">67%</div>
+        <div style="font-size: 15px; color: var(--muted-light); margin-bottom: 12px;">Of GPs cite data infrastructure as top priority</div>
+        <div class="eyebrow" style="color: var(--muted);">Preqin</div>
+      </div>
+      <div style="padding: 32px; border: 1px solid rgba(255,255,255,0.1);">
+        <div class="serif" style="font-size: 48px; color: var(--gold); margin-bottom: 8px;">2.4x</div>
+        <div style="font-size: 15px; color: var(--muted-light); margin-bottom: 12px;">Productivity gain from AI-assisted due diligence</div>
+        <div class="eyebrow" style="color: var(--muted);">Bain</div>
+      </div>
+      <div style="padding: 32px; border: 1px solid rgba(255,255,255,0.1);">
+        <div class="serif" style="font-size: 48px; color: var(--gold); margin-bottom: 8px;">89%</div>
+        <div style="font-size: 15px; color: var(--muted-light); margin-bottom: 12px;">Of Am Law 200 firms investing in legal AI</div>
+        <div class="eyebrow" style="color: var(--muted);">ALM Intelligence</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== PRIVATE EQUITY & VENTURE ===== -->
+<section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
+      <div>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">Trace</div>
+        <h2 class="serif" style="font-size: 28px;">Private Equity & Venture</h2>
+      </div>
+      <a href="#" class="eyebrow" style="color: var(--muted);">View all →</a>
+    </div>
+
+    <div class="grid-4">
+      <a href="#" class="dispatch-card" style="padding: 0; border: none;">
+        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80" alt="" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 16px;"/>
+        <span class="eyebrow" style="color: var(--gold);">Analysis</span>
+        <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">Why the mid-market is suddenly interesting again.</h3>
+        <p class="eyebrow" style="color: var(--muted);">Eleanor Voss · 8 min</p>
+      </a>
+      <a href="#" class="dispatch-card" style="padding: 0; border: none;">
+        <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?w=400&q=80" alt="" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 16px;"/>
+        <span class="eyebrow" style="color: var(--gold);">Infrastructure</span>
+        <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">Building the modern LP portal from scratch.</h3>
+        <p class="eyebrow" style="color: var(--muted);">Marco Adair · 12 min</p>
+      </a>
+      <a href="https://www.institutionalinvestor.com/article/b1tk0lj5n0m9q0/Private-Equity-s-Data-Problem-Is-Getting-Worse" target="_blank" rel="noopener" class="dispatch-card" style="padding: 0; border: none;">
+        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&q=80" alt="" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 16px;"/>
+        <span class="source-badge external" style="margin-bottom: 8px;">Institutional Investor</span>
+        <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">Private equity's data problem is getting worse.</h3>
+        <p class="eyebrow" style="color: var(--muted);">External · 6 min</p>
+      </a>
+      <a href="https://pitchbook.com/news/articles/private-equity-data-management-operations" target="_blank" rel="noopener" class="dispatch-card" style="padding: 0; border: none;">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80" alt="" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 16px;"/>
+        <span class="source-badge external" style="margin-bottom: 8px;">PitchBook</span>
+        <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">The ops playbook for data-driven PE.</h3>
+        <p class="eyebrow" style="color: var(--muted);">External · 9 min</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== LEGAL TECHNOLOGY ===== -->
+<section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line); background: var(--paper-warm);">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
+      <div>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">Clad</div>
+        <h2 class="serif" style="font-size: 28px;">Legal Technology</h2>
+      </div>
+      <a href="#" class="eyebrow" style="color: var(--muted);">View all →</a>
+    </div>
+
+    <div class="grid-2-1">
+      <!-- Featured Legal -->
+      <a href="#" style="display: block; position: relative; overflow: hidden;">
+        <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80" alt="" style="width: 100%; height: 320px; object-fit: cover;"/>
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 32px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+          <span class="source-badge semperr" style="margin-bottom: 12px;">Semperr</span>
+          <h3 class="serif" style="font-size: 28px; line-height: 1.25; color: var(--paper); margin-bottom: 8px;">
+            Contract intelligence at scale: what we learned from 2M documents.
+          </h3>
+          <p style="color: rgba(255,255,255,0.7); font-size: 15px;">Henry Okafor · 15 min read</p>
+        </div>
+      </a>
+
+      <!-- Legal List -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <a href="#" style="display: block; padding-bottom: 20px; border-bottom: 1px solid var(--paper-line);">
+          <span class="source-badge semperr" style="margin-bottom: 8px;">Semperr</span>
+          <h4 class="serif" style="font-size: 17px; line-height: 1.35; margin: 8px 0;">Rethinking document review for the AI era.</h4>
+          <p class="eyebrow" style="color: var(--muted);">Anya Reyes · 7 min</p>
+        </a>
+        <a href="https://www.law.com/legaltechnews/2024/01/02/legal-tech-trends-2024/" target="_blank" rel="noopener" style="display: block; padding-bottom: 20px; border-bottom: 1px solid var(--paper-line);">
+          <span class="source-badge external" style="margin-bottom: 8px;">Law.com</span>
+          <h4 class="serif" style="font-size: 17px; line-height: 1.35; margin: 8px 0;">The technologies reshaping Big Law in 2026.</h4>
+          <p class="eyebrow" style="color: var(--muted);">External · 10 min</p>
+        </a>
+        <a href="https://abovethelaw.com/legal-tech/" target="_blank" rel="noopener" style="display: block; padding-bottom: 20px; border-bottom: 1px solid var(--paper-line);">
+          <span class="source-badge external" style="margin-bottom: 8px;">Above the Law</span>
+          <h4 class="serif" style="font-size: 17px; line-height: 1.35; margin: 8px 0;">Why associates are quietly becoming prompt engineers.</h4>
+          <p class="eyebrow" style="color: var(--muted);">External · 5 min</p>
+        </a>
+        <a href="#" style="display: block;">
+          <span class="source-badge semperr" style="margin-bottom: 8px;">Semperr</span>
+          <h4 class="serif" style="font-size: 17px; line-height: 1.35; margin: 8px 0;">The argument for jurisdiction-specific models.</h4>
+          <p class="eyebrow" style="color: var(--muted);">Henry Okafor · 9 min</p>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== INDUSTRY VOICES ===== -->
+<section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+  <div class="container">
+    <div class="eyebrow" style="color: var(--gold); margin-bottom: 32px; text-align: center;">Industry Voices</div>
+
+    <div class="quotes-grid">
+      <blockquote style="padding: 32px; border-left: 3px solid var(--gold); background: var(--paper-warm);">
+        <p class="serif" style="font-size: 20px; line-height: 1.5; font-style: italic; margin-bottom: 20px;">
+          "The firms that treat data as a strategic asset—not a compliance burden—will be the ones still standing in ten years."
+        </p>
+        <footer>
+          <div style="font-weight: 500;">David Rubenstein</div>
+          <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Co-Founder, Carlyle Group</div>
+        </footer>
+      </blockquote>
+
+      <blockquote style="padding: 32px; border-left: 3px solid var(--gold); background: var(--paper-warm);">
+        <p class="serif" style="font-size: 20px; line-height: 1.5; font-style: italic; margin-bottom: 20px;">
+          "Legal AI isn't about replacing lawyers. It's about giving them superpowers they didn't know they needed."
+        </p>
+        <footer>
+          <div style="font-weight: 500;">Mary Shen O'Carroll</div>
+          <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Former CLO, Google</div>
+        </footer>
+      </blockquote>
+
+      <blockquote style="padding: 32px; border-left: 3px solid var(--gold); background: var(--paper-warm);">
+        <p class="serif" style="font-size: 20px; line-height: 1.5; font-style: italic; margin-bottom: 20px;">
+          "We stopped asking 'what data do we have?' and started asking 'what decisions do we need to make?'"
+        </p>
+        <footer>
+          <div style="font-weight: 500;">Sarah Kunst</div>
+          <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Managing Director, Cleo Capital</div>
+        </footer>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== DATA INFRASTRUCTURE ===== -->
+<section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
+      <div>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">Craft</div>
+        <h2 class="serif" style="font-size: 28px;">Data Infrastructure</h2>
+      </div>
+      <a href="#" class="eyebrow" style="color: var(--muted);">View all →</a>
+    </div>
+
+    <div class="grid-2" style="gap: 32px;">
+      <a href="#" style="display: grid; grid-template-columns: 140px 1fr; gap: 20px; padding: 24px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
+        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=300&q=80" alt="" style="width: 100%; height: 100px; object-fit: cover;"/>
+        <div>
+          <span class="source-badge semperr" style="margin-bottom: 8px;">Semperr</span>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">Why we still use PostgreSQL for everything.</h3>
+          <p class="eyebrow" style="color: var(--muted);">Marco Adair · 6 min</p>
+        </div>
+      </a>
+      <a href="#" style="display: grid; grid-template-columns: 140px 1fr; gap: 20px; padding: 24px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
+        <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&q=80" alt="" style="width: 100%; height: 100px; object-fit: cover;"/>
+        <div>
+          <span class="source-badge semperr" style="margin-bottom: 8px;">Semperr</span>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">The real cost of "we'll figure out the data later."</h3>
+          <p class="eyebrow" style="color: var(--muted);">Eleanor Voss · 8 min</p>
+        </div>
+      </a>
+      <a href="https://a]z.com/emerging-architectures-for-llm-applications/" target="_blank" rel="noopener" style="display: grid; grid-template-columns: 140px 1fr; gap: 20px; padding: 24px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
+        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=300&q=80" alt="" style="width: 100%; height: 100px; object-fit: cover;"/>
+        <div>
+          <span class="source-badge external" style="margin-bottom: 8px;">a16z</span>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">Emerging architectures for LLM applications.</h3>
+          <p class="eyebrow" style="color: var(--muted);">External · 14 min</p>
+        </div>
+      </a>
+      <a href="https://www.sequoiacap.com/article/data-infrastructure-2024/" target="_blank" rel="noopener" style="display: grid; grid-template-columns: 140px 1fr; gap: 20px; padding: 24px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&q=80" alt="" style="width: 100%; height: 100px; object-fit: cover;"/>
+        <div>
+          <span class="source-badge external" style="margin-bottom: 8px;">Sequoia</span>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">The new data infrastructure stack.</h3>
+          <p class="eyebrow" style="color: var(--muted);">External · 11 min</p>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FEATURED EVENTS ===== -->
+<section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 40px;">
+      <div>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">Industry Calendar</div>
+        <h2 class="serif" style="font-size: 28px;">Upcoming Events</h2>
+      </div>
+      <a href="#" class="eyebrow" style="color: var(--muted);">Full calendar →</a>
+    </div>
+
+    <div class="events-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
+
+      <!-- TechCrunch Disrupt -->
+      <a href="https://techcrunch.com/events/disrupt-2026/" target="_blank" rel="noopener" class="event-card" style="display: block; border: 1px solid var(--paper-line); overflow: hidden; transition: all 0.25s;">
+        <div style="position: relative;">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80" alt="" style="width: 100%; height: 160px; object-fit: cover;"/>
+          <div style="position: absolute; top: 12px; left: 12px;">
+            <span class="eyebrow" style="background: var(--ink); color: var(--paper); padding: 6px 10px;">TechCrunch</span>
+          </div>
+        </div>
+        <div style="padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <div style="text-align: center; padding: 8px 12px; background: var(--paper-warm); border: 1px solid var(--paper-line);">
+              <div class="eyebrow" style="color: var(--gold); font-size: 9px;">OCT</div>
+              <div class="serif" style="font-size: 24px; line-height: 1;">28</div>
+            </div>
+            <div>
+              <h3 class="serif" style="font-size: 18px; line-height: 1.3;">TechCrunch Disrupt 2026</h3>
+              <p class="eyebrow" style="color: var(--muted); margin-top: 4px;">San Francisco, CA</p>
+            </div>
+          </div>
+          <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">The flagship startup conference returns with 10,000+ attendees, Startup Battlefield, and the biggest names in tech.</p>
+        </div>
+      </a>
+
+      <!-- SuperReturn -->
+      <a href="https://informaconnect.com/superreturn-international/" target="_blank" rel="noopener" class="event-card" style="display: block; border: 1px solid var(--paper-line); overflow: hidden; transition: all 0.25s;">
+        <div style="position: relative;">
+          <img src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=500&q=80" alt="" style="width: 100%; height: 160px; object-fit: cover;"/>
+          <div style="position: absolute; top: 12px; left: 12px;">
+            <span class="eyebrow" style="background: var(--ink); color: var(--paper); padding: 6px 10px;">Private Equity</span>
+          </div>
+        </div>
+        <div style="padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <div style="text-align: center; padding: 8px 12px; background: var(--paper-warm); border: 1px solid var(--paper-line);">
+              <div class="eyebrow" style="color: var(--gold); font-size: 9px;">JUN</div>
+              <div class="serif" style="font-size: 24px; line-height: 1;">10</div>
+            </div>
+            <div>
+              <h3 class="serif" style="font-size: 18px; line-height: 1.3;">SuperReturn International</h3>
+              <p class="eyebrow" style="color: var(--muted); margin-top: 4px;">Berlin, Germany</p>
+            </div>
+          </div>
+          <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">The world's largest gathering of private equity and venture capital professionals. 5,000+ LPs and GPs.</p>
+        </div>
+      </a>
+
+      <!-- ILTACON -->
+      <a href="https://www.iltacon.org/" target="_blank" rel="noopener" class="event-card" style="display: block; border: 1px solid var(--paper-line); overflow: hidden; transition: all 0.25s;">
+        <div style="position: relative;">
+          <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=500&q=80" alt="" style="width: 100%; height: 160px; object-fit: cover;"/>
+          <div style="position: absolute; top: 12px; left: 12px;">
+            <span class="eyebrow" style="background: var(--ink); color: var(--paper); padding: 6px 10px;">Legal Tech</span>
+          </div>
+        </div>
+        <div style="padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <div style="text-align: center; padding: 8px 12px; background: var(--paper-warm); border: 1px solid var(--paper-line);">
+              <div class="eyebrow" style="color: var(--gold); font-size: 9px;">AUG</div>
+              <div class="serif" style="font-size: 24px; line-height: 1;">18</div>
+            </div>
+            <div>
+              <h3 class="serif" style="font-size: 18px; line-height: 1.3;">ILTACON 2026</h3>
+              <p class="eyebrow" style="color: var(--muted); margin-top: 4px;">National Harbor, MD</p>
+            </div>
+          </div>
+          <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">The premier legal technology conference. Where law firm innovation leaders shape the future of legal practice.</p>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Second Row: Smaller Events -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 24px;" class="events-row-2">
+
+      <a href="https://www.money2020.com/" target="_blank" rel="noopener" style="display: flex; gap: 16px; padding: 16px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
+        <div style="text-align: center; padding: 8px 10px; background: var(--paper-warm); border: 1px solid var(--paper-line); flex-shrink: 0;">
+          <div class="eyebrow" style="color: var(--gold); font-size: 8px;">OCT</div>
+          <div class="serif" style="font-size: 20px; line-height: 1;">22</div>
+        </div>
+        <div>
+          <h4 class="serif" style="font-size: 15px; line-height: 1.3; margin-bottom: 4px;">Money20/20 USA</h4>
+          <p class="eyebrow" style="color: var(--muted);">Las Vegas, NV</p>
+        </div>
+      </a>
+
+      <a href="https://www.ai-expo.net/" target="_blank" rel="noopener" style="display: flex; gap: 16px; padding: 16px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
+        <div style="text-align: center; padding: 8px 10px; background: var(--paper-warm); border: 1px solid var(--paper-line); flex-shrink: 0;">
+          <div class="eyebrow" style="color: var(--gold); font-size: 8px;">SEP</div>
+          <div class="serif" style="font-size: 20px; line-height: 1;">11</div>
+        </div>
+        <div>
+          <h4 class="serif" style="font-size: 15px; line-height: 1.3; margin-bottom: 4px;">AI & Big Data Expo</h4>
+          <p class="eyebrow" style="color: var(--muted);">Santa Clara, CA</p>
+        </div>
+      </a>
+
+      <a href="https://www.saastrannual.com/" target="_blank" rel="noopener" style="display: flex; gap: 16px; padding: 16px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
+        <div style="text-align: center; padding: 8px 10px; background: var(--paper-warm); border: 1px solid var(--paper-line); flex-shrink: 0;">
+          <div class="eyebrow" style="color: var(--gold); font-size: 8px;">SEP</div>
+          <div class="serif" style="font-size: 20px; line-height: 1;">10</div>
+        </div>
+        <div>
+          <h4 class="serif" style="font-size: 15px; line-height: 1.3; margin-bottom: 4px;">SaaStr Annual 2026</h4>
+          <p class="eyebrow" style="color: var(--muted);">San Mateo, CA</p>
+        </div>
+      </a>
+
+      <a href="https://www.datacouncil.ai/" target="_blank" rel="noopener" style="display: flex; gap: 16px; padding: 16px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
+        <div style="text-align: center; padding: 8px 10px; background: var(--paper-warm); border: 1px solid var(--paper-line); flex-shrink: 0;">
+          <div class="eyebrow" style="color: var(--gold); font-size: 8px;">MAY</div>
+          <div class="serif" style="font-size: 20px; line-height: 1;">14</div>
+        </div>
+        <div>
+          <h4 class="serif" style="font-size: 15px; line-height: 1.3; margin-bottom: 4px;">Data Council Austin</h4>
+          <p class="eyebrow" style="color: var(--muted);">Austin, TX</p>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Semperr Event Callout -->
+    <div style="margin-top: 32px; padding: 32px; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 24px;">
+        <div style="text-align: center; padding: 12px 16px; background: var(--gold); color: var(--ink);">
+          <div class="eyebrow" style="font-size: 9px;">NOV</div>
+          <div class="serif" style="font-size: 28px; line-height: 1;">7</div>
+        </div>
+        <div>
+          <div class="eyebrow" style="color: var(--gold); margin-bottom: 4px;">Hosted by Semperr</div>
+          <h3 class="serif" style="font-size: 22px; margin-bottom: 4px;">The Data Room: NYC</h3>
+          <p style="color: var(--muted-light); font-size: 14px;">An intimate dinner for 40 PE operating partners. By invitation only.</p>
+        </div>
+      </div>
+      <a href="#" class="cta-primary" style="background: var(--gold); color: var(--ink); border-color: var(--gold);">
+        Request an invitation <span style="opacity: 0.6;">→</span>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ===== FROM THE ARCHIVE ===== -->
+<section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line); background: var(--paper-warm);">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
+      <div>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">From the Archive</div>
+        <h2 class="serif" style="font-size: 28px;">Timeless dispatches.</h2>
+      </div>
+      <a href="#" class="eyebrow" style="color: var(--muted);">Full archive →</a>
+    </div>
+
+    <div class="grid-4">
+      <a href="#" style="display: block;">
+        <div class="eyebrow" style="color: var(--muted); margin-bottom: 8px;">VOL. I · 2021</div>
+        <h3 class="serif" style="font-size: 17px; line-height: 1.35; margin-bottom: 8px;">The five principles we will not compromise.</h3>
+        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">Our founding charter—and why we wrote it publicly.</p>
+      </a>
+      <a href="#" style="display: block;">
+        <div class="eyebrow" style="color: var(--muted); margin-bottom: 8px;">VOL. II · 2022</div>
+        <h3 class="serif" style="font-size: 17px; line-height: 1.35; margin-bottom: 8px;">On saying no to venture capital.</h3>
+        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">Why we chose to grow slowly—and profitably.</p>
+      </a>
+      <a href="#" style="display: block;">
+        <div class="eyebrow" style="color: var(--muted); margin-bottom: 8px;">VOL. III · 2023</div>
+        <h3 class="serif" style="font-size: 17px; line-height: 1.35; margin-bottom: 8px;">The infrastructure nobody wants to build.</h3>
+        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">Data plumbing isn't glamorous. That's the point.</p>
+      </a>
+      <a href="#" style="display: block;">
+        <div class="eyebrow" style="color: var(--muted); margin-bottom: 8px;">VOL. IV · 2024</div>
+        <h3 class="serif" style="font-size: 17px; line-height: 1.35; margin-bottom: 8px;">Why we bet on legal before everyone else.</h3>
+        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">The Clad story—from skepticism to scale.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== SUBSCRIBE CTA ===== -->
+<section id="subscribe" style="padding: 80px 0; background: var(--ink); color: var(--paper);">
+  <div class="container">
+    <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;">
+      <div>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px;">❖ &nbsp; The Charterr, by post</div>
+        <h2 class="serif" style="font-size: clamp(32px, 4vw, 48px); line-height: 1.1; margin-bottom: 20px;">
+          Read it in your inbox,<br/>when there is something worth reading.
+        </h2>
+        <p style="font-size: 16px; color: var(--muted-light); line-height: 1.6; max-width: 480px;">
+          One dispatch at a time, on no particular schedule. No tracking pixels, no drip campaigns, no re-marketing.
+          Unsubscribe from the email itself.
+        </p>
+      </div>
+      <div>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 40px;">
+          <input type="email" placeholder="you@institution.com" style="
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-family: var(--sans);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--paper);
+            margin-bottom: 16px;
+          "/>
+          <button style="
+            width: 100%;
+            padding: 16px;
+            font-size: 15px;
+            font-weight: 500;
+            background: var(--gold);
+            color: var(--ink);
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+          " onmouseover="this.style.background='#d4b56f'" onmouseout="this.style.background='var(--gold)'">
+            Subscribe →
+          </button>
+          <p class="eyebrow" style="color: var(--muted); margin-top: 16px; text-align: center;">
+            Typically sent once or twice a month · Plain text · No spam
+          </p>
+        </div>
+
+        <div class="stats-grid" style="gap: 16px; margin-top: 32px; text-align: center;">
+          <div>
+            <div class="serif" style="font-size: 28px; color: var(--gold);">110K+</div>
+            <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Subscribers</div>
+          </div>
+          <div>
+            <div class="serif" style="font-size: 28px; color: var(--paper);">52</div>
+            <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Dispatches</div>
+          </div>
+          <div>
+            <div class="serif" style="font-size: 28px; color: var(--paper);">MMXXI</div>
+            <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Founded</div>
+          </div>
+          <div>
+            <div class="serif" style="font-size: 28px; color: var(--paper);">0</div>
+            <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Outside Investors</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== WORK WITH US CTA ===== -->
+<section style="padding: 80px 0; border-bottom: 1px solid var(--paper-line);">
+  <div class="container" style="text-align: center;">
+    <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px;">Beyond the publication</div>
+    <h2 class="serif" style="font-size: clamp(28px, 4vw, 42px); margin-bottom: 20px;">
+      The Charterr is published by Semperr.
+    </h2>
+    <p style="font-size: 17px; color: var(--muted); max-width: 640px; margin: 0 auto 32px; line-height: 1.6;">
+      We design, build, and operate data infrastructure for private equity firms, law practices,
+      and the institutions that cannot afford to guess. If you're reading this, we might be able to help.
+    </p>
+    <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+      <a href="contact.html" class="cta-primary">
+        Talk to us about your infrastructure <span style="opacity: 0.6;">→</span>
+      </a>
+      <a href="capabilities.html" class="cta-secondary">
+        See what we build
+      </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== FOOTER ===== -->
+<footer style="padding: 48px 0; background: var(--paper);">
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 24px;">
+      <div>
+        <a href="/" class="serif" style="font-size: 20px;">
+          The Charter<span style="color: var(--gold);">r</span>
+        </a>
+        <span style="color: var(--paper-line); margin: 0 12px;">·</span>
+        <a href="about.html" class="serif" style="font-size: 18px; color: var(--muted);">
+          by Sempe<span style="color: var(--gold);">rr</span>
+        </a>
+      </div>
+      <div class="eyebrow" style="color: var(--muted);">
+        © 2026 Semperr Labs, Inc. · Made in NYC · Cork · Austin
+      </div>
+      <div class="eyebrow" style="color: var(--gold);">
+        ◆ Semper paratus
+      </div>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
