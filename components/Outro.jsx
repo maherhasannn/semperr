@@ -19,7 +19,7 @@ function Footer({ theme }) {
     }}>
       <div className="grain" />
       <div className="container">
-        <div style={{
+        <div className="footer-band" style={{
           display:'flex', justifyContent:'space-between', alignItems:'center',
           paddingBottom:48,
           borderBottom: `1px solid ${lineColor}`,
@@ -55,7 +55,7 @@ function Footer({ theme }) {
           ]}/>
         </div>
 
-        <div style={{
+        <div className="footer-band-bottom" style={{
           display:'flex', justifyContent:'space-between', alignItems:'center',
           paddingTop:28, borderTop: `1px solid ${lineColor}`,
           fontFamily:'var(--mono)', fontSize:11,

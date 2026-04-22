@@ -1,4 +1,4 @@
-// HiringSection — selective recruiting message with kinetic type.
+// HiringSection — selective recruiting with constellation background and larger kinetic type.
 
 function HiringSection({ theme = 'light' }) {
   const isDark = theme === 'dark';
@@ -37,7 +37,9 @@ function HiringSection({ theme = 'light' }) {
       padding:'120px 0 140px', position:'relative', overflow:'hidden',
     }}>
       <div className="grain" />
-      <div className="container">
+      <Constellation />
+
+      <div className="container" style={{position:'relative', zIndex:1}}>
         <div style={{
           display:'grid', gridTemplateColumns:'1fr 1fr', gap:64, alignItems:'center',
         }}>
@@ -82,7 +84,8 @@ function HiringSection({ theme = 'light' }) {
 
           <div className="hiring-kinetic" style={{
             display:'flex', alignItems:'center', justifyContent:'center',
-            minHeight:280,
+            minHeight:320,
+            position:'relative',
           }}>
             {prefersReduced ? (
               <div style={{display:'flex', flexDirection:'column', gap:12, textAlign:'center'}}>
@@ -96,12 +99,13 @@ function HiringSection({ theme = 'light' }) {
               </div>
             ) : (
               <span className="h-display" style={{
-                fontSize:'clamp(48px, 6vw, 96px)',
+                fontSize:'clamp(56px, 7vw, 112px)',
                 color: gold,
                 fontStyle:'italic',
                 opacity: visible && inView ? 1 : 0,
-                transform: visible && inView ? 'translateY(0)' : 'translateY(12px)',
+                transform: visible && inView ? 'translateY(0) scale(1)' : 'translateY(8px) scale(0.97)',
                 transition: 'opacity 0.4s ease, transform 0.4s ease',
+                textShadow: visible && inView ? '0 0 60px rgba(201,169,97,0.15)' : 'none',
               }}>
                 {words[wordIndex]}
               </span>

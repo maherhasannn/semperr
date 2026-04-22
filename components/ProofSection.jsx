@@ -1,4 +1,4 @@
-// ProofSection — institutional credibility through client categories.
+// ProofSection — institutional credibility with animated counters, hover cards, redacted names.
 
 function ProofSection({ theme = 'light' }) {
   const isDark = theme === 'dark';
@@ -8,6 +8,13 @@ function ProofSection({ theme = 'light' }) {
 
   const ref = React.useRef(null);
   const inView = useInView(ref);
+
+  const redactedNames = [
+    '\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 Capital',
+    '\u2588\u2588\u2588\u2588\u2588\u2588 & Chase LLP',
+    '\u2588\u2588\u2588\u2588\u2588\u2588\u2588 Provisions',
+    'The \u2588\u2588\u2588\u2588\u2588\u2588 Trust',
+  ];
 
   const cards = [
     { title: 'Private Equity', desc: 'Mid-market and growth funds pricing acquisitions and portfolio ops.', stat: '40+ funds served' },
@@ -31,7 +38,7 @@ function ProofSection({ theme = 'light' }) {
           II. &nbsp; Who we serve
         </div>
 
-        <h2 className="h-display" style={{
+        <h2 className="h-display proof-headline" style={{
           fontSize:'clamp(42px, 5.5vw, 80px)', color:'#f8f6f0', marginBottom:20,
           opacity: inView ? 1 : 0,
           transform: inView ? 'translateY(0)' : 'translateY(18px)',
@@ -53,23 +60,33 @@ function ProofSection({ theme = 'light' }) {
           display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:20,
         }}>
           {cards.map((c, i) => (
-            <div key={c.title} style={{
+            <div key={c.title} className="proof-card" style={{
               border: `1px solid ${cardBorder}`,
               padding:'32px 24px',
               display:'flex', flexDirection:'column', justifyContent:'space-between',
-              minHeight:260,
+              minHeight:280,
               opacity: inView ? 1 : 0,
               transform: inView ? 'translateY(0)' : 'translateY(24px)',
               transition: `opacity 0.6s ease ${0.3 + i * 0.15}s, transform 0.6s ease ${0.3 + i * 0.15}s`,
             }}>
               <div>
+                <div className="redacted-name" style={{
+                  fontFamily:'var(--mono)', fontSize:9, letterSpacing:'0.06em',
+                  color:'rgba(255,255,255,0.2)',
+                  marginBottom:14,
+                  overflow:'hidden',
+                  whiteSpace:'nowrap',
+                }}>
+                  {redactedNames[i]}
+                </div>
                 <h3 className="h-serif" style={{fontSize:22, color:'#f8f6f0', marginBottom:14}}>{c.title}</h3>
                 <p style={{fontSize:14, lineHeight:1.55, color:'#9099ad'}}>{c.desc}</p>
               </div>
               <div style={{
                 marginTop:24,
-                fontFamily:'var(--mono)', fontSize:12, letterSpacing:'0.06em',
+                fontFamily:'var(--mono)', fontSize:13, letterSpacing:'0.06em',
                 color: 'var(--gold)',
+                fontWeight:500,
                 overflow:'hidden',
               }}>
                 <span style={{
@@ -77,7 +94,7 @@ function ProofSection({ theme = 'light' }) {
                   transform: inView ? 'translateX(0)' : 'translateX(-100%)',
                   transition: `transform 0.6s ease ${0.6 + i * 0.15}s`,
                 }}>
-                  {c.stat}
+                  <AnimatedStat text={c.stat} inView={inView} delay={0.6 + i * 0.15} />
                 </span>
               </div>
             </div>

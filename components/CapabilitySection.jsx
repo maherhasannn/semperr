@@ -1,4 +1,4 @@
-// CapabilitySection — broad categories of work.
+// CapabilitySection — broad categories of work with typed commands and hoverable tags.
 
 function CapabilitySection({ theme = 'light' }) {
   const isDark = theme === 'dark';
@@ -18,16 +18,19 @@ function CapabilitySection({ theme = 'light' }) {
       name: 'Custom Systems',
       desc: 'Dealbook platforms, case-management tools, client portals\u2009—\u2009software shaped to the institution.',
       tags: ['Data platforms', 'Internal tools', 'Client portals', 'Reporting engines'],
+      cmd: 'deploy --env production --service dealbook',
     },
     {
       name: 'Data Infrastructure',
       desc: 'Ingestion, reconciliation, graph construction, and delivery\u2009—\u2009the plumbing underneath every decision.',
       tags: ['ETL pipelines', 'Entity resolution', 'Graph databases', 'API layers'],
+      cmd: 'trace reconcile --source sec-edgar --format graph',
     },
     {
       name: 'Technical Workflows',
       desc: 'Websites, automations, AI-assisted operations, and back-office systems.',
       tags: ['Websites', 'Automations', 'AI receptionists', 'CRM', 'Phone systems'],
+      cmd: 'dev build --client brennans --type website',
     },
   ];
 
@@ -45,7 +48,7 @@ function CapabilitySection({ theme = 'light' }) {
           III. &nbsp; What we build
         </div>
 
-        <h2 className="h-display" style={{
+        <h2 className="h-display cap-headline" style={{
           fontSize:'clamp(42px, 5.5vw, 80px)', color: ink, marginBottom:20,
           opacity: inView ? 1 : 0,
           transform: inView ? 'translateY(0)' : 'translateY(18px)',
@@ -63,7 +66,7 @@ function CapabilitySection({ theme = 'light' }) {
           our clients depend on — then stay to make sure it works.
         </p>
 
-        <RevealLine delay={0.3} color={lineColor} />
+        <RevealLine delay={0.3} color={lineColor} height={2} />
 
         {capabilities.map((cap, i) => (
           <div key={cap.name}>
@@ -77,10 +80,11 @@ function CapabilitySection({ theme = 'light' }) {
               <div>
                 <h3 className="h-serif" style={{fontSize:28, color: ink, marginBottom:12}}>{cap.name}</h3>
                 <p style={{fontSize:16, lineHeight:1.55, color: muted}}>{cap.desc}</p>
+                <TypedCommand command={cap.cmd} inView={inView} delay={0.6 + i * 0.4} />
               </div>
               <div style={{display:'flex', flexWrap:'wrap', gap:8, paddingTop:6}}>
                 {cap.tags.map((tag, j) => (
-                  <span key={tag} style={{
+                  <span key={tag} className="cap-tag" style={{
                     padding:'8px 14px',
                     fontSize:12,
                     fontFamily:'var(--mono)',

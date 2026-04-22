@@ -49,6 +49,50 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   0% { transform: translateY(0); }
   100% { transform: translateY(100%); }
 }
+@keyframes dataFloat {
+  0% { transform: translateY(0); opacity: 0; }
+  8% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateY(-105vh); opacity: 0; }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes constellationPulse {
+  0%, 100% { r: inherit; opacity: 0.25; }
+  50% { opacity: 0.6; }
+}
+@keyframes constellationDrift {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(1.5px, -1px); }
+  66% { transform: translate(-1px, 1.5px); }
+}
+@keyframes sealSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ——— Hover classes ——— */
+.proof-card {
+  transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
+              border-color 0.4s ease,
+              box-shadow 0.4s ease !important;
+}
+.proof-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(201,169,97,0.35) !important;
+  box-shadow: 0 12px 40px -12px rgba(201,169,97,0.18), 0 0 0 1px rgba(201,169,97,0.1) !important;
+}
+.cap-tag {
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease !important;
+  cursor: default;
+}
+.cap-tag:hover {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  background: rgba(201,169,97,0.06) !important;
+}
 
 /* ——— Reduced Motion ——— */
 @media (prefers-reduced-motion: reduce) {
@@ -66,11 +110,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .m-only { display: block !important; }
   .m-hide { display: none !important; }
 
-  /* Collapse multi-column inline grids */
   section [style*="grid-template-columns"],
   footer [style*="grid-template-columns"] { grid-template-columns: 1fr !important; gap: 24px !important; }
 
-  /* Scale down display typography */
   [style*="clamp(64px"], [style*="clamp(60px"] { font-size: 52px !important; line-height: 0.98 !important; }
   [style*="clamp(56px"] { font-size: 46px !important; line-height: 1 !important; }
   [style*="clamp(52px"] { font-size: 42px !important; line-height: 1.02 !important; }
@@ -78,25 +120,29 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   [style*="clamp(42px"] { font-size: 36px !important; }
   [style*="clamp(36px"] { font-size: 30px !important; }
 
-  /* Hero padding */
   section { padding-top: 48px !important; padding-bottom: 56px !important; }
 
-  /* Masthead */
   .mast-nav, .mast-eyebrow, .mast-signin { display: none !important; }
   .mast-burger { display: inline-flex !important; }
   .mast-panel { display: block; }
 
-  /* Body text reflow */
   p { font-size: 16px !important; line-height: 1.55 !important; }
 
-  /* Charter: roman numerals inline */
+  .charter-value-row { grid-template-columns: 1fr !important; gap: 8px !important; }
   .charter-value-numeral { display: inline !important; margin-right: 8px !important; }
-
-  /* Hiring: kinetic zone below copy, smaller font */
   .hiring-kinetic { font-size: 48px !important; min-height: 80px !important; margin-top: 32px !important; }
-
-  /* Footer columns stack */
   .footer-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .data-stream { display: none !important; }
+  .constellation-wrap { display: none !important; }
+  .charter-seal { display: none !important; }
+  .mast-cta { display: none !important; }
+  .proof-headline br { display: none; }
+  .cap-headline br { display: none; }
+  .redacted-name { text-overflow: ellipsis; }
+  .typed-cmd { text-overflow: ellipsis; }
+  .footer-band { flex-wrap: wrap !important; gap: 12px !important; }
+  .footer-band-bottom { flex-wrap: wrap !important; gap: 8px !important; justify-content: center !important; text-align: center !important; }
+  footer { padding: 48px 0 32px !important; }
 }
 </style>
 
@@ -114,7 +160,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 function useInView(ref, threshold = 0.15) {
   const [inView, setInView] = React.useState(false);
   React.useEffect(() => {
-    // Respect prefers-reduced-motion: show everything immediately
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setInView(true);
       return;
@@ -130,7 +175,7 @@ function useInView(ref, threshold = 0.15) {
   return inView;
 }
 
-function RevealLine({ delay = 0, color = 'var(--gold)', height = 1, style = {} }) {
+function RevealLine({ delay = 0, color = 'var(--gold)', height = 1, glow = false, style = {} }) {
   const ref = React.useRef(null);
   const inView = useInView(ref);
   return (
@@ -140,6 +185,7 @@ function RevealLine({ delay = 0, color = 'var(--gold)', height = 1, style = {} }
       transform: inView ? 'scaleX(1)' : 'scaleX(0)',
       transformOrigin: 'left',
       transition: `transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s`,
+      boxShadow: glow && inView ? `0 0 12px ${color}, 0 0 3px ${color}` : 'none',
       ...style,
     }} />
   );
@@ -159,6 +205,207 @@ function StaggerReveal({ children, stagger = 0.12, baseDelay = 0 }) {
           {child}
         </div>
       ))}
+    </div>
+  );
+}
+
+
+/* ===== Visual Components ===== */
+
+/* DataStream — ambient floating monospace characters for Hero */
+function DataStream({ isDark }) {
+  const chars = React.useMemo(() => {
+    const symbols = ['0','1','\u00B7','\u2014','+','\u00A7','\u00B6','\u25B3','\u25CB','\u25AA',':','\u223F','0','1','\u2022','%','$','\u2013'];
+    return Array.from({ length: 40 }, (_, i) => ({
+      char: symbols[i % symbols.length],
+      left: (i * 2.5 + Math.random() * 2) % 100,
+      delay: Math.random() * 18,
+      duration: 18 + Math.random() * 16,
+      size: 10 + Math.random() * 3,
+      opacity: 0.04 + Math.random() * 0.04,
+    }));
+  }, []);
+
+  return (
+    <div className="data-stream" style={{
+      position:'absolute', inset:0, overflow:'hidden', pointerEvents:'none',
+      maskImage:'linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%)',
+      WebkitMaskImage:'linear-gradient(transparent 0%, black 15%, black 85%, transparent 100%)',
+    }}>
+      {chars.map((c, i) => (
+        <span key={i} style={{
+          position:'absolute',
+          left: `${c.left}%`,
+          bottom: '-24px',
+          fontFamily:'var(--mono)',
+          fontSize: c.size,
+          color: isDark ? '#f8f6f0' : '#0b1220',
+          opacity: c.opacity,
+          animation: `dataFloat ${c.duration}s linear ${c.delay}s infinite`,
+          userSelect:'none',
+        }}>{c.char}</span>
+      ))}
+    </div>
+  );
+}
+
+/* AnimatedStat — counts up to target number on scroll */
+function AnimatedStat({ text, inView, delay = 0 }) {
+  const [display, setDisplay] = React.useState(text);
+  const match = text.match(/^(.*?)(\d+)(.*?)$/);
+  const prefersReduced = React.useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    []
+  );
+
+  React.useEffect(() => {
+    if (!inView || !match || prefersReduced) { setDisplay(text); return; }
+    const target = parseInt(match[2]);
+    const prefix = match[1];
+    const suffix = match[3];
+    const duration = 1400;
+    let raf;
+    let startTime = null;
+
+    const tick = (now) => {
+      if (!startTime) startTime = now;
+      const elapsed = now - startTime - delay * 1000;
+      if (elapsed < 0) { raf = requestAnimationFrame(tick); return; }
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(`${prefix}${Math.floor(eased * target)}${suffix}`);
+      if (progress < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView]);
+
+  return display;
+}
+
+/* TypedCommand — types out a terminal command on scroll */
+function TypedCommand({ command, inView, delay = 0 }) {
+  const [n, setN] = React.useState(0);
+  const prefersReduced = React.useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    []
+  );
+
+  React.useEffect(() => {
+    if (prefersReduced) { setN(command.length); return; }
+    if (!inView) return;
+    let i = 0;
+    let timeout;
+    const startDelay = setTimeout(() => {
+      const type = () => {
+        i++;
+        setN(i);
+        if (i < command.length) timeout = setTimeout(type, 25 + Math.random() * 35);
+      };
+      type();
+    }, delay * 1000);
+    return () => { clearTimeout(startDelay); clearTimeout(timeout); };
+  }, [inView, command, delay, prefersReduced]);
+
+  return (
+    <div className="typed-cmd" style={{
+      fontFamily:'var(--mono)',
+      fontSize:11,
+      marginTop:16,
+      opacity: inView ? 0.55 : 0,
+      transition:'opacity 0.4s ease',
+      whiteSpace:'nowrap',
+      overflow:'hidden',
+    }}>
+      <span style={{color:'var(--gold)', opacity:0.6}}>$ </span>
+      <span style={{color:'inherit'}}>{command.slice(0, n)}</span>
+      {n < command.length && n > 0 && (
+        <span style={{opacity:0.5, animation:'blink 0.8s step-end infinite'}}>{'\u258D'}</span>
+      )}
+    </div>
+  );
+}
+
+/* NotarySeal — circular SVG stamp */
+function NotarySeal({ inView }) {
+  return (
+    <div className="charter-seal" style={{
+      position:'absolute', bottom:40, right:0,
+      opacity: inView ? 0.1 : 0,
+      transform: inView ? 'rotate(0deg) scale(1)' : 'rotate(-20deg) scale(0.85)',
+      transition: 'opacity 1.2s ease 0.8s, transform 1.2s cubic-bezier(0.25,0.46,0.45,0.94) 0.8s',
+      pointerEvents:'none',
+    }}>
+      <svg width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="62" fill="none" stroke="var(--gold)" strokeWidth="1.5" />
+        <circle cx="70" cy="70" r="55" fill="none" stroke="var(--gold)" strokeWidth="0.5" />
+        <circle cx="70" cy="70" r="28" fill="none" stroke="var(--gold)" strokeWidth="0.5" />
+        <defs>
+          <path id="sealArc" d="M 70,70 m -44,0 a 44,44 0 1,1 88,0 a 44,44 0 1,1 -88,0" />
+        </defs>
+        <text fontSize="7.5" fontFamily="var(--mono)" fill="var(--gold)" letterSpacing="4" style={{textTransform:'uppercase'}}>
+          <textPath href="#sealArc" startOffset="2%">
+            SEMPERR LABS {'\u00B7'} EST. MMXXI {'\u00B7'} NEW YORK {'\u00B7'}
+          </textPath>
+        </text>
+        <text x="70" y="78" textAnchor="middle" fontFamily="Instrument Serif, serif" fontSize="32" fill="var(--gold)" letterSpacing="-1">
+          rr
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+/* Constellation — subtle dot/line network for HiringSection */
+function Constellation() {
+  const nodes = React.useMemo(() => [
+    {x:15, y:12}, {x:38, y:8}, {x:62, y:18}, {x:85, y:10},
+    {x:25, y:35}, {x:50, y:42}, {x:72, y:32}, {x:92, y:38},
+    {x:10, y:58}, {x:35, y:65}, {x:58, y:55}, {x:82, y:62},
+    {x:20, y:82}, {x:48, y:78}, {x:70, y:85}, {x:90, y:75},
+  ], []);
+
+  const edges = React.useMemo(() => {
+    const e = [];
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        if (Math.sqrt(dx*dx + dy*dy) < 28) e.push([i, j]);
+      }
+    }
+    return e;
+  }, [nodes]);
+
+  return (
+    <div className="constellation-wrap" style={{
+      position:'absolute', inset:0, pointerEvents:'none', overflow:'hidden',
+    }}>
+      <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" style={{
+        width:'100%', height:'100%', position:'absolute', inset:0,
+      }}>
+        {edges.map(([a, b], i) => (
+          <line key={i}
+            x1={nodes[a].x} y1={nodes[a].y}
+            x2={nodes[b].x} y2={nodes[b].y}
+            stroke="var(--gold)" strokeWidth="0.15" opacity="0.2"
+          />
+        ))}
+        {nodes.map((n, i) => (
+          <g key={i} style={{
+            animation: `constellationDrift ${6 + i * 0.5}s ease-in-out ${i * 0.3}s infinite`,
+          }}>
+            <circle
+              cx={n.x} cy={n.y} r={0.8 + (i % 3) * 0.4}
+              fill="var(--gold)"
+              opacity="0.3"
+              style={{
+                animation: `constellationPulse ${3 + (i % 4) * 0.8}s ease-in-out ${i * 0.2}s infinite`,
+              }}
+            />
+          </g>
+        ))}
+      </svg>
     </div>
   );
 }
@@ -244,7 +491,7 @@ function Masthead({ theme }) {
               <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
             </span>
           </button>
-          <a href="contact.html" style={{
+          <a href="contact.html" className="mast-cta" style={{
             fontSize:13,
             padding:'8px 16px',
             border:`1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
@@ -287,7 +534,6 @@ function Hero({ theme = 'light' }) {
     return () => clearTimeout(t);
   }, []);
 
-  // Reduced motion: show everything immediately
   const prefersReduced = React.useMemo(
     () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
     []
@@ -308,9 +554,9 @@ function Hero({ theme = 'light' }) {
       overflow:'hidden',
     }}>
       <div className="grain" />
+      <DataStream isDark={isDark} />
 
-      <div className="container">
-        {/* Eyebrow */}
+      <div className="container" style={{position:'relative', zIndex:1}}>
         <div className="h-eyebrow" style={{
           color: gold, marginBottom:32,
           ...t(0.1),
@@ -318,7 +564,6 @@ function Hero({ theme = 'light' }) {
           The interface for serious work
         </div>
 
-        {/* Headline — three staggered lines */}
         <h1 className="h-display" style={{
           fontSize:'clamp(52px, 8vw, 132px)',
           color: ink,
@@ -332,12 +577,10 @@ function Hero({ theme = 'light' }) {
           <span style={{display:'block', ...t(0.5)}}>technical workflows.</span>
         </h1>
 
-        {/* RevealLine under headline */}
         <div style={{marginTop:28, maxWidth:600}}>
-          <RevealLine delay={0.6} color={gold} />
+          <RevealLine delay={0.6} color={gold} height={2} glow />
         </div>
 
-        {/* Subhead */}
         <p style={{
           marginTop:32, maxWidth:620, fontSize:19, lineHeight:1.55,
           color: muted,
@@ -347,7 +590,6 @@ function Hero({ theme = 'light' }) {
           and owner-run businesses depend on when the answer has to be right.
         </p>
 
-        {/* CTAs */}
         <div style={{
           display:'flex', gap:12, marginTop:40,
           ...t(1.0),
@@ -371,6 +613,17 @@ function Hero({ theme = 'light' }) {
 }
 
 window.Hero = Hero;
+
+
+/* ===== Section Divider ===== */
+
+function SectionDivider({ color = 'var(--gold)' }) {
+  return (
+    <div style={{position:'relative', zIndex:2}}>
+      <RevealLine delay={0} color={color} height={2} glow />
+    </div>
+  );
+}
 
 
 /* ===== components/CharterSection.jsx ===== */
@@ -399,8 +652,7 @@ function CharterSection({ theme = 'light' }) {
       background: bg, padding: '120px 0 140px', position:'relative', overflow:'hidden',
     }}>
       <div className="grain" />
-      <div className="container">
-        {/* Eyebrow */}
+      <div className="container" style={{position:'relative'}}>
         <div className="h-eyebrow" style={{
           color: gold, marginBottom:24,
           opacity: inView ? 1 : 0,
@@ -409,7 +661,6 @@ function CharterSection({ theme = 'light' }) {
           I. &nbsp; The Charter
         </div>
 
-        {/* Headline */}
         <h2 className="h-display" style={{
           fontSize:'clamp(42px, 5.5vw, 80px)', color: ink, marginBottom:20,
           opacity: inView ? 1 : 0,
@@ -419,7 +670,6 @@ function CharterSection({ theme = 'light' }) {
           Five principles. No exceptions.
         </h2>
 
-        {/* Deck */}
         <p style={{
           maxWidth:620, fontSize:18, lineHeight:1.55, color: muted, marginBottom:56,
           opacity: inView ? 1 : 0,
@@ -428,29 +678,39 @@ function CharterSection({ theme = 'light' }) {
           Every engagement, every hire, every line of code is measured against the same standard.
         </p>
 
-        <RevealLine delay={0.3} color={lineColor} />
+        <RevealLine delay={0.3} color={lineColor} height={2} />
 
         {/* Values list with scan line */}
         <div style={{position:'relative'}}>
-          {/* Scan line */}
+          {/* Scan line — 2px, more visible */}
           <div style={{
-            position:'absolute', top:0, left:0, right:0, height:1,
-            background: `linear-gradient(90deg, transparent, var(--gold), transparent)`,
-            opacity: inView ? 0.6 : 0,
+            position:'absolute', top:0, left:0, right:0, height:2,
+            background: `linear-gradient(90deg, transparent 10%, var(--gold) 50%, transparent 90%)`,
+            opacity: inView ? 0.7 : 0,
             animation: inView ? 'scanLine 2.5s ease-in-out 0.5s forwards' : 'none',
             pointerEvents: 'none',
             zIndex: 2,
+            boxShadow: '0 0 12px var(--gold), 0 0 4px var(--gold)',
           }} />
 
           {values.map((v, i) => (
-            <div key={v.num} style={{
+            <div key={v.num} className="charter-value-row" style={{
               display:'grid', gridTemplateColumns:'48px 160px 1fr', gap:24, alignItems:'baseline',
               padding:'28px 0',
               borderBottom: `1px solid ${lineColor}`,
+              position:'relative',
               opacity: inView ? 1 : 0,
               transform: inView ? 'translateY(0)' : 'translateY(14px)',
               transition: `opacity 0.5s ease ${0.35 + i * 0.12}s, transform 0.5s ease ${0.35 + i * 0.12}s`,
             }}>
+              {/* Gold progress bar behind each row */}
+              <div style={{
+                position:'absolute', left:0, bottom:0, height:2,
+                background: 'var(--gold)',
+                opacity: 0.15,
+                width: inView ? '100%' : '0%',
+                transition: `width 0.8s cubic-bezier(0.25,0.46,0.45,0.94) ${0.5 + i * 0.15}s`,
+              }} />
               <span className="charter-value-numeral h-eyebrow" style={{color: gold, fontSize:12}}>{v.num}</span>
               <span className="h-serif" style={{fontSize:24, color: ink}}>{v.name}</span>
               <span style={{fontSize:16, lineHeight:1.55, color: muted}}>{v.desc}</span>
@@ -471,6 +731,9 @@ function CharterSection({ theme = 'light' }) {
             color: ink, fontSize:14, fontWeight:500,
           }}>Read the full charter <span style={{opacity:0.5}}>→</span></a>
         </div>
+
+        {/* Notary seal */}
+        <NotarySeal inView={inView} />
       </div>
     </section>
   );
@@ -483,13 +746,19 @@ window.CharterSection = CharterSection;
 
 function ProofSection({ theme = 'light' }) {
   const isDark = theme === 'dark';
-  const ink = isDark ? '#f8f6f0' : '#f8f6f0';
   const muted = '#9099ad';
   const gold = 'var(--gold)';
   const cardBorder = 'rgba(255,255,255,0.1)';
 
   const ref = React.useRef(null);
   const inView = useInView(ref);
+
+  const redactedNames = [
+    '\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588 Capital',
+    '\u2588\u2588\u2588\u2588\u2588\u2588 & Chase LLP',
+    '\u2588\u2588\u2588\u2588\u2588\u2588\u2588 Provisions',
+    'The \u2588\u2588\u2588\u2588\u2588\u2588 Trust',
+  ];
 
   const cards = [
     { title: 'Private Equity', desc: 'Mid-market and growth funds pricing acquisitions and portfolio ops.', stat: '40+ funds served' },
@@ -505,7 +774,6 @@ function ProofSection({ theme = 'light' }) {
     }}>
       <div className="grain" />
       <div className="container">
-        {/* Eyebrow */}
         <div className="h-eyebrow" style={{
           color: gold, marginBottom:24,
           opacity: inView ? 1 : 0,
@@ -514,8 +782,7 @@ function ProofSection({ theme = 'light' }) {
           II. &nbsp; Who we serve
         </div>
 
-        {/* Headline */}
-        <h2 className="h-display" style={{
+        <h2 className="h-display proof-headline" style={{
           fontSize:'clamp(42px, 5.5vw, 80px)', color:'#f8f6f0', marginBottom:20,
           opacity: inView ? 1 : 0,
           transform: inView ? 'translateY(0)' : 'translateY(18px)',
@@ -524,7 +791,6 @@ function ProofSection({ theme = 'light' }) {
           Built for institutions that<br/>cannot afford to guess.
         </h2>
 
-        {/* Deck */}
         <p style={{
           maxWidth:660, fontSize:18, lineHeight:1.55, color: muted, marginBottom:64,
           opacity: inView ? 1 : 0,
@@ -539,23 +805,34 @@ function ProofSection({ theme = 'light' }) {
           display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:20,
         }}>
           {cards.map((c, i) => (
-            <div key={c.title} style={{
+            <div key={c.title} className="proof-card" style={{
               border: `1px solid ${cardBorder}`,
               padding:'32px 24px',
               display:'flex', flexDirection:'column', justifyContent:'space-between',
-              minHeight:260,
+              minHeight:280,
               opacity: inView ? 1 : 0,
               transform: inView ? 'translateY(0)' : 'translateY(24px)',
               transition: `opacity 0.6s ease ${0.3 + i * 0.15}s, transform 0.6s ease ${0.3 + i * 0.15}s`,
             }}>
               <div>
+                {/* Redacted client name */}
+                <div className="redacted-name" style={{
+                  fontFamily:'var(--mono)', fontSize:9, letterSpacing:'0.06em',
+                  color:'rgba(255,255,255,0.2)',
+                  marginBottom:14,
+                  overflow:'hidden',
+                  whiteSpace:'nowrap',
+                }}>
+                  {redactedNames[i]}
+                </div>
                 <h3 className="h-serif" style={{fontSize:22, color:'#f8f6f0', marginBottom:14}}>{c.title}</h3>
                 <p style={{fontSize:14, lineHeight:1.55, color:'#9099ad'}}>{c.desc}</p>
               </div>
               <div style={{
                 marginTop:24,
-                fontFamily:'var(--mono)', fontSize:12, letterSpacing:'0.06em',
+                fontFamily:'var(--mono)', fontSize:13, letterSpacing:'0.06em',
                 color: 'var(--gold)',
+                fontWeight:500,
                 overflow:'hidden',
               }}>
                 <span style={{
@@ -563,7 +840,7 @@ function ProofSection({ theme = 'light' }) {
                   transform: inView ? 'translateX(0)' : 'translateX(-100%)',
                   transition: `transform 0.6s ease ${0.6 + i * 0.15}s`,
                 }}>
-                  {c.stat}
+                  <AnimatedStat text={c.stat} inView={inView} delay={0.6 + i * 0.15} />
                 </span>
               </div>
             </div>
@@ -597,16 +874,19 @@ function CapabilitySection({ theme = 'light' }) {
       name: 'Custom Systems',
       desc: 'Dealbook platforms, case-management tools, client portals\u2009—\u2009software shaped to the institution.',
       tags: ['Data platforms', 'Internal tools', 'Client portals', 'Reporting engines'],
+      cmd: 'deploy --env production --service dealbook',
     },
     {
       name: 'Data Infrastructure',
       desc: 'Ingestion, reconciliation, graph construction, and delivery\u2009—\u2009the plumbing underneath every decision.',
       tags: ['ETL pipelines', 'Entity resolution', 'Graph databases', 'API layers'],
+      cmd: 'trace reconcile --source sec-edgar --format graph',
     },
     {
       name: 'Technical Workflows',
       desc: 'Websites, automations, AI-assisted operations, and back-office systems.',
       tags: ['Websites', 'Automations', 'AI receptionists', 'CRM', 'Phone systems'],
+      cmd: 'dev build --client brennans --type website',
     },
   ];
 
@@ -616,7 +896,6 @@ function CapabilitySection({ theme = 'light' }) {
     }}>
       <div className="grain" />
       <div className="container">
-        {/* Eyebrow */}
         <div className="h-eyebrow" style={{
           color: gold, marginBottom:24,
           opacity: inView ? 1 : 0,
@@ -625,8 +904,7 @@ function CapabilitySection({ theme = 'light' }) {
           III. &nbsp; What we build
         </div>
 
-        {/* Headline */}
-        <h2 className="h-display" style={{
+        <h2 className="h-display cap-headline" style={{
           fontSize:'clamp(42px, 5.5vw, 80px)', color: ink, marginBottom:20,
           opacity: inView ? 1 : 0,
           transform: inView ? 'translateY(0)' : 'translateY(18px)',
@@ -635,7 +913,6 @@ function CapabilitySection({ theme = 'light' }) {
           Custom systems. Data infrastructure.<br/>Technical workflows.
         </h2>
 
-        {/* Deck */}
         <p style={{
           maxWidth:680, fontSize:18, lineHeight:1.55, color: muted, marginBottom:56,
           opacity: inView ? 1 : 0,
@@ -645,9 +922,8 @@ function CapabilitySection({ theme = 'light' }) {
           our clients depend on — then stay to make sure it works.
         </p>
 
-        <RevealLine delay={0.3} color={lineColor} />
+        <RevealLine delay={0.3} color={lineColor} height={2} />
 
-        {/* Capability rows */}
         {capabilities.map((cap, i) => (
           <div key={cap.name}>
             <div style={{
@@ -660,10 +936,11 @@ function CapabilitySection({ theme = 'light' }) {
               <div>
                 <h3 className="h-serif" style={{fontSize:28, color: ink, marginBottom:12}}>{cap.name}</h3>
                 <p style={{fontSize:16, lineHeight:1.55, color: muted}}>{cap.desc}</p>
+                <TypedCommand command={cap.cmd} inView={inView} delay={0.6 + i * 0.4} />
               </div>
               <div style={{display:'flex', flexWrap:'wrap', gap:8, paddingTop:6}}>
                 {cap.tags.map((tag, j) => (
-                  <span key={tag} style={{
+                  <span key={tag} className="cap-tag" style={{
                     padding:'8px 14px',
                     fontSize:12,
                     fontFamily:'var(--mono)',
@@ -730,7 +1007,9 @@ function HiringSection({ theme = 'light' }) {
       padding:'120px 0 140px', position:'relative', overflow:'hidden',
     }}>
       <div className="grain" />
-      <div className="container">
+      <Constellation />
+
+      <div className="container" style={{position:'relative', zIndex:1}}>
         <div style={{
           display:'grid', gridTemplateColumns:'1fr 1fr', gap:64, alignItems:'center',
         }}>
@@ -774,13 +1053,13 @@ function HiringSection({ theme = 'light' }) {
             </div>
           </div>
 
-          {/* Right: kinetic type zone */}
+          {/* Right: kinetic type zone — larger */}
           <div className="hiring-kinetic" style={{
             display:'flex', alignItems:'center', justifyContent:'center',
-            minHeight:280,
+            minHeight:320,
+            position:'relative',
           }}>
             {prefersReduced ? (
-              /* Static list for reduced motion */
               <div style={{display:'flex', flexDirection:'column', gap:12, textAlign:'center'}}>
                 {words.map(w => (
                   <span key={w} className="h-display" style={{
@@ -792,12 +1071,13 @@ function HiringSection({ theme = 'light' }) {
               </div>
             ) : (
               <span className="h-display" style={{
-                fontSize:'clamp(48px, 6vw, 96px)',
+                fontSize:'clamp(56px, 7vw, 112px)',
                 color: gold,
                 fontStyle:'italic',
                 opacity: visible && inView ? 1 : 0,
-                transform: visible && inView ? 'translateY(0)' : 'translateY(12px)',
+                transform: visible && inView ? 'translateY(0) scale(1)' : 'translateY(8px) scale(0.97)',
                 transition: 'opacity 0.4s ease, transform 0.4s ease',
+                textShadow: visible && inView ? '0 0 60px rgba(201,169,97,0.15)' : 'none',
               }}>
                 {words[wordIndex]}
               </span>
@@ -833,8 +1113,7 @@ function Footer({ theme }) {
     }}>
       <div className="grain" />
       <div className="container">
-        {/* Top band */}
-        <div style={{
+        <div className="footer-band" style={{
           display:'flex', justifyContent:'space-between', alignItems:'center',
           paddingBottom:48,
           borderBottom: `1px solid ${lineColor}`,
@@ -844,9 +1123,8 @@ function Footer({ theme }) {
           <span className="h-eyebrow m-hide" style={{color: muted}}>NYC · Cork · Austin · Toronto</span>
         </div>
 
-        <RevealLine delay={0.2} color={lineColor} style={{marginTop:-1}} />
+        <RevealLine delay={0.2} color={lineColor} height={2} glow style={{marginTop:-1}} />
 
-        {/* 4-column grid */}
         <div className="footer-grid" style={{
           display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr 1fr',
           gap:48, padding:'48px 0',
@@ -871,8 +1149,7 @@ function Footer({ theme }) {
           ]}/>
         </div>
 
-        {/* Bottom row */}
-        <div style={{
+        <div className="footer-band-bottom" style={{
           display:'flex', justifyContent:'space-between', alignItems:'center',
           paddingTop:28, borderTop: `1px solid ${lineColor}`,
           fontFamily:'var(--mono)', fontSize:11,
@@ -1043,9 +1320,13 @@ function App() {
     }}>
       <Masthead theme={state.theme}/>
       <Hero theme={state.theme}/>
+      <SectionDivider color={isDark ? 'rgba(255,255,255,0.08)' : 'rgba(11,18,32,0.08)'} />
       <CharterSection theme={state.theme}/>
+      <SectionDivider color="var(--gold)" />
       <ProofSection theme={state.theme}/>
+      <SectionDivider color="var(--gold)" />
       <CapabilitySection theme={state.theme}/>
+      <SectionDivider color={isDark ? 'rgba(255,255,255,0.08)' : 'rgba(11,18,32,0.08)'} />
       <HiringSection theme={state.theme}/>
       <Footer theme={state.theme}/>
 

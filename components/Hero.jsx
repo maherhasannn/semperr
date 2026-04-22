@@ -1,4 +1,4 @@
-// Hero — editorial, confident. Single variant with entrance animation.
+// Hero — editorial, confident. Single variant with entrance animation and DataStream background.
 
 function Hero({ theme = 'light' }) {
   const isDark = theme === 'dark';
@@ -32,8 +32,9 @@ function Hero({ theme = 'light' }) {
       overflow:'hidden',
     }}>
       <div className="grain" />
+      <DataStream isDark={isDark} />
 
-      <div className="container">
+      <div className="container" style={{position:'relative', zIndex:1}}>
         <div className="h-eyebrow" style={{
           color: gold, marginBottom:32,
           ...t(0.1),
@@ -55,7 +56,7 @@ function Hero({ theme = 'light' }) {
         </h1>
 
         <div style={{marginTop:28, maxWidth:600}}>
-          <RevealLine delay={0.6} color={gold} />
+          <RevealLine delay={0.6} color={gold} height={2} glow />
         </div>
 
         <p style={{

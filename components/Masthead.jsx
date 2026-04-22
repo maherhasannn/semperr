@@ -42,7 +42,7 @@ function Masthead({ theme }) {
               <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
             </span>
           </button>
-          <a href="contact.html" style={{
+          <a href="contact.html" className="mast-cta" style={{
             fontSize:13,
             padding:'8px 16px',
             border:`1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,

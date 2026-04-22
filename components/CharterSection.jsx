@@ -1,4 +1,4 @@
-// CharterSection — five operating values in editorial format.
+// CharterSection — five operating values with scan line, progress bars, and notary seal.
 
 function CharterSection({ theme = 'light' }) {
   const isDark = theme === 'dark';
@@ -24,7 +24,7 @@ function CharterSection({ theme = 'light' }) {
       background: bg, padding: '120px 0 140px', position:'relative', overflow:'hidden',
     }}>
       <div className="grain" />
-      <div className="container">
+      <div className="container" style={{position:'relative'}}>
         <div className="h-eyebrow" style={{
           color: gold, marginBottom:24,
           opacity: inView ? 1 : 0,
@@ -50,27 +50,36 @@ function CharterSection({ theme = 'light' }) {
           Every engagement, every hire, every line of code is measured against the same standard.
         </p>
 
-        <RevealLine delay={0.3} color={lineColor} />
+        <RevealLine delay={0.3} color={lineColor} height={2} />
 
         <div style={{position:'relative'}}>
           <div style={{
-            position:'absolute', top:0, left:0, right:0, height:1,
-            background: 'linear-gradient(90deg, transparent, var(--gold), transparent)',
-            opacity: inView ? 0.6 : 0,
+            position:'absolute', top:0, left:0, right:0, height:2,
+            background: 'linear-gradient(90deg, transparent 10%, var(--gold) 50%, transparent 90%)',
+            opacity: inView ? 0.7 : 0,
             animation: inView ? 'scanLine 2.5s ease-in-out 0.5s forwards' : 'none',
             pointerEvents: 'none',
             zIndex: 2,
+            boxShadow: '0 0 12px var(--gold), 0 0 4px var(--gold)',
           }} />
 
           {values.map((v, i) => (
-            <div key={v.num} style={{
+            <div key={v.num} className="charter-value-row" style={{
               display:'grid', gridTemplateColumns:'48px 160px 1fr', gap:24, alignItems:'baseline',
               padding:'28px 0',
               borderBottom: `1px solid ${lineColor}`,
+              position:'relative',
               opacity: inView ? 1 : 0,
               transform: inView ? 'translateY(0)' : 'translateY(14px)',
               transition: `opacity 0.5s ease ${0.35 + i * 0.12}s, transform 0.5s ease ${0.35 + i * 0.12}s`,
             }}>
+              <div style={{
+                position:'absolute', left:0, bottom:0, height:2,
+                background: 'var(--gold)',
+                opacity: 0.15,
+                width: inView ? '100%' : '0%',
+                transition: `width 0.8s cubic-bezier(0.25,0.46,0.45,0.94) ${0.5 + i * 0.15}s`,
+              }} />
               <span className="charter-value-numeral h-eyebrow" style={{color: gold, fontSize:12}}>{v.num}</span>
               <span className="h-serif" style={{fontSize:24, color: ink}}>{v.name}</span>
               <span style={{fontSize:16, lineHeight:1.55, color: muted}}>{v.desc}</span>
@@ -90,6 +99,8 @@ function CharterSection({ theme = 'light' }) {
             color: ink, fontSize:14, fontWeight:500,
           }}>Read the full charter <span style={{opacity:0.5}}>→</span></a>
         </div>
+
+        <NotarySeal inView={inView} />
       </div>
     </section>
   );
