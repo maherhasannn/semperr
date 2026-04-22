@@ -22,6 +22,76 @@
   margin-bottom: 40px;
 }
 
+/* Hero grid */
+.hero-grid {
+  display: grid; grid-template-columns: 1.15fr 1fr; gap: 56px; align-items: center;
+}
+
+/* Testimonial card */
+.test-card {
+  position: relative;
+  border: 1px solid var(--paper-line);
+  background: rgba(11,18,32,0.02);
+  padding: 36px;
+}
+.test-portrait-wrap {
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28px;
+}
+.test-portrait-frame {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.test-portrait-frame .aura {
+  position: absolute; inset: -8px;
+  border-radius: 50%; filter: blur(10px);
+  opacity: 0.3; transition: opacity 0.6s;
+}
+.test-portrait-frame svg { position: relative; }
+.test-scanlines {
+  position: absolute; inset: 0; pointer-events: none;
+  opacity: 0.15;
+}
+
+.test-quote {
+  font-family: var(--serif); font-style: italic;
+  font-size: 19px; line-height: 1.45; color: var(--ink);
+  letter-spacing: -0.01em;
+  min-height: 80px;
+  position: relative;
+  margin-bottom: 24px;
+}
+.test-quote::before {
+  content: "\201C";
+  font-family: var(--serif); font-size: 56px; line-height: 1;
+  color: var(--gold); opacity: 0.3;
+  position: absolute; top: -16px; left: -4px;
+}
+
+.test-attr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 20px;
+  border-top: 1px solid var(--paper-line);
+}
+.test-attr-name {
+  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  color: var(--ink);
+}
+.test-attr-role {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted); margin-top: 3px;
+}
+.test-pips {
+  display: flex; gap: 6px;
+}
+.test-pip {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--paper-line);
+  transition: background 0.3s;
+  cursor: pointer;
+}
+.test-pip.active { background: var(--gold); }
+
 /* Role list section */
 .role-list { padding: 56px 0 120px; }
 .role-list-label {
@@ -228,6 +298,8 @@
 
 /* ——— Responsive ——— */
 @media (max-width: 1100px) {
+  .hero-grid { grid-template-columns: 1fr; gap: 40px; }
+  .test-card { max-width: 480px; }
   .role-row { grid-template-columns: 1fr; gap: 12px; padding: 28px 0; }
   .role-meta { display: flex; align-items: center; gap: 12px; }
   .careers-about-inner { grid-template-columns: 1fr; gap: 40px; }
@@ -249,6 +321,8 @@
   .role-modal-apply-section { padding: 20px; }
   .role-modal-apply-title { font-size: 19px; }
   .role-modal-apply-email { padding: 12px 20px; font-size: 11px; }
+  .test-card { padding: 24px; }
+  .test-quote { font-size: 17px; min-height: 64px; }
   .careers-about { padding: 56px 0; }
   .careers-about-inner { gap: 32px; }
   .careers-about-title { font-size: 32px; line-height: 1.08; }
@@ -278,13 +352,35 @@
 <!-- Hero masthead -->
 <section class="pub-mast">
   <div class="container">
-    <div class="careers-eyebrow">San Francisco · Hybrid (3 days remote, 2 in-office) · <span id="role-counter">24</span> open roles</div>
-    <h1 class="pub-mast-title">We hire for <em>judgment.</em></h1>
-    <p class="pub-mast-deck">
-      Semperr is deliberately small. Every engineer, analyst, and designer is here
-      because they refused to ship something they weren't proud of. If that sounds
-      like you, we'd like to talk.
-    </p>
+    <div class="hero-grid">
+      <div>
+        <div class="careers-eyebrow">San Francisco · Hybrid (3 days remote, 2 in-office) · <span id="role-counter">24</span> open roles</div>
+        <h1 class="pub-mast-title">We hire for <em>judgment.</em></h1>
+        <p class="pub-mast-deck">
+          Semperr is deliberately small. Every engineer, analyst, and designer is here
+          because they refused to ship something they weren't proud of. If that sounds
+          like you, we'd like to talk.
+        </p>
+      </div>
+
+      <!-- Pixel portrait testimonial -->
+      <div class="test-card" id="test-card">
+        <div class="test-portrait-wrap">
+          <div class="test-portrait-frame" id="portrait-frame">
+            <div class="aura" id="portrait-aura"></div>
+            <svg id="portrait-svg" width="144" height="144"></svg>
+          </div>
+        </div>
+        <div class="test-quote" id="test-quote"></div>
+        <div class="test-attr">
+          <div>
+            <div class="test-attr-name" id="test-name"></div>
+            <div class="test-attr-role" id="test-role"></div>
+          </div>
+          <div class="test-pips" id="test-pips"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -912,6 +1008,203 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeModal();
   });
+
+  // ——— Pixel portrait testimonials ———
+  const TGRID = 18;
+  const TCELL = 8;
+
+  const testimonials = [
+    {
+      name: 'Rebecca Torres',
+      role: 'Managing Director · Whitfield Capital',
+      quote: 'We switched from a Big Four analytics platform. Semperr is smaller, faster, and every number ties back to a source. Our partners stopped second-guessing the data.',
+      hair: '#1a1510', skin: '#f1c2a3', shirt: '#2f5c96',
+    },
+    {
+      name: 'Daniel Ochoa',
+      role: 'General Counsel · Harding & Associates',
+      quote: 'Our due-diligence timelines got cut in half. When something looks off, I call their engineer directly — not a help desk. That matters when a deal is closing Friday.',
+      hair: '#0e0e10', skin: '#c48a5a', shirt: '#3a3a44',
+    },
+    {
+      name: 'Sarah Lindqvist',
+      role: 'COO · Bellweather Group',
+      quote: 'We are a 30-person firm that needs institutional-grade reporting. Semperr treats us like we are their only client. The attention to detail is unlike anything else we have seen.',
+      hair: '#5a3828', skin: '#f5d4b8', shirt: '#8a3a1f',
+    },
+    {
+      name: 'James Whitfield',
+      role: 'Founder · Ridgeline Ventures',
+      quote: 'I have used every portfolio analytics tool on the market. Trace is the first one where I trust the output enough to put it in front of my LPs without re-checking it.',
+      hair: '#2a2a34', skin: '#d8a87a', shirt: '#4a7a5c',
+    },
+    {
+      name: 'Mika Sato',
+      role: 'Partner · Northpoint Advisors',
+      quote: 'They built a custom reconciliation pipeline for our fund in three weeks. At our last shop, that request would have gone into a backlog and died there.',
+      hair: '#0e0e10', skin: '#f0d0a8', shirt: '#b8502a',
+    },
+  ];
+
+  // 18×18 pixel portrait template (same as Dev section)
+  const portraitRaw = [
+    '..................',
+    '..................',
+    '.......hhhhh......',
+    '.....hhhhhhhhh....',
+    '....hhsssssshh....',
+    '....hssssssssh....',
+    '....hsssssssss....',
+    '....hssdssdsss....',
+    '....hseeeseess....',
+    '....hssssssss.....',
+    '.....hsssssss.....',
+    '.....hsscccss.....',
+    '.....hssmmmss.....',
+    '......hsssss......',
+    '......sssss.......',
+    '.....tttttttt.....',
+    '....tttttttttt....',
+    '...tttttttttttt...',
+  ];
+  const charMap = {'.':null,'s':'skin','h':'hair','t':'shirt','e':'eye','m':'mouth','c':'cheek','d':'shadow'};
+  const portraitGrid = portraitRaw.map(r => r.split('').map(ch => charMap[ch]));
+
+  // Collect all pixel positions that have content
+  const filledCells = [];
+  portraitGrid.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (cell) filledCells.push({ x, y, cell });
+    });
+  });
+
+  const svgEl = document.getElementById('portrait-svg');
+  const auraEl = document.getElementById('portrait-aura');
+  const quoteEl = document.getElementById('test-quote');
+  const nameEl = document.getElementById('test-name');
+  const roleEl = document.getElementById('test-role');
+  const pipsEl = document.getElementById('test-pips');
+  const svgNS = 'http://www.w3.org/2000/svg';
+
+  let currentTest = 0;
+  let pixelEls = []; // refs to <rect> elements for animation
+
+  function getColors(t) {
+    return {
+      skin: t.skin, hair: t.hair, shirt: t.shirt,
+      eye: '#1e1410', mouth: '#8a3a1f', cheek: '#e89579', shadow: '#c99874',
+    };
+  }
+
+  function buildPortrait(t) {
+    // Clear SVG
+    svgEl.innerHTML = '';
+    pixelEls = [];
+    const colors = getColors(t);
+
+    // Draw portrait rects
+    portraitGrid.forEach((row, y) => {
+      row.forEach((cell, x) => {
+        if (!cell) return;
+        const rect = document.createElementNS(svgNS, 'rect');
+        rect.setAttribute('x', x * TCELL);
+        rect.setAttribute('y', y * TCELL);
+        rect.setAttribute('width', TCELL + 0.4);
+        rect.setAttribute('height', TCELL + 0.4);
+        rect.setAttribute('fill', colors[cell] || colors.skin);
+        rect.style.transition = 'fill 0.4s ease';
+        rect.dataset.cellType = cell;
+        svgEl.appendChild(rect);
+        pixelEls.push(rect);
+      });
+    });
+
+    // Add scanlines
+    const scanG = document.createElementNS(svgNS, 'g');
+    scanG.style.opacity = '0.12';
+    scanG.style.pointerEvents = 'none';
+    for (let i = 0; i < Math.floor(TGRID * TCELL / 3); i++) {
+      const line = document.createElementNS(svgNS, 'rect');
+      line.setAttribute('x', 0);
+      line.setAttribute('y', i * 3);
+      line.setAttribute('width', TGRID * TCELL);
+      line.setAttribute('height', 1);
+      line.setAttribute('fill', 'rgba(0,0,0,0.3)');
+      scanG.appendChild(line);
+    }
+    svgEl.appendChild(scanG);
+
+    // Set aura color
+    auraEl.style.background = 'radial-gradient(circle, ' + t.shirt + '44, transparent 70%)';
+  }
+
+  function showTestimonial(idx, animate) {
+    const t = testimonials[idx];
+    currentTest = idx;
+
+    // Update text
+    quoteEl.textContent = t.quote;
+    nameEl.textContent = t.name;
+    roleEl.textContent = t.role;
+
+    // Update pips
+    pipsEl.querySelectorAll('.test-pip').forEach((p, i) => {
+      p.classList.toggle('active', i === idx);
+    });
+
+    if (!animate) {
+      buildPortrait(t);
+      return;
+    }
+
+    // Pixel dissolve: randomly change cells one by one to new colors
+    const newColors = getColors(t);
+    const order = [...Array(pixelEls.length).keys()];
+    // Shuffle
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+
+    // Transition pixels in random order over ~800ms
+    const stagger = 800 / order.length;
+    order.forEach((elIdx, step) => {
+      setTimeout(() => {
+        const rect = pixelEls[elIdx];
+        const cellType = rect.dataset.cellType;
+        rect.setAttribute('fill', newColors[cellType] || newColors.skin);
+      }, step * stagger);
+    });
+
+    // Update aura
+    auraEl.style.background = 'radial-gradient(circle, ' + t.shirt + '44, transparent 70%)';
+  }
+
+  // Build pips
+  testimonials.forEach((_, i) => {
+    const pip = document.createElement('span');
+    pip.className = 'test-pip' + (i === 0 ? ' active' : '');
+    pip.addEventListener('click', () => {
+      showTestimonial(i, true);
+      resetAutoplay();
+    });
+    pipsEl.appendChild(pip);
+  });
+
+  // Initial render
+  showTestimonial(0, false);
+
+  // Auto-cycle every 5s
+  let autoplayId = setInterval(() => {
+    showTestimonial((currentTest + 1) % testimonials.length, true);
+  }, 5000);
+
+  function resetAutoplay() {
+    clearInterval(autoplayId);
+    autoplayId = setInterval(() => {
+      showTestimonial((currentTest + 1) % testimonials.length, true);
+    }, 5000);
+  }
 </script>
 
 </body>

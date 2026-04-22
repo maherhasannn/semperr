@@ -520,6 +520,208 @@ function Masthead({ theme }) {
 window.Masthead = Masthead;
 
 
+/* ===== Client Testimonial — pixel portrait with dissolve ===== */
+
+function ClientTestimonial({ isDark }) {
+  const testimonials = [
+    {
+      name: 'Rebecca Torres',
+      role: 'Managing Director · Whitfield Capital',
+      quote: 'We switched from a Big Four analytics platform. Semperr is smaller, faster, and every number ties back to a source.',
+      hair: '#1a1510', skin: '#f1c2a3', shirt: '#2f5c96',
+    },
+    {
+      name: 'Daniel Ochoa',
+      role: 'General Counsel · Harding & Associates',
+      quote: 'Our due-diligence timelines got cut in half. When something looks off, I call their engineer directly — not a help desk.',
+      hair: '#0e0e10', skin: '#c48a5a', shirt: '#3a3a44',
+    },
+    {
+      name: 'Sarah Lindqvist',
+      role: 'COO · Bellweather Group',
+      quote: 'We are a 30-person firm that needs institutional-grade reporting. Semperr treats us like we are their only client.',
+      hair: '#5a3828', skin: '#f5d4b8', shirt: '#8a3a1f',
+    },
+    {
+      name: 'James Whitfield',
+      role: 'Founder · Ridgeline Ventures',
+      quote: 'Trace is the first tool where I trust the output enough to put it in front of my LPs without re-checking it.',
+      hair: '#2a2a34', skin: '#d8a87a', shirt: '#4a7a5c',
+    },
+    {
+      name: 'Mika Sato',
+      role: 'Partner · Northpoint Advisors',
+      quote: 'They built a custom reconciliation pipeline for our fund in three weeks. At our last shop, that request would have died in a backlog.',
+      hair: '#0e0e10', skin: '#f0d0a8', shirt: '#b8502a',
+    },
+  ];
+
+  const GRID = 18, CELL = 8;
+  const portraitRaw = [
+    '..................',
+    '..................',
+    '.......hhhhh......',
+    '.....hhhhhhhhh....',
+    '....hhsssssshh....',
+    '....hssssssssh....',
+    '....hsssssssss....',
+    '....hssdssdsss....',
+    '....hseeeseess....',
+    '....hssssssss.....',
+    '.....hsssssss.....',
+    '.....hsscccss.....',
+    '.....hssmmmss.....',
+    '......hsssss......',
+    '......sssss.......',
+    '.....tttttttt.....',
+    '....tttttttttt....',
+    '...tttttttttttt...',
+  ];
+  const charMap = {'.':null,'s':'skin','h':'hair','t':'shirt','e':'eye','m':'mouth','c':'cheek','d':'shadow'};
+  const grid = React.useMemo(() => portraitRaw.map(r => r.split('').map(ch => charMap[ch])), []);
+
+  const [current, setCurrent] = React.useState(0);
+  const [pixelColors, setPixelColors] = React.useState(null);
+  const timerRef = React.useRef(null);
+
+  const filledCells = React.useMemo(() => {
+    const cells = [];
+    grid.forEach((row, y) => row.forEach((cell, x) => {
+      if (cell) cells.push({ x, y, cell });
+    }));
+    return cells;
+  }, []);
+
+  function getColors(t) {
+    return {
+      skin: t.skin, hair: t.hair, shirt: t.shirt,
+      eye: '#1e1410', mouth: '#8a3a1f', cheek: '#e89579', shadow: '#c99874',
+    };
+  }
+
+  React.useEffect(() => {
+    const colors = getColors(testimonials[0]);
+    const map = {};
+    filledCells.forEach(({ x, y, cell }) => {
+      map[x + ',' + y] = colors[cell] || colors.skin;
+    });
+    setPixelColors(map);
+  }, []);
+
+  React.useEffect(() => {
+    if (!pixelColors) return;
+    const t = testimonials[current];
+    const newColors = getColors(t);
+    const order = [...Array(filledCells.length).keys()];
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+    const stagger = 12;
+    const ids = [];
+    order.forEach((idx, step) => {
+      ids.push(setTimeout(() => {
+        setPixelColors(prev => {
+          const next = { ...prev };
+          const c = filledCells[idx];
+          next[c.x + ',' + c.y] = newColors[c.cell] || newColors.skin;
+          return next;
+        });
+      }, step * stagger));
+    });
+    return () => ids.forEach(clearTimeout);
+  }, [current]);
+
+  React.useEffect(() => {
+    timerRef.current = setInterval(() => {
+      setCurrent(c => (c + 1) % testimonials.length);
+    }, 5000);
+    return () => clearInterval(timerRef.current);
+  }, []);
+
+  function goTo(i) {
+    setCurrent(i);
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCurrent(c => (c + 1) % testimonials.length);
+    }, 5000);
+  }
+
+  const tData = testimonials[current];
+  const quoteColor = isDark ? '#d4dbe8' : 'var(--ink)';
+  const mutedColor = isDark ? '#6b7388' : 'var(--muted)';
+  const nameColor = isDark ? '#f8f6f0' : 'var(--ink)';
+  const lineColor = isDark ? 'rgba(255,255,255,0.08)' : 'var(--paper-line)';
+  const pipInactive = isDark ? 'rgba(255,255,255,0.12)' : 'var(--paper-line)';
+
+  return (
+    <div className="hero-testimonial" style={{
+      display:'flex', flexDirection:'column', alignItems:'center',
+      paddingTop: 0,
+    }}>
+      <div style={{ position:'relative', marginBottom:20 }}>
+        <div style={{
+          position:'absolute', inset:-12,
+          background: `radial-gradient(circle at 50% 55%, ${tData.shirt}33, transparent 65%)`,
+          filter:'blur(10px)', transition:'background 0.8s',
+        }}/>
+        <svg width={GRID * CELL} height={GRID * CELL} style={{position:'relative', display:'block'}}>
+          {pixelColors && filledCells.map(({ x, y }) => (
+            <rect key={x+','+y}
+              x={x * CELL} y={y * CELL}
+              width={CELL + 0.4} height={CELL + 0.4}
+              fill={pixelColors[x+','+y] || '#4a4852'}
+              style={{ transition:'fill 0.4s ease' }}
+            />
+          ))}
+          <g style={{opacity:0.12, pointerEvents:'none'}}>
+            {[...Array(Math.floor(GRID * CELL / 3))].map((_, i) => (
+              <rect key={i} x="0" y={i*3} width={GRID*CELL} height="1" fill="rgba(0,0,0,0.3)"/>
+            ))}
+          </g>
+        </svg>
+      </div>
+      <div style={{
+        position:'relative', maxWidth:320, textAlign:'center',
+        marginBottom:14,
+      }}>
+        <span style={{
+          fontFamily:'var(--serif)', fontSize:40, lineHeight:1,
+          color:'var(--gold)', opacity:0.25,
+          position:'absolute', top:-10, left:'50%', transform:'translateX(-50%)',
+        }}>{'\u201C'}</span>
+        <p style={{
+          fontFamily:'var(--serif)', fontStyle:'italic',
+          fontSize:15, lineHeight:1.45, color: quoteColor,
+          letterSpacing:'-0.01em', minHeight:62,
+        }}>{tData.quote}</p>
+      </div>
+      <div style={{
+        textAlign:'center', paddingTop:12,
+        borderTop:`1px solid ${lineColor}`, width:'100%', maxWidth:280,
+      }}>
+        <div style={{fontSize:13, fontWeight:500, color:nameColor}}>{tData.name}</div>
+        <div style={{
+          fontFamily:'var(--mono)', fontSize:9, letterSpacing:'0.12em',
+          textTransform:'uppercase', color:mutedColor, marginTop:3,
+        }}>{tData.role}</div>
+      </div>
+      <div style={{display:'flex', gap:6, marginTop:12}}>
+        {testimonials.map((_, i) => (
+          <span key={i} onClick={() => goTo(i)} style={{
+            width:6, height:6, borderRadius:'50%', cursor:'pointer',
+            background: i === current ? 'var(--gold)' : pipInactive,
+            transition:'background 0.3s',
+          }}/>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+window.ClientTestimonial = ClientTestimonial;
+
+
 /* ===== components/Hero.jsx ===== */
 
 function Hero({ theme = 'light' }) {
@@ -550,62 +752,70 @@ function Hero({ theme = 'light' }) {
     <section style={{
       position:'relative',
       background: isDark ? 'var(--ink)' : 'var(--paper)',
-      padding: '80px 0 96px',
+      padding: '48px 0 56px',
       overflow:'hidden',
     }}>
       <div className="grain" />
       <DataStream isDark={isDark} />
 
       <div className="container" style={{position:'relative', zIndex:1}}>
-        <div className="h-eyebrow" style={{
-          color: gold, marginBottom:32,
-          ...t(0.1),
+        <div className="hero-home-grid" style={{
+          display:'grid', gridTemplateColumns:'2fr 1fr', gap:48, alignItems:'center',
         }}>
-          Quiet tools for loud decisions
-        </div>
+          <div>
+            <div className="h-eyebrow" style={{
+              color: gold, marginBottom:20,
+              ...t(0.1),
+            }}>
+              Quiet tools for loud decisions
+            </div>
 
-        <h1 className="h-display" style={{
-          fontSize:'clamp(52px, 8vw, 132px)',
-          color: ink,
-        }}>
-          <span style={{display:'block', ...t(0.2)}}>Custom systems,</span>
-          <span style={{display:'block', ...t(0.35)}}>data <em style={{
-            fontStyle:'italic',
-            color: show ? 'var(--gold)' : (isDark ? '#6b7388' : '#9099ad'),
-            transition: prefersReduced ? 'none' : 'color 0.6s cubic-bezier(0.25,0.46,0.45,0.94) 0.5s',
-          }}>infrastructure,</em></span>
-          <span style={{display:'block', ...t(0.5)}}>technical workflows.</span>
-        </h1>
+            <h1 className="h-display" style={{
+              fontSize:'clamp(52px, 6.5vw, 120px)',
+              color: ink,
+            }}>
+              <span style={{display:'block', ...t(0.2)}}>Custom systems,</span>
+              <span style={{display:'block', ...t(0.35)}}>data <em style={{
+                fontStyle:'italic',
+                color: show ? 'var(--gold)' : (isDark ? '#6b7388' : '#9099ad'),
+                transition: prefersReduced ? 'none' : 'color 0.6s cubic-bezier(0.25,0.46,0.45,0.94) 0.5s',
+              }}>infrastructure,</em></span>
+              <span style={{display:'block', ...t(0.5)}}>technical workflows.</span>
+            </h1>
 
-        <div style={{marginTop:28, maxWidth:600}}>
-          <RevealLine delay={0.6} color={gold} height={2} glow />
-        </div>
+            <div style={{marginTop:16, maxWidth:600}}>
+              <RevealLine delay={0.6} color={gold} height={2} glow />
+            </div>
 
-        <p style={{
-          marginTop:32, maxWidth:620, fontSize:19, lineHeight:1.55,
-          color: muted,
-          ...t(0.8),
-        }}>
-          Semperr builds and operates the software that private-equity firms, law practices,
-          and owner-run businesses depend on when the answer has to be right.
-        </p>
+            <p style={{
+              marginTop:20, maxWidth:620, fontSize:18, lineHeight:1.5,
+              color: muted,
+              ...t(0.8),
+            }}>
+              Semperr builds and operates the software that private-equity firms, law practices,
+              and owner-run businesses depend on when the answer has to be right.
+            </p>
 
-        <div style={{
-          display:'flex', gap:12, marginTop:40,
-          ...t(1.0),
-        }}>
-          <a href="charter.html" style={{
-            display:'inline-flex', alignItems:'center', gap:10,
-            padding:'14px 22px', borderRadius:999,
-            background: ink, color: isDark ? '#0b1220' : '#f8f6f0',
-            fontSize:14, fontWeight:500,
-          }}>Read the charter <span style={{opacity:0.5}}>→</span></a>
-          <a href="contact.html" style={{
-            display:'inline-flex', alignItems:'center', gap:10,
-            padding:'14px 22px', borderRadius:999,
-            border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
-            color: ink, fontSize:14, fontWeight:500,
-          }}>Get in touch</a>
+            <div style={{
+              display:'flex', gap:12, marginTop:28,
+              ...t(1.0),
+            }}>
+              <a href="charter.html" style={{
+                display:'inline-flex', alignItems:'center', gap:10,
+                padding:'14px 22px', borderRadius:999,
+                background: ink, color: isDark ? '#0b1220' : '#f8f6f0',
+                fontSize:14, fontWeight:500,
+              }}>Read the charter <span style={{opacity:0.5}}>→</span></a>
+              <a href="contact.html" style={{
+                display:'inline-flex', alignItems:'center', gap:10,
+                padding:'14px 22px', borderRadius:999,
+                border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
+                color: ink, fontSize:14, fontWeight:500,
+              }}>Get in touch</a>
+            </div>
+          </div>
+
+          <ClientTestimonial isDark={isDark} />
         </div>
       </div>
     </section>
