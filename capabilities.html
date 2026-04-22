@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Capabilities — What Semperr builds</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+
+<style>
+/* ————— Capabilities page-specific styles ————— */
+
+/* Product sections */
+.prod-section {
+  padding: 96px 0 120px;
+  position: relative;
+  overflow: hidden;
+}
+.prod-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+.prod-eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+.prod-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(36px, 4vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 20px;
+}
+.prod-title em {
+  font-style: italic;
+}
+.prod-deck {
+  font-size: 18px;
+  line-height: 1.55;
+  margin-bottom: 32px;
+  max-width: 540px;
+}
+.prod-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.prod-stat-grid.paper-border {
+  border-color: var(--paper-line);
+}
+.prod-stat {
+  padding: 28px 24px;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.prod-stat:last-child { border-right: none; }
+.prod-stat-grid.paper-border .prod-stat {
+  border-right-color: var(--paper-line);
+}
+.prod-stat-n {
+  font-family: var(--serif);
+  font-size: 40px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.prod-stat-l {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.prod-features {
+  list-style: none;
+  padding: 0;
+}
+.prod-features li {
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.prod-features.paper-border li {
+  border-bottom-color: var(--paper-line);
+}
+.prod-features li:last-child { border-bottom: none; }
+.prod-feat-marker {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  width: 24px;
+}
+.prod-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 32px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.prod-cta:hover {
+  transform: translateY(-1px);
+}
+
+/* Exhibit panels */
+.exhibit {
+  padding: 32px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.02);
+  position: relative;
+  overflow: hidden;
+}
+.exhibit.paper {
+  border-color: var(--paper-line);
+  background: rgba(11,18,32,0.02);
+}
+.exhibit-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+.exhibit-row {
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  align-items: center;
+}
+.exhibit.paper .exhibit-row {
+  border-bottom-color: rgba(11,18,32,0.06);
+}
+.exhibit-row:last-child { border-bottom: none; }
+
+/* Approach section */
+.approach-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+}
+.approach-step {
+  padding: 40px 32px;
+  border-right: 1px solid var(--paper-line);
+  position: relative;
+}
+.approach-step:last-child { border-right: none; }
+.approach-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 20px;
+}
+.approach-name {
+  font-family: var(--serif);
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+.approach-desc {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .prod-grid { grid-template-columns: 1fr; gap: 40px; }
+  .approach-grid { grid-template-columns: 1fr; }
+  .approach-step { border-right: none; border-bottom: 1px solid var(--paper-line); }
+  .approach-step:last-child { border-bottom: none; }
+}
+@media (max-width: 768px) {
+  .prod-section { padding: 64px 0 72px; }
+  .prod-title { font-size: 32px; }
+  .prod-stat-grid { grid-template-columns: 1fr; }
+  .prod-stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .prod-stat:last-child { border-bottom: none; }
+  .prod-stat-grid.paper-border .prod-stat { border-bottom-color: var(--paper-line); }
+  .prod-stat-n { font-size: 32px; }
+  .prod-deck { font-size: 16px; }
+  .exhibit { padding: 20px; }
+  .exhibit-row { grid-template-columns: 1fr; gap: 4px; }
+  .approach-step { padding: 28px 0; }
+  .blog-header-nav { display: none; }
+}
+</style>
+</head>
+<body class="blog-body">
+
+<!-- Header -->
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="index.html" class="blog-header-back">&larr; Semperr</a>
+      <span class="blog-wordmark">Capabilit<em>ies</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="#trace">Trace</a>
+      <a href="#clad">Clad</a>
+      <a href="#dev">Dev</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Masthead -->
+<section class="pub-mast">
+  <div class="container">
+    <div class="pub-mast-slug">
+      <span>Three platforms</span>
+      <span>Built by Semperr</span>
+      <span>Since MMXXI</span>
+    </div>
+    <h1 class="pub-mast-title">What we <em>build</em>.</h1>
+    <p class="pub-mast-deck">
+      Custom systems, data infrastructure, and technical workflows &mdash;
+      designed, built, and operated for institutions where the answer has to be right.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     I. TRACE — Data for Private Equity
+     ═══════════════════════════════════════════════ -->
+<section id="trace" class="prod-section" style="background: #0a0d14; color: #e8ebf2;">
+  <div class="grain"></div>
+  <div class="container">
+    <div class="prod-grid">
+      <div>
+        <div class="prod-eyebrow" style="color: var(--gold);">I. &nbsp; Trace</div>
+        <h2 class="prod-title" style="color: #f8f6f0;">
+          Every private company, <em style="color: var(--gold);">mapped</em>.
+        </h2>
+        <p class="prod-deck" style="color: #9099ad;">
+          Eight million private companies, continuously traced &mdash; ownership graphs, operating metrics,
+          relationship history. The dealbook analysts wish they had before the pitch.
+        </p>
+
+        <div class="prod-stat-grid">
+          <div class="prod-stat">
+            <div class="prod-stat-n" style="color: var(--gold);">8.2M</div>
+            <div class="prod-stat-l" style="color: #6b7388;">Companies tracked</div>
+          </div>
+          <div class="prod-stat">
+            <div class="prod-stat-n" style="color: var(--gold);">340K</div>
+            <div class="prod-stat-l" style="color: #6b7388;">Transactions linked</div>
+          </div>
+          <div class="prod-stat">
+            <div class="prod-stat-n" style="color: var(--gold);">94%</div>
+            <div class="prod-stat-l" style="color: #6b7388;">LP coverage</div>
+          </div>
+        </div>
+
+        <a href="Trace.html" class="prod-cta" style="background: var(--gold); color: #0a0d14;">
+          Explore Trace <span style="opacity:0.5;">&rarr;</span>
+        </a>
+      </div>
+
+      <div>
+        <div class="exhibit">
+          <div class="exhibit-label" style="color: #6b7388;">Live dealbook &mdash; sample data</div>
+          <div class="exhibit-row" style="color: var(--gold); opacity: 0.6; font-weight: 500;">
+            <span>Ticker</span>
+            <span>Entity</span>
+            <span style="text-align:right;">EV ($M)</span>
+          </div>
+          <div class="exhibit-row" style="color: #c7cdd9;">
+            <span style="color: var(--gold);">HLX</span>
+            <span>Helix Logistics Corp.</span>
+            <span style="text-align:right; color: var(--gold);">1,240</span>
+          </div>
+          <div class="exhibit-row" style="color: #c7cdd9;">
+            <span style="color: var(--gold);">ATP</span>
+            <span>Atlas Precision Mfg.</span>
+            <span style="text-align:right; color: var(--gold);">890</span>
+          </div>
+          <div class="exhibit-row" style="color: #c7cdd9;">
+            <span style="color: var(--gold);">MRD</span>
+            <span>Meridian Supply Co.</span>
+            <span style="text-align:right; color: var(--gold);">2,100</span>
+          </div>
+          <div class="exhibit-row" style="color: #c7cdd9;">
+            <span style="color: var(--gold);">VRH</span>
+            <span>Verra Health Systems</span>
+            <span style="text-align:right; color: var(--gold);">560</span>
+          </div>
+          <div class="exhibit-row" style="color: #c7cdd9;">
+            <span style="color: var(--gold);">CPL</span>
+            <span>Copperline Foods Inc.</span>
+            <span style="text-align:right; color: var(--gold);">1,780</span>
+          </div>
+        </div>
+
+        <ul class="prod-features" style="margin-top: 24px; color: #c7cdd9;">
+          <li>
+            <span class="prod-feat-marker" style="color: var(--gold);">01</span>
+            <span>Ownership graphs with full chain-of-control mapping</span>
+          </li>
+          <li>
+            <span class="prod-feat-marker" style="color: var(--gold);">02</span>
+            <span>SEC, state-filing, and proprietary data reconciliation</span>
+          </li>
+          <li>
+            <span class="prod-feat-marker" style="color: var(--gold);">03</span>
+            <span>Real-time transaction alerts and portfolio monitoring</span>
+          </li>
+          <li>
+            <span class="prod-feat-marker" style="color: var(--gold);">04</span>
+            <span>Exportable deal-ready reports with source attribution</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Divider -->
+<div style="height: 2px; background: var(--paper-line);"></div>
+
+<!-- ═══════════════════════════════════════════════
+     II. CLAD — Intelligence for Law Firms
+     ═══════════════════════════════════════════════ -->
+<section id="clad" class="prod-section" style="background: var(--paper-warm); color: var(--ink);">
+  <div class="grain"></div>
+  <div class="container">
+    <div class="prod-grid">
+      <div>
+        <div class="prod-eyebrow" style="color: var(--steel-deep);">II. &nbsp; Clad</div>
+        <h2 class="prod-title" style="color: var(--ink);">
+          The full record. <em style="color: var(--steel);">Indexed</em>.
+        </h2>
+        <p class="prod-deck" style="color: var(--muted);">
+          Every federal filing, every state docket, every administrative ruling &mdash; read, annotated,
+          and cross-referenced. Clad gives partners the precedent they need before the associate
+          has finished pouring coffee.
+        </p>
+
+        <div class="prod-stat-grid paper-border">
+          <div class="prod-stat">
+            <div class="prod-stat-n" style="color: var(--steel);">52M</div>
+            <div class="prod-stat-l" style="color: var(--muted);">Documents indexed</div>
+          </div>
+          <div class="prod-stat">
+            <div class="prod-stat-n" style="color: var(--steel);">1,240</div>
+            <div class="prod-stat-l" style="color: var(--muted);">Jurisdictions</div>
+          </div>
+          <div class="prod-stat">
+            <div class="prod-stat-n" style="color: var(--steel);">&lt; 2s</div>
+            <div class="prod-stat-l" style="color: var(--muted);">Citation lookup</div>
+          </div>
+        </div>
+
+        <a href="Clad.html" class="prod-cta" style="background: var(--ink); color: var(--paper);">
+          Explore Clad <span style="opacity:0.5;">&rarr;</span>
+        </a>
+      </div>
+
+      <div>
+        <div class="exhibit paper">
+          <div class="exhibit-label" style="color: var(--muted);">Recent annotations &mdash; sample</div>
+          <div class="exhibit-row" style="color: var(--muted); font-weight: 500;">
+            <span>Cite</span>
+            <span>Matter</span>
+            <span style="text-align:right;">Status</span>
+          </div>
+          <div class="exhibit-row" style="color: var(--ink);">
+            <span style="color: var(--steel);">7th Cir.</span>
+            <span>Hargrove v. Meridian Holdings</span>
+            <span style="text-align:right; color: var(--green); font-size: 10px;">VERIFIED</span>
+          </div>
+          <div class="exhibit-row" style="color: var(--ink);">
+            <span style="color: var(--steel);">SDNY</span>
+            <span>In re: Atlas Capital Partners</span>
+            <span style="text-align:right; color: var(--gold-deep); font-size: 10px;">PENDING</span>
+          </div>
+          <div class="exhibit-row" style="color: var(--ink);">
+            <span style="color: var(--steel);">Del. Ch.</span>
+            <span>Whitfield Trust v. Beacon Grp.</span>
+            <span style="text-align:right; color: var(--green); font-size: 10px;">VERIFIED</span>
+          </div>
+          <div class="exhibit-row" style="color: var(--ink);">
+            <span style="color: var(--steel);">9th Cir.</span>
+            <span>United States v. Novatek Inc.</span>
+            <span style="text-align:right; color: var(--green); font-size: 10px;">VERIFIED</span>
+          </div>
+          <div class="exhibit-row" style="color: var(--ink);">
+            <span style="color: var(--steel);">EDPA</span>
+            <span>Cooper & Marsh v. Linden Corp.</span>
+            <span style="text-align:right; color: var(--gold-deep); font-size: 10px;">PENDING</span>
+          </div>
+        </div>
+
+        <ul class="prod-features paper-border" style="margin-top: 24px; color: var(--ink);">
+          <li>
+            <span class="prod-feat-marker" style="color: var(--steel);">01</span>
+            <span>Full-text search across all federal and state filings</span>
+          </li>
+          <li>
+            <span class="prod-feat-marker" style="color: var(--steel);">02</span>
+            <span>Automated cross-reference and Shepardize-style verification</span>
+          </li>
+          <li>
+            <span class="prod-feat-marker" style="color: var(--steel);">03</span>
+            <span>Matter-level annotation and team collaboration</span>
+          </li>
+          <li>
+            <span class="prod-feat-marker" style="color: var(--steel);">04</span>
+            <span>Export to brief-ready format with pinpoint citations</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Divider -->
+<div style="height: 2px; background: var(--paper-line);"></div>
+
+<!-- ═══════════════════════════════════════════════
+     III. DEV — Technical Services for SMBs
+     ═══════════════════════════════════════════════ -->
+<section id="dev" class="prod-section" style="background: var(--ink); color: #f8f6f0;">
+  <div class="grain"></div>
+  <div class="container">
+    <div class="prod-grid">
+      <div>
+        <div class="prod-eyebrow" style="color: var(--rust);">III. &nbsp; Dev</div>
+        <h2 class="prod-title" style="color: #f8f6f0;">
+          Don't worry about it. <em style="color: var(--rust);">Dev is on it</em>.
+        </h2>
+        <p class="prod-deck" style="color: #9099ad;">
+          Websites, automations, AI receptionists, back-office plumbing &mdash;
+          whatever the small business needs to run in 2026. Every account is assigned a
+          real human engineer. No tickets. No tiers. A name and a phone number.
+        </p>
+
+        <div class="prod-stat-grid">
+          <div class="prod-stat">
+            <div class="prod-stat-n" style="color: var(--rust);">300+</div>
+            <div class="prod-stat-l" style="color: #6b7388;">Active accounts</div>
+          </div>
+          <div class="prod-stat">
+            <div class="prod-stat-n" style="color: var(--rust);">4 min</div>
+            <div class="prod-stat-l" style="color: #6b7388;">Avg. response time</div>
+          </div>
+          <div class="prod-stat">
+            <div class="prod-stat-n" style="color: var(--rust);">1</div>
+            <div class="prod-stat-l" style="color: #6b7388;">Engineer per account</div>
+          </div>
+        </div>
+
+        <a href="Dev.html" class="prod-cta" style="background: var(--rust); color: #f8f6f0;">
+          Explore Dev <span style="opacity:0.5;">&rarr;</span>
+        </a>
+      </div>
+
+      <div>
+        <div class="exhibit">
+          <div class="exhibit-label" style="color: #6b7388;">Services &mdash; what Dev handles</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px;">
+            <span style="padding: 8px 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; border: 1px solid rgba(255,255,255,0.12); color: #c7cdd9; background: rgba(255,255,255,0.03);">Websites</span>
+            <span style="padding: 8px 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; border: 1px solid rgba(255,255,255,0.12); color: #c7cdd9; background: rgba(255,255,255,0.03);">AI Receptionists</span>
+            <span style="padding: 8px 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; border: 1px solid rgba(255,255,255,0.12); color: #c7cdd9; background: rgba(255,255,255,0.03);">Automations</span>
+            <span style="padding: 8px 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; border: 1px solid rgba(255,255,255,0.12); color: #c7cdd9; background: rgba(255,255,255,0.03);">Phone Systems</span>
+            <span style="padding: 8px 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; border: 1px solid rgba(255,255,255,0.12); color: #c7cdd9; background: rgba(255,255,255,0.03);">CRM Setup</span>
+            <span style="padding: 8px 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; border: 1px solid rgba(255,255,255,0.12); color: #c7cdd9; background: rgba(255,255,255,0.03);">Back-office</span>
+          </div>
+        </div>
+
+        <ul class="prod-features" style="margin-top: 24px; color: #c7cdd9;">
+          <li>
+            <span class="prod-feat-marker" style="color: var(--rust);">01</span>
+            <span>Dedicated engineer assigned to your account by name</span>
+          </li>
+          <li>
+            <span class="prod-feat-marker" style="color: var(--rust);">02</span>
+            <span>Same-day response, no support tiers or ticket queues</span>
+          </li>
+          <li>
+            <span class="prod-feat-marker" style="color: var(--rust);">03</span>
+            <span>Full-stack capability from domain setup to AI integration</span>
+          </li>
+          <li>
+            <span class="prod-feat-marker" style="color: var(--rust);">04</span>
+            <span>Flat monthly retainer, no per-hour billing surprises</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     How we work — approach section
+     ═══════════════════════════════════════════════ -->
+<section style="padding: 96px 0 120px; background: var(--paper); border-top: 1px solid var(--paper-line);">
+  <div class="container">
+    <div style="margin-bottom: 64px;">
+      <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 24px;">
+        &#10022; &nbsp; How we work
+      </div>
+      <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink);">
+        Build it. <em style="font-style: italic; color: var(--gold);">Ship it.</em> Stay.
+      </h2>
+      <p style="margin-top: 16px; font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 600px;">
+        We don't sell licenses. We design, build, and operate the technical infrastructure
+        our clients depend on &mdash; then stay to make sure it works.
+      </p>
+    </div>
+
+    <div style="border-top: 2px solid var(--ink);"></div>
+    <div class="approach-grid">
+      <div class="approach-step">
+        <div class="approach-num">01 &nbsp; Scope</div>
+        <div class="approach-name">Understand the institution.</div>
+        <div class="approach-desc">
+          We sit with your team &mdash; partners, analysts, operators &mdash; and learn how the
+          business actually runs. Not a requirements doc. A working understanding.
+        </div>
+      </div>
+      <div class="approach-step">
+        <div class="approach-num">02 &nbsp; Build</div>
+        <div class="approach-name">Ship production-grade software.</div>
+        <div class="approach-desc">
+          Small teams, short cycles, direct access to the engineers writing the code.
+          Every deliverable has a name on it.
+        </div>
+      </div>
+      <div class="approach-step">
+        <div class="approach-num">03 &nbsp; Operate</div>
+        <div class="approach-name">Stay and make it work.</div>
+        <div class="approach-desc">
+          We run what we build. Monitoring, on-call, data integrity, upgrades.
+          A partner on every engagement, indefinitely.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subscribe / CTA -->
+<section class="subscribe">
+  <div class="grain"></div>
+  <div class="container">
+    <div class="subscribe-inner">
+      <div>
+        <div class="h-eyebrow" style="color:var(--gold); margin-bottom:20px;">&#10022; &nbsp; Start a conversation</div>
+        <h2 class="subscribe-title">
+          Tell us what <em>matters</em>,<br/>
+          we'll tell you what's possible.
+        </h2>
+        <p class="subscribe-deck">
+          Every engagement begins with a conversation &mdash; no pitch deck, no sales team.
+          A partner and an engineer, listening.
+        </p>
+        <div style="margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <a href="contact.html" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: #f8f6f0; color: #0b1220; font-size: 14px; font-weight: 500;">Get in touch <span style="opacity:0.5;">&rarr;</span></a>
+          <a href="charter.html" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); color: #f8f6f0; font-size: 14px; font-weight: 500;">Read the charter</a>
+        </div>
+      </div>
+      <div class="subscribe-stats">
+        <div>
+          <div class="stat-n">3</div>
+          <div class="stat-l">Platforms</div>
+        </div>
+        <div>
+          <div class="stat-n">42</div>
+          <div class="stat-l">People</div>
+        </div>
+        <div>
+          <div class="stat-n">MMXXI</div>
+          <div class="stat-l">Founded</div>
+        </div>
+        <div>
+          <div class="stat-n">0</div>
+          <div class="stat-l">Outside investors</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>&copy; 2026 Semperr, Inc.</span>
+    <span>San Francisco</span>
+    <span class="gold">&#9670; Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>

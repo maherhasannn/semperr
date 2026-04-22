@@ -470,8 +470,8 @@ function Masthead({ theme }) {
           <Wordmark size={24} tone={isDark ? 'paper' : 'ink'} />
           <nav className="mast-nav" style={{display:'flex', gap:28, fontSize:13, color: isDark ? '#9099ad' : '#6b7388'}}>
             <a href="charter.html">Charter</a>
-            <a href="#capabilities">Capabilities</a>
-            <a href="#company">Company</a>
+            <a href="capabilities.html">Capabilities</a>
+            <a href="company.html">Company</a>
             <a href="careers.html">Careers</a>
           </nav>
         </div>
@@ -506,8 +506,8 @@ function Masthead({ theme }) {
         }}>
           <nav style={{display:'grid', gap:14, fontSize:16, color: isDark ? '#c7cdd9' : '#2a3246', fontFamily:'var(--serif)'}}>
             <a onClick={() => setOpen(false)} href="charter.html">Charter</a>
-            <a onClick={() => setOpen(false)} href="#capabilities">Capabilities</a>
-            <a onClick={() => setOpen(false)} href="#company">Company</a>
+            <a onClick={() => setOpen(false)} href="capabilities.html">Capabilities</a>
+            <a onClick={() => setOpen(false)} href="company.html">Company</a>
             <a onClick={() => setOpen(false)} href="careers.html">Careers</a>
             <a onClick={() => setOpen(false)} href="contact.html" style={{color:'var(--gold)', marginTop:4}}>Get in touch →</a>
           </nav>
@@ -1351,7 +1351,7 @@ function Footer({ theme }) {
           </div>
           <FootCol title="Navigate" rows={[
             ['Charter', '', 'charter.html'],
-            ['Capabilities', '', '#capabilities'],
+            ['Capabilities', '', 'capabilities.html'],
             ['Contact', '', 'contact.html'],
           ]}/>
           <FootCol title="Company" rows={[

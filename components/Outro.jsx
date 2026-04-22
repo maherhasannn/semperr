@@ -47,7 +47,7 @@ function Footer({ theme }) {
           </div>
           <FootCol title="Navigate" rows={[
             ['Charter', '', 'charter.html'],
-            ['Capabilities', '', '#capabilities'],
+            ['Capabilities', '', 'capabilities.html'],
             ['Contact', '', 'contact.html'],
           ]}/>
           <FootCol title="Company" rows={[
