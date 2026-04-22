@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Careers — Semperr</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+
+<style>
+/* ——— Careers page-specific styles ——— */
+
+/* Eyebrow above hero */
+.careers-eyebrow {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 40px;
+}
+
+/* Role list section */
+.role-list { padding: 56px 0 120px; }
+.role-list-label {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 32px;
+}
+
+.role-row {
+  display: grid; grid-template-columns: 160px 1fr auto;
+  gap: 40px; padding: 32px 0;
+  border-bottom: 1px solid var(--paper-line);
+  align-items: center;
+}
+.role-row:first-of-type { border-top: 1px solid var(--paper-line); }
+.role-row { cursor: pointer; }
+.role-row:hover .role-title { color: var(--gold-deep); }
+
+.role-meta { padding-top: 2px; }
+.role-team {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 4px 10px; border: 1px solid var(--paper-line); border-radius: 999px;
+  display: inline-block; margin-bottom: 8px;
+}
+.role-location {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted);
+}
+
+.role-title {
+  font-family: var(--serif); font-size: clamp(22px, 2.4vw, 28px);
+  line-height: 1.15; letter-spacing: -0.015em; color: var(--ink);
+  margin-bottom: 8px; transition: color 0.2s;
+}
+.role-desc {
+  font-size: 15px; line-height: 1.5; color: #5a5a64;
+  max-width: 540px; margin-bottom: 10px;
+}
+.role-type {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 4px 10px; border: 1px solid var(--paper-line); border-radius: 999px;
+  display: inline-block;
+}
+.role-salary {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--gold-deep);
+  margin-left: 8px;
+}
+
+.role-apply {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 12px 20px; border-radius: 999px;
+  border: 1px solid var(--ink); color: var(--ink);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.role-apply:hover {
+  background: var(--ink); color: var(--paper);
+}
+
+/* Pagination */
+.pagination {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 40px 0 0;
+}
+.page-btn {
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--paper-line); background: transparent;
+  color: var(--muted); cursor: pointer;
+  display: inline-grid; place-items: center;
+  transition: all 0.15s ease;
+}
+.page-btn:hover { border-color: var(--ink); color: var(--ink); }
+.page-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.page-btn:disabled { opacity: 0.3; pointer-events: none; }
+.page-arrow {
+  font-family: var(--mono); font-size: 13px;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--paper-line); background: transparent;
+  color: var(--muted); cursor: pointer;
+  display: inline-grid; place-items: center;
+  transition: all 0.15s ease;
+}
+.page-arrow:hover { border-color: var(--ink); color: var(--ink); }
+.page-arrow:disabled { opacity: 0.3; pointer-events: none; }
+
+/* ——— Role overlay ——— */
+.role-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(11,18,32,0.55);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  padding: 24px;
+}
+.role-overlay.open { display: flex; }
+
+.role-modal {
+  background: var(--paper); color: var(--ink);
+  width: 100%; max-width: 640px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  border: 1px solid var(--paper-line);
+  position: relative;
+  padding: 48px 48px 40px;
+}
+.role-modal-close {
+  position: absolute; top: 16px; right: 16px;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--paper-line); background: transparent;
+  color: var(--muted); cursor: pointer;
+  display: grid; place-items: center;
+  font-size: 18px; line-height: 1;
+  transition: all 0.15s ease;
+}
+.role-modal-close:hover { border-color: var(--ink); color: var(--ink); }
+
+.role-modal-team {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 4px 10px; border: 1px solid var(--paper-line); border-radius: 999px;
+  display: inline-block;
+}
+.role-modal-title {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(32px, 4vw, 44px); line-height: 1.08;
+  letter-spacing: -0.02em; color: var(--ink);
+  margin: 20px 0 16px;
+}
+.role-modal-tags {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+  margin-bottom: 32px;
+}
+.role-modal-tag {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.role-modal-tag.salary { color: var(--gold-deep); }
+.role-modal-tag .dot {
+  display: inline-block; width: 3px; height: 3px;
+  border-radius: 50%; background: var(--muted);
+  margin: 0 4px; vertical-align: middle;
+}
+
+.role-modal-section-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold-deep);
+  margin-bottom: 12px;
+}
+.role-modal-body {
+  font-size: 16px; line-height: 1.6; color: #3a3a44;
+  margin-bottom: 32px;
+}
+
+.role-modal-divider {
+  border: none; border-top: 1px solid var(--paper-line);
+  margin: 0 0 32px;
+}
+
+.role-modal-apply-section {
+  background: rgba(11,18,32,0.03);
+  border: 1px solid var(--paper-line);
+  padding: 28px 32px;
+}
+.role-modal-apply-title {
+  font-family: var(--serif); font-size: 22px;
+  color: var(--ink); margin-bottom: 8px;
+}
+.role-modal-apply-text {
+  font-size: 15px; line-height: 1.55; color: #5a5a64;
+  margin-bottom: 16px;
+}
+.role-modal-apply-email {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 24px; border-radius: 999px;
+  background: var(--ink); color: var(--paper);
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.15s ease;
+}
+.role-modal-apply-email:hover { background: #1a2640; }
+
+/* About section */
+.careers-about {
+  background: var(--ink); color: var(--paper);
+  padding: 96px 0 72px; position: relative; overflow: hidden;
+}
+.careers-about-inner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+}
+.careers-about-title {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(36px, 4vw, 56px); line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.careers-about-title em { font-style: italic; color: var(--gold); }
+.careers-about-body {
+  margin-top: 16px; font-size: 16px; line-height: 1.55; color: #9099ad;
+  max-width: 480px;
+}
+.careers-about-body + .careers-about-body { margin-top: 14px; }
+
+/* ——— Responsive ——— */
+@media (max-width: 1100px) {
+  .role-row { grid-template-columns: 1fr; gap: 12px; padding: 28px 0; }
+  .role-meta { display: flex; align-items: center; gap: 12px; }
+  .careers-about-inner { grid-template-columns: 1fr; gap: 40px; }
+}
+
+@media (max-width: 768px) {
+  .careers-eyebrow { margin-bottom: 24px; font-size: 10px; }
+  .role-list { padding: 32px 0 72px; }
+  .role-row { padding: 22px 0; gap: 10px; }
+  .role-title { font-size: 20px; margin-bottom: 6px; }
+  .role-desc { font-size: 14px; }
+  .role-apply { padding: 10px 16px; font-size: 10px; }
+  .pagination { padding: 28px 0 0; gap: 6px; }
+  .page-btn, .page-arrow { width: 36px; height: 36px; font-size: 11px; }
+  .role-overlay { padding: 12px; align-items: flex-end; }
+  .role-modal { padding: 32px 24px 28px; max-height: 85vh; }
+  .role-modal-title { font-size: 28px; margin: 16px 0 12px; }
+  .role-modal-body { font-size: 15px; }
+  .role-modal-apply-section { padding: 20px; }
+  .role-modal-apply-title { font-size: 19px; }
+  .role-modal-apply-email { padding: 12px 20px; font-size: 11px; }
+  .careers-about { padding: 56px 0; }
+  .careers-about-inner { gap: 32px; }
+  .careers-about-title { font-size: 32px; line-height: 1.08; }
+  .careers-about-body { font-size: 15px; }
+  .subscribe-stats { padding: 20px; gap: 16px; }
+  .stat-n { font-size: 36px; }
+}
+</style>
+</head>
+<body class="blog-body">
+
+<!-- Header -->
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="index.html" class="blog-header-back">← Semperr</a>
+      <span class="blog-wordmark">Caree<em>rrs</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="#roles">Open roles</a>
+      <a href="#about">About</a>
+      <a href="mailto:careers@semperr.com">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero masthead -->
+<section class="pub-mast">
+  <div class="container">
+    <div class="careers-eyebrow">San Francisco · Hybrid (3 days remote, 2 in-office) · <span id="role-counter">24</span> open roles</div>
+    <h1 class="pub-mast-title">We hire for <em>judgment.</em></h1>
+    <p class="pub-mast-deck">
+      Semperr is deliberately small. Every engineer, analyst, and designer is here
+      because they refused to ship something they weren't proud of. If that sounds
+      like you, we'd like to talk.
+    </p>
+  </div>
+</section>
+
+<!-- Filter bar -->
+<section class="container">
+  <div class="filter-bar">
+    <div class="filter-chips">
+      <button class="chip active" data-filter="all">All roles</button>
+      <button class="chip" data-filter="engineering">Engineering</button>
+      <button class="chip" data-filter="data">Data</button>
+      <button class="chip" data-filter="infrastructure">Infrastructure</button>
+      <button class="chip" data-filter="design">Design</button>
+      <button class="chip" data-filter="operations">Operations</button>
+    </div>
+    <div class="filter-count"><span id="count">24</span> &nbsp;·&nbsp; Open positions</div>
+  </div>
+</section>
+
+<!-- Open roles -->
+<section class="role-list" id="roles">
+  <div class="container">
+    <div class="role-list-label">Open positions</div>
+
+    <div class="role-row" data-team="engineering">
+      <div class="role-meta">
+        <span class="role-team">Engineering</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Senior Software Engineer</div>
+        <p class="role-desc">Build and operate the systems our clients depend on — from API design and data modeling to production reliability. You'll own services end-to-end across Python, TypeScript, and PostgreSQL in a team that ships daily and reviews everything.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$160k – $210k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="data">
+      <div class="role-meta">
+        <span class="role-team">Data</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Staff Data Engineer</div>
+        <p class="role-desc">Design ingestion, reconciliation, and delivery pipelines for institutional data. You'll work at the intersection of messy vendor feeds and the clean, auditable outputs our clients stake decisions on. dbt, Airflow, Snowflake, and a lot of SQL.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$180k – $210k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="infrastructure">
+      <div class="role-meta">
+        <span class="role-team">Infrastructure</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Infrastructure Engineer</div>
+        <p class="role-desc">Own the platform layer — cloud architecture, CI/CD, observability, and developer tooling. You'll keep our deploy pipeline fast, our alerts meaningful, and our infrastructure costs honest. AWS, Terraform, GitHub Actions, Datadog.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$150k – $200k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="engineering">
+      <div class="role-meta">
+        <span class="role-team">Engineering</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Senior Frontend Engineer</div>
+        <p class="role-desc">Craft the interfaces for Trace, Clad, and client-facing dashboards. You care about type safety, loading states, and the difference between "works" and "feels right." React, TypeScript, and a sharp eye for detail.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$150k – $200k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="engineering">
+      <div class="role-meta">
+        <span class="role-team">Engineering</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Principal Software Engineer</div>
+        <p class="role-desc">Set technical direction across Semperr's product suite. You'll drive architecture decisions, mentor senior engineers, and ensure our systems scale without losing the simplicity that makes them reliable. Deep experience in distributed systems required.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$190k – $240k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="engineering">
+      <div class="role-meta">
+        <span class="role-team">Engineering</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Engineering Manager</div>
+        <p class="role-desc">Lead a team of 4–6 engineers building Trace and internal tooling. You'll run sprint cycles, remove blockers, and keep the bar high on code quality — while still reading every PR yourself. People management with deep technical fluency.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$180k – $230k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="engineering">
+      <div class="role-meta">
+        <span class="role-team">Engineering</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Backend Engineer</div>
+        <p class="role-desc">Write the services behind Trace's data pipeline and Clad's document engine. You'll design APIs, optimize queries, and own your deployments. Python, PostgreSQL, and a preference for boring technology that works.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$140k – $180k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="engineering">
+      <div class="role-meta">
+        <span class="role-team">Engineering</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Machine Learning Engineer</div>
+        <p class="role-desc">Build and deploy the models that power classification, anomaly detection, and document extraction in Trace. You'll work closely with data engineers and clients to ship ML that earns trust — not hype. Python, PyTorch, strong fundamentals.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$170k – $220k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="engineering">
+      <div class="role-meta">
+        <span class="role-team">Engineering</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Security Engineer</div>
+        <p class="role-desc">Own application security, access controls, and compliance posture across all Semperr products. You'll run pen tests, review auth flows, and build the tooling that keeps client data safe. SOC 2, OAuth, and a healthy paranoia.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$160k – $210k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="engineering">
+      <div class="role-meta">
+        <span class="role-team">Engineering</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Mobile Engineer</div>
+        <p class="role-desc">Build the iOS and Android experiences for Trace — portfolio views, alerts, and the daily snapshot clients check before their first meeting. React Native, native modules where it matters, and a feel for mobile-first design.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$145k – $190k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="engineering">
+      <div class="role-meta">
+        <span class="role-team">Engineering</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">QA Engineer</div>
+        <p class="role-desc">Define and execute testing strategy across Trace and Clad — integration tests, regression suites, and the edge cases no one else thinks about. You'll automate what should be automated and catch what automation misses. Playwright, Pytest.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$120k – $160k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="data">
+      <div class="role-meta">
+        <span class="role-team">Data</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Senior Data Analyst</div>
+        <p class="role-desc">Turn raw financial data into the clean, defensible outputs our clients present to their boards. You'll build dashboards, write validation logic, and flag anomalies before they reach a deliverable. SQL, Python, and relentless attention to detail.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$130k – $170k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="data">
+      <div class="role-meta">
+        <span class="role-team">Data</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Data Scientist</div>
+        <p class="role-desc">Model risk factors, build forecasting tools, and develop the quantitative methods behind Trace's analytics layer. You'll work directly with clients to understand what decisions the data needs to support. R or Python, statistics, and clear communication.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$150k – $190k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="data">
+      <div class="role-meta">
+        <span class="role-team">Data</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Analytics Engineer</div>
+        <p class="role-desc">Own the transformation layer between raw ingestion and client-facing reporting. You'll build and maintain dbt models, define metrics, and make sure every number in Trace ties back to a source. dbt, SQL, Snowflake.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$140k – $180k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="infrastructure">
+      <div class="role-meta">
+        <span class="role-team">Infrastructure</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Site Reliability Engineer</div>
+        <p class="role-desc">Keep Trace and Clad running at the uptime our clients expect — which is all of it. You'll define SLOs, build runbooks, tune alerts, and lead incident response when things go sideways. On-call rotation, Kubernetes, Datadog.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$160k – $210k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="infrastructure">
+      <div class="role-meta">
+        <span class="role-team">Infrastructure</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Cloud Security Engineer</div>
+        <p class="role-desc">Harden our AWS environment, manage IAM policies, and automate compliance controls. You'll work with engineering and the security team to keep our infrastructure locked down without slowing anyone down. AWS, Terraform, CIS benchmarks.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$155k – $200k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="design">
+      <div class="role-meta">
+        <span class="role-team">Design</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Senior Product Designer</div>
+        <p class="role-desc">Design the workflows, components, and information architecture for Trace and Clad. You'll go from research to high-fidelity prototypes and ship alongside engineers. Figma, systems thinking, and a portfolio that shows you sweat the details.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$140k – $180k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="design">
+      <div class="role-meta">
+        <span class="role-team">Design</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Design Engineer</div>
+        <p class="role-desc">Bridge design and engineering — build production UI components, prototype interactions, and maintain our design system. You write real code and have real opinions about spacing, motion, and type. React, CSS, Figma.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$130k – $170k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="operations">
+      <div class="role-meta">
+        <span class="role-team">Operations</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Account Manager</div>
+        <p class="role-desc">Own the day-to-day relationship with a portfolio of institutional clients. You'll coordinate deliverables, surface feedback to the product team, and make sure nothing slips through the cracks. Organized, responsive, and comfortable in financial services.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$70k – $85k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="operations">
+      <div class="role-meta">
+        <span class="role-team">Operations</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Client Services Associate</div>
+        <p class="role-desc">Support onboarding, data intake, and ongoing client requests across Trace accounts. You'll be the first line of communication when a client has a question — and the person who makes sure it gets answered correctly and quickly.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$60k – $78k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="operations">
+      <div class="role-meta">
+        <span class="role-team">Operations</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Office Manager</div>
+        <p class="role-desc">Run the San Francisco office — vendor relationships, supplies, events, and the hundred small things that make a workspace feel like it works. You'll keep the physical environment as well-organized as our codebase.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$62k – $80k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="operations">
+      <div class="role-meta">
+        <span class="role-team">Operations</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Recruiting Coordinator</div>
+        <p class="role-desc">Schedule interviews, manage candidate pipelines, and keep our (intentionally small) hiring process running smoothly. You'll work directly with hiring managers and be the first impression candidates have of Semperr.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$60k – $75k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="operations">
+      <div class="role-meta">
+        <span class="role-team">Operations</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Operations Associate</div>
+        <p class="role-desc">Handle billing, vendor management, internal documentation, and process improvement across the firm. You'll keep the operational backbone of a 12-person company running without bureaucracy. Detail-oriented and self-directed.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$60k – $78k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="role-row" data-team="operations">
+      <div class="role-meta">
+        <span class="role-team">Operations</span>
+        <div class="role-location">SF · Hybrid 3/2</div>
+      </div>
+      <div>
+        <div class="role-title">Executive Assistant</div>
+        <p class="role-desc">Support the founding partners with scheduling, travel, meeting prep, and communication. You'll manage competing priorities with discretion and keep two very busy people focused on the work that matters most.</p>
+        <span class="role-type">Full-time</span>
+        <span class="role-salary">$65k – $85k</span>
+      </div>
+      <div>
+        <button class="role-apply">Apply →</button>
+      </div>
+    </div>
+
+    <div class="pagination" id="pagination"></div>
+
+  </div>
+</section>
+
+<!-- About / Why Semperr -->
+<section class="careers-about" id="about">
+  <div class="grain"></div>
+  <div class="container">
+    <div class="careers-about-inner">
+      <div>
+        <div class="h-eyebrow" style="color:var(--gold); margin-bottom:20px;">❖ &nbsp; Why Semperr</div>
+        <h2 class="careers-about-title">
+          Small by <em>design.</em>
+        </h2>
+        <p class="careers-about-body">
+          We don't have a recruiting department. We don't post on job boards.
+          Every person here was referred by someone who'd already worked with
+          them — because that's the only way to know if someone cares about
+          the details the way we do.
+        </p>
+        <p class="careers-about-body">
+          We offer competitive compensation, meaningful equity, and the rare
+          chance to build software where the answer actually matters.
+        </p>
+      </div>
+      <div class="subscribe-stats">
+        <div>
+          <div class="stat-n">12</div>
+          <div class="stat-l">People on the team</div>
+        </div>
+        <div>
+          <div class="stat-n">5</div>
+          <div class="stat-l">Years operating</div>
+        </div>
+        <div>
+          <div class="stat-n">0</div>
+          <div class="stat-l">Outside investors</div>
+        </div>
+        <div>
+          <div class="stat-n">100%</div>
+          <div class="stat-l">Referral-based hires</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr, Inc.</span>
+    <span>San Francisco</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+<!-- Role overlay -->
+<div class="role-overlay" id="role-overlay">
+  <div class="role-modal">
+    <button class="role-modal-close" id="modal-close">×</button>
+    <span class="role-modal-team" id="modal-team"></span>
+    <h2 class="role-modal-title" id="modal-title"></h2>
+    <div class="role-modal-tags">
+      <span class="role-modal-tag" id="modal-location"></span>
+      <span class="role-modal-tag"><span class="dot"></span></span>
+      <span class="role-modal-tag" id="modal-type"></span>
+      <span class="role-modal-tag"><span class="dot"></span></span>
+      <span class="role-modal-tag salary" id="modal-salary"></span>
+    </div>
+
+    <div class="role-modal-section-label">About the role</div>
+    <div class="role-modal-body" id="modal-desc"></div>
+
+    <div class="role-modal-section-label">What we look for</div>
+    <div class="role-modal-body" id="modal-look-for"></div>
+
+    <hr class="role-modal-divider"/>
+
+    <div class="role-modal-apply-section">
+      <div class="role-modal-apply-title">Interested?</div>
+      <p class="role-modal-apply-text">
+        To apply, email your resume and a short note about why this role interests you to:
+      </p>
+      <a class="role-modal-apply-email" id="modal-email" href="mailto:careers@semperr.com">
+        careers@semperr.com <span style="opacity:0.5">↗</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PER_PAGE = 10;
+  const chips = document.querySelectorAll('.chip');
+  const allRows = Array.from(document.querySelectorAll('.role-row'));
+  const countEl = document.getElementById('count');
+  const counterEl = document.getElementById('role-counter');
+  const paginationEl = document.getElementById('pagination');
+
+  let currentFilter = 'all';
+  let currentPage = 1;
+
+  function getFiltered() {
+    return allRows.filter(row => {
+      const team = row.dataset.team || '';
+      return currentFilter === 'all' || team === currentFilter;
+    });
+  }
+
+  function render() {
+    const filtered = getFiltered();
+    const total = filtered.length;
+    const pages = Math.max(1, Math.ceil(total / PER_PAGE));
+    if (currentPage > pages) currentPage = pages;
+
+    const start = (currentPage - 1) * PER_PAGE;
+    const end = start + PER_PAGE;
+    const visible = new Set(filtered.slice(start, end));
+
+    allRows.forEach(row => {
+      row.style.display = visible.has(row) ? '' : 'none';
+    });
+
+    countEl.textContent = total;
+    counterEl.textContent = total;
+
+    // Build pagination
+    let html = '';
+    html += '<button class="page-arrow"' + (currentPage <= 1 ? ' disabled' : '') + ' data-page="' + (currentPage - 1) + '">←</button>';
+    for (let i = 1; i <= pages; i++) {
+      html += '<button class="page-btn' + (i === currentPage ? ' active' : '') + '" data-page="' + i + '">' + i + '</button>';
+    }
+    html += '<button class="page-arrow"' + (currentPage >= pages ? ' disabled' : '') + ' data-page="' + (currentPage + 1) + '">→</button>';
+    paginationEl.innerHTML = html;
+
+    paginationEl.querySelectorAll('[data-page]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentPage = parseInt(btn.dataset.page);
+        render();
+        document.getElementById('roles').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  }
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentFilter = chip.dataset.filter;
+      currentPage = 1;
+      render();
+    });
+  });
+
+  render();
+
+  // ——— Role overlay ———
+  const overlay = document.getElementById('role-overlay');
+  const modalClose = document.getElementById('modal-close');
+  const modalTeam = document.getElementById('modal-team');
+  const modalTitle = document.getElementById('modal-title');
+  const modalLocation = document.getElementById('modal-location');
+  const modalType = document.getElementById('modal-type');
+  const modalSalary = document.getElementById('modal-salary');
+  const modalDesc = document.getElementById('modal-desc');
+  const modalLookFor = document.getElementById('modal-look-for');
+  const modalEmail = document.getElementById('modal-email');
+
+  // "What we look for" copy keyed by team
+  const lookForCopy = {
+    engineering: 'Engineers who own what they ship — from design doc to deploy. You write tests not because someone asked, but because you want to sleep well. You prefer simple solutions, clear names, and small PRs. Bonus points if you have opinions about error handling.',
+    data: 'People who treat data as evidence, not decoration. You question source integrity before writing a single transformation. You document your assumptions. You know that a number without provenance is just a guess.',
+    infrastructure: 'Operators who think in systems — uptime, cost, security, and developer experience all at once. You automate by instinct, alert only on what matters, and can explain your architecture to a non-engineer without hand-waving.',
+    design: 'Designers who can articulate why something works, not just that it looks good. You prototype to learn, test with real users, and care about the details that most people would call "close enough." You ship, not just spec.',
+    operations: 'Organized, proactive people who take ownership of the details. You follow through without being asked, communicate clearly, and understand that in a small company every role is client-facing — whether or not you are on a call.',
+  };
+
+  function openModal(row) {
+    const title = row.querySelector('.role-title').textContent;
+    const team = row.dataset.team;
+    const teamLabel = row.querySelector('.role-team').textContent;
+    const location = row.querySelector('.role-location').textContent;
+    const type = row.querySelector('.role-type').textContent;
+    const salary = row.querySelector('.role-salary').textContent;
+    const desc = row.querySelector('.role-desc').textContent;
+
+    modalTeam.textContent = teamLabel;
+    modalTitle.textContent = title;
+    modalLocation.textContent = location;
+    modalType.textContent = type;
+    modalSalary.textContent = salary;
+    modalDesc.textContent = desc;
+    modalLookFor.textContent = lookForCopy[team] || lookForCopy.operations;
+    modalEmail.href = 'mailto:careers@semperr.com?subject=' + encodeURIComponent('Application: ' + title);
+
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Clicking a role row or its Apply button opens the modal
+  allRows.forEach(row => {
+    row.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal(row);
+    });
+  });
+
+  // Close on X, backdrop click, or Escape
+  modalClose.addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+
+</body>
+</html>

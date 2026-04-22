@@ -23,12 +23,12 @@ function Masthead({ theme }) {
             <a href="charter.html">Charter</a>
             <a href="#capabilities">Capabilities</a>
             <a href="#company">Company</a>
-            <a href="#careers">Careers</a>
+            <a href="careers.html">Careers</a>
           </nav>
         </div>
         <div style={{display:'flex', alignItems:'center', gap:20}}>
           <span className="h-eyebrow mast-eyebrow" style={{color: isDark ? '#c9a961' : '#a68846'}}>
-            Est. MMXXI · NYC
+            SF
           </span>
           <button className="mast-burger" onClick={() => setOpen(o => !o)} aria-label="Menu" style={{
             display:'none', alignItems:'center', justifyContent:'center',
@@ -59,7 +59,7 @@ function Masthead({ theme }) {
             <a onClick={() => setOpen(false)} href="charter.html">Charter</a>
             <a onClick={() => setOpen(false)} href="#capabilities">Capabilities</a>
             <a onClick={() => setOpen(false)} href="#company">Company</a>
-            <a onClick={() => setOpen(false)} href="#careers">Careers</a>
+            <a onClick={() => setOpen(false)} href="careers.html">Careers</a>
             <a onClick={() => setOpen(false)} href="contact.html" style={{color:'var(--gold)', marginTop:4}}>Get in touch →</a>
           </nav>
         </div>

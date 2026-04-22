@@ -23,23 +23,26 @@ function Footer({ theme }) {
           display:'flex', justifyContent:'space-between', alignItems:'center',
           paddingBottom:48,
           borderBottom: `1px solid ${lineColor}`,
+          lineHeight:1,
         }}>
           <Wordmark size={28} tone="paper" />
-          <span className="h-eyebrow m-hide" style={{color: gold, letterSpacing:'0.16em'}}>Semper paratus</span>
-          <span className="h-eyebrow m-hide" style={{color: muted}}>NYC · Cork · Austin · Toronto</span>
+          <div className="m-hide" style={{display:'flex', alignItems:'center', gap:24}}>
+            <span className="h-eyebrow" style={{color: gold, letterSpacing:'0.16em'}}>Semper paratus</span>
+            <span style={{color: lineColor}}>·</span>
+            <span className="h-eyebrow" style={{color: muted}}>San Francisco</span>
+          </div>
         </div>
 
         <RevealLine delay={0.2} color={lineColor} style={{marginTop:-1}} />
 
         <div className="footer-grid" style={{
-          display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr 1fr',
-          gap:48, padding:'48px 0',
+          display:'grid', gridTemplateColumns:'1.5fr 1fr 1fr 1fr',
+          gap:48, padding:'48px 0', alignItems:'start',
         }}>
           <div>
-            <Wordmark size={20} tone="paper" />
-            <p style={{fontSize:13, color: muted, marginTop:16, maxWidth:280, lineHeight:1.5}}>
+            <p style={{fontSize:13, color: muted, maxWidth:280, lineHeight:1.5}}>
               A holding company for software & data that serious businesses run on.
-              Headquartered in NYC, with teams in Cork, Austin, and Toronto.
+              Headquartered in San Francisco.
             </p>
           </div>
           <FootCol title="Navigate" rows={[
@@ -56,14 +59,12 @@ function Footer({ theme }) {
         </div>
 
         <div className="footer-band-bottom" style={{
-          display:'flex', justifyContent:'space-between', alignItems:'center',
+          display:'flex', justifyContent:'center', alignItems:'center',
           paddingTop:28, borderTop: `1px solid ${lineColor}`,
-          fontFamily:'var(--mono)', fontSize:11,
+          fontFamily:'var(--mono)', fontSize:11, lineHeight:1,
           color: muted, letterSpacing:'0.08em', textTransform:'uppercase',
         }}>
           <span>© 2026 Semperr Labs, Inc.</span>
-          <span className="m-hide">Made in NYC · Cork · Austin</span>
-          <span style={{color: gold}}>♦ Semper paratus</span>
         </div>
       </div>
     </footer>

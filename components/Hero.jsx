@@ -39,7 +39,7 @@ function Hero({ theme = 'light' }) {
           color: gold, marginBottom:32,
           ...t(0.1),
         }}>
-          The interface for serious work
+          Quiet tools for loud decisions
         </div>
 
         <h1 className="h-display" style={{

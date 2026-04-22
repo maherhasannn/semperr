@@ -345,7 +345,7 @@ function NotarySeal({ inView }) {
         </defs>
         <text fontSize="7.5" fontFamily="var(--mono)" fill="var(--gold)" letterSpacing="4" style={{textTransform:'uppercase'}}>
           <textPath href="#sealArc" startOffset="2%">
-            SEMPERR LABS {'\u00B7'} EST. MMXXI {'\u00B7'} NEW YORK {'\u00B7'}
+            SEMPERR LABS {'\u00B7'} SAN FRANCISCO {'\u00B7'}
           </textPath>
         </text>
         <text x="70" y="78" textAnchor="middle" fontFamily="Instrument Serif, serif" fontSize="32" fill="var(--gold)" letterSpacing="-1">
@@ -472,12 +472,12 @@ function Masthead({ theme }) {
             <a href="charter.html">Charter</a>
             <a href="#capabilities">Capabilities</a>
             <a href="#company">Company</a>
-            <a href="#careers">Careers</a>
+            <a href="careers.html">Careers</a>
           </nav>
         </div>
         <div style={{display:'flex', alignItems:'center', gap:20}}>
           <span className="h-eyebrow mast-eyebrow" style={{color: isDark ? '#c9a961' : '#a68846'}}>
-            Est. MMXXI · NYC
+            based in San Francisco
           </span>
           <button className="mast-burger" onClick={() => setOpen(o => !o)} aria-label="Menu" style={{
             display:'none', alignItems:'center', justifyContent:'center',
@@ -508,7 +508,7 @@ function Masthead({ theme }) {
             <a onClick={() => setOpen(false)} href="charter.html">Charter</a>
             <a onClick={() => setOpen(false)} href="#capabilities">Capabilities</a>
             <a onClick={() => setOpen(false)} href="#company">Company</a>
-            <a onClick={() => setOpen(false)} href="#careers">Careers</a>
+            <a onClick={() => setOpen(false)} href="careers.html">Careers</a>
             <a onClick={() => setOpen(false)} href="contact.html" style={{color:'var(--gold)', marginTop:4}}>Get in touch →</a>
           </nav>
         </div>
@@ -561,7 +561,7 @@ function Hero({ theme = 'light' }) {
           color: gold, marginBottom:32,
           ...t(0.1),
         }}>
-          The interface for serious work
+          Quiet tools for loud decisions
         </div>
 
         <h1 className="h-display" style={{
@@ -1045,7 +1045,7 @@ function HiringSection({ theme = 'light' }) {
               opacity: inView ? 1 : 0,
               transition: 'opacity 0.6s ease 0.5s',
             }}>
-              <a style={{
+              <a href="careers.html" style={{
                 display:'inline-flex', alignItems:'center', gap:10,
                 padding:'14px 22px', borderRadius:999,
                 background:'#f8f6f0', color:'#0b1220', fontSize:14, fontWeight:500,
@@ -1117,23 +1117,26 @@ function Footer({ theme }) {
           display:'flex', justifyContent:'space-between', alignItems:'center',
           paddingBottom:48,
           borderBottom: `1px solid ${lineColor}`,
+          lineHeight:1,
         }}>
           <Wordmark size={28} tone="paper" />
-          <span className="h-eyebrow m-hide" style={{color: gold, letterSpacing:'0.16em'}}>Semper paratus</span>
-          <span className="h-eyebrow m-hide" style={{color: muted}}>NYC · Cork · Austin · Toronto</span>
+          <div className="m-hide" style={{display:'flex', alignItems:'center', gap:24}}>
+            <span className="h-eyebrow" style={{color: gold, letterSpacing:'0.16em'}}>Semper paratus</span>
+            <span style={{color: lineColor}}>·</span>
+            <span className="h-eyebrow" style={{color: muted}}>San Francisco</span>
+          </div>
         </div>
 
         <RevealLine delay={0.2} color={lineColor} height={2} glow style={{marginTop:-1}} />
 
         <div className="footer-grid" style={{
-          display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr 1fr',
-          gap:48, padding:'48px 0',
+          display:'grid', gridTemplateColumns:'1.5fr 1fr 1fr 1fr',
+          gap:48, padding:'48px 0', alignItems:'start',
         }}>
           <div>
-            <Wordmark size={20} tone="paper" />
-            <p style={{fontSize:13, color: muted, marginTop:16, maxWidth:280, lineHeight:1.5}}>
+            <p style={{fontSize:13, color: muted, maxWidth:280, lineHeight:1.5}}>
               A holding company for software & data that serious businesses run on.
-              Headquartered in NYC, with teams in Cork, Austin, and Toronto.
+              Headquartered in San Francisco.
             </p>
           </div>
           <FootCol title="Navigate" rows={[
@@ -1150,14 +1153,12 @@ function Footer({ theme }) {
         </div>
 
         <div className="footer-band-bottom" style={{
-          display:'flex', justifyContent:'space-between', alignItems:'center',
+          display:'flex', justifyContent:'center', alignItems:'center',
           paddingTop:28, borderTop: `1px solid ${lineColor}`,
-          fontFamily:'var(--mono)', fontSize:11,
+          fontFamily:'var(--mono)', fontSize:11, lineHeight:1,
           color: muted, letterSpacing:'0.08em', textTransform:'uppercase',
         }}>
-          <span>&copy; 2026 Semperr Labs, Inc.</span>
-          <span className="m-hide">Made in NYC &middot; Cork &middot; Austin</span>
-          <span style={{color: gold}}>&diams; Semper paratus</span>
+          <span>&copy; 2026 Semperr, Inc.</span>
         </div>
       </div>
     </footer>

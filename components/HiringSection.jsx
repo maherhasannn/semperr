@@ -74,7 +74,7 @@ function HiringSection({ theme = 'light' }) {
               opacity: inView ? 1 : 0,
               transition: 'opacity 0.6s ease 0.5s',
             }}>
-              <a style={{
+              <a href="careers.html" style={{
                 display:'inline-flex', alignItems:'center', gap:10,
                 padding:'14px 22px', borderRadius:999,
                 background:'#f8f6f0', color:'#0b1220', fontSize:14, fontWeight:500,
