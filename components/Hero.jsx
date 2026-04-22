@@ -1,10 +1,28 @@
-// Hero — editorial, confident. Big serif headline, a disciplined grid of product chips below.
+// Hero — editorial, confident. Single variant with entrance animation.
 
-function Hero({ variant = 'editorial', theme = 'light' }) {
+function Hero({ theme = 'light' }) {
   const isDark = theme === 'dark';
   const ink = isDark ? '#f8f6f0' : '#0b1220';
   const muted = isDark ? '#9099ad' : '#6b7388';
-  const gold = '#c9a961';
+  const gold = 'var(--gold)';
+
+  const [revealed, setRevealed] = React.useState(false);
+  React.useEffect(() => {
+    const t = setTimeout(() => setRevealed(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
+  const prefersReduced = React.useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    []
+  );
+  const show = prefersReduced || revealed;
+
+  const t = (delay) => prefersReduced ? {} : {
+    opacity: show ? 1 : 0,
+    transform: show ? 'translateY(0)' : 'translateY(18px)',
+    transition: `opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s`,
+  };
 
   return (
     <section style={{
@@ -15,136 +33,59 @@ function Hero({ variant = 'editorial', theme = 'light' }) {
     }}>
       <div className="grain" />
 
-      {/* Top editorial slug */}
-      <div className="container" style={{marginBottom:48}}>
-        <div style={{
-          display:'flex', justifyContent:'space-between', alignItems:'center',
-          fontSize:11, fontFamily:'JetBrains Mono, monospace', letterSpacing:'0.12em', textTransform:'uppercase',
+      <div className="container">
+        <div className="h-eyebrow" style={{
+          color: gold, marginBottom:32,
+          ...t(0.1),
+        }}>
+          The interface for serious work
+        </div>
+
+        <h1 className="h-display" style={{
+          fontSize:'clamp(52px, 8vw, 132px)',
+          color: ink,
+        }}>
+          <span style={{display:'block', ...t(0.2)}}>Custom systems,</span>
+          <span style={{display:'block', ...t(0.35)}}>data <em style={{
+            fontStyle:'italic',
+            color: show ? 'var(--gold)' : (isDark ? '#6b7388' : '#9099ad'),
+            transition: prefersReduced ? 'none' : 'color 0.6s cubic-bezier(0.25,0.46,0.45,0.94) 0.5s',
+          }}>infrastructure,</em></span>
+          <span style={{display:'block', ...t(0.5)}}>technical workflows.</span>
+        </h1>
+
+        <div style={{marginTop:28, maxWidth:600}}>
+          <RevealLine delay={0.6} color={gold} />
+        </div>
+
+        <p style={{
+          marginTop:32, maxWidth:620, fontSize:19, lineHeight:1.55,
           color: muted,
+          ...t(0.8),
         }}>
-          <span>Vol. V · No. 11</span>
-          <span>The Semperr Broadsheet</span>
-          <span>April · 2026</span>
+          Semperr builds and operates the software that private-equity firms, law practices,
+          and owner-run businesses depend on when the answer has to be right.
+        </p>
+
+        <div style={{
+          display:'flex', gap:12, marginTop:40,
+          ...t(1.0),
+        }}>
+          <a href="charter.html" style={{
+            display:'inline-flex', alignItems:'center', gap:10,
+            padding:'14px 22px', borderRadius:999,
+            background: ink, color: isDark ? '#0b1220' : '#f8f6f0',
+            fontSize:14, fontWeight:500,
+          }}>Read the charter <span style={{opacity:0.5}}>→</span></a>
+          <a href="contact.html" style={{
+            display:'inline-flex', alignItems:'center', gap:10,
+            padding:'14px 22px', borderRadius:999,
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
+            color: ink, fontSize:14, fontWeight:500,
+          }}>Get in touch</a>
         </div>
-        <div className="hair" style={{marginTop:14, borderColor: isDark ? 'rgba(255,255,255,0.1)' : undefined}}/>
       </div>
-
-      {variant === 'editorial' && (
-        <div className="container">
-          <div style={{display:'grid', gridTemplateColumns:'1fr 360px', gap:80, alignItems:'end'}}>
-            <div>
-              <div className="h-eyebrow" style={{color: gold, marginBottom:28}}>
-                ❖ &nbsp; Quiet tools for loud decisions
-              </div>
-              <h1 className="h-display" style={{
-                fontSize:'clamp(64px, 9.5vw, 156px)',
-                color: ink,
-              }}>
-                Software <em style={{fontStyle:'italic', color: gold}}>serious</em><br/>
-                businesses run on.
-              </h1>
-              <p style={{
-                marginTop:36, maxWidth:560, fontSize:19, lineHeight:1.55,
-                color: muted,
-              }}>
-                Semperr builds data and technical infrastructure for people who can't afford to guess — 
-                private-equity analysts, law-firm partners, and the small businesses keeping the rest of the economy running.
-              </p>
-              <div style={{display:'flex', gap:12, marginTop:40}}>
-                <a style={{
-                  display:'inline-flex', alignItems:'center', gap:10,
-                  padding:'14px 22px', borderRadius:999,
-                  background: ink, color: isDark ? '#0b1220' : '#f8f6f0',
-                  fontSize:14, fontWeight:500,
-                }}>Book a briefing <span style={{opacity:0.5}}>↗</span></a>
-                <a href="charter.html" style={{
-                  display:'inline-flex', alignItems:'center', gap:10,
-                  padding:'14px 22px', borderRadius:999,
-                  border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
-                  color: ink, fontSize:14, fontWeight:500,
-                }}>Read the charter</a>
-              </div>
-            </div>
-
-            {/* Right column — a small "masthead of products" block */}
-            <ProductRoster ink={ink} muted={muted} gold={gold} isDark={isDark}/>
-          </div>
-        </div>
-      )}
-
-      {variant === 'centered' && (
-        <div className="container" style={{textAlign:'center', paddingTop:40}}>
-          <div className="h-eyebrow" style={{color: gold, marginBottom:32}}>
-            ❖ &nbsp; Three tools, one operating principle
-          </div>
-          <h1 className="h-display" style={{
-            fontSize:'clamp(56px, 11vw, 180px)', color: ink, maxWidth:1100, margin:'0 auto',
-          }}>
-            Software <em style={{fontStyle:'italic', color: gold}}>serious</em>
-            <br/>businesses run on.
-          </h1>
-          <p style={{
-            margin:'40px auto 0', maxWidth:620, fontSize:19, lineHeight:1.55, color: muted,
-          }}>
-            Semperr builds data and technical infrastructure for people who can't afford to guess.
-          </p>
-          <div style={{display:'flex', gap:12, justifyContent:'center', marginTop:40}}>
-            <a style={{padding:'14px 22px', borderRadius:999, background: ink, color: isDark ? '#0b1220' : '#f8f6f0', fontSize:14, fontWeight:500}}>Book a briefing ↗</a>
-            <a href="charter.html" style={{padding:'14px 22px', borderRadius:999, border:`1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`, fontSize:14, fontWeight:500, color: ink}}>Read the charter</a>
-          </div>
-        </div>
-      )}
-
-      {variant === 'split' && (
-        <div className="container">
-          <div style={{display:'grid', gridTemplateColumns:'1.1fr 1fr', gap:64, alignItems:'center'}}>
-            <div>
-              <div className="h-eyebrow" style={{color: gold, marginBottom:28}}>❖ &nbsp; Est. MMXXI</div>
-              <h1 className="h-display" style={{fontSize:'clamp(56px, 8vw, 132px)', color: ink}}>
-                Three tools.<br/>
-                <em style={{fontStyle:'italic', color: gold}}>One</em> operating principle.
-              </h1>
-              <p style={{marginTop:32, maxWidth:520, fontSize:19, lineHeight:1.55, color: muted}}>
-                Build things that work the first time, for people who notice. Our clients run private-equity funds, 
-                argue precedent-setting cases, and open the shop every Tuesday at 6 AM.
-              </p>
-            </div>
-            <ProductRoster ink={ink} muted={muted} gold={gold} isDark={isDark} large/>
-          </div>
-        </div>
-      )}
     </section>
-  );
-}
-
-function ProductRoster({ ink, muted, gold, isDark, large }) {
-  const rows = [
-    { letter:'T', name:'Trace', tag:'Data for private equity', color: gold, href:'Trace.html' },
-    { letter:'C', name:'Clad', tag:'Intelligence for law firms', color: '#4a7fc1', href:'#clad' },
-    { letter:'D', name:'Dev', tag:'Technical services · human led', color: '#b8502a', href:'Dev.html' },
-  ];
-  return (
-    <div style={{
-      border:`1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(11,18,32,0.12)'}`,
-      padding: large ? '28px 28px' : '22px 24px',
-      background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(11,18,32,0.015)',
-    }}>
-      <div className="h-eyebrow" style={{color: muted, marginBottom:18}}>Our Products</div>
-      {rows.map((r, i) => (
-        <a href={r.href} key={r.name} style={{
-          display:'grid', gridTemplateColumns:'36px 1fr auto', gap:16, alignItems:'baseline',
-          padding:'16px 0',
-          borderTop: i === 0 ? 'none' : `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(11,18,32,0.08)'}`,
-        }}>
-          <span className="h-display" style={{fontSize: large ? 40 : 32, color: r.color}}>{r.letter}</span>
-          <div>
-            <div className="h-serif" style={{fontSize: large ? 28 : 22, color: ink}}>{r.name}</div>
-            <div style={{fontSize:12, color: muted, marginTop:2}}>{r.tag}</div>
-          </div>
-          <span style={{color: muted, fontSize:14}}>↘</span>
-        </a>
-      ))}
-    </div>
   );
 }
 

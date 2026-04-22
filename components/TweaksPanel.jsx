@@ -1,4 +1,4 @@
-// Tweaks panel — floating bottom-right. Exposes the Edit Mode-driven knobs.
+// Tweaks panel — floating bottom-right. Exposes Theme, Accent, and Type knobs.
 
 function TweaksPanel({ state, setState, visible }) {
   if (!visible) return null;
@@ -61,10 +61,6 @@ function TweaksPanel({ state, setState, visible }) {
           <Seg value={state.theme} onChange={v => set('theme', v)}
             opts={[{v:'light', l:'Paper'}, {v:'dark', l:'Ink'}]}/>
         </Row>
-        <Row label="Hero">
-          <Seg value={state.heroVariant} onChange={v => set('heroVariant', v)}
-            opts={[{v:'editorial', l:'Editorial'}, {v:'centered', l:'Centered'}, {v:'split', l:'Split'}]}/>
-        </Row>
         <Row label="Accent">
           <Seg value={state.accent} onChange={v => set('accent', v)}
             opts={[{v:'gold', l:'Gold'}, {v:'rust', l:'Rust'}, {v:'steel', l:'Steel'}]}/>
@@ -72,14 +68,6 @@ function TweaksPanel({ state, setState, visible }) {
         <Row label="Type">
           <Seg value={state.type} onChange={v => set('type', v)}
             opts={[{v:'instrument', l:'Instrument'}, {v:'dmserif', l:'DM Serif'}, {v:'fraunces', l:'Fraunces'}]}/>
-        </Row>
-        <Row label="Dev flash">
-          <div style={{display:'flex', alignItems:'center', gap:10}}>
-            <input type="range" min="0" max="10" value={state.flashLevel}
-              onChange={e => set('flashLevel', +e.target.value)}
-              style={{flex:1, accentColor:'#b8502a'}}/>
-            <span style={{fontFamily:'JetBrains Mono, monospace', fontSize:11, color:'#0b1220', width:20, textAlign:'right'}}>{state.flashLevel}</span>
-          </div>
         </Row>
       </div>
     </div>

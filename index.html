@@ -44,6 +44,21 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
 
+/* ——— Animations ——— */
+@keyframes scanLine {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(100%); }
+}
+
+/* ——— Reduced Motion ——— */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ——— Mobile (<=768px) ——— */
 .m-only { display: none; }
 @media (max-width: 768px) {
@@ -71,14 +86,17 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .mast-burger { display: inline-flex !important; }
   .mast-panel { display: block; }
 
-  /* Product roster: keep desktop grid — but allow two-up for compactness */
-  /* Footer columns stack */
-
   /* Body text reflow */
   p { font-size: 16px !important; line-height: 1.55 !important; }
 
-  /* Dev/Trace-style wide tables (inline) — hide the biggest ones */
-  .table-wide { display: none !important; }
+  /* Charter: roman numerals inline */
+  .charter-value-numeral { display: inline !important; margin-right: 8px !important; }
+
+  /* Hiring: kinetic zone below copy, smaller font */
+  .hiring-kinetic { font-size: 48px !important; min-height: 80px !important; margin-top: 32px !important; }
+
+  /* Footer columns stack */
+  .footer-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
 }
 </style>
 
@@ -91,16 +109,68 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 <script type="text/babel">
 
+/* ===== Animation Utilities ===== */
+
+function useInView(ref, threshold = 0.15) {
+  const [inView, setInView] = React.useState(false);
+  React.useEffect(() => {
+    // Respect prefers-reduced-motion: show everything immediately
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setInView(true);
+      return;
+    }
+    if (!ref.current) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.disconnect(); } },
+      { threshold }
+    );
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [ref, threshold]);
+  return inView;
+}
+
+function RevealLine({ delay = 0, color = 'var(--gold)', height = 1, style = {} }) {
+  const ref = React.useRef(null);
+  const inView = useInView(ref);
+  return (
+    <div ref={ref} style={{
+      height,
+      background: color,
+      transform: inView ? 'scaleX(1)' : 'scaleX(0)',
+      transformOrigin: 'left',
+      transition: `transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s`,
+      ...style,
+    }} />
+  );
+}
+
+function StaggerReveal({ children, stagger = 0.12, baseDelay = 0 }) {
+  const ref = React.useRef(null);
+  const inView = useInView(ref);
+  return (
+    <div ref={ref}>
+      {React.Children.map(children, (child, i) => (
+        <div style={{
+          opacity: inView ? 1 : 0,
+          transform: inView ? 'translateY(0)' : 'translateY(18px)',
+          transition: `opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${baseDelay + i * stagger}s, transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${baseDelay + i * stagger}s`,
+        }}>
+          {child}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
 /* ===== components/Wordmark.jsx ===== */
-// Semperr wordmark — editorial serif with a small "double-r" detail.
-// The double-R ligature is the brand mark: one R in gold.
 
 function Wordmark({ size = 28, tone = "ink", asMark = false }) {
   const color = tone === "ink" ? "#0b1220" : "#f8f6f0";
   const gold = "#c9a961";
 
   if (asMark) {
-    // Just the "rr" mark for small spaces
     return (
       <svg width={size} height={size} viewBox="0 0 48 48" style={{display:'block'}}>
         <text x="24" y="36" textAnchor="middle"
@@ -131,7 +201,6 @@ window.Wordmark = Wordmark;
 
 
 /* ===== components/Masthead.jsx ===== */
-// Top navigation — quiet, editorial, with a ticker hinting at the parent company's scope.
 
 function Masthead({ theme }) {
   const isDark = theme === 'dark';
@@ -153,10 +222,10 @@ function Masthead({ theme }) {
         <div style={{display:'flex', alignItems:'center', gap:40}}>
           <Wordmark size={24} tone={isDark ? 'paper' : 'ink'} />
           <nav className="mast-nav" style={{display:'flex', gap:28, fontSize:13, color: isDark ? '#9099ad' : '#6b7388'}}>
-            <a>Products</a>
-            <a>Company</a>
-            <a>Clients</a>
-            <a>Careers</a>
+            <a href="charter.html">Charter</a>
+            <a href="#capabilities">Capabilities</a>
+            <a href="#company">Company</a>
+            <a href="#careers">Careers</a>
           </nav>
         </div>
         <div style={{display:'flex', alignItems:'center', gap:20}}>
@@ -189,9 +258,10 @@ function Masthead({ theme }) {
           background: panelBg, borderTop:`1px solid ${line}`, padding:'16px 20px 24px',
         }}>
           <nav style={{display:'grid', gap:14, fontSize:16, color: isDark ? '#c7cdd9' : '#2a3246', fontFamily:'var(--serif)'}}>
-            <a onClick={() => setOpen(false)} href="charter.html">Charterr</a>
-            <a onClick={() => setOpen(false)} href="#">Company</a>
-            <a onClick={() => setOpen(false)} href="#">Careers</a>
+            <a onClick={() => setOpen(false)} href="charter.html">Charter</a>
+            <a onClick={() => setOpen(false)} href="#capabilities">Capabilities</a>
+            <a onClick={() => setOpen(false)} href="#company">Company</a>
+            <a onClick={() => setOpen(false)} href="#careers">Careers</a>
             <a onClick={() => setOpen(false)} href="contact.html" style={{color:'var(--gold)', marginTop:4}}>Get in touch →</a>
           </nav>
         </div>
@@ -204,13 +274,31 @@ window.Masthead = Masthead;
 
 
 /* ===== components/Hero.jsx ===== */
-// Hero — editorial, confident. Big serif headline, a disciplined grid of product chips below.
 
-function Hero({ variant = 'editorial', theme = 'light' }) {
+function Hero({ theme = 'light' }) {
   const isDark = theme === 'dark';
   const ink = isDark ? '#f8f6f0' : '#0b1220';
   const muted = isDark ? '#9099ad' : '#6b7388';
-  const gold = '#c9a961';
+  const gold = 'var(--gold)';
+
+  const [revealed, setRevealed] = React.useState(false);
+  React.useEffect(() => {
+    const t = setTimeout(() => setRevealed(true), 100);
+    return () => clearTimeout(t);
+  }, []);
+
+  // Reduced motion: show everything immediately
+  const prefersReduced = React.useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    []
+  );
+  const show = prefersReduced || revealed;
+
+  const t = (delay) => prefersReduced ? {} : {
+    opacity: show ? 1 : 0,
+    transform: show ? 'translateY(0)' : 'translateY(18px)',
+    transition: `opacity 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s`,
+  };
 
   return (
     <section style={{
@@ -221,1152 +309,578 @@ function Hero({ variant = 'editorial', theme = 'light' }) {
     }}>
       <div className="grain" />
 
-      {/* Top editorial slug */}
-      <div className="container" style={{marginBottom:48}}>
-        <div style={{
-          display:'flex', justifyContent:'space-between', alignItems:'center',
-          fontSize:11, fontFamily:'JetBrains Mono, monospace', letterSpacing:'0.12em', textTransform:'uppercase',
+      <div className="container">
+        {/* Eyebrow */}
+        <div className="h-eyebrow" style={{
+          color: gold, marginBottom:32,
+          ...t(0.1),
+        }}>
+          The interface for serious work
+        </div>
+
+        {/* Headline — three staggered lines */}
+        <h1 className="h-display" style={{
+          fontSize:'clamp(52px, 8vw, 132px)',
+          color: ink,
+        }}>
+          <span style={{display:'block', ...t(0.2)}}>Custom systems,</span>
+          <span style={{display:'block', ...t(0.35)}}>data <em style={{
+            fontStyle:'italic',
+            color: show ? 'var(--gold)' : (isDark ? '#6b7388' : '#9099ad'),
+            transition: prefersReduced ? 'none' : 'color 0.6s cubic-bezier(0.25,0.46,0.45,0.94) 0.5s',
+          }}>infrastructure,</em></span>
+          <span style={{display:'block', ...t(0.5)}}>technical workflows.</span>
+        </h1>
+
+        {/* RevealLine under headline */}
+        <div style={{marginTop:28, maxWidth:600}}>
+          <RevealLine delay={0.6} color={gold} />
+        </div>
+
+        {/* Subhead */}
+        <p style={{
+          marginTop:32, maxWidth:620, fontSize:19, lineHeight:1.55,
           color: muted,
+          ...t(0.8),
         }}>
-          <span>Vol. V · No. 11</span>
-          <span>The Semperr Broadsheet</span>
-          <span>April · 2026</span>
+          Semperr builds and operates the software that private-equity firms, law practices,
+          and owner-run businesses depend on when the answer has to be right.
+        </p>
+
+        {/* CTAs */}
+        <div style={{
+          display:'flex', gap:12, marginTop:40,
+          ...t(1.0),
+        }}>
+          <a href="charter.html" style={{
+            display:'inline-flex', alignItems:'center', gap:10,
+            padding:'14px 22px', borderRadius:999,
+            background: ink, color: isDark ? '#0b1220' : '#f8f6f0',
+            fontSize:14, fontWeight:500,
+          }}>Read the charter <span style={{opacity:0.5}}>→</span></a>
+          <a href="contact.html" style={{
+            display:'inline-flex', alignItems:'center', gap:10,
+            padding:'14px 22px', borderRadius:999,
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
+            color: ink, fontSize:14, fontWeight:500,
+          }}>Get in touch</a>
         </div>
-        <div className="hair" style={{marginTop:14, borderColor: isDark ? 'rgba(255,255,255,0.1)' : undefined}}/>
       </div>
-
-      {variant === 'editorial' && (
-        <div className="container">
-          <div>
-            <div className="h-eyebrow" style={{color: gold, marginBottom:28}}>
-              ❖ &nbsp; Quiet tools for loud decisions
-            </div>
-            <h1 className="h-display" style={{
-              fontSize:'clamp(64px, 9.5vw, 156px)',
-              color: ink,
-            }}>
-              Software <em style={{fontStyle:'italic', color: gold}}>serious</em><br/>
-              businesses run on.
-            </h1>
-            <p style={{
-              marginTop:36, maxWidth:560, fontSize:19, lineHeight:1.55,
-              color: muted,
-            }}>
-              Semperr builds data and technical infrastructure for people who can't afford to guess —
-              private-equity analysts, law-firm partners, and the small businesses keeping the rest of the economy running.
-            </p>
-            <div style={{display:'flex', gap:12, marginTop:40}}>
-              <a style={{
-                display:'inline-flex', alignItems:'center', gap:10,
-                padding:'14px 22px', borderRadius:999,
-                background: ink, color: isDark ? '#0b1220' : '#f8f6f0',
-                fontSize:14, fontWeight:500,
-              }}>Book a briefing <span style={{opacity:0.5}}>↗</span></a>
-              <a href="charter.html" style={{
-                display:'inline-flex', alignItems:'center', gap:10,
-                padding:'14px 22px', borderRadius:999,
-                border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
-                color: ink, fontSize:14, fontWeight:500,
-              }}>Read the charter</a>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {variant === 'centered' && (
-        <div className="container" style={{textAlign:'center', paddingTop:40}}>
-          <div className="h-eyebrow" style={{color: gold, marginBottom:32}}>
-            ❖ &nbsp; Three tools, one operating principle
-          </div>
-          <h1 className="h-display" style={{
-            fontSize:'clamp(56px, 11vw, 180px)', color: ink, maxWidth:1100, margin:'0 auto',
-          }}>
-            Software <em style={{fontStyle:'italic', color: gold}}>serious</em>
-            <br/>businesses run on.
-          </h1>
-          <p style={{
-            margin:'40px auto 0', maxWidth:620, fontSize:19, lineHeight:1.55, color: muted,
-          }}>
-            Semperr builds data and technical infrastructure for people who can't afford to guess.
-          </p>
-          <div style={{display:'flex', gap:12, justifyContent:'center', marginTop:40}}>
-            <a style={{padding:'14px 22px', borderRadius:999, background: ink, color: isDark ? '#0b1220' : '#f8f6f0', fontSize:14, fontWeight:500}}>Book a briefing ↗</a>
-            <a href="charter.html" style={{padding:'14px 22px', borderRadius:999, border:`1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`, fontSize:14, fontWeight:500, color: ink}}>Read the charter</a>
-          </div>
-        </div>
-      )}
-
-      {variant === 'split' && (
-        <div className="container">
-          <div>
-            <div className="h-eyebrow" style={{color: gold, marginBottom:28}}>❖ &nbsp; Est. MMXXI</div>
-            <h1 className="h-display" style={{fontSize:'clamp(56px, 8vw, 132px)', color: ink}}>
-              Three tools.<br/>
-              <em style={{fontStyle:'italic', color: gold}}>One</em> operating principle.
-            </h1>
-            <p style={{marginTop:32, maxWidth:520, fontSize:19, lineHeight:1.55, color: muted}}>
-              Build things that work the first time, for people who notice. Our clients run private-equity funds,
-              argue precedent-setting cases, and open the shop every Tuesday at 6 AM.
-            </p>
-          </div>
-        </div>
-      )}
     </section>
-  );
-}
-
-function ProductRoster({ ink, muted, gold, isDark, large }) {
-  const rows = [
-    { letter:'T', name:'Trace', tag:'Data for private equity', color: gold, href:'Trace.html' },
-    { letter:'C', name:'Clad', tag:'Intelligence for law firms', color: '#4a7fc1', href:'Clad.html' },
-    { letter:'D', name:'Dev', tag:'Technical services · human led', color: '#b8502a', href:'Dev.html' },
-  ];
-  return (
-    <div style={{
-      border:`1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(11,18,32,0.12)'}`,
-      padding: large ? '28px 28px' : '22px 24px',
-      background: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(11,18,32,0.015)',
-    }}>
-      <div className="h-eyebrow" style={{color: muted, marginBottom:18}}>Our Products</div>
-      {rows.map((r, i) => (
-        <a href={r.href} key={r.name} style={{
-          display:'grid', gridTemplateColumns:'36px 1fr auto', gap:16, alignItems:'baseline',
-          padding:'16px 0',
-          borderTop: i === 0 ? 'none' : `1px solid ${isDark ? 'rgba(255,255,255,0.08)' : 'rgba(11,18,32,0.08)'}`,
-        }}>
-          <span className="h-display" style={{fontSize: large ? 40 : 32, color: r.color}}>{r.letter}</span>
-          <div>
-            <div className="h-serif" style={{fontSize: large ? 28 : 22, color: ink}}>{r.name}</div>
-            <div style={{fontSize:12, color: muted, marginTop:2}}>{r.tag}</div>
-          </div>
-          <span style={{color: muted, fontSize:14}}>↘</span>
-        </a>
-      ))}
-    </div>
   );
 }
 
 window.Hero = Hero;
 
 
-/* ===== components/TraceSection.jsx ===== */
-// Trace — data for private equity.
-// Aesthetic: terminal / dealbook / ticker. Ink-dark background, gold accent.
-// Hover: data points stream in and settle into a live dealbook table; a small network graph pulses.
+/* ===== components/CharterSection.jsx ===== */
 
-function TraceSection({ variant = 'dealbook' }) {
-  const [hovered, setHovered] = React.useState(false);
+function CharterSection({ theme = 'light' }) {
+  const isDark = theme === 'dark';
+  const bg = isDark ? 'var(--ink-soft)' : 'var(--paper-warm)';
+  const ink = isDark ? '#f8f6f0' : '#0b1220';
+  const muted = isDark ? '#9099ad' : '#6b7388';
+  const gold = 'var(--gold)';
+  const lineColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(11,18,32,0.1)';
+
+  const ref = React.useRef(null);
+  const inView = useInView(ref);
+
+  const values = [
+    { num: 'I', name: 'Rigor', desc: 'Every figure traceable. Every source dated. Every derivation recoverable.' },
+    { num: 'II', name: 'Discretion', desc: 'Client data is treated as testimony\u2009—\u2009never shared, never inferred, never sold.' },
+    { num: 'III', name: 'Durability', desc: "We build for the decade, not the quarter. If it can\u2019t survive a regime change, it doesn\u2019t ship." },
+    { num: 'IV', name: 'Clarity', desc: 'Plain language, honest timelines, no jargon designed to obscure.' },
+    { num: 'V', name: 'Accountability', desc: 'A name on every deliverable. A partner on every engagement.' },
+  ];
 
   return (
-    <section id="trace" style={{
-      background:'var(--ink)', color:'var(--paper)',
-      padding:'120px 0 140px', position:'relative', overflow:'hidden',
+    <section id="charter" ref={ref} style={{
+      background: bg, padding: '120px 0 140px', position:'relative', overflow:'hidden',
     }}>
       <div className="grain" />
-
       <div className="container">
-        {/* Section chrome */}
-        <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:56}}>
-          <div className="h-eyebrow" style={{color:'#c9a961'}}>I. &nbsp; Trace</div>
-          <div className="h-eyebrow" style={{color:'#6b7388'}}>Data for private equity</div>
+        {/* Eyebrow */}
+        <div className="h-eyebrow" style={{
+          color: gold, marginBottom:24,
+          opacity: inView ? 1 : 0,
+          transition: 'opacity 0.6s ease 0.1s',
+        }}>
+          I. &nbsp; The Charter
         </div>
 
-        <div
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          style={{
-            display:'grid', gridTemplateColumns: variant === 'wide' ? '1fr' : '1.1fr 1.3fr',
-            gap: 72, alignItems:'center',
-          }}
-        >
-          {/* Copy */}
-          <div>
-            <h2 className="h-display" style={{
-              fontSize:'clamp(52px, 6.5vw, 104px)', color:'#f8f6f0',
-              marginBottom:32,
+        {/* Headline */}
+        <h2 className="h-display" style={{
+          fontSize:'clamp(42px, 5.5vw, 80px)', color: ink, marginBottom:20,
+          opacity: inView ? 1 : 0,
+          transform: inView ? 'translateY(0)' : 'translateY(18px)',
+          transition: 'opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s',
+        }}>
+          Five principles. No exceptions.
+        </h2>
+
+        {/* Deck */}
+        <p style={{
+          maxWidth:620, fontSize:18, lineHeight:1.55, color: muted, marginBottom:56,
+          opacity: inView ? 1 : 0,
+          transition: 'opacity 0.6s ease 0.25s',
+        }}>
+          Every engagement, every hire, every line of code is measured against the same standard.
+        </p>
+
+        <RevealLine delay={0.3} color={lineColor} />
+
+        {/* Values list with scan line */}
+        <div style={{position:'relative'}}>
+          {/* Scan line */}
+          <div style={{
+            position:'absolute', top:0, left:0, right:0, height:1,
+            background: `linear-gradient(90deg, transparent, var(--gold), transparent)`,
+            opacity: inView ? 0.6 : 0,
+            animation: inView ? 'scanLine 2.5s ease-in-out 0.5s forwards' : 'none',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }} />
+
+          {values.map((v, i) => (
+            <div key={v.num} style={{
+              display:'grid', gridTemplateColumns:'48px 160px 1fr', gap:24, alignItems:'baseline',
+              padding:'28px 0',
+              borderBottom: `1px solid ${lineColor}`,
+              opacity: inView ? 1 : 0,
+              transform: inView ? 'translateY(0)' : 'translateY(14px)',
+              transition: `opacity 0.5s ease ${0.35 + i * 0.12}s, transform 0.5s ease ${0.35 + i * 0.12}s`,
             }}>
-              Every private<br/>
-              company,<br/>
-              <em style={{fontStyle:'italic', color:'#c9a961'}}>mapped.</em>
-            </h2>
-            <p className="t-body" style={{maxWidth:460, fontSize:18}}>
-              Eight million private companies, continuously traced — ownership graphs, 
-              operating metrics, relationship history. The dealbook analysts wish they had 
-              before the pitch.
-            </p>
-
-            <div style={{marginTop:40, display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:0, maxWidth:520}}>
-              <Stat n="8.2M" l="Companies tracked" />
-              <Stat n="340K" l="Transactions linked" c/>
-              <Stat n="94%" l="LP coverage" c/>
+              <span className="charter-value-numeral h-eyebrow" style={{color: gold, fontSize:12}}>{v.num}</span>
+              <span className="h-serif" style={{fontSize:24, color: ink}}>{v.name}</span>
+              <span style={{fontSize:16, lineHeight:1.55, color: muted}}>{v.desc}</span>
             </div>
+          ))}
+        </div>
 
-            <a href="Trace.html" style={{
-              display:'inline-flex', alignItems:'center', gap:10, marginTop:48,
-              padding:'14px 22px', borderRadius:999,
-              background:'#c9a961', color:'#0b1220', fontSize:14, fontWeight:500,
-            }}>Explore Trace ↗</a>
-          </div>
-
-          {/* Visual: dealbook */}
-          <div className="m-hide"><TraceDealbook hovered={hovered} /></div>
+        {/* CTA */}
+        <div style={{
+          marginTop:48,
+          opacity: inView ? 1 : 0,
+          transition: 'opacity 0.6s ease 1s',
+        }}>
+          <a href="charter.html" style={{
+            display:'inline-flex', alignItems:'center', gap:10,
+            padding:'14px 22px', borderRadius:999,
+            border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
+            color: ink, fontSize:14, fontWeight:500,
+          }}>Read the full charter <span style={{opacity:0.5}}>→</span></a>
         </div>
       </div>
     </section>
   );
 }
 
-function Stat({ n, l, c }) {
-  return (
-    <div style={{
-      paddingLeft: c ? 20 : 0,
-      borderLeft: c ? '1px solid rgba(255,255,255,0.12)' : 'none',
-    }}>
-      <div className="h-serif" style={{fontSize:36, color:'#f8f6f0'}}>{n}</div>
-      <div style={{fontSize:11, color:'#6b7388', marginTop:6, fontFamily:'JetBrains Mono, monospace', letterSpacing:'0.08em', textTransform:'uppercase'}}>{l}</div>
-    </div>
-  );
-}
+window.CharterSection = CharterSection;
 
-function TraceDealbook({ hovered }) {
-  // seed rows appear & flow on hover
-  const rows = [
-    ['Helix Logistics',    'Carlyle',     '$1.2B', 'Platform',   'Mar 12'],
-    ['Atlas Precision',    'Vista',       '$410M', 'Add-on',     'Mar 09'],
-    ['Meridian Supply',    'Bain Cap.',   '$2.4B', 'Secondary',  'Feb 28'],
-    ['Verra Health',       'KKR',         '$860M', 'Platform',   'Feb 22'],
-    ['Copperline Foods',   'Apollo',      '$315M', 'Add-on',     'Feb 18'],
-    ['Northwind Ceramics', 'Genstar',     '$540M', 'Carve-out',  'Feb 11'],
+
+/* ===== components/ProofSection.jsx ===== */
+
+function ProofSection({ theme = 'light' }) {
+  const isDark = theme === 'dark';
+  const ink = isDark ? '#f8f6f0' : '#f8f6f0';
+  const muted = '#9099ad';
+  const gold = 'var(--gold)';
+  const cardBorder = 'rgba(255,255,255,0.1)';
+
+  const ref = React.useRef(null);
+  const inView = useInView(ref);
+
+  const cards = [
+    { title: 'Private Equity', desc: 'Mid-market and growth funds pricing acquisitions and portfolio ops.', stat: '40+ funds served' },
+    { title: 'Law Firms', desc: 'Litigation, regulatory, and transactional practices needing precedent at speed.', stat: 'AmLaw 200 coverage' },
+    { title: 'Owner-Operated Businesses', desc: 'Restaurants, clinics, trades\u2009—\u2009the businesses that open before the first train.', stat: '300+ active accounts' },
+    { title: 'Family Offices & Advisors', desc: 'Multi-generational stewards who prize discretion and accuracy equally.', stat: 'Referral-only intake' },
   ];
 
   return (
-    <div style={{
-      position:'relative',
-      background:'#0f1729',
-      border:'1px solid rgba(201,169,97,0.2)',
-      borderRadius:2,
-      padding:'28px 0 0',
-      boxShadow:'0 40px 80px -30px rgba(0,0,0,0.6)',
-      transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
-      transition:'transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
-      overflow:'hidden',
+    <section id="company" ref={ref} style={{
+      background: isDark ? '#080d18' : 'var(--ink)', color:'#f8f6f0',
+      padding:'120px 0 140px', position:'relative', overflow:'hidden',
     }}>
-      {/* Ticker strip */}
-      <div style={{
-        display:'flex', justifyContent:'space-between', alignItems:'center',
-        padding:'0 24px 20px', borderBottom:'1px solid rgba(255,255,255,0.08)',
-        fontFamily:'JetBrains Mono, monospace', fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase',
-      }}>
-        <div style={{color:'#c9a961'}}>● &nbsp; DEALBOOK / LIVE</div>
-        <div style={{color:'#6b7388'}}>Last sync · 00:00:12 ago</div>
-      </div>
+      <div className="grain" />
+      <div className="container">
+        {/* Eyebrow */}
+        <div className="h-eyebrow" style={{
+          color: gold, marginBottom:24,
+          opacity: inView ? 1 : 0,
+          transition: 'opacity 0.6s ease 0.1s',
+        }}>
+          II. &nbsp; Who we serve
+        </div>
 
-      {/* Column headers */}
-      <div style={{
-        display:'grid', gridTemplateColumns:'2fr 1.3fr 1fr 1fr 0.8fr',
-        padding:'12px 24px', gap:16,
-        fontFamily:'JetBrains Mono, monospace', fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase',
-        color:'#6b7388',
-        borderBottom:'1px solid rgba(255,255,255,0.06)',
-      }}>
-        <div>Target</div><div>Sponsor</div><div>EV</div><div>Type</div><div>Date</div>
-      </div>
+        {/* Headline */}
+        <h2 className="h-display" style={{
+          fontSize:'clamp(42px, 5.5vw, 80px)', color:'#f8f6f0', marginBottom:20,
+          opacity: inView ? 1 : 0,
+          transform: inView ? 'translateY(0)' : 'translateY(18px)',
+          transition: 'opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s',
+        }}>
+          Built for institutions that<br/>cannot afford to guess.
+        </h2>
 
-      {/* Rows */}
-      <div style={{position:'relative'}}>
-        {rows.map((r, i) => (
-          <div key={i} style={{
-            display:'grid', gridTemplateColumns:'2fr 1.3fr 1fr 1fr 0.8fr',
-            padding:'14px 24px', gap:16,
-            fontSize:13, color:'#d4dbe8',
-            borderBottom: i === rows.length - 1 ? 'none' : '1px solid rgba(255,255,255,0.04)',
-            opacity: hovered ? 1 : 0.35,
-            transform: hovered ? 'translateX(0)' : 'translateX(-8px)',
-            transition: `all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) ${i * 0.06}s`,
-          }}>
-            <div style={{color:'#f8f6f0', fontWeight:500}}>{r[0]}</div>
-            <div>{r[1]}</div>
-            <div style={{color:'#c9a961', fontFamily:'JetBrains Mono, monospace'}}>{r[2]}</div>
-            <div style={{fontSize:11, fontFamily:'JetBrains Mono, monospace', color:'#9099ad'}}>{r[3]}</div>
-            <div style={{fontSize:11, fontFamily:'JetBrains Mono, monospace', color:'#6b7388'}}>{r[4]}</div>
+        {/* Deck */}
+        <p style={{
+          maxWidth:660, fontSize:18, lineHeight:1.55, color: muted, marginBottom:64,
+          opacity: inView ? 1 : 0,
+          transition: 'opacity 0.6s ease 0.25s',
+        }}>
+          Our clients don't evaluate software — they evaluate risk. We serve the organizations
+          where a wrong number has real consequences.
+        </p>
+
+        {/* Card grid */}
+        <div style={{
+          display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:20,
+        }}>
+          {cards.map((c, i) => (
+            <div key={c.title} style={{
+              border: `1px solid ${cardBorder}`,
+              padding:'32px 24px',
+              display:'flex', flexDirection:'column', justifyContent:'space-between',
+              minHeight:260,
+              opacity: inView ? 1 : 0,
+              transform: inView ? 'translateY(0)' : 'translateY(24px)',
+              transition: `opacity 0.6s ease ${0.3 + i * 0.15}s, transform 0.6s ease ${0.3 + i * 0.15}s`,
+            }}>
+              <div>
+                <h3 className="h-serif" style={{fontSize:22, color:'#f8f6f0', marginBottom:14}}>{c.title}</h3>
+                <p style={{fontSize:14, lineHeight:1.55, color:'#9099ad'}}>{c.desc}</p>
+              </div>
+              <div style={{
+                marginTop:24,
+                fontFamily:'var(--mono)', fontSize:12, letterSpacing:'0.06em',
+                color: 'var(--gold)',
+                overflow:'hidden',
+              }}>
+                <span style={{
+                  display:'inline-block',
+                  transform: inView ? 'translateX(0)' : 'translateX(-100%)',
+                  transition: `transform 0.6s ease ${0.6 + i * 0.15}s`,
+                }}>
+                  {c.stat}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+window.ProofSection = ProofSection;
+
+
+/* ===== components/CapabilitySection.jsx ===== */
+
+function CapabilitySection({ theme = 'light' }) {
+  const isDark = theme === 'dark';
+  const bg = isDark ? 'var(--ink)' : 'var(--paper-warm)';
+  const ink = isDark ? '#f8f6f0' : '#0b1220';
+  const muted = isDark ? '#9099ad' : '#6b7388';
+  const gold = 'var(--gold)';
+  const lineColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(11,18,32,0.1)';
+  const chipBorder = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(11,18,32,0.12)';
+  const chipBg = isDark ? 'rgba(255,255,255,0.03)' : 'rgba(11,18,32,0.02)';
+
+  const ref = React.useRef(null);
+  const inView = useInView(ref);
+
+  const capabilities = [
+    {
+      name: 'Custom Systems',
+      desc: 'Dealbook platforms, case-management tools, client portals\u2009—\u2009software shaped to the institution.',
+      tags: ['Data platforms', 'Internal tools', 'Client portals', 'Reporting engines'],
+    },
+    {
+      name: 'Data Infrastructure',
+      desc: 'Ingestion, reconciliation, graph construction, and delivery\u2009—\u2009the plumbing underneath every decision.',
+      tags: ['ETL pipelines', 'Entity resolution', 'Graph databases', 'API layers'],
+    },
+    {
+      name: 'Technical Workflows',
+      desc: 'Websites, automations, AI-assisted operations, and back-office systems.',
+      tags: ['Websites', 'Automations', 'AI receptionists', 'CRM', 'Phone systems'],
+    },
+  ];
+
+  return (
+    <section id="capabilities" ref={ref} style={{
+      background: bg, padding:'120px 0 140px', position:'relative', overflow:'hidden',
+    }}>
+      <div className="grain" />
+      <div className="container">
+        {/* Eyebrow */}
+        <div className="h-eyebrow" style={{
+          color: gold, marginBottom:24,
+          opacity: inView ? 1 : 0,
+          transition: 'opacity 0.6s ease 0.1s',
+        }}>
+          III. &nbsp; What we build
+        </div>
+
+        {/* Headline */}
+        <h2 className="h-display" style={{
+          fontSize:'clamp(42px, 5.5vw, 80px)', color: ink, marginBottom:20,
+          opacity: inView ? 1 : 0,
+          transform: inView ? 'translateY(0)' : 'translateY(18px)',
+          transition: 'opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s',
+        }}>
+          Custom systems. Data infrastructure.<br/>Technical workflows.
+        </h2>
+
+        {/* Deck */}
+        <p style={{
+          maxWidth:680, fontSize:18, lineHeight:1.55, color: muted, marginBottom:56,
+          opacity: inView ? 1 : 0,
+          transition: 'opacity 0.6s ease 0.25s',
+        }}>
+          We don't sell licenses. We design, build, and operate the technical infrastructure
+          our clients depend on — then stay to make sure it works.
+        </p>
+
+        <RevealLine delay={0.3} color={lineColor} />
+
+        {/* Capability rows */}
+        {capabilities.map((cap, i) => (
+          <div key={cap.name}>
+            <div style={{
+              display:'grid', gridTemplateColumns:'1fr 1fr', gap:48, alignItems:'start',
+              padding:'40px 0',
+              opacity: inView ? 1 : 0,
+              transform: inView ? 'translateY(0)' : 'translateY(16px)',
+              transition: `opacity 0.6s ease ${0.35 + i * 0.15}s, transform 0.6s ease ${0.35 + i * 0.15}s`,
+            }}>
+              <div>
+                <h3 className="h-serif" style={{fontSize:28, color: ink, marginBottom:12}}>{cap.name}</h3>
+                <p style={{fontSize:16, lineHeight:1.55, color: muted}}>{cap.desc}</p>
+              </div>
+              <div style={{display:'flex', flexWrap:'wrap', gap:8, paddingTop:6}}>
+                {cap.tags.map((tag, j) => (
+                  <span key={tag} style={{
+                    padding:'8px 14px',
+                    fontSize:12,
+                    fontFamily:'var(--mono)',
+                    letterSpacing:'0.04em',
+                    border: `1px solid ${chipBorder}`,
+                    background: chipBg,
+                    color: ink,
+                    opacity: inView ? 1 : 0,
+                    transform: inView ? 'translateX(0)' : 'translateX(12px)',
+                    transition: `opacity 0.4s ease ${0.5 + i * 0.15 + j * 0.06}s, transform 0.4s ease ${0.5 + i * 0.15 + j * 0.06}s`,
+                  }}>{tag}</span>
+                ))}
+              </div>
+            </div>
+            {i < capabilities.length - 1 && (
+              <div style={{height:1, background: lineColor}} />
+            )}
           </div>
         ))}
-
-      </div>
-
-      {/* Network mini-graph footer */}
-      <div style={{
-        padding:'16px 24px',
-        borderTop:'1px solid rgba(255,255,255,0.08)',
-        display:'flex', justifyContent:'space-between', alignItems:'center',
-        background:'rgba(0,0,0,0.2)',
-      }}>
-        <div style={{fontFamily:'JetBrains Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.08em', textTransform:'uppercase'}}>
-          Ownership graph · Helix Logistics
-        </div>
-        <NetworkGraph hovered={hovered} />
-      </div>
-    </div>
-  );
-}
-
-function NetworkGraph({ hovered }) {
-  // Little ownership-graph sparkline
-  const nodes = [
-    { x: 10, y: 16, r: 3 },
-    { x: 40, y: 8,  r: 4 },
-    { x: 68, y: 20, r: 3.5 },
-    { x: 88, y: 10, r: 2.5 },
-    { x: 56, y: 28, r: 3 },
-    { x: 24, y: 28, r: 2.5 },
-  ];
-  const edges = [[0,1],[1,2],[2,3],[1,4],[4,5],[0,5],[2,4]];
-  return (
-    <svg width="140" height="40" viewBox="0 0 100 36" style={{overflow:'visible'}}>
-      {edges.map(([a,b], i) => (
-        <line key={i}
-          x1={nodes[a].x} y1={nodes[a].y} x2={nodes[b].x} y2={nodes[b].y}
-          stroke="#c9a961" strokeWidth="0.4" opacity={hovered ? 0.6 : 0.25}
-          style={{transition:'opacity 0.5s'}}/>
-      ))}
-      {nodes.map((n, i) => (
-        <circle key={i} cx={n.x} cy={n.y} r={n.r}
-          fill={i === 2 ? '#c9a961' : '#f8f6f0'}
-          opacity={hovered ? 1 : 0.6}
-          style={{
-            transition:'opacity 0.5s',
-            animation: hovered ? `tracePulse 1.8s ease-in-out ${i * 0.1}s infinite` : 'none',
-            transformOrigin: `${n.x}px ${n.y}px`,
-          }}/>
-      ))}
-      <style>{`
-        @keyframes tracePulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.4); }
-        }
-      `}</style>
-    </svg>
-  );
-}
-
-window.TraceSection = TraceSection;
-
-
-/* ===== components/CladSection.jsx ===== */
-// Clad — intelligence for law firms.
-// Aesthetic: paper, dossier, annotated case file. Warm cream background, steel blue + ink.
-// Hover: stacked case files fan out, highlighter marks swipe across key phrases.
-
-function CladSection({ variant = 'dossier' }) {
-  const [hovered, setHovered] = React.useState(false);
-
-  return (
-    <section id="clad" style={{
-      background:'var(--paper-warm)', color:'var(--ink)',
-      padding:'120px 0 140px', position:'relative', overflow:'hidden',
-    }}>
-      <div className="grain" />
-
-      <div className="container">
-        <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:56}}>
-          <div className="h-eyebrow" style={{color:'#2f5c96'}}>II. &nbsp; Clad</div>
-          <div className="h-eyebrow" style={{color:'#7a7466'}}>Intelligence for law firms</div>
-        </div>
-
-        <div
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          style={{
-            display:'grid', gridTemplateColumns:'1.3fr 1.1fr', gap:72, alignItems:'center',
-          }}
-        >
-          {/* Visual: fanned case files */}
-          <div className="m-hide"><CladDossier hovered={hovered} /></div>
-
-          {/* Copy */}
-          <div>
-            <h2 className="h-display" style={{
-              fontSize:'clamp(52px, 6.5vw, 104px)', color:'#0b1220',
-              marginBottom:32,
-            }}>
-              The full<br/>
-              <em style={{fontStyle:'italic', color:'#2f5c96'}}>record.</em><br/>
-              Indexed.
-            </h2>
-            <p style={{maxWidth:460, fontSize:18, lineHeight:1.55, color:'#4a4638'}}>
-              Every federal filing, every state docket, every administrative ruling — read, 
-              annotated, and cross-referenced. Clad gives partners the precedent they need 
-              before the associate has finished pouring coffee.
-            </p>
-
-            <div style={{marginTop:40, display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:0, maxWidth:520}}>
-              <StatInk n="52M" l="Documents indexed" />
-              <StatInk n="1,240" l="Jurisdictions" c/>
-              <StatInk n="< 2s" l="Citation lookup" c/>
-            </div>
-
-            <a href="Clad.html" style={{
-              display:'inline-flex', alignItems:'center', gap:10, marginTop:48,
-              padding:'14px 22px', borderRadius:999,
-              background:'#0b1220', color:'#f8f6f0', fontSize:14, fontWeight:500,
-            }}>Explore Clad ↗</a>
-          </div>
-        </div>
       </div>
     </section>
   );
 }
 
-function StatInk({ n, l, c }) {
-  return (
-    <div style={{
-      paddingLeft: c ? 20 : 0,
-      borderLeft: c ? '1px solid rgba(11,18,32,0.15)' : 'none',
-    }}>
-      <div className="h-serif" style={{fontSize:36, color:'#0b1220'}}>{n}</div>
-      <div style={{fontSize:11, color:'#7a7466', marginTop:6, fontFamily:'JetBrains Mono, monospace', letterSpacing:'0.08em', textTransform:'uppercase'}}>{l}</div>
-    </div>
-  );
-}
-
-function CladDossier({ hovered }) {
-  // Three case files layered. On hover, they fan.
-  const files = [
-    {
-      title: 'Memorandum of Law',
-      caption: 'Hollister v. Briar Capital · 2nd Cir.',
-      date: 'Filed 03·14·2026',
-      rot: -6,
-      dx: -40, dy: 20,
-      hoverRot: -14, hoverDx: -140, hoverDy: 24,
-    },
-    {
-      title: 'Expert Report',
-      caption: 'SEC v. Meridian Holdings · S.D.N.Y.',
-      date: 'Filed 02·28·2026',
-      rot: 2,
-      dx: 0, dy: 0,
-      hoverRot: -2, hoverDx: 0, hoverDy: -8,
-    },
-    {
-      title: 'Deposition Transcript',
-      caption: 'In re: Copperline Estate · Del. Ch.',
-      date: 'Sealed 02·11·2026',
-      rot: 8,
-      dx: 40, dy: -20,
-      hoverRot: 14, hoverDx: 140, hoverDy: 16,
-    },
-  ];
-
-  return (
-    <div style={{
-      position:'relative', height: 540,
-      display:'flex', alignItems:'center', justifyContent:'center',
-    }}>
-      {files.map((f, i) => (
-        <div key={i} style={{
-          position:'absolute',
-          width: 360, height: 460,
-          background:'#fbf9f2',
-          border:'1px solid #d4cfbd',
-          boxShadow: hovered
-            ? '0 30px 60px -20px rgba(11,18,32,0.25), 0 8px 16px -8px rgba(11,18,32,0.15)'
-            : '0 20px 40px -20px rgba(11,18,32,0.2)',
-          transform: hovered
-            ? `translate(${f.hoverDx}px, ${f.hoverDy}px) rotate(${f.hoverRot}deg)`
-            : `translate(${f.dx}px, ${f.dy}px) rotate(${f.rot}deg)`,
-          transition: `transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) ${i * 0.06}s, box-shadow 0.5s`,
-          zIndex: i === 1 ? 3 : (i === 0 ? 1 : 2),
-        }}>
-          <CaseFile {...f} highlight={hovered && i === 1} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function CaseFile({ title, caption, date, highlight }) {
-  return (
-    <div style={{padding:'28px 28px', height:'100%', position:'relative', display:'flex', flexDirection:'column'}}>
-      {/* Header: stamp + bates */}
-      <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:22}}>
-        <div>
-          <div style={{fontFamily:'JetBrains Mono, monospace', fontSize:9, letterSpacing:'0.12em', color:'#7a7466', textTransform:'uppercase'}}>
-            Clad · Exhibit
-          </div>
-          <div style={{fontFamily:'Instrument Serif, serif', fontSize:22, color:'#0b1220', marginTop:6, letterSpacing:'-0.01em'}}>
-            {title}
-          </div>
-          <div style={{fontSize:11, color:'#7a7466', marginTop:4}}>
-            {caption}
-          </div>
-        </div>
-        <div style={{
-          border:'1.5px solid #2f5c96', color:'#2f5c96',
-          padding:'4px 10px', fontSize:9, fontFamily:'JetBrains Mono, monospace',
-          letterSpacing:'0.12em', textTransform:'uppercase',
-          transform:'rotate(3deg)',
-          fontWeight:600,
-        }}>Analyzed</div>
-      </div>
-
-      {/* Body: ruled lines + one highlighted passage */}
-      <div style={{flex:1, position:'relative'}}>
-        {[...Array(14)].map((_, i) => {
-          const isHighlight = highlight && (i === 4 || i === 5);
-          const isPartial = highlight && i === 9;
-          return (
-            <div key={i} style={{
-              position:'relative',
-              height: 14, marginBottom: 10,
-              background: isHighlight ? 'rgba(201,169,97,0.32)' : 'transparent',
-              transition: 'background 0.6s ease 0.4s',
-            }}>
-              <div style={{
-                height: 1, background: '#d4cfbd', position:'absolute', bottom: 0, left: 0,
-                width: isPartial ? '45%' : (i % 3 === 0 ? '92%' : (i % 4 === 1 ? '78%' : '88%')),
-              }}/>
-              {isPartial && (
-                <div style={{
-                  position:'absolute', bottom:0, left:0, height: 4,
-                  width: highlight ? '45%' : 0,
-                  background:'#c9a961',
-                  transition:'width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s',
-                  opacity: 0.6,
-                }}/>
-              )}
-            </div>
-          );
-        })}
-
-        {/* Pull quote when highlighted */}
-        {highlight && (
-          <div style={{
-            position:'absolute', left: '50%', top: '32%',
-            transform:'translateX(-50%)',
-            background:'#0b1220', color:'#f8f6f0',
-            padding:'10px 14px',
-            fontFamily:'Instrument Serif, serif', fontSize:14,
-            whiteSpace:'nowrap',
-            animation:'cladQuote 0.5s ease 0.7s both',
-          }}>
-            "See <em style={{color:'#c9a961'}}>§ 4.2</em> — material breach."
-            <style>{`
-              @keyframes cladQuote {
-                from { opacity: 0; transform: translate(-50%, 6px); }
-                to   { opacity: 1; transform: translate(-50%, 0); }
-              }
-            `}</style>
-          </div>
-        )}
-      </div>
-
-      {/* Footer */}
-      <div style={{
-        display:'flex', justifyContent:'space-between',
-        fontFamily:'JetBrains Mono, monospace', fontSize:9,
-        color:'#7a7466', letterSpacing:'0.08em', textTransform:'uppercase',
-        paddingTop:14, borderTop:'1px solid #e4dfcf',
-      }}>
-        <span>{date}</span>
-        <span>Bates · CL-00{Math.floor(Math.random()*900)+100}</span>
-      </div>
-    </div>
-  );
-}
-
-window.CladSection = CladSection;
+window.CapabilitySection = CapabilitySection;
 
 
-/* ===== components/DevSection.jsx ===== */
-// Dev — "Don't worry about it, Dev is on it."
-// Technical services for SMBs, with a REAL HUMAN rep for every customer.
-// This is the flashy one: animated SVGs, glitch/static, a pixelated human face dissolving in,
-// waveforms, code assembling, a phone ringing. High drama.
+/* ===== components/HiringSection.jsx ===== */
 
-function DevSection({ flashLevel = 8 }) {
-  const [hovered, setHovered] = React.useState(false);
-  const [tick, setTick] = React.useState(0);
-
-  // Ambient "live" clock so small things move even when not hovered
-  React.useEffect(() => {
-    const id = setInterval(() => setTick(t => t + 1), 1000);
-    return () => clearInterval(id);
-  }, []);
-
-  return (
-    <section id="dev" style={{
-      background:'#0b1220', color:'#f8f6f0',
-      padding:'120px 0 140px', position:'relative', overflow:'hidden',
-    }}>
-      {/* Ambient grid */}
-      <DevGridBackdrop flashLevel={flashLevel} />
-      <div className="grain" />
-
-      <div className="container" style={{position:'relative', zIndex:2}}>
-        <div style={{display:'flex', justifyContent:'space-between', alignItems:'baseline', marginBottom:56}}>
-          <div className="h-eyebrow" style={{color:'#b8502a'}}>III. &nbsp; Dev</div>
-          <div className="h-eyebrow" style={{color:'#6b7388'}}>Technical services · human led</div>
-        </div>
-
-        <div
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          style={{
-            display:'grid',
-            gridTemplateColumns:'minmax(320px, 1fr) minmax(420px, 1.1fr)',
-            gap:56, alignItems:'center',
-          }}
-        >
-          {/* Copy */}
-          <div style={{position:'relative'}}>
-            <div style={{
-              fontFamily:'JetBrains Mono, monospace', fontSize:13,
-              color:'#b8502a', marginBottom:18, display:'flex', alignItems:'center', gap:10,
-            }}>
-              <span style={{
-                width:8, height:8, borderRadius:'50%', background:'#4a7a5c',
-                boxShadow:'0 0 12px #4a7a5c',
-                animation:'devPulse 1.5s ease-in-out infinite',
-              }}/>
-              <span style={{color:'#9099ad'}}>$</span>
-              <GlitchText hovered={hovered} flashLevel={flashLevel}>
-                dont_worry_about_it
-              </GlitchText>
-            </div>
-
-            <h2 className="h-display" style={{
-              fontSize:'clamp(52px, 6.5vw, 116px)', color:'#f8f6f0',
-            }}>
-              <em style={{fontStyle:'italic', color:'#b8502a'}}>Dev</em><br/>
-              is on it.
-            </h2>
-
-            <p className="t-body" style={{maxWidth:500, fontSize:18, marginTop:32}}>
-              Websites, automations, AI receptionists, back-office plumbing — whatever the 
-              small business needs to run in 2026. Every account is assigned a real human 
-              engineer. No tickets. No tiers. A name and a phone number.
-            </p>
-
-            {/* Service chips */}
-            <div style={{
-              display:'flex', flexWrap:'wrap', gap:8, marginTop:32, maxWidth:520,
-            }}>
-              {['Websites', 'AI Receptionists', 'Automations', 'Phone Systems', 'CRM Setup', 'Back-office'].map((s, i) => (
-                <span key={s} style={{
-                  padding:'8px 14px',
-                  fontSize:12,
-                  fontFamily:'JetBrains Mono, monospace',
-                  border:'1px solid rgba(184,80,42,0.35)',
-                  color:'#f8f6f0',
-                  background:'rgba(184,80,42,0.06)',
-                  letterSpacing:'0.04em',
-                }}>{s}</span>
-              ))}
-            </div>
-
-            <a href="Dev.html" style={{
-              display:'inline-flex', alignItems:'center', gap:10, marginTop:40,
-              padding:'14px 22px', borderRadius:999,
-              background:'#b8502a', color:'#f8f6f0', fontSize:14, fontWeight:500,
-              boxShadow:'0 0 32px rgba(184,80,42,0.4)',
-            }}>Meet your engineer ↗</a>
-          </div>
-
-          {/* The RIG — the visual centerpiece */}
-          <div className="m-hide"><DevRig hovered={hovered} tick={tick} flashLevel={flashLevel} /></div>
-        </div>
-      </div>
-
-      <style>{`
-        @keyframes devPulse {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(0.85); }
-        }
-      `}</style>
-    </section>
-  );
-}
-
-/* ———————————— DEV RIG: the "technician card" ———————————— */
-
-function DevRig({ hovered, tick, flashLevel }) {
-  return (
-    <div style={{
-      position:'relative',
-      border:'1px solid rgba(184,80,42,0.3)',
-      background:'linear-gradient(180deg, rgba(20,28,46,0.9), rgba(11,18,32,0.95))',
-      boxShadow: hovered
-        ? '0 40px 80px -30px rgba(184,80,42,0.3), 0 0 0 1px rgba(184,80,42,0.5)'
-        : '0 40px 80px -30px rgba(0,0,0,0.6)',
-      transition:'box-shadow 0.5s',
-      overflow:'hidden',
-    }}>
-      {/* Terminal chrome */}
-      <div style={{
-        display:'flex', alignItems:'center', justifyContent:'space-between',
-        padding:'12px 16px',
-        borderBottom:'1px solid rgba(255,255,255,0.08)',
-        background:'rgba(0,0,0,0.3)',
-      }}>
-        <div style={{display:'flex', gap:6}}>
-          <span style={{width:10, height:10, borderRadius:'50%', background:'#b8502a'}}/>
-          <span style={{width:10, height:10, borderRadius:'50%', background:'#c9a961'}}/>
-          <span style={{width:10, height:10, borderRadius:'50%', background:'#4a7a5c'}}/>
-        </div>
-        <div style={{fontFamily:'JetBrains Mono, monospace', fontSize:10, color:'#6b7388', letterSpacing:'0.12em', textTransform:'uppercase'}}>
-          dev_01.semperr.io / on-call
-        </div>
-        <div style={{fontFamily:'JetBrains Mono, monospace', fontSize:10, color:'#4a7a5c'}}>● LIVE</div>
-      </div>
-
-      {/* Main stage — split: human card + live panel */}
-      <div className="dev-rig-grid" style={{display:'grid', gridTemplateColumns:'1.1fr 1fr', minHeight:460}}>
-
-        {/* LEFT: Human portrait with pixel-static dissolve */}
-        <div style={{
-          position:'relative',
-          borderRight:'1px solid rgba(255,255,255,0.06)',
-          padding:'32px 28px',
-          display:'flex', flexDirection:'column', justifyContent:'space-between',
-        }}>
-          <div className="h-eyebrow" style={{color:'#b8502a'}}>Your Engineer</div>
-
-          <div style={{flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'24px 0'}}>
-            <HumanPortrait hovered={hovered} flashLevel={flashLevel} />
-          </div>
-
-          <div>
-            <div className="h-serif" style={{fontSize:32, color:'#f8f6f0', letterSpacing:'-0.01em'}}>
-              Kate Ó&nbsp;Súilleabháin
-            </div>
-            <div style={{fontFamily:'JetBrains Mono, monospace', fontSize:11, color:'#9099ad', marginTop:6, letterSpacing:'0.06em'}}>
-              Senior engineer · 9 yrs · based in Cork
-            </div>
-            <div style={{
-              display:'flex', alignItems:'center', gap:8, marginTop:14,
-              padding:'10px 12px',
-              background:'rgba(74,122,92,0.12)',
-              border:'1px solid rgba(74,122,92,0.3)',
-              fontSize:12, color:'#b8cec0',
-            }}>
-              <span style={{
-                width:6, height:6, borderRadius:'50%', background:'#4a7a5c',
-                animation:'devPulse 1.5s ease-in-out infinite',
-              }}/>
-              Online now · typically replies in 4 min
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT: Live workbench */}
-        <div style={{display:'flex', flexDirection:'column'}}>
-          {/* Waveform panel — AI receptionist */}
-          <div style={{
-            padding:'20px 22px',
-            borderBottom:'1px solid rgba(255,255,255,0.06)',
-          }}>
-            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12}}>
-              <div className="h-eyebrow" style={{color:'#9099ad'}}>
-                ☏ &nbsp; AI Receptionist · call in progress
-              </div>
-              <div style={{fontFamily:'JetBrains Mono, monospace', fontSize:10, color:'#6b7388'}}>
-                00:{String(12 + (tick % 48)).padStart(2, '0')}
-              </div>
-            </div>
-            <Waveform hovered={hovered} tick={tick} />
-            <div style={{
-              marginTop:10,
-              fontFamily:'Instrument Serif, serif', fontStyle:'italic',
-              fontSize:14, color:'#d4dbe8', lineHeight:1.4,
-            }}>
-              <TypedLine hovered={hovered} />
-            </div>
-          </div>
-
-          {/* Code assembly panel */}
-          <div style={{
-            padding:'20px 22px',
-            borderBottom:'1px solid rgba(255,255,255,0.06)',
-            flex:1,
-          }}>
-            <div className="h-eyebrow" style={{color:'#9099ad', marginBottom:12}}>
-              ◉ &nbsp; Building · website.jsx
-            </div>
-            <CodeAssembly hovered={hovered} />
-          </div>
-
-          {/* Status strip */}
-          <div style={{
-            padding:'12px 22px',
-            display:'flex', justifyContent:'space-between', alignItems:'center',
-            background:'rgba(0,0,0,0.3)',
-            fontFamily:'JetBrains Mono, monospace', fontSize:10,
-            color:'#6b7388', letterSpacing:'0.08em', textTransform:'uppercase',
-          }}>
-            <span>Uptime · 99.98%</span>
-            <span style={{color:'#4a7a5c'}}>● All systems nominal</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ———————————— HUMAN PORTRAIT ———————————— */
-// Pixelated silhouette that dissolves from static into a clearer form on hover.
-
-function HumanPortrait({ hovered, flashLevel }) {
-  // Generate a pixel-art portrait of a person using colored rectangles.
-  // Palette warms up and resolves on hover.
-  const GRID = 28;
-  const CELL = 8;
-
-  const portrait = React.useMemo(() => makePortraitGrid(GRID), []);
-
-  return (
-    <div style={{
-      position:'relative',
-      width: GRID * CELL + 40, height: GRID * CELL + 40,
-      display:'flex', alignItems:'center', justifyContent:'center',
-    }}>
-      {/* Aura */}
-      <div style={{
-        position:'absolute', inset: 0,
-        background:'radial-gradient(circle at 50% 55%, rgba(184,80,42,0.35), transparent 65%)',
-        opacity: hovered ? 1 : 0.4, transition:'opacity 0.6s',
-        filter:'blur(8px)',
-      }}/>
-
-      <svg width={GRID * CELL} height={GRID * CELL} style={{position:'relative'}}>
-        {/* Static noise layer — fades on hover */}
-        <NoiseField GRID={GRID} CELL={CELL} hovered={hovered} flashLevel={flashLevel}/>
-
-        {/* Portrait pixels */}
-        {portrait.map((row, y) =>
-          row.map((cell, x) => {
-            if (!cell) return null;
-            // cell = 'skin' | 'hair' | 'shirt' | 'eye' | 'mouth' | 'bg'
-            const colorMap = hovered ? {
-              skin:  '#f1c2a3',
-              hair:  '#2a1f14',
-              shirt: '#b8502a',
-              eye:   '#2a1f14',
-              mouth: '#8a3a1f',
-              cheek: '#e89579',
-              shadow:'#c9916f',
-            } : {
-              // Pre-hover: desaturated / static
-              skin:  '#4a4852',
-              hair:  '#1e1e28',
-              shirt: '#3a2e28',
-              eye:   '#1e1e28',
-              mouth: '#3a2e28',
-              cheek: '#4a4852',
-              shadow:'#3a3840',
-            };
-            return (
-              <rect key={`${x}-${y}`}
-                x={x * CELL} y={y * CELL}
-                width={CELL + 0.5} height={CELL + 0.5}
-                fill={colorMap[cell] || '#1e1e28'}
-                style={{
-                  transition:`fill 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) ${(x + y) * 0.005}s`,
-                }}
-              />
-            );
-          })
-        )}
-
-        {/* Scanlines */}
-        <g style={{opacity: hovered ? 0.1 : 0.25, transition:'opacity 0.5s', pointerEvents:'none'}}>
-          {[...Array(Math.floor(GRID * CELL / 3))].map((_, i) => (
-            <rect key={i} x="0" y={i * 3} width={GRID * CELL} height="1" fill="rgba(0,0,0,0.3)" />
-          ))}
-        </g>
-      </svg>
-
-      {/* CRT vignette */}
-      <div style={{
-        position:'absolute', inset:0,
-        background:'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6))',
-        pointerEvents:'none',
-      }}/>
-    </div>
-  );
-}
-
-function NoiseField({ GRID, CELL, hovered, flashLevel }) {
-  const [seed, setSeed] = React.useState(0);
-  React.useEffect(() => {
-    const id = setInterval(() => setSeed(s => s + 1), hovered ? 300 : 120);
-    return () => clearInterval(id);
-  }, [hovered]);
-
-  const opacity = hovered ? Math.max(0, 0.08 - flashLevel * 0.005) : 0.55;
-  const cells = [];
-  // sparse noise
-  const N = Math.floor(GRID * GRID * (hovered ? 0.15 : 0.55));
-  for (let i = 0; i < N; i++) {
-    const x = Math.floor(Math.random() * GRID);
-    const y = Math.floor(Math.random() * GRID);
-    const v = Math.random();
-    cells.push({x, y, v});
-  }
-
-  return (
-    <g key={seed} style={{opacity, transition:'opacity 0.6s'}}>
-      {cells.map((c, i) => (
-        <rect key={i}
-          x={c.x * CELL} y={c.y * CELL}
-          width={CELL} height={CELL}
-          fill={c.v > 0.7 ? '#f8f6f0' : c.v > 0.4 ? '#6b7388' : '#1e1e28'}
-        />
-      ))}
-    </g>
-  );
-}
-
-// Hand-laid pixel grid for the portrait. 28x28.
-// Symbols: s=skin, h=hair, t=shirt (shirt), e=eye, m=mouth, c=cheek, d=shadow
-function makePortraitGrid(GRID) {
-  const raw = [
-    '............................',
-    '............................',
-    '...........hhhhhhh..........',
-    '.........hhhhhhhhhhh........',
-    '........hhhhhhhhhhhhh.......',
-    '.......hhssssssssshhhh......',
-    '......hhsssssssssshhhh......',
-    '......hsssssssssssshh.......',
-    '......hssssssssssssss.......',
-    '.....hssssdssssdssssh.......',
-    '.....hsseeessseeesssh.......',
-    '.....hssssssssssssssh.......',
-    '.....hssssssddssssssh.......',
-    '......hsssssssssssss........',
-    '......hsscsssssscsss........',
-    '......hssssmmmmmssss........',
-    '.......hssssmmmsss..........',
-    '........hsssssss............',
-    '.........hssssss............',
-    '..........sssss.............',
-    '.........tssssst............',
-    '........ttssssstt...........',
-    '.......tttsssstttt..........',
-    '......ttttttttttttt.........',
-    '.....tttttttttttttttt.......',
-    '....ttttttttttttttttttt.....',
-    '...ttttttttttttttttttttt....',
-    '..ttttttttttttttttttttttt...',
-  ];
-  const map = { '.':null, 's':'skin', 'h':'hair', 't':'shirt', 'e':'eye', 'm':'mouth', 'c':'cheek', 'd':'shadow' };
-  return raw.map(row => row.split('').map(ch => map[ch] ?? null));
-}
-
-/* ———————————— WAVEFORM ———————————— */
-
-function Waveform({ hovered, tick }) {
-  const bars = 48;
-  return (
-    <div style={{
-      display:'flex', alignItems:'center', gap:3, height:44,
-    }}>
-      {[...Array(bars)].map((_, i) => {
-        const phase = (tick * 0.6 + i * 0.4);
-        const base = Math.sin(phase) * 0.5 + 0.5;
-        const active = hovered ? 1 : 0.4;
-        const h = 6 + Math.pow(base, 2) * 38 * active;
-        return (
-          <div key={i} style={{
-            width:3, height: h,
-            background: i < 24 ? '#b8502a' : '#c9a961',
-            opacity: 0.6 + base * 0.4,
-            transition:'height 0.18s ease-out, background 0.5s',
-          }}/>
-        );
-      })}
-    </div>
-  );
-}
-
-/* ———————————— TYPED LINE ———————————— */
-
-function TypedLine({ hovered }) {
-  const line = '"Hi, I\'m Emma from Brennan\'s Bakery — can I take a message?"';
-  const [n, setN] = React.useState(0);
-  React.useEffect(() => {
-    if (!hovered) { setN(0); return; }
-    const id = setInterval(() => {
-      setN(v => (v < line.length ? v + 1 : v));
-    }, 28);
-    return () => clearInterval(id);
-  }, [hovered]);
-
-  return (
-    <span>
-      {line.slice(0, hovered ? n : line.length)}
-      {hovered && n < line.length && <span style={{opacity:0.6}}>▍</span>}
-    </span>
-  );
-}
-
-/* ———————————— CODE ASSEMBLY ———————————— */
-
-function CodeAssembly({ hovered }) {
-  const lines = [
-    { i:0, t:<><span style={{color:'#6b7388'}}>01</span> <span style={{color:'#b8502a'}}>import</span> <span style={{color:'#c9a961'}}>{'{ Header, Hero }'}</span> <span style={{color:'#b8502a'}}>from</span> <span style={{color:'#4a7a5c'}}>'./bakery'</span></>},
-    { i:1, t:<><span style={{color:'#6b7388'}}>02</span> <span style={{color:'#b8502a'}}>export default</span> <span style={{color:'#c9a961'}}>function</span> <span style={{color:'#f8f6f0'}}>Site</span>() {'{ '}</>},
-    { i:2, t:<><span style={{color:'#6b7388'}}>03</span> &nbsp;&nbsp;<span style={{color:'#b8502a'}}>return</span> &lt;<span style={{color:'#c9a961'}}>Hero</span> title=<span style={{color:'#4a7a5c'}}>"Fresh daily."</span> /&gt;</>},
-    { i:3, t:<><span style={{color:'#6b7388'}}>04</span> {'}'}</>},
-  ];
-
-  return (
-    <div style={{fontFamily:'JetBrains Mono, monospace', fontSize:12, lineHeight:1.8}}>
-      {lines.map((l) => (
-        <div key={l.i} style={{
-          opacity: hovered ? 1 : 0.35,
-          transform: hovered ? 'translateX(0)' : 'translateX(-6px)',
-          transition:`all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) ${l.i * 0.12}s`,
-        }}>{l.t}</div>
-      ))}
-      <div style={{
-        marginTop:10, display:'flex', alignItems:'center', gap:8,
-        fontSize:11, color:'#9099ad',
-      }}>
-        <span style={{
-          width:8, height:8, borderRadius:'50%',
-          background:'#4a7a5c',
-          animation:'devPulse 1.5s ease-in-out infinite',
-        }}/>
-        <span>deployed · v1.3.0 · 2m ago</span>
-      </div>
-    </div>
-  );
-}
-
-/* ———————————— BACKDROP ———————————— */
-
-function DevGridBackdrop({ flashLevel }) {
-  return (
-    <div style={{
-      position:'absolute', inset:0, pointerEvents:'none',
-      backgroundImage: `
-        linear-gradient(rgba(184,80,42,${0.02 + flashLevel * 0.002}) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(184,80,42,${0.02 + flashLevel * 0.002}) 1px, transparent 1px)
-      `,
-      backgroundSize:'80px 80px',
-      maskImage:'radial-gradient(ellipse at 70% 50%, black, transparent 70%)',
-      WebkitMaskImage:'radial-gradient(ellipse at 70% 50%, black, transparent 70%)',
-    }}/>
-  );
-}
-
-/* ———————————— GLITCH TEXT ———————————— */
-
-function GlitchText({ children, hovered, flashLevel }) {
-  return (
-    <span style={{position:'relative', display:'inline-block', color:'#f8f6f0'}}>
-      {children}
-      {hovered && flashLevel > 3 && (
-        <>
-          <span style={{
-            position:'absolute', left:0, top:0, color:'#b8502a',
-            clipPath:'inset(0 0 60% 0)',
-            transform:'translate(-1px, 0)',
-            animation:'devGlitch 0.3s infinite',
-          }}>{children}</span>
-          <span style={{
-            position:'absolute', left:0, top:0, color:'#4a7fc1',
-            clipPath:'inset(60% 0 0 0)',
-            transform:'translate(1px, 0)',
-            animation:'devGlitch 0.3s infinite reverse',
-          }}>{children}</span>
-        </>
-      )}
-      <style>{`
-        @keyframes devGlitch {
-          0%, 100% { transform: translate(-1px, 0); }
-          25% { transform: translate(1px, 0); }
-          50% { transform: translate(-1px, 1px); }
-          75% { transform: translate(1px, -1px); }
-        }
-      `}</style>
-    </span>
-  );
-}
-
-window.DevSection = DevSection;
-
-
-/* ===== components/Outro.jsx ===== */
-// Footer — editorial, calm. A final statement + the three products listed once more.
-
-function Outro({ theme }) {
+function HiringSection({ theme = 'light' }) {
   const isDark = theme === 'dark';
+  const ink = '#f8f6f0';
+  const muted = '#9099ad';
+  const gold = 'var(--gold)';
+
+  const ref = React.useRef(null);
+  const inView = useInView(ref);
+
+  const words = ['quality', 'judgment', 'standards', 'rigor', 'craft'];
+  const [wordIndex, setWordIndex] = React.useState(0);
+  const [visible, setVisible] = React.useState(true);
+
+  const prefersReduced = React.useMemo(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    []
+  );
+
+  React.useEffect(() => {
+    if (prefersReduced || !inView) return;
+    const cycle = () => {
+      setVisible(false);
+      setTimeout(() => {
+        setWordIndex(i => (i + 1) % words.length);
+        setVisible(true);
+      }, 300);
+    };
+    const id = setInterval(cycle, 1900);
+    return () => clearInterval(id);
+  }, [inView, prefersReduced]);
+
   return (
-    <footer style={{
-      background: isDark ? '#05090f' : '#0b1220',
-      color:'#f8f6f0', padding:'100px 0 48px', position:'relative', overflow:'hidden',
+    <section id="careers" ref={ref} style={{
+      background: isDark ? '#080d18' : 'var(--ink)', color:'#f8f6f0',
+      padding:'120px 0 140px', position:'relative', overflow:'hidden',
     }}>
       <div className="grain" />
       <div className="container">
         <div style={{
-          display:'grid', gridTemplateColumns:'1.2fr 0.8fr', gap:64, alignItems:'end',
-          paddingBottom:80, borderBottom:'1px solid rgba(255,255,255,0.1)',
+          display:'grid', gridTemplateColumns:'1fr 1fr', gap:64, alignItems:'center',
         }}>
-          <h2 className="h-display" style={{
-            fontSize:'clamp(48px, 6vw, 96px)', color:'#f8f6f0',
-          }}>
-            Build things<br/>
-            that <em style={{fontStyle:'italic', color:'#c9a961'}}>work</em>,<br/>
-            for people who <em style={{fontStyle:'italic', color:'#c9a961'}}>notice.</em>
-          </h2>
+          {/* Left: copy */}
           <div>
-            <p style={{fontSize:16, lineHeight:1.55, color:'#9099ad', maxWidth:380, marginBottom:28}}>
-              Semperr is hiring engineers, analysts, and designers who hold the line on quality. 
-              We don't ship average work.
+            <div className="h-eyebrow" style={{
+              color: gold, marginBottom:24,
+              opacity: inView ? 1 : 0,
+              transition: 'opacity 0.6s ease 0.1s',
+            }}>
+              IV. &nbsp; The team
+            </div>
+
+            <h2 className="h-display" style={{
+              fontSize:'clamp(42px, 5.5vw, 80px)', color: ink, marginBottom:24,
+              opacity: inView ? 1 : 0,
+              transform: inView ? 'translateY(0)' : 'translateY(18px)',
+              transition: 'opacity 0.6s ease 0.15s, transform 0.6s ease 0.15s',
+            }}>
+              We hire for<br/><em style={{fontStyle:'italic', color: gold}}>judgment.</em>
+            </h2>
+
+            <p style={{
+              maxWidth:480, fontSize:18, lineHeight:1.55, color: muted, marginBottom:40,
+              opacity: inView ? 1 : 0,
+              transition: 'opacity 0.6s ease 0.3s',
+            }}>
+              Semperr is deliberately small. Every engineer, analyst, and designer is here
+              because they refused to ship something they weren't proud of.
             </p>
-            <a style={{
-              display:'inline-flex', alignItems:'center', gap:10,
-              padding:'14px 22px', borderRadius:999,
-              background:'#f8f6f0', color:'#0b1220', fontSize:14, fontWeight:500,
-            }}>See open roles ↗</a>
+
+            <div style={{
+              opacity: inView ? 1 : 0,
+              transition: 'opacity 0.6s ease 0.5s',
+            }}>
+              <a style={{
+                display:'inline-flex', alignItems:'center', gap:10,
+                padding:'14px 22px', borderRadius:999,
+                background:'#f8f6f0', color:'#0b1220', fontSize:14, fontWeight:500,
+              }}>See open roles <span style={{opacity:0.5}}>↗</span></a>
+            </div>
+          </div>
+
+          {/* Right: kinetic type zone */}
+          <div className="hiring-kinetic" style={{
+            display:'flex', alignItems:'center', justifyContent:'center',
+            minHeight:280,
+          }}>
+            {prefersReduced ? (
+              /* Static list for reduced motion */
+              <div style={{display:'flex', flexDirection:'column', gap:12, textAlign:'center'}}>
+                {words.map(w => (
+                  <span key={w} className="h-display" style={{
+                    fontSize:'clamp(36px, 5vw, 72px)',
+                    color: gold,
+                    fontStyle:'italic',
+                  }}>{w}</span>
+                ))}
+              </div>
+            ) : (
+              <span className="h-display" style={{
+                fontSize:'clamp(48px, 6vw, 96px)',
+                color: gold,
+                fontStyle:'italic',
+                opacity: visible && inView ? 1 : 0,
+                transform: visible && inView ? 'translateY(0)' : 'translateY(12px)',
+                transition: 'opacity 0.4s ease, transform 0.4s ease',
+              }}>
+                {words[wordIndex]}
+              </span>
+            )}
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
 
+window.HiringSection = HiringSection;
+
+
+/* ===== components/Footer.jsx ===== */
+
+function Footer({ theme }) {
+  const isDark = theme === 'dark';
+  const bg = isDark ? '#05090f' : '#0b1220';
+  const lineColor = 'rgba(255,255,255,0.1)';
+  const muted = '#6b7388';
+  const gold = 'var(--gold)';
+
+  const ref = React.useRef(null);
+  const inView = useInView(ref);
+
+  return (
+    <footer ref={ref} style={{
+      background: bg, color:'#f8f6f0',
+      padding:'80px 0 48px', position:'relative', overflow:'hidden',
+      opacity: inView ? 1 : 0,
+      transition: 'opacity 0.6s ease 0.1s',
+    }}>
+      <div className="grain" />
+      <div className="container">
+        {/* Top band */}
         <div style={{
+          display:'flex', justifyContent:'space-between', alignItems:'center',
+          paddingBottom:48,
+          borderBottom: `1px solid ${lineColor}`,
+        }}>
+          <Wordmark size={28} tone="paper" />
+          <span className="h-eyebrow m-hide" style={{color: gold, letterSpacing:'0.16em'}}>Semper paratus</span>
+          <span className="h-eyebrow m-hide" style={{color: muted}}>NYC · Cork · Austin · Toronto</span>
+        </div>
+
+        <RevealLine delay={0.2} color={lineColor} style={{marginTop:-1}} />
+
+        {/* 4-column grid */}
+        <div className="footer-grid" style={{
           display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr 1fr',
           gap:48, padding:'48px 0',
         }}>
           <div>
-            <Wordmark size={32} tone="paper" />
-            <p style={{fontSize:13, color:'#6b7388', marginTop:16, maxWidth:280, lineHeight:1.5}}>
-              A holding company for software & data that serious businesses run on. Headquartered in NYC, with teams in Cork, Austin, and Toronto.
+            <Wordmark size={20} tone="paper" />
+            <p style={{fontSize:13, color: muted, marginTop:16, maxWidth:280, lineHeight:1.5}}>
+              A holding company for software & data that serious businesses run on.
+              Headquartered in NYC, with teams in Cork, Austin, and Toronto.
             </p>
           </div>
-          <FootCol title="Products" rows={[
-            ['Trace', 'Data for PE',       'Trace.html'],
-            ['Clad',  'Intelligence for law', 'Clad.html'],
-            ['Dev',   'Technical services', 'dev/index.html'],
+          <FootCol title="Navigate" rows={[
+            ['Charter', '', 'charter.html'],
+            ['Capabilities', '', '#capabilities'],
+            ['Contact', '', 'contact.html'],
           ]}/>
           <FootCol title="Company" rows={[
-            ['About'], ['Careers'], ['Press'], ['Contact', '', 'contact.html'],
+            ['About'], ['Careers'], ['Press'],
           ]}/>
           <FootCol title="Legal" rows={[
-            ['Terms'], ['Privacy'], ['Security'], ['Responsible AI'],
+            ['Terms'], ['Privacy'], ['Security'],
           ]}/>
         </div>
 
+        {/* Bottom row */}
         <div style={{
           display:'flex', justifyContent:'space-between', alignItems:'center',
-          paddingTop:28, borderTop:'1px solid rgba(255,255,255,0.1)',
-          fontFamily:'JetBrains Mono, monospace', fontSize:11,
-          color:'#6b7388', letterSpacing:'0.08em', textTransform:'uppercase',
+          paddingTop:28, borderTop: `1px solid ${lineColor}`,
+          fontFamily:'var(--mono)', fontSize:11,
+          color: muted, letterSpacing:'0.08em', textTransform:'uppercase',
         }}>
-          <span>© 2026 Semperr Labs, Inc.</span>
-          <span>Made in NYC · Cork · Austin</span>
-          <span style={{color:'#c9a961'}}>◆ Semper paratus</span>
+          <span>&copy; 2026 Semperr Labs, Inc.</span>
+          <span className="m-hide">Made in NYC &middot; Cork &middot; Austin</span>
+          <span style={{color: gold}}>&diams; Semper paratus</span>
         </div>
       </div>
     </footer>
@@ -1376,27 +890,24 @@ function Outro({ theme }) {
 function FootCol({ title, rows }) {
   return (
     <div>
-      <div className="h-eyebrow" style={{color:'#c9a961', marginBottom:18}}>{title}</div>
+      <div className="h-eyebrow" style={{color:'var(--gold)', marginBottom:18}}>{title}</div>
       {rows.map((r, i) => (
         <a key={i} href={r[2]} style={{
-          display:'grid', gridTemplateColumns: r[1] ? '60px 1fr' : '1fr',
-          gap:12, alignItems:'baseline',
+          display:'block',
           padding:'8px 0',
           fontSize:14, color:'#d4dbe8',
         }}>
-          <span>{r[0]}</span>
-          {r[1] && <span style={{fontSize:11, color:'#6b7388', fontFamily:'JetBrains Mono, monospace'}}>{r[1]}</span>}
+          {r[0]}
         </a>
       ))}
     </div>
   );
 }
 
-window.Outro = Outro;
+window.Footer = Footer;
 
 
 /* ===== components/TweaksPanel.jsx ===== */
-// Tweaks panel — floating bottom-right. Exposes the Edit Mode-driven knobs.
 
 function TweaksPanel({ state, setState, visible }) {
   if (!visible) return null;
@@ -1459,10 +970,6 @@ function TweaksPanel({ state, setState, visible }) {
           <Seg value={state.theme} onChange={v => set('theme', v)}
             opts={[{v:'light', l:'Paper'}, {v:'dark', l:'Ink'}]}/>
         </Row>
-        <Row label="Hero">
-          <Seg value={state.heroVariant} onChange={v => set('heroVariant', v)}
-            opts={[{v:'editorial', l:'Editorial'}, {v:'centered', l:'Centered'}, {v:'split', l:'Split'}]}/>
-        </Row>
         <Row label="Accent">
           <Seg value={state.accent} onChange={v => set('accent', v)}
             opts={[{v:'gold', l:'Gold'}, {v:'rust', l:'Rust'}, {v:'steel', l:'Steel'}]}/>
@@ -1470,14 +977,6 @@ function TweaksPanel({ state, setState, visible }) {
         <Row label="Type">
           <Seg value={state.type} onChange={v => set('type', v)}
             opts={[{v:'instrument', l:'Instrument'}, {v:'dmserif', l:'DM Serif'}, {v:'fraunces', l:'Fraunces'}]}/>
-        </Row>
-        <Row label="Dev flash">
-          <div style={{display:'flex', alignItems:'center', gap:10}}>
-            <input type="range" min="0" max="10" value={state.flashLevel}
-              onChange={e => set('flashLevel', +e.target.value)}
-              style={{flex:1, accentColor:'#b8502a'}}/>
-            <span style={{fontFamily:'JetBrains Mono, monospace', fontSize:11, color:'#0b1220', width:20, textAlign:'right'}}>{state.flashLevel}</span>
-          </div>
         </Row>
       </div>
     </div>
@@ -1492,10 +991,8 @@ window.TweaksPanel = TweaksPanel;
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "theme": "light",
-  "heroVariant": "editorial",
-  "accent": "steel",
-  "type": "instrument",
-  "flashLevel": 8
+  "accent": "gold",
+  "type": "instrument"
 }/*EDITMODE-END*/;
 
 function applyType(t) {
@@ -1545,13 +1042,12 @@ function App() {
       minHeight:'100vh',
     }}>
       <Masthead theme={state.theme}/>
-      <Hero variant={state.heroVariant} theme={state.theme}/>
-      {/* Trace and Clad sections hidden from main landing page — still reachable via Trace.html / Clad.html / trace.semperr.com.
-          Re-enable by uncommenting the two lines below. */}
-      {/* <TraceSection variant="dealbook"/> */}
-      {/* <CladSection variant="dossier"/> */}
-      {/* <DevSection flashLevel={state.flashLevel}/> */}
-      <Outro theme={state.theme}/>
+      <Hero theme={state.theme}/>
+      <CharterSection theme={state.theme}/>
+      <ProofSection theme={state.theme}/>
+      <CapabilitySection theme={state.theme}/>
+      <HiringSection theme={state.theme}/>
+      <Footer theme={state.theme}/>
 
       <TweaksPanel state={state} setState={setState} visible={tweaksOn}/>
     </div>
