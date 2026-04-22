@@ -175,11 +175,6 @@ function Masthead({ theme }) {
               <span style={{width:16, height:1.5, background:'currentColor', display:'block'}}/>
             </span>
           </button>
-          <a href="https://trace.semperr.com/invite" className="mast-signin" style={{
-            fontSize:13,
-            color: isDark ? '#c7cdd9' : '#2a3246',
-            letterSpacing:'0.02em',
-          }}>Sign in</a>
           <a href="contact.html" style={{
             fontSize:13,
             padding:'8px 16px',
@@ -194,13 +189,9 @@ function Masthead({ theme }) {
           background: panelBg, borderTop:`1px solid ${line}`, padding:'16px 20px 24px',
         }}>
           <nav style={{display:'grid', gap:14, fontSize:16, color: isDark ? '#c7cdd9' : '#2a3246', fontFamily:'var(--serif)'}}>
-            <a onClick={() => setOpen(false)} href="#">Products</a>
-            <a onClick={() => setOpen(false)} href="Trace.html">Trace</a>
-            <a onClick={() => setOpen(false)} href="Dev.html">Dev</a>
             <a onClick={() => setOpen(false)} href="charter.html">Charterr</a>
             <a onClick={() => setOpen(false)} href="#">Company</a>
             <a onClick={() => setOpen(false)} href="#">Careers</a>
-            <a onClick={() => setOpen(false)} href="https://trace.semperr.com/invite" style={{marginTop:4}}>Sign in</a>
             <a onClick={() => setOpen(false)} href="contact.html" style={{color:'var(--gold)', marginTop:4}}>Get in touch →</a>
           </nav>
         </div>
@@ -246,43 +237,38 @@ function Hero({ variant = 'editorial', theme = 'light' }) {
 
       {variant === 'editorial' && (
         <div className="container">
-          <div style={{display:'grid', gridTemplateColumns:'1fr 360px', gap:80, alignItems:'end'}}>
-            <div>
-              <div className="h-eyebrow" style={{color: gold, marginBottom:28}}>
-                ❖ &nbsp; Quiet tools for loud decisions
-              </div>
-              <h1 className="h-display" style={{
-                fontSize:'clamp(64px, 9.5vw, 156px)',
-                color: ink,
-              }}>
-                Software <em style={{fontStyle:'italic', color: gold}}>serious</em><br/>
-                businesses run on.
-              </h1>
-              <p style={{
-                marginTop:36, maxWidth:560, fontSize:19, lineHeight:1.55,
-                color: muted,
-              }}>
-                Semperr builds data and technical infrastructure for people who can't afford to guess — 
-                private-equity analysts, law-firm partners, and the small businesses keeping the rest of the economy running.
-              </p>
-              <div style={{display:'flex', gap:12, marginTop:40}}>
-                <a style={{
-                  display:'inline-flex', alignItems:'center', gap:10,
-                  padding:'14px 22px', borderRadius:999,
-                  background: ink, color: isDark ? '#0b1220' : '#f8f6f0',
-                  fontSize:14, fontWeight:500,
-                }}>Book a briefing <span style={{opacity:0.5}}>↗</span></a>
-                <a href="charter.html" style={{
-                  display:'inline-flex', alignItems:'center', gap:10,
-                  padding:'14px 22px', borderRadius:999,
-                  border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
-                  color: ink, fontSize:14, fontWeight:500,
-                }}>Read the charter</a>
-              </div>
+          <div>
+            <div className="h-eyebrow" style={{color: gold, marginBottom:28}}>
+              ❖ &nbsp; Quiet tools for loud decisions
             </div>
-
-            {/* Right column — a small "masthead of products" block */}
-            <ProductRoster ink={ink} muted={muted} gold={gold} isDark={isDark}/>
+            <h1 className="h-display" style={{
+              fontSize:'clamp(64px, 9.5vw, 156px)',
+              color: ink,
+            }}>
+              Software <em style={{fontStyle:'italic', color: gold}}>serious</em><br/>
+              businesses run on.
+            </h1>
+            <p style={{
+              marginTop:36, maxWidth:560, fontSize:19, lineHeight:1.55,
+              color: muted,
+            }}>
+              Semperr builds data and technical infrastructure for people who can't afford to guess —
+              private-equity analysts, law-firm partners, and the small businesses keeping the rest of the economy running.
+            </p>
+            <div style={{display:'flex', gap:12, marginTop:40}}>
+              <a style={{
+                display:'inline-flex', alignItems:'center', gap:10,
+                padding:'14px 22px', borderRadius:999,
+                background: ink, color: isDark ? '#0b1220' : '#f8f6f0',
+                fontSize:14, fontWeight:500,
+              }}>Book a briefing <span style={{opacity:0.5}}>↗</span></a>
+              <a href="charter.html" style={{
+                display:'inline-flex', alignItems:'center', gap:10,
+                padding:'14px 22px', borderRadius:999,
+                border: `1px solid ${isDark ? 'rgba(255,255,255,0.18)' : 'rgba(11,18,32,0.2)'}`,
+                color: ink, fontSize:14, fontWeight:500,
+              }}>Read the charter</a>
+            </div>
           </div>
         </div>
       )}
@@ -312,19 +298,16 @@ function Hero({ variant = 'editorial', theme = 'light' }) {
 
       {variant === 'split' && (
         <div className="container">
-          <div style={{display:'grid', gridTemplateColumns:'1.1fr 1fr', gap:64, alignItems:'center'}}>
-            <div>
-              <div className="h-eyebrow" style={{color: gold, marginBottom:28}}>❖ &nbsp; Est. MMXXI</div>
-              <h1 className="h-display" style={{fontSize:'clamp(56px, 8vw, 132px)', color: ink}}>
-                Three tools.<br/>
-                <em style={{fontStyle:'italic', color: gold}}>One</em> operating principle.
-              </h1>
-              <p style={{marginTop:32, maxWidth:520, fontSize:19, lineHeight:1.55, color: muted}}>
-                Build things that work the first time, for people who notice. Our clients run private-equity funds, 
-                argue precedent-setting cases, and open the shop every Tuesday at 6 AM.
-              </p>
-            </div>
-            <ProductRoster ink={ink} muted={muted} gold={gold} isDark={isDark} large/>
+          <div>
+            <div className="h-eyebrow" style={{color: gold, marginBottom:28}}>❖ &nbsp; Est. MMXXI</div>
+            <h1 className="h-display" style={{fontSize:'clamp(56px, 8vw, 132px)', color: ink}}>
+              Three tools.<br/>
+              <em style={{fontStyle:'italic', color: gold}}>One</em> operating principle.
+            </h1>
+            <p style={{marginTop:32, maxWidth:520, fontSize:19, lineHeight:1.55, color: muted}}>
+              Build things that work the first time, for people who notice. Our clients run private-equity funds,
+              argue precedent-setting cases, and open the shop every Tuesday at 6 AM.
+            </p>
           </div>
         </div>
       )}
@@ -1365,7 +1348,7 @@ function Outro({ theme }) {
           <FootCol title="Products" rows={[
             ['Trace', 'Data for PE',       'Trace.html'],
             ['Clad',  'Intelligence for law', 'Clad.html'],
-            ['Dev',   'Technical services', 'Dev.html'],
+            ['Dev',   'Technical services', 'dev/index.html'],
           ]}/>
           <FootCol title="Company" rows={[
             ['About'], ['Careers'], ['Press'], ['Contact', '', 'contact.html'],
@@ -1563,9 +1546,11 @@ function App() {
     }}>
       <Masthead theme={state.theme}/>
       <Hero variant={state.heroVariant} theme={state.theme}/>
-      <TraceSection variant="dealbook"/>
-      <CladSection variant="dossier"/>
-      <DevSection flashLevel={state.flashLevel}/>
+      {/* Trace and Clad sections hidden from main landing page — still reachable via Trace.html / Clad.html / trace.semperr.com.
+          Re-enable by uncommenting the two lines below. */}
+      {/* <TraceSection variant="dealbook"/> */}
+      {/* <CladSection variant="dossier"/> */}
+      {/* <DevSection flashLevel={state.flashLevel}/> */}
       <Outro theme={state.theme}/>
 
       <TweaksPanel state={state} setState={setState} visible={tweaksOn}/>
