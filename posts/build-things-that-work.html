@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Build things that work the first time — The Charter</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="../styles.css"/>
+<link rel="stylesheet" href="../blog.css"/>
+</head>
+<body class="blog-body">
+
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="../charter.html" class="blog-header-back">← The Charter</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="../charter.html#posts">Archive</a>
+      <a href="../charter.html#subscribe">Subscribe</a>
+      <a href="../index.html">Semperr</a>
+    </nav>
+  </div>
+</header>
+
+<article class="post-article">
+  <div class="container">
+    <div class="post-meta-row" style="justify-content:center;">
+      <span class="cat">Craft</span>
+      <span class="dot"></span>
+      <span>9 April 2026</span>
+      <span class="dot"></span>
+      <span>7 min read</span>
+      <span class="dot"></span>
+      <span>Engineering</span>
+      <span class="dot"></span>
+      <span style="color:var(--gold-deep);"><span class="reads-dot"></span>6,127 reads</span>
+    </div>
+    <h1 class="post-title" style="text-align:center;">
+      Build things that work the <em>first</em> time.
+    </h1>
+    <p class="post-deck" style="text-align:center;">
+      Correctness is the floor, not the ceiling. Why we prefer boring technology,
+      small tools, and the extra afternoon.
+    </p>
+
+    <div class="post-byline-row">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="avatar rust">M</div>
+        <div>
+          <div class="byline-name">Marco Adair</div>
+          <div class="byline-role">Head of Dev · Cork</div>
+        </div>
+      </div>
+      <div class="post-share">
+        <a href="#">Copy link</a>
+        <a href="#">Email</a>
+        <a href="#">Print</a>
+      </div>
+    </div>
+
+    <div class="post-body">
+      <p class="lede">There is a kind of engineer who treats shipping as the goal and correctness as
+        a subsequent negotiation. I have worked with them. I have, at times in my career, been
+        one of them. I am no longer, and the reason is simple: the negotiation is always
+        expensive, and it is always paid by someone who did not get to sit at the table.</p>
+
+      <p>At Semperr the standard is different. The floor is correctness. Software that
+        misreports a figure, a date, or a fact is not a product — it is a liability we have
+        quietly handed our clients. We do not hand our clients liabilities. That is the
+        whole argument.</p>
+
+      <div class="pullquote">
+        A product that is 95% right is not 95% useful. The missing 5% is where the client loses
+        confidence, and once lost, it is not cheaply returned.
+      </div>
+
+      <h2>Boring technology, by default</h2>
+
+      <p>We prefer small, well-understood tools to large, impressive ones. When we reach for
+        Postgres over something more exciting, it is because Postgres has already survived the
+        kind of production incidents that take newer systems several years to accumulate. When
+        we reach for a well-worn pattern over a clever one, it is because the pattern can be
+        explained, in a meeting, to a new engineer in ten minutes.</p>
+
+      <p>This is not conservatism. It is a bet about where the risk actually lives. The risk
+        rarely lives in the core language or the core database. It lives in the seams — the
+        edge cases, the retries, the time-zone conversions, the daylight-saving hour that
+        happens twice a year. Boring tools give us more hours to spend on those seams. They
+        are where the work is.</p>
+
+      <h2>The extra afternoon</h2>
+
+      <p>We have a rule, informally: if a thing is nearly right, it is not yet right. Nearly
+        right means the engineer and the reviewer agree on the shape of the solution but have
+        not yet stress-tested the corners. The reviewer goes home. The engineer stays another
+        afternoon. The next morning, the thing is right, and nobody has to revisit it for six
+        months.</p>
+
+      <p>The extra afternoon is the single highest-return investment we make. It costs a few
+        hours once. It saves days of client-facing incidents, rework, and trust rebuilding, and
+        it saves the engineer the considerable unpleasantness of having been wrong in public.</p>
+
+      <h3>What we will not do</h3>
+
+      <p>We will not use a pattern we cannot defend in a room with the people it affects. We
+        will not reach for a dependency we have not read. We will not ship something we would
+        not cheerfully sign. And we will not celebrate the engineer who ships at midnight —
+        we will, politely, take them out to dinner and ask what the rush was.</p>
+
+      <div class="post-divider">⁂ ⁂ ⁂</div>
+
+      <h2>The first time</h2>
+
+      <p>"Works the first time" is a phrase that gets rolled out at product reviews and then
+        forgotten by the end of the sprint. We take it literally. A report run for the first
+        time on a new client's data should render without manual intervention, produce correct
+        figures, and survive the routine edge cases. If it does not, the report is not done,
+        regardless of what the calendar says.</p>
+
+      <p>This is the easiest standard to state and the hardest to keep. It is also the entire
+        argument for the firm. The clients who stay with us have stayed because, for five
+        years now, the thing has worked the first time. We do not intend to change that in the
+        sixth.</p>
+
+      <p style="color:var(--rust); font-style:italic; margin-top:2em;">— Marco</p>
+    </div>
+
+    <div class="post-foot">
+      <div class="post-foot-tags">
+        <span class="tag rust">Craft</span>
+        <span class="tag">Engineering</span>
+        <span class="tag">Dev</span>
+      </div>
+      <div class="post-foot-author">
+        <div class="avatar rust">M</div>
+        <div class="post-foot-author-body">
+          <div class="post-foot-author-name">Marco Adair</div>
+          <div class="post-foot-author-role">Head of Dev · Cork</div>
+          <p class="post-foot-author-bio">
+            Marco leads Dev, Semperr's technical-services arm. He writes mostly about
+            engineering practice and the quiet, unglamorous work of keeping things correct.
+            Previously at a systems consultancy in Dublin.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<section class="related">
+  <div class="container">
+    <div class="related-label">Continue reading</div>
+    <div class="related-grid">
+      <a href="the-detail-is-the-work" class="related-card">
+        <div class="related-card-meta"><span class="cat">Clad</span> · 04 March · <span style="color:var(--gold-deep);">7,281 reads</span></div>
+        <div class="related-card-title">The detail is the work.</div>
+        <p class="related-card-excerpt">Why we consider column alignment and time-zone math part of the deliverable.</p>
+      </a>
+      <a href="models-assist" class="related-card">
+        <div class="related-card-meta"><span class="cat">Dev</span> · 26 March · <span style="color:var(--gold-deep);">12,086 reads</span></div>
+        <div class="related-card-title">Models assist. People decide.</div>
+        <p class="related-card-excerpt">Our position on where machine learning earns its keep, and where it does not.</p>
+      </a>
+      <a href="treat-data-as-a-witness" class="related-card">
+        <div class="related-card-meta"><span class="cat">Trace</span> · 18 March · <span style="color:var(--gold-deep);">5,743 reads</span></div>
+        <div class="related-card-title">Treat data as a witness.</div>
+        <p class="related-card-excerpt">Every figure traceable, every source dated. A working philosophy from Trace.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>

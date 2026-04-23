@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Strategies · Trace{% endblock %}
+{% block content %}
+<div class="panel">
+  <header>
+    <div>
+      <div class="eyebrow">Strategies</div>
+      <div class="serif" style="font-size:28px; margin-top:4px;">Your sourcing mandates</div>
+    </div>
+    <a href="/strategies/new" class="btn gold">New strategy</a>
+  </header>
+  <div class="body" style="padding:0;">
+    {% if rows %}
+    <table class="deal">
+      <thead>
+        <tr>
+          <th style="width: 28%;">Strategy</th>
+          <th style="width: 30%;">Signals</th>
+          <th>Last run</th>
+          <th>Top score</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td>
+            <a href="/strategies/{{ r.strategy.id }}" style="color:var(--paper);">
+              <span class="serif" style="font-size:17px;">{{ r.strategy.name }}</span>
+            </a>
+            <div class="note" style="margin-top:4px;">{{ r.strategy.description[:110] }}</div>
+          </td>
+          <td>
+            {% for s in r.strategy.signals[:6] %}
+              <span class="chip">{{ s.name }} · {{ "%.1f"|format(s.weight) }}</span>
+            {% else %}
+              <span class="note">—</span>
+            {% endfor %}
+            {% if r.strategy.signals|length > 6 %}
+              <span class="note">+{{ r.strategy.signals|length - 6 }}</span>
+            {% endif %}
+          </td>
+          <td>{{ r.last_run.started_at.strftime("%Y-%m-%d %H:%M") if r.last_run else "—" }}</td>
+          <td>{% if r.top_score is not none %}<span class="score">{{ "%.1f"|format(r.top_score) }}</span>{% else %}—{% endif %}</td>
+          <td><a href="/strategies/{{ r.strategy.id }}" class="btn ghost">Open</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <div style="padding:24px;">
+        <div class="eyebrow">Empty</div>
+        <p class="note" style="margin-top:8px;">No strategies yet. Create one to begin sourcing.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

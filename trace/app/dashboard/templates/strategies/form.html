@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}New strategy · Trace{% endblock %}
+{% block content %}
+<div class="panel">
+  <header>
+    <div>
+      <div class="eyebrow">New strategy</div>
+      <div class="serif" style="font-size:28px; margin-top:4px;">Define a sourcing mandate</div>
+    </div>
+  </header>
+  <div class="body">
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <form method="post" action="/strategies/new">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" required maxlength="200" placeholder="e.g. MCA distress watch — East Coast"/>
+      </div>
+      <div class="field">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" maxlength="4000" placeholder="Short thesis. Signals are configured on the next screen."></textarea>
+      </div>
+      <button class="btn gold" type="submit">Create</button>
+      <a href="/dashboard" class="btn ghost">Cancel</a>
+    </form>
+  </div>
+</div>
+{% endblock %}

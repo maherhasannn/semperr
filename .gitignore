@@ -1,0 +1,20 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Python virtual environments
+trace/.venv/
+trace/venv/
+__pycache__/
+*.pyc
+
+# Data files (will be in news-data branch)
+data/news.json
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

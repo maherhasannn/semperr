@@ -1,0 +1,1273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>About — Semperr</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+
+<style>
+/* ————— About page — "The Assembly" ————— */
+
+/* Pixel Curtain overlay */
+#pixel-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+}
+#pixel-curtain canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+#pixel-curtain.done { display: none; }
+
+/* Hero pixel mosaic */
+.mosaic-wrap {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 48px;
+}
+#mosaic-canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+/* Team portrait wall */
+.portrait-wall {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  margin-top: 48px;
+}
+.portrait-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.portrait-cell svg {
+  display: block;
+  margin-bottom: 10px;
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+.portrait-cell:hover svg {
+  filter: drop-shadow(0 0 8px rgba(201,169,97,0.4));
+}
+.portrait-cell .p-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.portrait-cell .p-role {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 2px;
+}
+/* Click reaction animations */
+@keyframes portraitJump {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-18px) scaleX(0.92); }
+  50%  { transform: translateY(-20px) scaleX(0.9); }
+  70%  { transform: translateY(-8px) scaleX(1.05); }
+  100% { transform: translateY(0) scaleX(1); }
+}
+@keyframes portraitWave {
+  0%   { transform: rotate(0deg); }
+  20%  { transform: rotate(-8deg); }
+  40%  { transform: rotate(10deg); }
+  60%  { transform: rotate(-6deg); }
+  80%  { transform: rotate(4deg); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes portraitSpin {
+  0%   { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+@keyframes portraitBounce {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.15); }
+  50%  { transform: scale(0.9); }
+  75%  { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+@keyframes portraitGlitch {
+  0%   { transform: translate(0); filter: none; }
+  15%  { transform: translate(-3px, 1px); filter: hue-rotate(40deg) drop-shadow(2px 0 rgba(184,80,42,0.8)); }
+  30%  { transform: translate(3px, -1px); filter: hue-rotate(-40deg) drop-shadow(-2px 0 rgba(74,127,193,0.8)); }
+  45%  { transform: translate(-2px, 2px); filter: hue-rotate(20deg); }
+  60%  { transform: translate(2px, -2px); filter: hue-rotate(-20deg) drop-shadow(1px 0 rgba(201,169,97,0.6)); }
+  80%  { transform: translate(-1px, 1px); filter: hue-rotate(10deg); }
+  100% { transform: translate(0); filter: none; }
+}
+@keyframes portraitShake {
+  0%, 100% { transform: translateX(0); }
+  10% { transform: translateX(-4px) rotate(-2deg); }
+  20% { transform: translateX(4px) rotate(2deg); }
+  30% { transform: translateX(-4px) rotate(-1deg); }
+  40% { transform: translateX(4px) rotate(1deg); }
+  50% { transform: translateX(-2px); }
+  60% { transform: translateX(2px); }
+  70% { transform: translateX(-1px); }
+  80% { transform: translateX(1px); }
+}
+@keyframes portraitPulseGold {
+  0%   { filter: none; }
+  30%  { filter: drop-shadow(0 0 14px rgba(201,169,97,0.9)) brightness(1.2); }
+  100% { filter: none; }
+}
+@keyframes portraitSquash {
+  0%   { transform: scaleY(1) scaleX(1); }
+  25%  { transform: scaleY(0.7) scaleX(1.2); }
+  50%  { transform: scaleY(1.15) scaleX(0.9); }
+  75%  { transform: scaleY(0.95) scaleX(1.02); }
+  100% { transform: scaleY(1) scaleX(1); }
+}
+
+/* Partner oversized portraits */
+.partner-exhibit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  margin-top: 56px;
+}
+.partner-paint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.partner-paint svg {
+  display: block;
+  margin-bottom: 28px;
+}
+.partner-paint-name {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #f8f6f0;
+  margin-bottom: 4px;
+}
+.partner-paint-role {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.partner-paint-bio {
+  font-size: 15px;
+  line-height: 1.55;
+  color: #9099ad;
+  text-align: center;
+  max-width: 400px;
+}
+
+/* Dot-matrix text */
+.dotmatrix-line {
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+/* Stats band */
+.about-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.02);
+}
+.about-stat {
+  padding: 36px 24px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  text-align: center;
+}
+.about-stat:last-child { border-right: none; }
+.about-stat-n {
+  font-family: var(--serif);
+  font-size: 52px;
+  line-height: 1;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.about-stat-l {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b7388;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .portrait-wall { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .partner-exhibit { grid-template-columns: 1fr; gap: 48px; }
+}
+@media (max-width: 768px) {
+  .portrait-wall { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+  .partner-exhibit { grid-template-columns: 1fr; gap: 36px; }
+  .about-stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .about-stat:nth-child(2) { border-right: none; }
+  .about-stat:nth-child(1), .about-stat:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .about-stat-n { font-size: 40px; }
+  .blog-header-nav { display: none; }
+  #mosaic-canvas { max-width: 100%; height: auto !important; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #pixel-curtain { display: none !important; }
+  .portrait-cell svg { animation: none !important; }
+}
+</style>
+</head>
+<body class="blog-body">
+
+<!-- Pixel Curtain — first-load only -->
+<div id="pixel-curtain"><canvas id="curtain-canvas"></canvas></div>
+
+<!-- Header -->
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="index.html" class="blog-header-back">&larr; Semperr</a>
+      <span class="blog-wordmark">Abo<em>ut</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="#team">Team</a>
+      <a href="#partners">Partners</a>
+      <a href="#story">Story</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero — pixel mosaic wordmark -->
+<section class="pub-mast" style="padding-bottom: 32px;">
+  <div class="container">
+    <div class="pub-mast-slug">
+      <span>Est. MMXXI</span>
+      <span>42 people</span>
+      <span>Semper paratus</span>
+    </div>
+
+    <div class="mosaic-wrap">
+      <canvas id="mosaic-canvas" width="720" height="160"></canvas>
+    </div>
+
+    <p class="pub-mast-deck" style="text-align: center; margin-left: auto; margin-right: auto;">
+      We started with two people who refused to ship something they weren't proud of.
+      Five years later, we're 42 &mdash; and the refusal hasn't changed.
+    </p>
+  </div>
+</section>
+
+<!-- Stats band -->
+<section style="padding: 0; background: var(--ink);">
+  <div class="container">
+    <div class="about-stat-grid">
+      <div class="about-stat">
+        <div class="about-stat-n" data-target="42">0</div>
+        <div class="about-stat-l">People</div>
+      </div>
+      <div class="about-stat">
+        <div class="about-stat-n" data-target="5">0</div>
+        <div class="about-stat-l">Years operating</div>
+      </div>
+      <div class="about-stat">
+        <div class="about-stat-n" data-target="0">0</div>
+        <div class="about-stat-l">Outside investors</div>
+      </div>
+      <div class="about-stat">
+        <div class="about-stat-n" data-target="4">0</div>
+        <div class="about-stat-l">Offices worldwide</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     I. The Team — 42 pixel portraits
+     ═══════════════════════════════════════════════ -->
+<section id="team" style="padding: 96px 0 120px; background: var(--paper);">
+  <div class="container">
+    <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 24px;">
+      I. &nbsp; The team
+    </div>
+    <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px;">
+      Eight people who <em style="font-style: italic; color: var(--gold);">run the company</em>.
+    </h2>
+    <p style="font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 600px;">
+      No recruiting department. Every person was referred by someone
+      who had already worked with them. Click to say hello.
+    </p>
+
+    <div id="portrait-wall" class="portrait-wall">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     II. The Partners — oversized pixel portraits
+     ═══════════════════════════════════════════════ -->
+<section id="partners" style="padding: 96px 0 120px; background: var(--ink); color: #f8f6f0; position: relative; overflow: hidden;">
+  <div class="grain"></div>
+  <div class="container" style="position: relative;">
+    <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; text-align: center;">
+      II. &nbsp; The partners
+    </div>
+    <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: #f8f6f0; margin-bottom: 12px; text-align: center;">
+      A name on every <em style="font-style: italic; color: var(--gold);">engagement</em>.
+    </h2>
+    <p style="font-size: 18px; line-height: 1.55; color: #9099ad; max-width: 600px; text-align: center; margin: 0 auto;">
+      Semperr is led by its founding partners. No board, no committee. Every client
+      engagement has a partner's direct line.
+    </p>
+
+    <div id="partner-exhibit" class="partner-exhibit">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     III. The Story — dot-matrix printer effect
+     ═══════════════════════════════════════════════ -->
+<section id="story" style="padding: 96px 0 120px; background: var(--paper-warm); position: relative; overflow: hidden;">
+  <div class="grain"></div>
+  <div class="container">
+    <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 24px;">
+      III. &nbsp; The story
+    </div>
+    <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 40px;">
+      We started with a <em style="font-style: italic; color: var(--gold);">refusal</em>.
+    </h2>
+
+    <div id="dot-matrix" style="max-width: 740px; font-size: 19px; line-height: 1.7; color: var(--ink);">
+      <!-- Lines filled by JS -->
+    </div>
+
+    <div style="margin-top: 48px;">
+      <a href="company.html" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; border: 1px solid rgba(11,18,32,0.2); color: var(--ink); font-size: 14px; font-weight: 500;">
+        Full company page <span style="opacity:0.5;">&rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="subscribe">
+  <div class="grain"></div>
+  <div class="container">
+    <div class="subscribe-inner">
+      <div>
+        <div class="h-eyebrow" style="color:var(--gold); margin-bottom:20px;">&#10022; &nbsp; Join us</div>
+        <h2 class="subscribe-title">
+          We hire for <em>judgment</em>.
+        </h2>
+        <p class="subscribe-deck">
+          Every engineer, analyst, and designer is here because they refused to ship
+          something they weren't proud of.
+        </p>
+        <div style="margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <a href="careers.html" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: #f8f6f0; color: #0b1220; font-size: 14px; font-weight: 500;">See open roles <span style="opacity:0.5;">&uarr;</span></a>
+          <a href="contact.html" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); color: #f8f6f0; font-size: 14px; font-weight: 500;">Get in touch</a>
+        </div>
+      </div>
+      <div class="subscribe-stats">
+        <div>
+          <div class="stat-n">42</div>
+          <div class="stat-l">People</div>
+        </div>
+        <div>
+          <div class="stat-n">24</div>
+          <div class="stat-l">Open roles</div>
+        </div>
+        <div>
+          <div class="stat-n">100%</div>
+          <div class="stat-l">Referral hires</div>
+        </div>
+        <div>
+          <div class="stat-n">0</div>
+          <div class="stat-l">Recruiters</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>&copy; 2026 Semperr, Inc.</span>
+    <span>San Francisco</span>
+    <span class="gold">&#9670; Semper paratus</span>
+  </div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ═══════════════════════════════════════════════
+     PIXEL CURTAIN — full-screen pixel grid that dissolves
+     ═══════════════════════════════════════════════ */
+  var curtainEl = document.getElementById('pixel-curtain');
+  var curtainCanvas = document.getElementById('curtain-canvas');
+
+  if (!prefersReduced && !sessionStorage.getItem('about_curtain_seen')) {
+    sessionStorage.setItem('about_curtain_seen', '1');
+    var cCtx = curtainCanvas.getContext('2d');
+    var CPIXEL = 12;
+    var cW, cH, cCols, cRows, cPixels;
+    var goldC = '#c9a961';
+    var inkC = '#0b1220';
+    var paperC = '#f8f6f0';
+    var palette = [goldC, inkC, '#1e2640', '#141c2e', '#a68846', '#2f5c96'];
+
+    function initCurtain() {
+      cW = window.innerWidth;
+      cH = window.innerHeight;
+      curtainCanvas.width = cW;
+      curtainCanvas.height = cH;
+      cCols = Math.ceil(cW / CPIXEL);
+      cRows = Math.ceil(cH / CPIXEL);
+      cPixels = [];
+      for (var y = 0; y < cRows; y++) {
+        for (var x = 0; x < cCols; x++) {
+          cPixels.push({
+            x: x, y: y,
+            color: palette[Math.floor(Math.random() * palette.length)],
+            alpha: 1,
+            delay: 0,
+            falling: false,
+            vy: 0,
+            offsetY: 0,
+          });
+        }
+      }
+    }
+    initCurtain();
+
+    // Draw initial frame
+    cPixels.forEach(function(p) {
+      cCtx.fillStyle = p.color;
+      cCtx.fillRect(p.x * CPIXEL, p.y * CPIXEL, CPIXEL, CPIXEL);
+    });
+
+    // After brief pause, start dissolving
+    var curtainStart = null;
+    var curtainDuration = 1800;
+    var staggerMax = 1200;
+
+    // Shuffle dissolution order — sweep from top to bottom with randomness
+    cPixels.forEach(function(p) {
+      var normalized = p.y / cRows;
+      p.delay = normalized * staggerMax + (Math.random() * 300);
+    });
+
+    setTimeout(function() {
+      function animateCurtain(ts) {
+        if (!curtainStart) curtainStart = ts;
+        var elapsed = ts - curtainStart;
+        cCtx.clearRect(0, 0, cW, cH);
+        var allDone = true;
+
+        cPixels.forEach(function(p) {
+          if (elapsed < p.delay) {
+            cCtx.globalAlpha = 1;
+            cCtx.fillStyle = p.color;
+            cCtx.fillRect(p.x * CPIXEL, p.y * CPIXEL, CPIXEL, CPIXEL);
+            allDone = false;
+            return;
+          }
+          var t = (elapsed - p.delay) / 600;
+          if (t >= 1) return; // fully gone
+
+          allDone = false;
+
+          if (!p.falling) {
+            p.falling = true;
+            p.vy = 2 + Math.random() * 4;
+          }
+          p.offsetY += p.vy;
+          p.vy += 0.3;
+
+          var alpha = Math.max(0, 1 - t);
+          cCtx.globalAlpha = alpha;
+          cCtx.fillStyle = p.color;
+          cCtx.fillRect(
+            p.x * CPIXEL + (Math.random() - 0.5) * 2,
+            p.y * CPIXEL + p.offsetY,
+            CPIXEL, CPIXEL
+          );
+        });
+
+        cCtx.globalAlpha = 1;
+
+        if (allDone || elapsed > staggerMax + 800) {
+          curtainEl.classList.add('done');
+        } else {
+          requestAnimationFrame(animateCurtain);
+        }
+      }
+      requestAnimationFrame(animateCurtain);
+    }, 400);
+  } else {
+    curtainEl.classList.add('done');
+  }
+
+
+  /* ═══════════════════════════════════════════════
+     HERO — Pixel mosaic "SEMPERR" wordmark
+     ═══════════════════════════════════════════════ */
+  var mosaicCanvas = document.getElementById('mosaic-canvas');
+  var mCtx = mosaicCanvas.getContext('2d');
+  var MPIXEL = 6;
+
+  // Pixel font for "SEMPERR" — each letter is a 7x9 bitmap
+  var LETTERS = {
+    S: [
+      '..####.',
+      '.#....#',
+      '.#.....',
+      '..####.',
+      '.....#.',
+      '#....#.',
+      '.####..'
+    ],
+    E: [
+      '.######',
+      '.#.....',
+      '.#.....',
+      '.#####.',
+      '.#.....',
+      '.#.....',
+      '.######'
+    ],
+    M: [
+      '#.....#',
+      '##...##',
+      '#.#.#.#',
+      '#..#..#',
+      '#.....#',
+      '#.....#',
+      '#.....#'
+    ],
+    P: [
+      '.#####.',
+      '.#....#',
+      '.#....#',
+      '.#####.',
+      '.#.....',
+      '.#.....',
+      '.#.....'
+    ],
+    R: [
+      '.#####.',
+      '.#....#',
+      '.#....#',
+      '.#####.',
+      '.#..#..',
+      '.#...#.',
+      '.#....#'
+    ],
+  };
+
+  var WORD = ['S','E','M','P','E','R','R'];
+  var LETTER_W = 7, LETTER_H = 7, LETTER_GAP = 2;
+  var totalW = WORD.length * LETTER_W + (WORD.length - 1) * LETTER_GAP;
+  var SCALE = 3; // multiply pixel size for larger display
+
+  mosaicCanvas.width = totalW * MPIXEL * SCALE;
+  mosaicCanvas.height = LETTER_H * MPIXEL * SCALE;
+
+  // Collect all "on" pixels
+  var mPixels = [];
+  WORD.forEach(function(ch, li) {
+    var bmp = LETTERS[ch];
+    bmp.forEach(function(row, ry) {
+      row.split('').forEach(function(c, rx) {
+        if (c === '#') {
+          var gx = li * (LETTER_W + LETTER_GAP) + rx;
+          var gy = ry;
+          // Last two R's are gold
+          var isGold = (li >= 5);
+          var startX = Math.random() * mosaicCanvas.width;
+          var startY = Math.random() * mosaicCanvas.height;
+          mPixels.push({
+            gx: gx, gy: gy,
+            tx: gx * MPIXEL * SCALE,
+            ty: gy * MPIXEL * SCALE,
+            // Start position — scattered
+            sx: startX, sy: startY,
+            cx: startX, cy: startY,
+            color: isGold ? goldC : inkC,
+            arrived: false,
+            delay: 0,
+          });
+        }
+      });
+    });
+  });
+
+  // Stagger: sort by target X then add delay
+  mPixels.sort(function(a, b) { return a.gx - b.gx || a.gy - b.gy; });
+  mPixels.forEach(function(p, i) {
+    p.delay = i * 8 + Math.random() * 100;
+  });
+
+  if (!prefersReduced) {
+    var mStart = null;
+    function animateMosaic(ts) {
+      if (!mStart) mStart = ts;
+      var elapsed = ts - mStart;
+      mCtx.clearRect(0, 0, mosaicCanvas.width, mosaicCanvas.height);
+
+      var allDone = true;
+      mPixels.forEach(function(p) {
+        var t = Math.max(0, (elapsed - p.delay) / 600);
+        if (t >= 1) {
+          p.cx = p.tx;
+          p.cy = p.ty;
+          p.arrived = true;
+        } else {
+          allDone = false;
+          // Smooth cubic ease-out interpolation from start to target
+          var ease = 1 - Math.pow(1 - t, 3);
+          p.cx = p.sx + (p.tx - p.sx) * ease;
+          p.cy = p.sy + (p.ty - p.sy) * ease;
+        }
+        mCtx.fillStyle = p.color;
+        mCtx.globalAlpha = Math.min(1, t * 2);
+        mCtx.fillRect(p.cx, p.cy, MPIXEL * SCALE - 1, MPIXEL * SCALE - 1);
+      });
+      mCtx.globalAlpha = 1;
+
+      if (!allDone) {
+        requestAnimationFrame(animateMosaic);
+      } else {
+        // Snap all to final target positions
+        mCtx.clearRect(0, 0, mosaicCanvas.width, mosaicCanvas.height);
+        mPixels.forEach(function(p) {
+          mCtx.fillStyle = p.color;
+          mCtx.fillRect(p.tx, p.ty, MPIXEL * SCALE - 1, MPIXEL * SCALE - 1);
+        });
+      }
+    }
+
+    // Delay mosaic start until curtain is mostly done
+    var mosaicDelay = sessionStorage.getItem('about_mosaic_played') ? 200 : 1600;
+    setTimeout(function() {
+      requestAnimationFrame(animateMosaic);
+    }, mosaicDelay);
+    sessionStorage.setItem('about_mosaic_played', '1');
+  } else {
+    // Instant render
+    mPixels.forEach(function(p) {
+      mCtx.fillStyle = p.color;
+      mCtx.fillRect(p.gx * MPIXEL * SCALE, p.gy * MPIXEL * SCALE, MPIXEL * SCALE - 1, MPIXEL * SCALE - 1);
+    });
+  }
+
+
+
+  /* ═══════════════════════════════════════════════
+     TEAM PORTRAIT WALL — 8 pixel portraits
+     ═══════════════════════════════════════════════ */
+  // 8 unique pixel portraits — each is an 18x18 bitmap with distinct features
+  var charMap = {'.':null,'s':'skin','h':'hair','t':'shirt','e':'eye','m':'mouth','c':'cheek','d':'shadow','g':'glasses','a':'accessory','b':'beard'};
+  var PGRID = 18, PCELL = 6;
+
+  // Portrait 1: Short cropped hair, woman
+  var bmp1 = [
+    '..................',
+    '..................',
+    '.......hhhhh......',
+    '......hhhhhhh.....',
+    '.....hhssssssh....',
+    '.....hssssssssh...',
+    '.....hssssssssh...',
+    '.....hssdssdssh...',
+    '.....hseeeseesh...',
+    '.....hssssssss....',
+    '......ssssssss....',
+    '......sssccss.....',
+    '......sssmms......',
+    '.......sssss......',
+    '........sss.......',
+    '......tttttttt....',
+    '.....tttttttttt...',
+    '....tttttttttttt..',
+  ];
+
+  // Portrait 2: Tall flat-top hair, man
+  var bmp2 = [
+    '..................',
+    '.....hhhhhhhh.....',
+    '.....hhhhhhhh.....',
+    '.....hhhhhhhh.....',
+    '.....hsssssssh....',
+    '.....hsssssssh....',
+    '.....hsssssss.....',
+    '.....hssdssdsss...',
+    '.....hseeeseess...',
+    '.....hssssssss....',
+    '......ssssssss....',
+    '......sssccss.....',
+    '......sssmmss.....',
+    '.......sssss......',
+    '........sss.......',
+    '......tttttttt....',
+    '.....tttttttttt...',
+    '....tttttttttttt..',
+  ];
+
+  // Portrait 3: Long flowing hair, woman
+  var bmp3 = [
+    '..................',
+    '..................',
+    '......hhhhhh......',
+    '.....hhhhhhhh.....',
+    '....hhsssssshh....',
+    '....hhsssssshh....',
+    '....hhsssssshh....',
+    '....hhssdssdssh...',
+    '....hhseeeseesh...',
+    '....hhssssssss....',
+    '....hh.ssssss.....',
+    '....hh.sccss......',
+    '....hh.smmss......',
+    '....hh..ssss......',
+    '....hh..sss.......',
+    '....hhttttttt.....',
+    '.....ttttttttt....',
+    '....tttttttttttt..',
+  ];
+
+  // Portrait 4: Glasses, buzzcut, man
+  var bmp4 = [
+    '..................',
+    '..................',
+    '......hhhhhhh.....',
+    '.....hhhhhhhhh....',
+    '.....hsssssssh....',
+    '.....hssssssssh...',
+    '.....hssssssssh...',
+    '.....hssdssdssh...',
+    '....ggseegseegs...',
+    '.....hssssssss....',
+    '......ssssssss....',
+    '......sssccss.....',
+    '......sssmmss.....',
+    '.......sssss......',
+    '........sss.......',
+    '......tttttttt....',
+    '.....tttttttttt...',
+    '....tttttttttttt..',
+  ];
+
+  // Portrait 5: Curly/afro hair, woman
+  var bmp5 = [
+    '..................',
+    '.....hhhhhhhhh....',
+    '....hhhhhhhhhh....',
+    '...hhhhhhhhhhh....',
+    '...hhhssssshhh....',
+    '...hhssssssshh....',
+    '...hhssssssshh....',
+    '...hhssdssdssh....',
+    '...hhseeeseesh....',
+    '...hhssssssss.....',
+    '....h.sssssss.....',
+    '......ssccsss.....',
+    '......ssmmsss.....',
+    '.......sssss......',
+    '........sss.......',
+    '......tttttttt....',
+    '.....tttttttttt...',
+    '....tttttttttttt..',
+  ];
+
+  // Portrait 6: Bearded man, short hair
+  var bmp6 = [
+    '..................',
+    '..................',
+    '......hhhhhh......',
+    '.....hhhhhhhh.....',
+    '.....hsssssssh....',
+    '.....hssssssssh...',
+    '.....hssssssssh...',
+    '.....hssdssdssh...',
+    '.....hseeeseesh...',
+    '.....hssssssss....',
+    '......sssssss.....',
+    '......bbbbbbbs....',
+    '......bbmmmbb.....',
+    '......bbbbbbb.....',
+    '.......bssb.......',
+    '......tttttttt....',
+    '.....tttttttttt...',
+    '....tttttttttttt..',
+  ];
+
+  // Portrait 7: Mohawk/spiky hair, person
+  var bmp7 = [
+    '........hh........',
+    '.......hhh........',
+    '......hhhh........',
+    '......hhhh........',
+    '.....hhssshh......',
+    '.....hssssssh.....',
+    '.....hsssssss.....',
+    '.....hssdssdsss...',
+    '.....hseeeseess...',
+    '.....hssssssss....',
+    '......ssssssss....',
+    '......sssccss.....',
+    '......sssmmss.....',
+    '.......sssss......',
+    '........sss.......',
+    '......tttttttt....',
+    '.....tttttttttt...',
+    '....tttttttttttt..',
+  ];
+
+  // Portrait 8: Bun hairstyle, woman
+  var bmp8 = [
+    '........hhh.......',
+    '.......hhhhh......',
+    '.......hhhhh......',
+    '......hhhhhhh.....',
+    '.....hhssssssh....',
+    '.....hsssssssh....',
+    '.....hsssssssh....',
+    '.....hssdssdssh...',
+    '.....hseeeseesh...',
+    '.....hssssssss....',
+    '......ssssssss....',
+    '......sssccss.....',
+    '......sssmmss.....',
+    '.......sssss......',
+    '........sss.......',
+    '......tttttttt....',
+    '.....tttttttttt...',
+    '....tttttttttttt..',
+  ];
+
+  var allBitmaps = [bmp1, bmp2, bmp3, bmp4, bmp5, bmp6, bmp7, bmp8];
+
+  // 8 distinct team members
+  var team = [
+    {name:'Eleanor Voss', role:'Co-Founder', hair:'#3a2818', skin:'#f1c2a3', shirt:'#c9a961', bmp:0, reaction:'portraitJump'},
+    {name:'Henry Okafor', role:'Co-Founder', hair:'#0e0e10', skin:'#8a6a42', shirt:'#2f5c96', bmp:1, reaction:'portraitWave'},
+    {name:'Anya Reyes',   role:'Head of Trace', hair:'#1a1510', skin:'#f0d0a8', shirt:'#c9a961', bmp:2, reaction:'portraitSpin'},
+    {name:'Marco Adair',  role:'Head of Dev', hair:'#2a2a34', skin:'#d8a87a', shirt:'#b8502a', bmp:3, reaction:'portraitGlitch'},
+    {name:'Saoirse Burke', role:'Eng Manager', hair:'#8a3a1f', skin:'#f5d4b8', shirt:'#4a7a5c', bmp:4, reaction:'portraitBounce'},
+    {name:'David Chen',   role:'Staff Engineer', hair:'#0e0e10', skin:'#f0d0a8', shirt:'#3a3a44', bmp:5, reaction:'portraitShake'},
+    {name:'Jules Hartwell',role:'Design Lead', hair:'#5a3828', skin:'#f5d4b8', shirt:'#4a7fc1', bmp:6, reaction:'portraitPulseGold'},
+    {name:'Priya Nair',   role:'Data Engineer', hair:'#0e0e10', skin:'#c48a5a', shirt:'#2f5c96', bmp:7, reaction:'portraitSquash'},
+  ];
+
+  var colorsFn = function(t) {
+    return {
+      skin: t.skin, hair: t.hair, shirt: t.shirt,
+      eye: '#1e1410', mouth: '#8a3a1f', cheek: '#e89579', shadow: '#c99874',
+      glasses: '#2a2a34', accessory: '#c9a961', beard: t.hair,
+    };
+  };
+
+  // Parse each bitmap into filled cells
+  function parseBitmap(bmpArr) {
+    var cells = [];
+    bmpArr.forEach(function(row, y) {
+      row.split('').forEach(function(ch, x) {
+        var mapped = charMap[ch];
+        if (mapped) cells.push({x:x, y:y, cell:mapped});
+      });
+    });
+    return cells;
+  }
+
+  function renderPortraitSVG(person, cellSize) {
+    var colors = colorsFn(person);
+    var filled = parseBitmap(allBitmaps[person.bmp]);
+    var w = PGRID * cellSize;
+    var rects = '';
+    filled.forEach(function(c) {
+      var col = colors[c.cell] || colors.skin;
+      rects += '<rect x="' + (c.x * cellSize) + '" y="' + (c.y * cellSize) + '" width="' + (cellSize + 0.3) + '" height="' + (cellSize + 0.3) + '" fill="' + col + '"/>';
+    });
+    var lines = '';
+    for (var i = 0; i < Math.floor(w / 3); i++) {
+      lines += '<rect x="0" y="' + (i*3) + '" width="' + w + '" height="1" fill="rgba(0,0,0,0.08)"/>';
+    }
+    return '<svg width="' + w + '" height="' + w + '" viewBox="0 0 ' + w + ' ' + w + '">' + rects + '<g style="pointer-events:none">' + lines + '</g></svg>';
+  }
+
+  // Build wall
+  var wall = document.getElementById('portrait-wall');
+  team.forEach(function(person, i) {
+    var cell = document.createElement('div');
+    cell.className = 'portrait-cell';
+    cell.innerHTML = renderPortraitSVG(person, PCELL) +
+      '<div class="p-name">' + person.name + '</div>' +
+      '<div class="p-role">' + person.role + '</div>';
+    // Start hidden for wave animation
+    cell.style.opacity = '0';
+    cell.style.transform = 'translateY(12px)';
+    cell.dataset.index = i;
+    cell.dataset.reaction = person.reaction;
+
+    // Click reaction
+    cell.addEventListener('click', function() {
+      var svg = cell.querySelector('svg');
+      // Remove any existing animation to allow re-trigger
+      svg.style.animation = 'none';
+      // Force reflow
+      void svg.offsetWidth;
+      var anim = cell.dataset.reaction;
+      var dur = (anim === 'portraitSpin') ? '0.5s' : (anim === 'portraitGlitch' || anim === 'portraitShake') ? '0.4s' : '0.35s';
+      svg.style.animation = anim + ' ' + dur + ' ease 1';
+      svg.addEventListener('animationend', function handler() {
+        svg.style.animation = '';
+        svg.removeEventListener('animationend', handler);
+      });
+    });
+
+    wall.appendChild(cell);
+  });
+
+  // Wave boot-up on scroll
+  var wallObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        wallObserver.disconnect();
+        var cells = wall.querySelectorAll('.portrait-cell');
+        if (prefersReduced) {
+          cells.forEach(function(c) { c.style.opacity = '1'; c.style.transform = 'none'; });
+          return;
+        }
+        // Wave: row by row, staggered (4 columns)
+        cells.forEach(function(c, i) {
+          var row = Math.floor(i / 4);
+          var col = i % 4;
+          var delay = row * 150 + col * 80 + Math.random() * 60;
+          setTimeout(function() {
+            c.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            c.style.opacity = '1';
+            c.style.transform = 'translateY(0)';
+          }, delay);
+        });
+      }
+    });
+  }, {threshold: 0.15});
+  wallObserver.observe(wall);
+
+
+  /* ═══════════════════════════════════════════════
+     PARTNER PORTRAITS — 28x28 spiral paint
+     ═══════════════════════════════════════════════ */
+  var PARTNER_GRID = 28, PARTNER_CELL = 8;
+
+  // Eleanor — woman, shoulder-length wavy hair, warm tones
+  var eleanorBmp = [
+    '............................',
+    '............................',
+    '.........hhhhhhh............',
+    '........hhhhhhhhh...........',
+    '.......hhhhhhhhhh...........',
+    '......hhhhhhhhhhhh..........',
+    '......hhhhhhhhhhhhh.........',
+    '.....hhhsssssssshh..........',
+    '.....hhssssssssshh..........',
+    '.....hhssssssssshh..........',
+    '.....hhssssssssss...........',
+    '.....hhssdssssdsss..........',
+    '.....hhseeeesseees..........',
+    '.....hhsssssssssss..........',
+    '......hssssssssss...........',
+    '......hssssssssss...........',
+    '......hssscccsss............',
+    '......hsssmmmsssh...........',
+    '.....hhsssssssshh...........',
+    '....hhhssssssshhh...........',
+    '...hhh..sssss..hhh.........',
+    '..hhh.tttttttt.hhh.........',
+    '..hh.tttttttttt.hh.........',
+    '......tttttttttttt..........',
+    '.....tttttttttttttt.........',
+    '....tttttttttttttttt........',
+    '....tttttttttttttttt........',
+    '....tttttttttttttttt........',
+  ];
+
+  // Henry — man, short tight hair, broader build, darker skin
+  var henryBmp = [
+    '............................',
+    '............................',
+    '........hhhhhhhhh...........',
+    '.......hhhhhhhhhh...........',
+    '......hhhhhhhhhhh...........',
+    '......hhhhhhhhhhh...........',
+    '......hhsssssssshh..........',
+    '.....hhssssssssshh..........',
+    '.....hhssssssssshh..........',
+    '.....hhssssssssss...........',
+    '.....hhssdssssdsss..........',
+    '.....hhseeeesseees..........',
+    '.....hhsssssssssss..........',
+    '......hssssssssss...........',
+    '......hssssssssss...........',
+    '......hssscccsss............',
+    '......hsssmmmsssh...........',
+    '.......hsssssssh............',
+    '........hssssssh............',
+    '.........sssss..............',
+    '.........sssss..............',
+    '.......tttttttttt...........',
+    '......tttttttttttt..........',
+    '.....tttttttttttttt.........',
+    '....tttttttttttttttt........',
+    '...tttttttttttttttttt.......',
+    '...tttttttttttttttttt.......',
+    '...tttttttttttttttttt.......',
+  ];
+
+  var partnerBitmaps = [eleanorBmp, henryBmp];
+
+  function parsePartnerBmp(bmpArr) {
+    var cells = [];
+    bmpArr.forEach(function(row, y) {
+      row.split('').forEach(function(ch, x) {
+        var mapped = charMap[ch];
+        if (mapped) cells.push({x:x, y:y, cell:mapped});
+      });
+    });
+    return cells;
+  }
+
+  // Spiral order from center
+  function spiralOrder(cells, gridSize) {
+    var cx = gridSize / 2, cy = gridSize / 2;
+    var sorted = cells.slice().sort(function(a, b) {
+      var da = Math.sqrt(Math.pow(a.x - cx, 2) + Math.pow(a.y - cy, 2));
+      var db = Math.sqrt(Math.pow(b.x - cx, 2) + Math.pow(b.y - cy, 2));
+      return da - db;
+    });
+    return sorted;
+  }
+
+  var partners = [
+    {name:'Eleanor Voss', role:'Co-Founder \u00B7 Partner \u00B7 New York',
+     bio:'Oversees Trace, client relationships, and the company\u2019s editorial voice.',
+     hair:'#3a2818', skin:'#f1c2a3', shirt:'#c9a961', bmpIdx: 0},
+    {name:'Henry Okafor', role:'Co-Founder \u00B7 Partner \u00B7 San Francisco',
+     bio:'Oversees Clad, Dev, and infrastructure operations.',
+     hair:'#0e0e10', skin:'#8a6a42', shirt:'#2f5c96', bmpIdx: 1},
+  ];
+
+  var exhibit = document.getElementById('partner-exhibit');
+
+  partners.forEach(function(partner, pi) {
+    var colors = colorsFn(partner);
+    var filled = parsePartnerBmp(partnerBitmaps[partner.bmpIdx]);
+    var w = PARTNER_GRID * PARTNER_CELL;
+    var div = document.createElement('div');
+    div.className = 'partner-paint';
+
+    // Create SVG with hidden rects
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', w);
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + w);
+
+    var spiralCells = spiralOrder(filled, PARTNER_GRID);
+    var rects = [];
+    spiralCells.forEach(function(c) {
+      var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('x', c.x * PARTNER_CELL);
+      rect.setAttribute('y', c.y * PARTNER_CELL);
+      rect.setAttribute('width', PARTNER_CELL + 0.3);
+      rect.setAttribute('height', PARTNER_CELL + 0.3);
+      rect.setAttribute('fill', colors[c.cell] || colors.skin);
+      rect.style.opacity = '0';
+      svg.appendChild(rect);
+      rects.push(rect);
+    });
+
+    // Scan lines
+    var scanG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    scanG.style.pointerEvents = 'none';
+    scanG.style.opacity = '0.12';
+    for (var i = 0; i < Math.floor(w / 3); i++) {
+      var sl = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      sl.setAttribute('x', '0');
+      sl.setAttribute('y', i * 3);
+      sl.setAttribute('width', w);
+      sl.setAttribute('height', '1');
+      sl.setAttribute('fill', 'rgba(0,0,0,0.3)');
+      scanG.appendChild(sl);
+    }
+    svg.appendChild(scanG);
+
+    div.appendChild(svg);
+
+    var nameEl = document.createElement('div');
+    nameEl.className = 'partner-paint-name';
+    nameEl.textContent = partner.name;
+    div.appendChild(nameEl);
+
+    var roleEl = document.createElement('div');
+    roleEl.className = 'partner-paint-role';
+    roleEl.textContent = partner.role;
+    div.appendChild(roleEl);
+
+    var bioEl = document.createElement('div');
+    bioEl.className = 'partner-paint-bio';
+    bioEl.textContent = partner.bio;
+    div.appendChild(bioEl);
+
+    exhibit.appendChild(div);
+
+    // Animate on scroll
+    var partnerObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          partnerObs.disconnect();
+          if (prefersReduced) {
+            rects.forEach(function(r) { r.style.opacity = '1'; });
+            return;
+          }
+          rects.forEach(function(r, ri) {
+            setTimeout(function() {
+              r.style.transition = 'opacity 0.15s ease';
+              r.style.opacity = '1';
+            }, ri * 4 + pi * 400);
+          });
+        }
+      });
+    }, {threshold: 0.2});
+    partnerObs.observe(div);
+  });
+
+
+  /* ═══════════════════════════════════════════════
+     DOT-MATRIX STORY — text prints line by line
+     ═══════════════════════════════════════════════ */
+  var storyLines = [
+    'In 2021, two people left comfortable positions at firms they admired because they could not reconcile what those firms said with what those firms shipped.',
+    '',
+    'The premise was simple: build a company where the people writing the code also answer the phone. Where every engagement has a partner\u2019s name on it. Where the client never wonders who is actually doing the work.',
+    '',
+    'They called it Semperr \u2014 from semper paratus, always prepared. Not a motto. A constraint.',
+    '',
+    'The first client signed within six weeks. Trace launched the following year. Then Clad. Then Dev. Each product was born from the same instinct: someone needed something built right, and no one else was building it.',
+    '',
+    'Five years later, Semperr is still privately held. Still deliberately small. Still answering the same question the same way: build things that work, for people who notice.',
+  ];
+
+  var dmContainer = document.getElementById('dot-matrix');
+
+  storyLines.forEach(function(line) {
+    var p = document.createElement('p');
+    p.className = 'dotmatrix-line';
+    if (line === '') {
+      p.innerHTML = '&nbsp;';
+      p.style.height = '16px';
+    } else {
+      p.textContent = line;
+      p.style.opacity = '0';
+      p.style.transform = 'translateY(10px)';
+    }
+    dmContainer.appendChild(p);
+  });
+
+  var dmParas = dmContainer.querySelectorAll('.dotmatrix-line');
+  var dmStarted = false;
+
+  var dmObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting && !dmStarted) {
+        dmStarted = true;
+        dmObserver.disconnect();
+
+        if (prefersReduced) {
+          dmParas.forEach(function(el) {
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+          });
+          return;
+        }
+
+        var delay = 0;
+        dmParas.forEach(function(el) {
+          if (el.textContent.trim() === '') return; // skip spacers
+          setTimeout(function() {
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }, delay);
+          delay += 180;
+        });
+      }
+    });
+  }, {threshold: 0.1});
+  dmObserver.observe(dmContainer);
+
+
+  /* ═══════════════════════════════════════════════
+     STAT COUNTER — animate on scroll
+     ═══════════════════════════════════════════════ */
+  var statEls = document.querySelectorAll('.about-stat-n[data-target]');
+  var statObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        statObs.disconnect();
+        statEls.forEach(function(el, i) {
+          var target = parseInt(el.dataset.target);
+          if (prefersReduced) { el.textContent = target; return; }
+          var start = performance.now();
+          var duration = 1200;
+          var delay = i * 150;
+          function tick(now) {
+            var elapsed = now - start - delay;
+            if (elapsed < 0) { requestAnimationFrame(tick); return; }
+            var progress = Math.min(elapsed / duration, 1);
+            var eased = 1 - Math.pow(1 - progress, 3);
+            el.textContent = Math.floor(eased * target);
+            if (progress < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        });
+      }
+    });
+  }, {threshold: 0.3});
+  if (statEls.length) statObs.observe(statEls[0].parentElement.parentElement);
+
+})();
+</script>
+
+</body>
+</html>

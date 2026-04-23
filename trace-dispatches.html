@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Trace — Data Infrastructure for Private Equity</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+
+<style>
+/* Trace-specific animations */
+@keyframes dataFlow {
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes pixelPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.trace-pixel-viz {
+  position: fixed;
+  top: 100px;
+  right: 40px;
+  width: 200px;
+  z-index: 10;
+  display: none;
+}
+
+@media (min-width: 1400px) {
+  .trace-pixel-viz { display: block; }
+}
+
+.data-bar {
+  height: 4px;
+  background: var(--gold);
+  margin: 4px 0;
+  animation: dataFlow 3s ease-in-out infinite;
+  image-rendering: pixelated;
+}
+
+.data-bar:nth-child(2) { animation-delay: 0.5s; background: var(--steel); }
+.data-bar:nth-child(3) { animation-delay: 1s; background: var(--rust); }
+.data-bar:nth-child(4) { animation-delay: 1.5s; background: var(--green); }
+
+.pixel-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 8px);
+  gap: 4px;
+  margin-top: 24px;
+}
+
+.pixel-cell {
+  width: 8px;
+  height: 8px;
+  background: var(--gold);
+  animation: pixelPulse 2s ease-in-out infinite;
+}
+</style>
+</head>
+<body class="blog-body">
+
+<!-- Pixel Data Visualization -->
+<div class="trace-pixel-viz">
+  <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px;">
+    Live Data Stream
+  </div>
+  <div class="data-bar"></div>
+  <div class="data-bar"></div>
+  <div class="data-bar"></div>
+  <div class="data-bar"></div>
+
+  <div class="pixel-grid" style="margin-top: 32px;">
+    <div class="pixel-cell" style="animation-delay: 0s;"></div>
+    <div class="pixel-cell" style="animation-delay: 0.1s;"></div>
+    <div class="pixel-cell" style="animation-delay: 0.2s;"></div>
+    <div class="pixel-cell" style="animation-delay: 0.3s;"></div>
+    <div class="pixel-cell" style="animation-delay: 0.4s;"></div>
+    <div class="pixel-cell" style="animation-delay: 0.5s;"></div>
+    <div class="pixel-cell" style="animation-delay: 0.6s;"></div>
+    <div class="pixel-cell" style="animation-delay: 0.7s;"></div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="/" class="blog-header-back">← Home</a>
+      <span class="blog-wordmark">Trace Archive</span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="index.html#trace">Back to Trace</a>
+      <a href="dispatches.html">All Dispatches</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Archive masthead -->
+<section class="pub-mast">
+  <div class="container">
+    <div class="pub-mast-slug">
+      <span style="color: var(--steel);">■■■■■■■■</span>
+      <span>Trace · Data Infrastructure</span>
+      <span>7 Dispatches</span>
+    </div>
+    <h1 class="pub-mast-title" style="color: var(--steel);">Private Equity & Venture.</h1>
+    <p class="pub-mast-deck">
+      Building data infrastructure for firms that manage billions. Portfolio intelligence,
+      LP reporting, deal flow analytics, and the systems that power institutional decision-making.
+    </p>
+  </div>
+</section>
+
+<!-- Post list -->
+<section class="post-list" id="posts">
+  <div class="container">
+
+    <a href="posts/pe-data-architecture.html" class="post-row">
+      <div>
+        <div class="post-row-date">10 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>12,104</div>
+      </div>
+      <div>
+        <div class="post-row-title">Why most PE firms are still getting portfolio data architecture wrong.</div>
+        <p class="post-row-excerpt">
+          The edge no longer comes from model access — it comes from proprietary context.
+          Essential reading for operating partners rebuilding portfolio data systems.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--steel); color: var(--paper);">Trace</span>
+          <span class="tag">Technical</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/unified-portfolio-intelligence.html" class="post-row">
+      <div>
+        <div class="post-row-date">18 · III · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>8,421</div>
+      </div>
+      <div>
+        <div class="post-row-title">The case for unified portfolio intelligence platforms.</div>
+        <p class="post-row-excerpt">
+          Why fragmented data systems fail PE firms at scale, and what unified
+          intelligence architecture looks like in practice.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--steel); color: var(--paper);">Trace</span>
+          <span class="tag">Data Architecture</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/lp-data-rooms.html" class="post-row">
+      <div>
+        <div class="post-row-date">05 · III · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>6,982</div>
+      </div>
+      <div>
+        <div class="post-row-title">What LPs actually want from their GPs' data rooms.</div>
+        <p class="post-row-excerpt">
+          Based on conversations with 40+ institutional LPs: what they look for,
+          what signals trust, and what makes them walk away.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--steel); color: var(--paper);">Trace</span>
+          <span class="tag">Research</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/cost-of-data-later.html" class="post-row">
+      <div>
+        <div class="post-row-date">22 · I · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>11,643</div>
+      </div>
+      <div>
+        <div class="post-row-title">The compounding cost of "we'll clean the data later."</div>
+        <p class="post-row-excerpt">
+          Why data quality problems multiply exponentially over time, and what PE firms
+          can do about it before the next fund raise.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--steel); color: var(--paper);">Trace</span>
+          <span class="tag">Data Quality</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding: 80px 0; background: var(--steel); color: var(--paper);">
+  <div class="container" style="text-align: center; max-width: 600px;">
+    <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;">Built for Institutions</div>
+    <h2 class="serif" style="font-size: clamp(32px, 5vw, 48px); margin-bottom: 20px; color: var(--paper); font-family: 'Instrument Serif', 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.02em;">
+      Ready to fix your data infrastructure?
+    </h2>
+    <p style="font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 32px; line-height: 1.6; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      Trace powers portfolio intelligence for PE firms managing $40B+ in AUM.
+      Let's talk about your data architecture.
+    </p>
+    <a href="contact.html?product=trace" style="display: inline-block; padding: 16px 32px; background: var(--gold); color: var(--ink); font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 15px; font-weight: 600; border-radius: 2px; transition: all 0.2s;">
+      Get in touch →
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="padding: 48px 0; background: var(--paper); border-top: 1px solid var(--paper-line);">
+  <div class="container" style="text-align: center;">
+    <a href="index.html" class="serif" style="font-size: 24px; margin-bottom: 12px; display: inline-block; font-family: 'Instrument Serif', 'Times New Roman', serif;">
+      The Charter<span style="color: var(--gold);">r</span>
+    </a>
+    <p style="font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      A publication from <a href="about.html" class="serif" style="color: var(--gold); font-family: 'Instrument Serif', 'Times New Roman', serif;">Sempe<span style="color: var(--gold);">rr</span></a>
+    </p>
+    <div class="eyebrow" style="color: var(--muted); margin-top: 24px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;">
+      © 2026 Semperr Labs · <span style="color: var(--gold);">◆ Semper paratus</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

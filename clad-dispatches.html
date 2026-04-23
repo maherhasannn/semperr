@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Clad — Intelligence for the Serious Practice</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+
+<style>
+/* Clad-specific animations */
+@keyframes documentScroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}
+
+@keyframes clauseHighlight {
+  0%, 100% { background: rgba(184, 80, 42, 0.2); }
+  50% { background: rgba(184, 80, 42, 0.6); }
+}
+
+.clad-pixel-viz {
+  position: fixed;
+  top: 100px;
+  left: 40px;
+  width: 180px;
+  z-index: 10;
+  display: none;
+}
+
+@media (min-width: 1400px) {
+  .clad-pixel-viz { display: block; }
+}
+
+.doc-line {
+  height: 2px;
+  background: var(--paper-line);
+  margin: 8px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.doc-line::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  background: var(--rust);
+  animation: clauseHighlight 3s ease-in-out infinite;
+}
+
+.doc-line:nth-child(2)::after { animation-delay: 0.3s; width: 60%; }
+.doc-line:nth-child(3)::after { animation-delay: 0.6s; width: 35%; }
+.doc-line:nth-child(4)::after { animation-delay: 0.9s; width: 75%; }
+.doc-line:nth-child(5)::after { animation-delay: 1.2s; width: 50%; }
+
+.pixel-doc {
+  margin-top: 32px;
+  padding: 16px;
+  background: var(--paper-warm);
+  border: 2px solid var(--ink);
+  image-rendering: pixelated;
+}
+
+.pixel-seal {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--rust);
+  margin: 12px auto;
+  position: relative;
+  animation: pixelPulse 2s ease-in-out infinite;
+}
+
+@keyframes pixelPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+</style>
+</head>
+<body class="blog-body">
+
+<!-- Pixel Document Visualization -->
+<div class="clad-pixel-viz">
+  <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px;">
+    Document Analysis
+  </div>
+  <div class="doc-line"></div>
+  <div class="doc-line"></div>
+  <div class="doc-line"></div>
+  <div class="doc-line"></div>
+  <div class="doc-line"></div>
+
+  <div class="pixel-doc">
+    <div style="font-family: var(--mono); font-size: 8px; color: var(--muted); text-align: center;">
+      ANALYZING...
+    </div>
+    <div class="pixel-seal"></div>
+    <div style="height: 3px; background: var(--ink); margin: 4px 0;"></div>
+    <div style="height: 3px; background: var(--ink); margin: 4px 0; width: 70%;"></div>
+    <div style="height: 3px; background: var(--ink); margin: 4px 0; width: 85%;"></div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="/" class="blog-header-back">← Home</a>
+      <span class="blog-wordmark">Clad Archive</span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="index.html#clad">Back to Clad</a>
+      <a href="dispatches.html">All Dispatches</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Archive masthead -->
+<section class="pub-mast">
+  <div class="container">
+    <div class="pub-mast-slug">
+      <span style="color: var(--rust);">§§§§§§§§</span>
+      <span>Clad · Legal Technology</span>
+      <span>4 Dispatches</span>
+    </div>
+    <h1 class="pub-mast-title" style="color: var(--rust);">Legal Technology.</h1>
+    <p class="pub-mast-deck">
+      Building intelligence systems for law firms that cannot afford to guess. Contract analysis,
+      discovery platforms, jurisdiction-specific AI, and the infrastructure behind serious legal work.
+    </p>
+  </div>
+</section>
+
+<!-- Post list -->
+<section class="post-list" id="posts">
+  <div class="container">
+
+    <a href="posts/jurisdiction-specific-models.html" class="post-row">
+      <div>
+        <div class="post-row-date">05 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>7,892</div>
+      </div>
+      <div>
+        <div class="post-row-title">The argument for jurisdiction-specific models.</div>
+        <p class="post-row-excerpt">
+          For law firms doing cross-border work: why generic legal AI fails and what
+          jurisdiction-specific models can do that semantic search cannot.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--rust); color: var(--paper);">Clad</span>
+          <span class="tag">Legal Tech</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--rust);">S</div>
+        <div>
+          <div class="byline-name">Sienna Cross</div>
+          <div class="byline-role">Legal Tech</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/discovery-broken.html" class="post-row">
+      <div>
+        <div class="post-row-date">12 · III · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>11,205</div>
+      </div>
+      <div>
+        <div class="post-row-title">Discovery is broken. Here's how we're fixing it.</div>
+        <p class="post-row-excerpt">
+          The tools law firms use for discovery haven't kept pace with the volume of
+          digital evidence. A technical overview of what comes next.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--rust); color: var(--paper);">Clad</span>
+          <span class="tag">Legal Tech</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--rust);">S</div>
+        <div>
+          <div class="byline-name">Sienna Cross</div>
+          <div class="byline-role">Legal Tech</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/contract-intelligence.html" class="post-row">
+      <div>
+        <div class="post-row-date">14 · II · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>8,903</div>
+      </div>
+      <div>
+        <div class="post-row-title">Beyond search: contract intelligence systems that understand obligation.</div>
+        <p class="post-row-excerpt">
+          How we built a system that doesn't just find clauses, but understands
+          relationships between obligations, parties, and dates.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--rust); color: var(--paper);">Clad</span>
+          <span class="tag">Case Study</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--rust);">S</div>
+        <div>
+          <div class="byline-name">Sienna Cross</div>
+          <div class="byline-role">Legal Tech</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/treat-data-as-a-witness.html" class="post-row">
+      <div>
+        <div class="post-row-date">28 · II · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>9,156</div>
+      </div>
+      <div>
+        <div class="post-row-title">Treat data as a witness, not a truth.</div>
+        <p class="post-row-excerpt">
+          Why institutional systems must maintain complete provenance. On the difference
+          between what happened and what the data says happened.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--rust); color: var(--paper);">Clad</span>
+          <span class="tag">Philosophy</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--steel);">R</div>
+        <div>
+          <div class="byline-name">Rowan Mitchell</div>
+          <div class="byline-role">Engineering</div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding: 80px 0; background: var(--rust); color: var(--paper);">
+  <div class="container" style="text-align: center; max-width: 600px;">
+    <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;">Built for Serious Practice</div>
+    <h2 class="serif" style="font-size: clamp(32px, 5vw, 48px); margin-bottom: 20px; color: var(--paper); font-family: 'Instrument Serif', 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.02em;">
+      Ready to upgrade your legal infrastructure?
+    </h2>
+    <p style="font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 32px; line-height: 1.6; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      Clad powers contract intelligence and discovery for Am Law 100 firms.
+      Let's talk about your practice.
+    </p>
+    <a href="contact.html?product=clad" style="display: inline-block; padding: 16px 32px; background: var(--gold); color: var(--ink); font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 15px; font-weight: 600; border-radius: 2px; transition: all 0.2s;">
+      Book a demo →
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="padding: 48px 0; background: var(--paper); border-top: 1px solid var(--paper-line);">
+  <div class="container" style="text-align: center;">
+    <a href="index.html" class="serif" style="font-size: 24px; margin-bottom: 12px; display: inline-block; font-family: 'Instrument Serif', 'Times New Roman', serif;">
+      The Charter<span style="color: var(--gold);">r</span>
+    </a>
+    <p style="font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      A publication from <a href="about.html" class="serif" style="color: var(--gold); font-family: 'Instrument Serif', 'Times New Roman', serif;">Sempe<span style="color: var(--gold);">rr</span></a>
+    </p>
+    <div class="eyebrow" style="color: var(--muted); margin-top: 24px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;">
+      © 2026 Semperr Labs · <span style="color: var(--gold);">◆ Semper paratus</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

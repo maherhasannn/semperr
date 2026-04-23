@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Why we still use PostgreSQL for everything — The Charter</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../styles.css"/>
+<link rel="stylesheet" href="../blog.css"/>
+</head>
+<body class="blog-body">
+
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="../charter.html" class="blog-header-back">← The Charter</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="../charter.html#posts">Archive</a>
+      <a href="../charter.html#subscribe">Subscribe</a>
+      <a href="../index.html">Semperr</a>
+    </nav>
+  </div>
+</header>
+
+<article class="post-article">
+  <div class="container">
+    <div class="post-meta-row" style="justify-content:center;">
+      <span class="cat">Craft</span>
+      <span class="dot"></span>
+      <span>25 March 2026</span>
+      <span class="dot"></span>
+      <span>6 min read</span>
+      <span class="dot"></span>
+      <span style="color:var(--gold-deep);"><span class="reads-dot"></span>4,891 reads</span>
+    </div>
+    <h1 class="post-title" style="text-align:center;">
+      Why we still use PostgreSQL<br/>
+      for <em>everything</em>.
+    </h1>
+    <p class="post-deck" style="text-align:center;">
+      Document store, time-series database, graph queries, full-text search—PostgreSQL does it all. Why we refuse to add specialized databases we don't need.
+    </p>
+
+    <div class="post-byline-row">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="avatar rust">M</div>
+        <div>
+          <div class="byline-name">Marco Adair</div>
+          <div class="byline-role">Head of Dev · Austin</div>
+        </div>
+      </div>
+      <div class="post-share">
+        <a href="#">Copy link</a>
+        <a href="#">Email</a>
+        <a href="#">Print</a>
+      </div>
+    </div>
+
+    <div class="post-body">
+      <p class="lede">Every few months, an engineer proposes adding a specialized database to our stack. MongoDB for documents. ClickHouse for analytics. Neo4j for graph queries. Elasticsearch for full-text search. The answer is always the same: can PostgreSQL do it? If yes, we use PostgreSQL.</p>
+
+      <p>This is not dogma. It is operational pragmatism. Every database we add is a new system to monitor, back up, secure, and understand. Every database is a new set of failure modes we have to plan for. Every database is another thing that can break at 3 AM.</p>
+
+      <p>PostgreSQL can do most of what the specialized databases can do, often well enough that the difference does not matter for our use cases. And the operational simplicity of running one database instead of five is worth more than the theoretical performance gains of choosing the "optimal" tool for every job.</p>
+
+      <div class="pullquote">
+        The best database is the one you already know how to operate.
+      </div>
+
+      <h2>What PostgreSQL can do</h2>
+
+      <p>JSONB columns give us a document store. Materialized views and partitioning handle most analytics queries. Full-text search with tsvector works for 90% of search use cases. Recursive CTEs handle graph queries. TimescaleDB (which is just a PostgreSQL extension) handles time-series data.</p>
+
+      <p>None of these are as fast as the specialized database built for that specific use case. But they are fast <em>enough</em>, and they live in the same database as everything else. We can join document data with relational data with time-series data in a single query. We can back them all up with one pg_dump. We can replicate them all with one standby.</p>
+
+      <h2>When PostgreSQL is not enough</h2>
+
+      <p>There are workloads where PostgreSQL genuinely cannot compete. If you are running clickstream analytics on billions of events per day, you probably need ClickHouse. If you are doing real-time graph traversal on a social network with a billion edges, you probably need Neo4j.</p>
+
+      <p>But most applications—including ours—are not operating at that scale. And even when you <em>think</em> you are, you might not be. The number of companies that actually need a distributed database is much smaller than the number of companies using one.</p>
+
+      <h2>The cost of complexity</h2>
+
+      <p>Every additional database adds cognitive load. Engineers have to remember which data lives where, how to query it, how to back it up, and how to debug it when things go wrong. This is manageable for a large engineering team with dedicated infrastructure specialists. For a forty-person firm like ours, it is a tax we cannot afford.</p>
+
+      <p>We would rather spend that cognitive capacity understanding the client's business logic, optimizing the queries that actually matter, and building features that solve real problems. The database is infrastructure. It should be boring.</p>
+
+      <p style="color:var(--gold-deep); font-style:italic; margin-top:2em;">— Marco</p>
+    </div>
+
+    <div class="post-foot">
+      <div class="post-foot-tags">
+        <span class="tag rust">Craft</span>
+        <span class="tag">Data Infrastructure</span>
+        <span class="tag">PostgreSQL</span>
+      </div>
+      <div class="post-foot-author">
+        <div class="avatar rust">M</div>
+        <div class="post-foot-author-body">
+          <div class="post-foot-author-name">Marco Adair</div>
+          <div class="post-foot-author-role">Head of Dev · Austin</div>
+          <p class="post-foot-author-bio">
+            Marco leads engineering at Semperr and writes the Charter on matters concerning Dev and Craft.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>

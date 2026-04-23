@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Curated — Industry Voices Worth Reading</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+
+<style>
+/* Curated-specific animations */
+@keyframes voicePulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.6; }
+}
+
+@keyframes signalWave {
+  0% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+  100% { transform: scaleY(0.3); }
+}
+
+.curated-pixel-viz {
+  position: fixed;
+  top: 50%;
+  left: 40px;
+  transform: translateY(-50%);
+  width: 140px;
+  z-index: 10;
+  display: none;
+}
+
+@media (min-width: 1400px) {
+  .curated-pixel-viz { display: block; }
+}
+
+.voice-bubble {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin: 8px auto;
+  animation: voicePulse 2s ease-in-out infinite;
+}
+
+.voice-bubble:nth-child(1) { background: var(--gold); animation-delay: 0s; }
+.voice-bubble:nth-child(2) { background: var(--steel); animation-delay: 0.3s; }
+.voice-bubble:nth-child(3) { background: var(--rust); animation-delay: 0.6s; }
+.voice-bubble:nth-child(4) { background: var(--green); animation-delay: 0.9s; }
+
+.signal-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  height: 60px;
+  margin-top: 24px;
+}
+
+.signal-bar {
+  width: 8px;
+  background: var(--gold);
+  animation: signalWave 1.5s ease-in-out infinite;
+}
+
+.signal-bar:nth-child(1) { animation-delay: 0s; }
+.signal-bar:nth-child(2) { animation-delay: 0.15s; }
+.signal-bar:nth-child(3) { animation-delay: 0.3s; }
+.signal-bar:nth-child(4) { animation-delay: 0.45s; }
+.signal-bar:nth-child(5) { animation-delay: 0.6s; }
+</style>
+</head>
+<body class="blog-body">
+
+<!-- Pixel Voices Visualization -->
+<div class="curated-pixel-viz">
+  <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; text-align: center;">
+    Industry Signals
+  </div>
+  <div class="voice-bubble"></div>
+  <div class="voice-bubble"></div>
+  <div class="voice-bubble"></div>
+  <div class="voice-bubble"></div>
+
+  <div class="signal-bars">
+    <div class="signal-bar" style="height: 40%;"></div>
+    <div class="signal-bar" style="height: 60%;"></div>
+    <div class="signal-bar" style="height: 80%;"></div>
+    <div class="signal-bar" style="height: 100%;"></div>
+    <div class="signal-bar" style="height: 70%;"></div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="/" class="blog-header-back">← Home</a>
+      <span class="blog-wordmark">Curated Archive</span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="index.html#curated">Back to Curated</a>
+      <a href="dispatches.html">All Dispatches</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Archive masthead -->
+<section class="pub-mast">
+  <div class="container">
+    <div class="pub-mast-slug">
+      <span style="color: var(--muted);">◆◇◆◇◆◇◆◇</span>
+      <span>Curated · Industry Voices</span>
+      <span>Essential Reading</span>
+    </div>
+    <h1 class="pub-mast-title">Industry Voices.</h1>
+    <p class="pub-mast-deck">
+      Essential reading from across the field. We curate the most important pieces on
+      technology, law, finance, and institutional software — the signals worth your time.
+    </p>
+  </div>
+</section>
+
+<!-- Post list -->
+<section class="post-list" id="posts">
+  <div class="container">
+
+    <div style="padding: 24px; background: rgba(201, 169, 97, 0.08); border-left: 3px solid var(--gold); margin-bottom: 32px;">
+      <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">EDITOR'S NOTE</div>
+      <p style="font-size: 15px; color: var(--muted-paper); line-height: 1.6; font-style: italic;">
+        We read hundreds of articles monthly across law, finance, and technology. These are the ones
+        that changed how we think about building institutional software. External links open in new tabs.
+      </p>
+    </div>
+
+    <a href="https://www.mckinsey.com/industries/private-equity-and-principal-investors/our-insights/private-markets-annual-review" target="_blank" rel="noopener" class="post-row">
+      <div>
+        <div class="post-row-date">ANNUAL</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>★★★★★</div>
+      </div>
+      <div>
+        <div class="post-row-title">McKinsey's Private Markets Annual Review 2026.</div>
+        <p class="post-row-excerpt">
+          The industry benchmark for PE trends. Essential context for understanding how
+          data capabilities create alpha in an increasingly competitive market.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: #000; color: var(--paper);">McKinsey</span>
+          <span class="tag">Industry Report</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div style="padding: 12px; background: var(--paper-warm); border: 1px solid var(--paper-line); text-align: center;">
+          <div class="eyebrow" style="color: var(--muted); font-size: 8px;">EXTERNAL</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://www.institutionalinvestor.com/section/private-equity" target="_blank" rel="noopener" class="post-row">
+      <div>
+        <div class="post-row-date">MAR 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>★★★★</div>
+      </div>
+      <div>
+        <div class="post-row-title">Private equity's data problem is getting worse.</div>
+        <p class="post-row-excerpt">
+          Institutional Investor's deep dive on why PE firms are struggling with data
+          infrastructure. Critical reading for understanding industry-wide challenges.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: #003366; color: var(--paper);">Inst. Investor</span>
+          <span class="tag">Analysis</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div style="padding: 12px; background: var(--paper-warm); border: 1px solid var(--paper-line); text-align: center;">
+          <div class="eyebrow" style="color: var(--muted); font-size: 8px;">EXTERNAL</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://pitchbook.com/news" target="_blank" rel="noopener" class="post-row">
+      <div>
+        <div class="post-row-date">FEB 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>★★★★</div>
+      </div>
+      <div>
+        <div class="post-row-title">The ops playbook for data-driven PE.</div>
+        <p class="post-row-excerpt">
+          PitchBook on how leading PE firms are operationalizing portfolio monitoring.
+          Practical playbook for data-driven value creation.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: #1e5ca8; color: var(--paper);">PitchBook</span>
+          <span class="tag">Playbook</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div style="padding: 12px; background: var(--paper-warm); border: 1px solid var(--paper-line); text-align: center;">
+          <div class="eyebrow" style="color: var(--muted); font-size: 8px;">EXTERNAL</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://www.law.com/americanlawyer/" target="_blank" rel="noopener" class="post-row">
+      <div>
+        <div class="post-row-date">FEB 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>★★★★</div>
+      </div>
+      <div>
+        <div class="post-row-title">How Am Law 100 firms are (finally) modernizing their tech stacks.</div>
+        <p class="post-row-excerpt">
+          The American Lawyer on legal tech adoption at scale. Why transformation is
+          finally happening, and what it means for competitive advantage.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: #8B0000; color: var(--paper);">Am Law</span>
+          <span class="tag">Legal Tech</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div style="padding: 12px; background: var(--paper-warm); border: 1px solid var(--paper-line); text-align: center;">
+          <div class="eyebrow" style="color: var(--muted); font-size: 8px;">EXTERNAL</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://a16z.com/ai-canon/" target="_blank" rel="noopener" class="post-row">
+      <div>
+        <div class="post-row-date">JAN 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>★★★★★</div>
+      </div>
+      <div>
+        <div class="post-row-title">Emerging architectures for LLM applications.</div>
+        <p class="post-row-excerpt">
+          a16z's definitive guide to building LLM applications. Required reading for
+          understanding how to architect data infrastructure for AI systems.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: #5C33FF; color: var(--paper);">a16z</span>
+          <span class="tag">Architecture</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div style="padding: 12px; background: var(--paper-warm); border: 1px solid var(--paper-line); text-align: center;">
+          <div class="eyebrow" style="color: var(--muted); font-size: 8px;">EXTERNAL</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="https://stripe.com/blog/idempotency" target="_blank" rel="noopener" class="post-row">
+      <div>
+        <div class="post-row-date">DEC 2025</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>★★★★★</div>
+      </div>
+      <div>
+        <div class="post-row-title">Designing robust and predictable APIs with idempotency.</div>
+        <p class="post-row-excerpt">
+          Stripe's engineering team on building reliable APIs. A masterclass in designing
+          infrastructure that institutions can depend on.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: #635BFF; color: var(--paper);">Stripe</span>
+          <span class="tag">Engineering</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div style="padding: 12px; background: var(--paper-warm); border: 1px solid var(--paper-line); text-align: center;">
+          <div class="eyebrow" style="color: var(--muted); font-size: 8px;">EXTERNAL</div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding: 80px 0; background: var(--ink); color: var(--paper);">
+  <div class="container" style="text-align: center; max-width: 600px;">
+    <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;">Stay Informed</div>
+    <h2 class="serif" style="font-size: clamp(32px, 5vw, 48px); margin-bottom: 20px; color: var(--paper); font-family: 'Instrument Serif', 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.02em;">
+      Subscribe to The Charterr.
+    </h2>
+    <p style="font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 32px; line-height: 1.6; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      Get our curated reading list plus original dispatches delivered monthly.
+      Join 110K+ readers who trust our editorial.
+    </p>
+    <a href="dispatches.html#subscribe" style="display: inline-block; padding: 16px 32px; background: var(--gold); color: var(--ink); font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 15px; font-weight: 600; border-radius: 2px; transition: all 0.2s;">
+      Subscribe now →
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="padding: 48px 0; background: var(--paper); border-top: 1px solid var(--paper-line);">
+  <div class="container" style="text-align: center;">
+    <a href="index.html" class="serif" style="font-size: 24px; margin-bottom: 12px; display: inline-block; font-family: 'Instrument Serif', 'Times New Roman', serif;">
+      The Charter<span style="color: var(--gold);">r</span>
+    </a>
+    <p style="font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      A publication from <a href="about.html" class="serif" style="color: var(--gold); font-family: 'Instrument Serif', 'Times New Roman', serif;">Sempe<span style="color: var(--gold);">rr</span></a>
+    </p>
+    <div class="eyebrow" style="color: var(--muted); margin-top: 24px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;">
+      © 2026 Semperr Labs · <span style="color: var(--gold);">◆ Semper paratus</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

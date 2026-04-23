@@ -1,0 +1,12 @@
+{
+  "date": "2026-06-07",
+  "index": 64,
+  "total": 93,
+  "quote": {
+    "text": "Clutter and confusion are failures of design, not attributes of information.",
+    "author": "Edward Tufte",
+    "role": "Author, Envisioning Information",
+    "topic": "Data Strategy",
+    "analysis": "When an LP report is confusing or a portfolio dashboard feels cluttered, the instinct is to blame the data. Tufte corrects this: the data isn't the problem — the design is. Institutional data infrastructure must include the presentation layer as a first-class concern, not an afterthought tacked on by a junior analyst with a BI tool."
+  }
+}

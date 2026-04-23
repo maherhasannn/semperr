@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>On choosing boring technology (again) — The Charter</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../styles.css"/>
+<link rel="stylesheet" href="../blog.css"/>
+</head>
+<body class="blog-body">
+
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="../charter.html" class="blog-header-back">← The Charter</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="../charter.html#posts">Archive</a>
+      <a href="../charter.html#subscribe">Subscribe</a>
+      <a href="../index.html">Semperr</a>
+    </nav>
+  </div>
+</header>
+
+<article class="post-article">
+  <div class="container">
+    <div class="post-meta-row" style="justify-content:center;">
+      <span class="cat">Craft</span>
+      <span class="dot"></span>
+      <span>19 April 2026</span>
+      <span class="dot"></span>
+      <span>7 min read</span>
+      <span class="dot"></span>
+      <span style="color:var(--gold-deep);"><span class="reads-dot"></span>5,912 reads</span>
+    </div>
+    <h1 class="post-title" style="text-align:center;">
+      On choosing boring technology<br/>
+      (<em>again</em>).
+    </h1>
+    <p class="post-deck" style="text-align:center;">
+      PostgreSQL, Python, and patience. Why we resist the new and shiny—and why our clients thank us later.
+    </p>
+
+    <div class="post-byline-row">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="avatar rust">M</div>
+        <div>
+          <div class="byline-name">Marco Adair</div>
+          <div class="byline-role">Head of Dev · Austin</div>
+        </div>
+      </div>
+      <div class="post-share">
+        <a href="#">Copy link</a>
+        <a href="#">Email</a>
+        <a href="#">Print</a>
+      </div>
+    </div>
+
+    <div class="post-body">
+      <p class="lede">A prospective client asked last week why we were still using PostgreSQL for everything. Their current vendor, they explained, had moved to a modern graph database, a real-time data platform, and a microservices architecture. Shouldn't we be doing the same?</p>
+
+      <p>The honest answer: no. We choose boring technology on purpose, and we choose it for their benefit, not ours.</p>
+
+      <p>Boring technology—PostgreSQL, Python, nginx, Redis—has one overwhelming advantage: it works. Not "works most of the time" or "works if you configure it correctly." It works the same way today as it did five years ago, and it will work the same way five years from now.</p>
+
+      <div class="pullquote">
+        The exciting technology is exciting until it breaks at 11 PM on a Friday and nobody knows how to fix it.
+      </div>
+
+      <h2>Why boring wins</h2>
+
+      <p>When a client calls with a production issue, we do not want to be debugging a database we adopted six months ago because it looked interesting on Hacker News. We want to be using a database that has been battle-tested by millions of deployments, documented exhaustively, and understood by every engineer we might hire.</p>
+
+      <p>Boring technology also compounds. Every hour we do not spend learning a new framework is an hour we can spend understanding the client's business logic, optimizing queries, or adding features that matter. Every system we do not have to rewrite when the new shiny thing turns out to have scaling problems is a system that keeps working while our competitors are firefighting.</p>
+
+      <h2>When to choose exciting</h2>
+
+      <p>We are not dogmatic. There are cases where new technology solves a problem that boring technology cannot. But the bar is high. The new technology has to be <em>meaningfully better</em> at the specific thing we need, not just better in theory.</p>
+
+      <p>We adopted LLM-based extraction for Clad because it solved a problem—understanding ambiguous contract language—that rules-based systems genuinely could not. We did not adopt it because it was trendy. We adopted it because it worked, we could measure that it worked, and we could explain to the client exactly why it was better than the alternative.</p>
+
+      <h2>The PostgreSQL question</h2>
+
+      <p>The client who asked about PostgreSQL was surprised to learn that it handles everything we throw at it. Multi-terabyte datasets, complex joins, full-text search, JSON queries, time-series data—all in one database, all with a query planner that has been optimized for thirty years.</p>
+
+      <p>Could we use a specialized database for each use case? Sure. Do we want to operate six different databases, each with its own failure modes, backup procedures, and monitoring requirements? Absolutely not.</p>
+
+      <p>We would rather have one database that works than six databases that are theoretically optimal.</p>
+
+      <p style="color:var(--gold-deep); font-style:italic; margin-top:2em;">— Marco</p>
+    </div>
+
+    <div class="post-foot">
+      <div class="post-foot-tags">
+        <span class="tag rust">Craft</span>
+        <span class="tag">Engineering</span>
+        <span class="tag">Philosophy</span>
+      </div>
+      <div class="post-foot-author">
+        <div class="avatar rust">M</div>
+        <div class="post-foot-author-body">
+          <div class="post-foot-author-name">Marco Adair</div>
+          <div class="post-foot-author-role">Head of Dev · Austin</div>
+          <p class="post-foot-author-bio">
+            Marco leads engineering at Semperr and writes the Charter on matters concerning Dev and Craft. Before Semperr he built infrastructure at a fintech company that processed $40B annually.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>

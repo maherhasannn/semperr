@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Craft — The Infrastructure Nobody Wants to Build</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+
+<style>
+/* Craft-specific animations */
+@keyframes buildUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes brickStack {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.craft-pixel-viz {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 160px;
+  z-index: 10;
+  display: none;
+}
+
+@media (min-width: 1400px) {
+  .craft-pixel-viz { display: block; }
+}
+
+.pixel-brick {
+  height: 16px;
+  margin: 4px 0;
+  background: var(--green);
+  image-rendering: pixelated;
+  animation: buildUp 0.6s ease-out both;
+}
+
+.pixel-brick:nth-child(1) { animation-delay: 0s; width: 100%; }
+.pixel-brick:nth-child(2) { animation-delay: 0.1s; width: 90%; }
+.pixel-brick:nth-child(3) { animation-delay: 0.2s; width: 95%; }
+.pixel-brick:nth-child(4) { animation-delay: 0.3s; width: 85%; background: var(--gold); }
+.pixel-brick:nth-child(5) { animation-delay: 0.4s; width: 100%; }
+.pixel-brick:nth-child(6) { animation-delay: 0.5s; width: 80%; }
+
+.schema-line {
+  height: 2px;
+  background: var(--paper-line);
+  margin: 6px 0;
+  position: relative;
+}
+
+.schema-node {
+  width: 12px;
+  height: 12px;
+  background: var(--green);
+  border: 2px solid var(--ink);
+  position: absolute;
+  animation: brickStack 2s ease-in-out infinite;
+}
+
+.schema-node:nth-child(1) { left: 20%; animation-delay: 0s; }
+.schema-node:nth-child(2) { left: 50%; animation-delay: 0.3s; }
+.schema-node:nth-child(3) { left: 80%; animation-delay: 0.6s; }
+</style>
+</head>
+<body class="blog-body">
+
+<!-- Pixel Construction Visualization -->
+<div class="craft-pixel-viz">
+  <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px;">
+    Building Systems
+  </div>
+  <div style="display: flex; flex-direction: column-reverse;">
+    <div class="pixel-brick"></div>
+    <div class="pixel-brick"></div>
+    <div class="pixel-brick"></div>
+    <div class="pixel-brick"></div>
+    <div class="pixel-brick"></div>
+    <div class="pixel-brick"></div>
+  </div>
+
+  <div style="margin-top: 32px; position: relative; height: 60px;">
+    <div class="schema-line" style="top: 10px;">
+      <div class="schema-node"></div>
+      <div class="schema-node"></div>
+      <div class="schema-node"></div>
+    </div>
+    <div class="schema-line" style="top: 30px;">
+      <div class="schema-node"></div>
+      <div class="schema-node"></div>
+      <div class="schema-node"></div>
+    </div>
+    <div class="schema-line" style="top: 50px;">
+      <div class="schema-node"></div>
+      <div class="schema-node"></div>
+      <div class="schema-node"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="/" class="blog-header-back">← Home</a>
+      <span class="blog-wordmark">Craft Archive</span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="index.html#craft">Back to Craft</a>
+      <a href="dispatches.html">All Dispatches</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Archive masthead -->
+<section class="pub-mast">
+  <div class="container">
+    <div class="pub-mast-slug">
+      <span style="color: var(--green);">████████</span>
+      <span>Craft · Engineering</span>
+      <span>5 Dispatches</span>
+    </div>
+    <h1 class="pub-mast-title" style="color: var(--green);">Data Infrastructure.</h1>
+    <p class="pub-mast-deck">
+      On building boring, reliable systems that work the first time. PostgreSQL, data provenance,
+      correctness over cleverness, and the craft of infrastructure that doesn't wake you up at 3AM.
+    </p>
+  </div>
+</section>
+
+<!-- Post list -->
+<section class="post-list" id="posts">
+  <div class="container">
+
+    <a href="posts/build-things-that-work.html" class="post-row">
+      <div>
+        <div class="post-row-date">09 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>6,127</div>
+      </div>
+      <div>
+        <div class="post-row-title">Build things that work the first time.</div>
+        <p class="post-row-excerpt">
+          The engineering philosophy behind systems that institutional clients depend on:
+          correctness as the floor, not the ceiling.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--green); color: var(--paper);">Craft</span>
+          <span class="tag">Essay</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--steel);">R</div>
+        <div>
+          <div class="byline-name">Rowan Mitchell</div>
+          <div class="byline-role">Engineering</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/treat-data-as-a-witness.html" class="post-row">
+      <div>
+        <div class="post-row-date">28 · II · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>9,156</div>
+      </div>
+      <div>
+        <div class="post-row-title">Treat data as a witness, not a truth.</div>
+        <p class="post-row-excerpt">
+          Why institutional systems must maintain complete provenance. On the difference
+          between what happened and what the data says happened.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--green); color: var(--paper);">Craft</span>
+          <span class="tag">Philosophy</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--steel);">R</div>
+        <div>
+          <div class="byline-name">Rowan Mitchell</div>
+          <div class="byline-role">Engineering</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/the-detail-is-the-work.html" class="post-row">
+      <div>
+        <div class="post-row-date">20 · II · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>7,634</div>
+      </div>
+      <div>
+        <div class="post-row-title">The detail is the work.</div>
+        <p class="post-row-excerpt">
+          Why institutional software is won or lost in the last 10% of implementation.
+          A meditation on craft, edge cases, and finishing.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--green); color: var(--paper);">Craft</span>
+          <span class="tag">Essay</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/boring-technology.html" class="post-row">
+      <div>
+        <div class="post-row-date">07 · II · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>14,287</div>
+      </div>
+      <div>
+        <div class="post-row-title">On choosing boring technology (again).</div>
+        <p class="post-row-excerpt">
+          PostgreSQL, server-rendered HTML, and why we keep reaching for tools that
+          were already stable when we started the firm.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--green); color: var(--paper);">Craft</span>
+          <span class="tag">Technical</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--steel);">R</div>
+        <div>
+          <div class="byline-name">Rowan Mitchell</div>
+          <div class="byline-role">Engineering</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/postgresql-everything.html" class="post-row">
+      <div>
+        <div class="post-row-date">30 · I · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>16,420</div>
+      </div>
+      <div>
+        <div class="post-row-title">PostgreSQL for everything (yes, everything).</div>
+        <p class="post-row-excerpt">
+          Why we use Postgres as our primary datastore, message queue, full-text search,
+          job scheduler, and time-series database.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag" style="background: var(--green); color: var(--paper);">Craft</span>
+          <span class="tag">Technical</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--steel);">R</div>
+        <div>
+          <div class="byline-name">Rowan Mitchell</div>
+          <div class="byline-role">Engineering</div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding: 80px 0; background: var(--green); color: var(--paper);">
+  <div class="container" style="text-align: center; max-width: 600px;">
+    <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;">Built to Last</div>
+    <h2 class="serif" style="font-size: clamp(32px, 5vw, 48px); margin-bottom: 20px; color: var(--paper); font-family: 'Instrument Serif', 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.02em;">
+      Ready to build something that works?
+    </h2>
+    <p style="font-size: 16px; color: rgba(255,255,255,0.8); margin-bottom: 32px; line-height: 1.6; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      We build boring, reliable infrastructure for institutions that cannot afford downtime.
+      Let's talk about your system.
+    </p>
+    <a href="contact.html" style="display: inline-block; padding: 16px 32px; background: var(--gold); color: var(--ink); font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 15px; font-weight: 600; border-radius: 2px; transition: all 0.2s;">
+      Work with us →
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="padding: 48px 0; background: var(--paper); border-top: 1px solid var(--paper-line);">
+  <div class="container" style="text-align: center;">
+    <a href="index.html" class="serif" style="font-size: 24px; margin-bottom: 12px; display: inline-block; font-family: 'Instrument Serif', 'Times New Roman', serif;">
+      The Charter<span style="color: var(--gold);">r</span>
+    </a>
+    <p style="font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      A publication from <a href="about.html" class="serif" style="color: var(--gold); font-family: 'Instrument Serif', 'Times New Roman', serif;">Sempe<span style="color: var(--gold);">rr</span></a>
+    </p>
+    <div class="eyebrow" style="color: var(--muted); margin-top: 24px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;">
+      © 2026 Semperr Labs · <span style="color: var(--gold);">◆ Semper paratus</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
