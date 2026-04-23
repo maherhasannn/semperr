@@ -160,6 +160,17 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   box-shadow: none;
 }
 
+/* Pixelated cursor for Semperr content (desktop only) */
+@media (min-width: 901px) {
+  .dispatch-card,
+  .news-card,
+  a[href^="posts/"],
+  a[href^="/posts/"],
+  a[href*="semperr"] {
+    cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAACXBIWXMAAAsTAAALEwEAmpwYAAAA3ElEQVR4nGNgGAWjYBSMglEwCoYQMDIyMv7//58BiP8D8X8g/k8uYAJi5v///zOBxIGAhVwDmZiYGFhYWP4zMjIy/P//nwGI/5NrGBMzM/N/FhYW/0xMTAz//v1j+A/E/0k1jJGRkYGVjY0ByDD4//8/yEBSDWNiYmJgZWf/z8LCwvDv3z+QgSSHITMzMwM7BwcDKwsLw79//xiA+D+xYcgExMzs7P9ZWFgY/v//z/Dv3z8GIP5PjmFM7Ozs/5mZmRlABv4nxzAmVlZWBhYWFgYgABn4nxKvgoKBBwA0MjgvbNWh+AAAAABJRU5ErkJggg=='), auto;
+  }
+}
+
 /* Author circle */
 .author-circle {
   width: 36px;
