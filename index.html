@@ -130,6 +130,36 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   transform: translateY(-2px);
 }
 
+/* News cards */
+.news-card {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: white;
+}
+.news-card:hover {
+  box-shadow: 0 12px 32px -8px rgba(11,18,32,0.15);
+}
+.news-featured {
+  border: none;
+  min-height: 480px;
+}
+.news-image {
+  border: 1px solid var(--paper-line);
+  background: white;
+}
+.news-image:hover {
+  box-shadow: 0 12px 32px -8px rgba(11,18,32,0.15);
+}
+.news-text {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--paper-line);
+}
+.news-text:hover {
+  box-shadow: none;
+}
+
 /* Author circle */
 .author-circle {
   width: 36px;
@@ -209,7 +239,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 /* Grid utilities */
-.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; grid-auto-rows: 1fr; }
 .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; }
 .article-row { display: grid; grid-template-columns: 200px 1fr; gap: 24px; }
 .article-grid { display: grid; grid-template-columns: 140px 1fr; gap: 20px; }
@@ -265,8 +295,29 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   /* Grid resets */
   .grid-2 { grid-template-columns: 1fr !important; }
   .grid-3 { grid-template-columns: 1fr !important; }
-  .grid-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; grid-auto-rows: 1fr !important; }
   .grid-2-1 { grid-template-columns: 1fr !important; }
+
+  /* News grid mosaic - tablet */
+  #news-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
+  }
+  #news-grid .news-featured {
+    grid-column: span 2 !important;
+    grid-row: span 1 !important;
+    min-height: 360px !important;
+  }
+  #news-grid .news-featured h3 {
+    font-size: 22px !important;
+  }
+  #news-grid .news-featured div[style*="padding: 40px"] {
+    padding: 32px !important;
+  }
+  /* We're Also Reading section - tablet 2 columns */
+  #news-grid div[style*="grid-template-columns: repeat(2, 1fr)"] {
+    gap: 0 24px !important;
+  }
 
   /* Masthead */
   .masthead-grid { grid-template-columns: 1fr !important; text-align: center !important; }
@@ -335,8 +386,33 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   }
 
   /* Grids to single column */
-  .grid-4 { grid-template-columns: 1fr !important; }
+  .grid-4 { grid-template-columns: 1fr !important; grid-auto-rows: auto !important; }
   .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* News grid mosaic - mobile */
+  #news-grid {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+  #news-grid .news-featured {
+    grid-column: span 1 !important;
+    grid-row: span 1 !important;
+    min-height: 320px !important;
+  }
+  #news-grid .news-featured h3 {
+    font-size: 20px !important;
+  }
+  #news-grid .news-featured div[style*="padding: 40px"] {
+    padding: 24px !important;
+  }
+  #news-grid .news-image > div:first-child {
+    height: 200px !important;
+  }
+  /* We're Also Reading section - mobile single column */
+  #news-grid div[style*="grid-template-columns: repeat(2, 1fr)"] {
+    grid-template-columns: 1fr !important;
+    gap: 0 !important;
+  }
   .events-row-2 { grid-template-columns: 1fr !important; }
 
   /* Top bar mobile */
@@ -1097,7 +1173,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 <!-- ===== LIVE NEWS FEED ===== -->
 <section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line); background: var(--paper-warm);">
-  <div class="container">
+  <div style="max-width: 1400px; margin: 0 auto; padding: 0 var(--pad);">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
       <div>
         <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">Industry Watch</div>
@@ -1107,7 +1183,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     </div>
 
     <!-- News Grid -->
-    <div id="news-grid" class="grid-4" style="min-height: 400px;">
+    <div id="news-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; min-height: 400px; grid-auto-rows: minmax(220px, auto);">
       <!-- Loading state -->
       <div style="grid-column: 1 / -1; text-align: center; padding: 80px 20px;">
         <div class="eyebrow" style="color: var(--muted);">Loading latest news...</div>
@@ -1800,32 +1876,119 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       newsGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 80px 20px;"><div class="eyebrow" style="color: var(--muted);">Unable to load news. Please try again later.</div></div>';
     });
 
-  // Render news articles
+  // Render news articles in mosaic layout
   function renderNews() {
     let filtered = currentCategory === 'all'
       ? allArticles
       : allArticles.filter(a => a.category === currentCategory);
 
-    // Show first 8 articles
-    filtered = filtered.slice(0, 8);
+    // Show first 10 articles
+    filtered = filtered.slice(0, 10);
 
     if (filtered.length === 0) {
       newsGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 80px 20px;"><div class="eyebrow" style="color: var(--muted);">No articles in this category yet.</div></div>';
       return;
     }
 
-    newsGrid.innerHTML = filtered.map(article => `
-      <a href="${article.link}" target="_blank" rel="noopener" class="dispatch-card" style="padding: 0; border: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-        ${article.image ? `<img src="${article.image}" alt="" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 16px;" onerror="this.style.display='none'"/>` : '<div style="width: 100%; height: 180px; background: linear-gradient(135deg, var(--paper-line) 0%, var(--paper-warm) 100%); margin-bottom: 16px;"></div>'}
-        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-          <span class="source-badge external" style="font-size: 9px; padding: 4px 8px; background: rgba(11,18,32,0.08); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">${article.source}</span>
-          <span class="eyebrow" style="color: var(--gold); font-size: 9px;">${article.category}</span>
+    // Separate articles with images from those without
+    const withImages = filtered.filter(a => a.image && a.image.trim() !== '');
+    const withoutImages = filtered.filter(a => !a.image || a.image.trim() === '');
+
+    let html = '';
+    let cardIndex = 0;
+
+    // Helper function to create featured card (large, 2x2 with big image)
+    function createFeaturedCard(article) {
+      return `
+        <a href="${article.link}" target="_blank" rel="noopener" class="news-card news-featured" style="grid-column: span 2; grid-row: span 2; position: relative; overflow: hidden; background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%); transition: transform 0.2s; min-height: 480px;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+          <img src="${article.image}" alt="${article.title}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;" onerror="this.style.opacity='0'"/>
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 40px; background: linear-gradient(to top, rgba(11,18,32,0.95) 0%, rgba(11,18,32,0.7) 60%, transparent 100%); z-index: 2;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+              <span class="source-badge" style="font-size: 10px; padding: 6px 12px; background: rgba(255,255,255,0.2); color: white; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;">${article.source}</span>
+              <span class="eyebrow" style="color: rgba(255,255,255,0.6); font-size: 10px;">•</span>
+              <span class="eyebrow" style="color: var(--gold); font-size: 10px; text-transform: uppercase;">${article.category}</span>
+            </div>
+            <h3 class="serif" style="font-size: 26px; line-height: 1.25; color: white; margin-bottom: 12px; font-weight: 500;">${article.title}</h3>
+            ${article.description ? `<p style="font-size: 15px; color: rgba(255,255,255,0.85); line-height: 1.5; margin-bottom: 8px;">${article.description.substring(0, 160)}${article.description.length > 160 ? '...' : ''}</p>` : ''}
+            ${article.author ? `<p class="eyebrow" style="color: rgba(255,255,255,0.6); font-size: 11px; margin-top: 12px;">By ${article.author}</p>` : ''}
+          </div>
+        </a>
+      `;
+    }
+
+    // Helper function to create image card (regular size, 1 column)
+    function createImageCard(article) {
+      return `
+        <a href="${article.link}" target="_blank" rel="noopener" class="news-card news-image" style="display: flex; flex-direction: column; overflow: hidden; transition: transform 0.2s; border: 1px solid var(--paper-line);" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='var(--gold)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--paper-line)'">
+          <div style="width: 100%; height: 220px; overflow: hidden; background: linear-gradient(135deg, #e8e6e1 0%, #f5f4f0 100%); position: relative; display: flex; align-items: center; justify-content: center;">
+            <img src="${article.image}" alt="${article.title}" style="width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; top: 0; left: 0;" onerror="this.style.opacity='0'"/>
+          </div>
+          <div style="padding: 20px; flex: 1; display: flex; flex-direction: column; background: white;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+              <span class="source-badge" style="font-size: 9px; padding: 4px 10px; background: rgba(11,18,32,0.06); font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;">${article.source}</span>
+              <span class="eyebrow" style="color: var(--muted); font-size: 9px;">•</span>
+              <span class="eyebrow" style="color: var(--gold); font-size: 9px; text-transform: uppercase;">${article.category}</span>
+            </div>
+            <h3 class="serif" style="font-size: 17px; line-height: 1.4; color: var(--ink); margin: 0; font-weight: 500;">${article.title}</h3>
+            ${article.author ? `<p class="eyebrow" style="color: var(--muted); margin-top: auto; padding-top: 12px; font-size: 10px; border-top: 1px solid var(--paper-line);">By ${article.author}</p>` : '<div style="margin-top: auto;"></div>'}
+          </div>
+        </a>
+      `;
+    }
+
+    // Helper function to create text-only card (no image)
+    function createTextCard(article) {
+      return `
+        <a href="${article.link}" target="_blank" rel="noopener" class="news-card news-text" style="display: block; padding: 16px 0; border-bottom: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.paddingLeft='8px'" onmouseout="this.style.paddingLeft='0'">
+          <h3 class="serif" style="font-size: 17px; line-height: 1.4; color: var(--ink); margin: 0 0 8px 0; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink)'">${article.title}</h3>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span class="eyebrow" style="font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em;">${article.source}</span>
+            <span class="eyebrow" style="color: var(--paper-line); font-size: 9px;">•</span>
+            <span class="eyebrow" style="font-size: 9px; color: var(--gold); text-transform: uppercase;">${article.category}</span>
+            ${article.author ? `<span class="eyebrow" style="color: var(--paper-line); font-size: 9px;">•</span><span class="eyebrow" style="font-size: 9px; color: var(--muted);">${article.author}</span>` : ''}
+          </div>
+        </a>
+      `;
+    }
+
+    // Build mosaic layout
+    // First: Featured card (if we have images)
+    if (withImages.length > 0) {
+      html += createFeaturedCard(withImages[0]);
+      cardIndex++;
+    }
+
+    // Add 3-4 regular image cards
+    const imageCardsToShow = Math.min(4, withImages.length - 1);
+    for (let i = 0; i < imageCardsToShow; i++) {
+      html += createImageCard(withImages[cardIndex]);
+      cardIndex++;
+    }
+
+    // Add "We're Also Reading" section if we have text cards
+    const remainingSlots = 10 - (imageCardsToShow + 1);
+    if (withoutImages.length > 0 && remainingSlots > 0) {
+      html += `
+        <div style="grid-column: 1 / -1; margin: 32px 0 0 0;">
+          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+            <div class="eyebrow" style="color: var(--gold); font-size: 11px; white-space: nowrap;">We're Also Reading</div>
+            <div style="height: 1px; background: var(--paper-line); flex: 1;"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 32px;">
+      `;
+
+      // Fill with text-only cards in 2 columns
+      for (let i = 0; i < Math.min(remainingSlots, withoutImages.length); i++) {
+        html += createTextCard(withoutImages[i]);
+      }
+
+      html += `
+          </div>
         </div>
-        <h3 class="serif" style="font-size: 17px; line-height: 1.35; margin: 8px 0; color: var(--ink);">${article.title}</h3>
-        ${article.description ? `<p style="font-size: 13px; color: var(--muted); line-height: 1.5; margin-top: 8px;">${article.description.substring(0, 120)}${article.description.length > 120 ? '...' : ''}</p>` : ''}
-        ${article.author ? `<p class="eyebrow" style="color: var(--muted); margin-top: 12px; font-size: 10px;">${article.author}</p>` : ''}
-      </a>
-    `).join('');
+      `;
+    }
+
+    newsGrid.innerHTML = html;
   }
 
   // Category filter functionality
