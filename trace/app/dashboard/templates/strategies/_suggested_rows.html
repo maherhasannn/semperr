@@ -1,0 +1,16 @@
+{% if suggested %}
+<div class="eyebrow" style="margin-bottom:6px;">Suggested (click to add)</div>
+<div style="display:flex; flex-wrap:wrap; gap:6px;">
+  {% for s in suggested %}
+    <button type="button" class="chip"
+            data-action="add-suggested-signal"
+            data-signal-name="{{ s.name }}"
+            data-signal-weight="{{ s.weight }}"
+            data-signal-desc="{{ s.description }}">
+      + {{ s.name }} · {{ "%.1f"|format(s.weight) }}
+    </button>
+  {% endfor %}
+</div>
+{% else %}
+<div class="note">No suggestions returned.</div>
+{% endif %}

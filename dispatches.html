@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>All Dispatches — The Charterr</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+</head>
+<body class="blog-body">
+
+<!-- Header -->
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="/" class="blog-header-back">← Home</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="#subscribe">Subscribe</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Archive masthead -->
+<section class="pub-mast">
+  <div class="container">
+    <div class="pub-mast-slug">
+      <span>Complete Archive</span>
+      <span>15 Dispatches</span>
+      <span>Vol. V · 2026</span>
+    </div>
+    <h1 class="pub-mast-title">All Dispatches.</h1>
+    <p class="pub-mast-deck">
+      Every piece we've published on data infrastructure, legal technology,
+      institutional software, and the craft of building systems that work.
+    </p>
+  </div>
+</section>
+
+<!-- Filter bar -->
+<section class="container" style="margin-bottom: 48px;">
+  <div class="filter-bar">
+    <div class="filter-chips">
+      <button class="chip active" data-filter="all">All</button>
+      <button class="chip" data-filter="house">The House</button>
+      <button class="chip" data-filter="trace">Trace</button>
+      <button class="chip" data-filter="clad">Clad</button>
+      <button class="chip" data-filter="dev">Dev</button>
+      <button class="chip" data-filter="craft">Craft</button>
+    </div>
+    <div class="filter-count"><span id="count">15</span> dispatches</div>
+  </div>
+</section>
+
+<!-- Post list -->
+<section class="post-list" id="posts">
+  <div class="container">
+
+    <a href="posts/five-years-in.html" class="post-row" data-tags="house">
+      <div>
+        <div class="post-row-date">14 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>8,420</div>
+      </div>
+      <div>
+        <div class="post-row-title">Five years in, and the <em>same</em> answer to the same question.</div>
+        <p class="post-row-excerpt">
+          Half a decade of building software for people who notice. A note on discipline,
+          size, and why we still answer the phone.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">The House</span>
+          <span class="tag">Essay</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/pe-data-architecture.html" class="post-row" data-tags="trace">
+      <div>
+        <div class="post-row-date">10 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>12,104</div>
+      </div>
+      <div>
+        <div class="post-row-title">Why most PE firms are still getting portfolio data architecture wrong.</div>
+        <p class="post-row-excerpt">
+          The edge no longer comes from model access — it comes from proprietary context.
+          Essential reading for operating partners rebuilding portfolio data systems.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Trace</span>
+          <span class="tag">Technical</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/build-things-that-work.html" class="post-row" data-tags="craft">
+      <div>
+        <div class="post-row-date">09 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>6,127</div>
+      </div>
+      <div>
+        <div class="post-row-title">Build things that work the first time.</div>
+        <p class="post-row-excerpt">
+          The engineering philosophy behind systems that institutional clients depend on:
+          correctness as the floor, not the ceiling.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Craft</span>
+          <span class="tag">Essay</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--steel);">R</div>
+        <div>
+          <div class="byline-name">Rowan Mitchell</div>
+          <div class="byline-role">Engineering</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/jurisdiction-specific-models.html" class="post-row" data-tags="clad">
+      <div>
+        <div class="post-row-date">05 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>7,892</div>
+      </div>
+      <div>
+        <div class="post-row-title">The argument for jurisdiction-specific models.</div>
+        <p class="post-row-excerpt">
+          For law firms doing cross-border work: why generic legal AI fails and what
+          jurisdiction-specific models can do that semantic search cannot.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Clad</span>
+          <span class="tag">Legal Tech</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--rust);">S</div>
+        <div>
+          <div class="byline-name">Sienna Cross</div>
+          <div class="byline-role">Legal Tech</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/serve-the-serious.html" class="post-row" data-tags="house">
+      <div>
+        <div class="post-row-date">02 · IV · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>9,340</div>
+      </div>
+      <div>
+        <div class="post-row-title">On clients who cannot afford to guess.</div>
+        <p class="post-row-excerpt">
+          Why we serve institutions where mistakes compound. A note on who we build for,
+          and why precision isn't optional.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">The House</span>
+          <span class="tag">Philosophy</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/models-assist.html" class="post-row" data-tags="dev">
+      <div>
+        <div class="post-row-date">26 · III · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>12,086</div>
+      </div>
+      <div>
+        <div class="post-row-title">Models assist. People decide.</div>
+        <p class="post-row-excerpt">
+          Why we build AI systems as tools, not oracles. On the difference between
+          augmentation and automation in institutional software.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Dev</span>
+          <span class="tag">AI</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--steel);">R</div>
+        <div>
+          <div class="byline-name">Rowan Mitchell</div>
+          <div class="byline-role">Engineering</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/unified-portfolio-intelligence.html" class="post-row" data-tags="trace">
+      <div>
+        <div class="post-row-date">18 · III · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>8,421</div>
+      </div>
+      <div>
+        <div class="post-row-title">The case for unified portfolio intelligence platforms.</div>
+        <p class="post-row-excerpt">
+          Why fragmented data systems fail PE firms at scale, and what unified
+          intelligence architecture looks like in practice.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Trace</span>
+          <span class="tag">Data Architecture</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/discovery-broken.html" class="post-row" data-tags="clad">
+      <div>
+        <div class="post-row-date">12 · III · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>11,205</div>
+      </div>
+      <div>
+        <div class="post-row-title">Discovery is broken. Here's how we're fixing it.</div>
+        <p class="post-row-excerpt">
+          The tools law firms use for discovery haven't kept pace with the volume of
+          digital evidence. A technical overview of what comes next.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Clad</span>
+          <span class="tag">Legal Tech</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--rust);">S</div>
+        <div>
+          <div class="byline-name">Sienna Cross</div>
+          <div class="byline-role">Legal Tech</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/lp-data-rooms.html" class="post-row" data-tags="trace">
+      <div>
+        <div class="post-row-date">05 · III · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>6,982</div>
+      </div>
+      <div>
+        <div class="post-row-title">What LPs actually want from their GPs' data rooms.</div>
+        <p class="post-row-excerpt">
+          Based on conversations with 40+ institutional LPs: what they look for,
+          what signals trust, and what makes them walk away.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Trace</span>
+          <span class="tag">Research</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/treat-data-as-a-witness.html" class="post-row" data-tags="clad craft">
+      <div>
+        <div class="post-row-date">28 · II · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>9,156</div>
+      </div>
+      <div>
+        <div class="post-row-title">Treat data as a witness, not a truth.</div>
+        <p class="post-row-excerpt">
+          Why institutional systems must maintain complete provenance. On the difference
+          between what happened and what the data says happened.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Craft</span>
+          <span class="tag">Philosophy</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--steel);">R</div>
+        <div>
+          <div class="byline-name">Rowan Mitchell</div>
+          <div class="byline-role">Engineering</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/the-detail-is-the-work.html" class="post-row" data-tags="craft">
+      <div>
+        <div class="post-row-date">20 · II · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>7,634</div>
+      </div>
+      <div>
+        <div class="post-row-title">The detail is the work.</div>
+        <p class="post-row-excerpt">
+          Why institutional software is won or lost in the last 10% of implementation.
+          A meditation on craft, edge cases, and finishing.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Craft</span>
+          <span class="tag">Essay</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/contract-intelligence.html" class="post-row" data-tags="clad">
+      <div>
+        <div class="post-row-date">14 · II · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>8,903</div>
+      </div>
+      <div>
+        <div class="post-row-title">Beyond search: contract intelligence systems that understand obligation.</div>
+        <p class="post-row-excerpt">
+          How we built a system that doesn't just find clauses, but understands
+          relationships between obligations, parties, and dates.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Clad</span>
+          <span class="tag">Case Study</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--rust);">S</div>
+        <div>
+          <div class="byline-name">Sienna Cross</div>
+          <div class="byline-role">Legal Tech</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/boring-technology.html" class="post-row" data-tags="craft">
+      <div>
+        <div class="post-row-date">07 · II · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>14,287</div>
+      </div>
+      <div>
+        <div class="post-row-title">On choosing boring technology (again).</div>
+        <p class="post-row-excerpt">
+          PostgreSQL, server-rendered HTML, and why we keep reaching for tools that
+          were already stable when we started the firm.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Craft</span>
+          <span class="tag">Technical</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--steel);">R</div>
+        <div>
+          <div class="byline-name">Rowan Mitchell</div>
+          <div class="byline-role">Engineering</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/postgresql-everything.html" class="post-row" data-tags="dev craft">
+      <div>
+        <div class="post-row-date">30 · I · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>16,420</div>
+      </div>
+      <div>
+        <div class="post-row-title">PostgreSQL for everything (yes, everything).</div>
+        <p class="post-row-excerpt">
+          Why we use Postgres as our primary datastore, message queue, full-text search,
+          job scheduler, and time-series database.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Dev</span>
+          <span class="tag">Technical</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar" style="background: var(--steel);">R</div>
+        <div>
+          <div class="byline-name">Rowan Mitchell</div>
+          <div class="byline-role">Engineering</div>
+        </div>
+      </div>
+    </a>
+
+    <a href="posts/cost-of-data-later.html" class="post-row" data-tags="trace">
+      <div>
+        <div class="post-row-date">22 · I · 2026</div>
+        <div class="post-row-reads"><span class="reads-dot"></span>11,643</div>
+      </div>
+      <div>
+        <div class="post-row-title">The compounding cost of "we'll clean the data later."</div>
+        <p class="post-row-excerpt">
+          Why data quality problems multiply exponentially over time, and what PE firms
+          can do about it before the next fund raise.
+        </p>
+        <div class="post-row-tags">
+          <span class="tag gold">Trace</span>
+          <span class="tag">Data Quality</span>
+        </div>
+      </div>
+      <div class="post-row-byline">
+        <div class="avatar gold">E</div>
+        <div>
+          <div class="byline-name">Eleanor Voss</div>
+          <div class="byline-role">Partner</div>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- Subscribe CTA -->
+<section id="subscribe" style="padding: 80px 0; background: var(--ink); color: var(--paper);">
+  <div class="container" style="text-align: center; max-width: 600px;">
+    <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;">Join 110K+ Readers</div>
+    <h2 class="serif" style="font-size: clamp(32px, 5vw, 48px); margin-bottom: 20px; color: var(--paper); font-family: 'Instrument Serif', 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.02em;">
+      Don't miss a dispatch.
+    </h2>
+    <p style="font-size: 16px; color: var(--muted-light); margin-bottom: 32px; line-height: 1.6; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      Get new posts on data infrastructure, legal technology, and institutional-grade software
+      delivered to your inbox. Published when we have something worth saying.
+    </p>
+    <form style="display: flex; gap: 12px; max-width: 480px; margin: 0 auto; flex-wrap: wrap;">
+      <input
+        type="email"
+        placeholder="your@email.com"
+        required
+        style="flex: 1; min-width: 200px; padding: 16px 20px; border: 2px solid var(--paper-line); background: var(--paper); font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 15px; border-radius: 2px;"
+      />
+      <button
+        type="submit"
+        style="padding: 16px 32px; background: var(--gold); color: var(--ink); font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 15px; font-weight: 600; border: none; cursor: pointer; border-radius: 2px; transition: all 0.2s;"
+        onmouseover="this.style.background='var(--gold-deep)'"
+        onmouseout="this.style.background='var(--gold)'"
+      >
+        Subscribe
+      </button>
+    </form>
+    <p style="font-size: 13px; color: var(--muted-light); margin-top: 16px; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      No spam. Unsubscribe anytime.
+    </p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="padding: 48px 0; background: var(--paper); border-top: 1px solid var(--paper-line);">
+  <div class="container" style="text-align: center;">
+    <a href="index.html" class="serif" style="font-size: 24px; margin-bottom: 12px; display: inline-block; font-family: 'Instrument Serif', 'Times New Roman', serif;">
+      The Charter<span style="color: var(--gold);">r</span>
+    </a>
+    <p style="font-size: 13px; color: var(--muted); margin-bottom: 8px; font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;">
+      A publication from <a href="about.html" class="serif" style="color: var(--gold); font-family: 'Instrument Serif', 'Times New Roman', serif;">Sempe<span style="color: var(--gold);">rr</span></a>
+    </p>
+    <div class="eyebrow" style="color: var(--muted); margin-top: 24px; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 500;">
+      © 2026 Semperr Labs · <span style="color: var(--gold);">◆ Semper paratus</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Filter functionality
+(function() {
+  const chips = document.querySelectorAll('.chip');
+  const posts = document.querySelectorAll('.post-row');
+  const countEl = document.getElementById('count');
+
+  chips.forEach(chip => {
+    chip.addEventListener('click', function() {
+      chips.forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+
+      const filter = this.getAttribute('data-filter');
+      let visibleCount = 0;
+
+      posts.forEach(post => {
+        const tags = post.getAttribute('data-tags');
+        if (filter === 'all' || tags.includes(filter)) {
+          post.style.display = 'grid';
+          visibleCount++;
+        } else {
+          post.style.display = 'none';
+        }
+      });
+
+      countEl.textContent = visibleCount;
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

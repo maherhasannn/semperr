@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}{{ company }} · Trace{% endblock %}
+{% block content %}
+<div class="panel" style="margin-bottom:18px;">
+  <header>
+    <div>
+      <div class="eyebrow">Company</div>
+      <div class="serif" style="font-size:32px; margin-top:4px;">{{ company }}</div>
+    </div>
+  </header>
+  <div class="body">
+    {% if snaps %}
+      {% set max_score = 100.0 %}
+      {% set n = snaps|length %}
+      <svg class="chart" viewBox="0 0 600 180" preserveAspectRatio="none">
+        <line class="axis" x1="0" y1="170" x2="600" y2="170"/>
+        <line class="axis" x1="0" y1="10"  x2="600" y2="10"/>
+        {% set points = [] %}
+        {% for s in snaps %}
+          {% set x = (loop.index0 / ((n - 1) if n > 1 else 1) ) * 580 + 10 %}
+          {% set y = 170 - (s.score / 100.0) * 160 %}
+          {% set _ = points.append((x|round(2), y|round(2))) %}
+        {% endfor %}
+        <polyline class="line" points="{% for p in points %}{{ p[0] }},{{ p[1] }} {% endfor %}"/>
+        {% for p in points %}
+          <circle class="dot" cx="{{ p[0] }}" cy="{{ p[1] }}" r="3"/>
+        {% endfor %}
+      </svg>
+      <table class="deal" style="margin-top:18px;">
+        <thead><tr><th>When</th><th>Strategy</th><th>Run</th><th>Score</th><th>Delta</th></tr></thead>
+        <tbody>
+        {% for s in snaps %}
+          <tr>
+            <td>{{ s.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+            <td>#{{ s.strategy_id }}</td>
+            <td><a href="/runs/{{ s.run_id }}" style="color:var(--accent);">#{{ s.run_id }}</a></td>
+            <td><span class="score">{{ "%.1f"|format(s.score) }}</span></td>
+            <td>
+              {% if s.delta_from_prev > 0 %}<span class="delta-up">▲ {{ "%.1f"|format(s.delta_from_prev) }}</span>
+              {% elif s.delta_from_prev < 0 %}<span class="delta-down">▼ {{ "%.1f"|format(s.delta_from_prev) }}</span>
+              {% else %}<span class="delta-flat">—</span>{% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="note">No score history for this company yet.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

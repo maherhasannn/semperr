@@ -1,0 +1,12 @@
+{
+  "date": "2026-04-27",
+  "index": 23,
+  "total": 93,
+  "quote": {
+    "text": "The art of being wise is the art of knowing what to overlook.",
+    "author": "William James",
+    "role": "Philosopher & Psychologist",
+    "topic": "Data Strategy",
+    "analysis": "Data infrastructure design is as much about exclusion as inclusion. The firms with the clearest portfolio intelligence aren't the ones capturing every possible metric — they're the ones that deliberately chose which signals matter and built systems that amplify those while filtering out noise."
+  }
+}

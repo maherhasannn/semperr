@@ -1,0 +1,12 @@
+{
+  "name": "semperr-news",
+  "version": "1.0.0",
+  "description": "Automated news aggregator for Semperr",
+  "private": true,
+  "scripts": {
+    "update-news": "node scripts/aggregate-news.js"
+  },
+  "dependencies": {
+    "rss-parser": "^3.13.0"
+  }
+}
