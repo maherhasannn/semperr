@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Company — Semperr</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+
+<style>
+/* ————— Company page-specific styles ————— */
+
+/* Partner cards */
+.partner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin-top: 48px;
+}
+.partner-card {
+  display: flex;
+  gap: 24px;
+  align-items: start;
+}
+.partner-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-family: var(--serif);
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.partner-name {
+  font-family: var(--serif);
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
+.partner-role {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.partner-bio {
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 40px;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--paper-line);
+}
+.timeline-item {
+  position: relative;
+  padding-bottom: 40px;
+}
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-dot {
+  position: absolute;
+  left: -36px;
+  top: 6px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+.timeline-year {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 8px;
+}
+.timeline-event {
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.timeline-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* Location grid */
+.loc-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--paper-line);
+}
+.loc-card {
+  padding: 32px 24px;
+  border-right: 1px solid var(--paper-line);
+}
+.loc-card:last-child { border-right: none; }
+.loc-city {
+  font-family: var(--serif);
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.loc-role {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 12px;
+}
+.loc-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* Stat band (dark section) */
+.co-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.co-stat {
+  padding: 32px 24px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+.co-stat:last-child { border-right: none; }
+.co-stat-n {
+  font-family: var(--serif);
+  font-size: 48px;
+  line-height: 1;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.co-stat-l {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b7388;
+}
+
+/* Charter values (dark) */
+.co-value {
+  display: grid;
+  grid-template-columns: 48px 160px 1fr;
+  gap: 24px;
+  align-items: baseline;
+  padding: 28px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.co-value:last-child { border-bottom: none; }
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .partner-grid { grid-template-columns: 1fr; gap: 36px; }
+  .loc-grid { grid-template-columns: repeat(2, 1fr); }
+  .loc-card:nth-child(2) { border-right: none; }
+  .loc-card:nth-child(1), .loc-card:nth-child(2) { border-bottom: 1px solid var(--paper-line); }
+  .co-value { grid-template-columns: 1fr; gap: 8px; }
+}
+@media (max-width: 768px) {
+  .partner-card { flex-direction: column; gap: 16px; }
+  .partner-avatar { width: 56px; height: 56px; font-size: 22px; }
+  .partner-name { font-size: 20px; }
+  .loc-grid { grid-template-columns: 1fr; }
+  .loc-card { border-right: none; border-bottom: 1px solid var(--paper-line); }
+  .loc-card:last-child { border-bottom: none; }
+  .co-stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .co-stat:nth-child(2) { border-right: none; }
+  .co-stat:nth-child(1), .co-stat:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .co-stat-n { font-size: 36px; }
+  .timeline { padding-left: 32px; }
+  .timeline-dot { left: -28px; }
+  .blog-header-nav { display: none; }
+}
+</style>
+</head>
+<body class="blog-body">
+
+<!-- Header -->
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="index.html" class="blog-header-back">&larr; Semperr</a>
+      <span class="blog-wordmark">The Compa<em>ny</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="#story">Story</a>
+      <a href="#partners">Partners</a>
+      <a href="#values">Values</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Masthead -->
+<section class="pub-mast">
+  <div class="container">
+    <div class="pub-mast-slug">
+      <span>Est. MMXXI</span>
+      <span>San Francisco</span>
+      <span>Semper paratus</span>
+    </div>
+    <h1 class="pub-mast-title">Built to <em>last</em>.</h1>
+    <p class="pub-mast-deck">
+      Semperr is a holding company for software and data that serious businesses run on.
+      Deliberately small, privately held, answerable only to our clients and our standards.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     Numbers at a glance
+     ═══════════════════════════════════════════════ -->
+<section style="padding: 0; background: var(--ink);">
+  <div class="container">
+    <div class="co-stat-grid">
+      <div class="co-stat">
+        <div class="co-stat-n">42</div>
+        <div class="co-stat-l">People</div>
+      </div>
+      <div class="co-stat">
+        <div class="co-stat-n">5</div>
+        <div class="co-stat-l">Years operating</div>
+      </div>
+      <div class="co-stat">
+        <div class="co-stat-n">0</div>
+        <div class="co-stat-l">Outside investors</div>
+      </div>
+      <div class="co-stat">
+        <div class="co-stat-n">3</div>
+        <div class="co-stat-l">Platforms</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     I. The story
+     ═══════════════════════════════════════════════ -->
+<section id="story" style="padding: 96px 0 120px; background: var(--paper);">
+  <div class="container">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;">
+      <div>
+        <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 24px;">
+          I. &nbsp; The story
+        </div>
+        <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 24px;">
+          We started with a <em style="font-style: italic; color: var(--gold);">refusal</em>.
+        </h2>
+        <p style="font-size: 18px; line-height: 1.65; color: var(--muted); margin-bottom: 20px;">
+          In 2021, two people left comfortable positions at firms they admired because they could not
+          reconcile what those firms said with what those firms shipped.
+        </p>
+        <p style="font-size: 18px; line-height: 1.65; color: var(--muted); margin-bottom: 20px;">
+          The premise was simple: build a company where the people writing the code also answer the phone.
+          Where every engagement has a partner's name on it. Where the client never wonders who is
+          actually doing the work.
+        </p>
+        <p style="font-size: 18px; line-height: 1.65; color: var(--muted);">
+          Five years later, Semperr is still privately held, still deliberately small, and still
+          answering the same question the same way: <em style="color: var(--ink); font-style: italic;">build things that work, for people who notice.</em>
+        </p>
+      </div>
+      <div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2021</div>
+            <div class="timeline-event">Founded in New York</div>
+            <div class="timeline-desc">Eleanor Voss and Henry Okafor incorporate Semperr Labs. First client signed within six weeks.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2022</div>
+            <div class="timeline-event">Trace launches</div>
+            <div class="timeline-desc">Private-company intelligence platform goes live. First PE fund onboarded within the quarter.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2023</div>
+            <div class="timeline-event">Clad enters beta</div>
+            <div class="timeline-desc">Legal-intelligence platform begins serving AmLaw 200 firms. Cork engineering office opens.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2024</div>
+            <div class="timeline-event">Dev launches</div>
+            <div class="timeline-desc">Technical services for small businesses. 100 accounts within four months.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2025</div>
+            <div class="timeline-event">HQ moves to San Francisco</div>
+            <div class="timeline-desc">Team reaches 42 people across four offices. Still zero outside investors.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-year">2026</div>
+            <div class="timeline-event">Five years in</div>
+            <div class="timeline-desc">Same answer to the same question. Three platforms, one charter, no exceptions.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Divider -->
+<div style="height: 1px; background: var(--paper-line);"></div>
+
+<!-- ═══════════════════════════════════════════════
+     II. The partners
+     ═══════════════════════════════════════════════ -->
+<section id="partners" style="padding: 96px 0 120px; background: var(--paper-warm);">
+  <div class="container">
+    <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 24px;">
+      II. &nbsp; The partners
+    </div>
+    <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px;">
+      A name on every <em style="font-style: italic; color: var(--gold);">engagement</em>.
+    </h2>
+    <p style="font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 600px;">
+      Semperr is led by its founding partners. No board, no advisors, no committee.
+      Every client engagement has a partner's direct line.
+    </p>
+
+    <div class="partner-grid">
+      <div class="partner-card">
+        <div class="partner-avatar" style="background: var(--gold); color: var(--ink);">E</div>
+        <div>
+          <div class="partner-name" style="color: var(--ink);">Eleanor Voss</div>
+          <div class="partner-role" style="color: var(--gold-deep);">Co-Founder &middot; Partner &middot; New York</div>
+          <p class="partner-bio" style="color: var(--muted);">
+            Former principal at a top-tier data analytics firm. Eleanor oversees Trace, client relationships,
+            and the company's editorial voice. She writes most of The Charterr and believes that
+            if you can't explain the number, you shouldn't ship the number.
+          </p>
+        </div>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-avatar" style="background: var(--ink); color: var(--paper);">H</div>
+        <div>
+          <div class="partner-name" style="color: var(--ink);">Henry Okafor</div>
+          <div class="partner-role" style="color: var(--gold-deep);">Co-Founder &middot; Partner &middot; San Francisco</div>
+          <p class="partner-bio" style="color: var(--muted);">
+            Former engineering lead at an institutional software firm. Henry oversees Clad, Dev, and
+            infrastructure operations. He interviews every engineering hire and still reviews
+            production deploys on Friday afternoons.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     III. The charter — values
+     ═══════════════════════════════════════════════ -->
+<section id="values" style="padding: 96px 0 120px; background: var(--ink); color: #f8f6f0; position: relative; overflow: hidden;">
+  <div class="grain"></div>
+  <div class="container" style="position: relative;">
+    <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px;">
+      III. &nbsp; The charter
+    </div>
+    <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: #f8f6f0; margin-bottom: 20px;">
+      Five principles. <em style="font-style: italic; color: var(--gold);">No exceptions.</em>
+    </h2>
+    <p style="font-size: 18px; line-height: 1.55; color: #9099ad; max-width: 620px; margin-bottom: 48px;">
+      Every engagement, every hire, every line of code is measured against the same standard.
+      These are not aspirations &mdash; they are terms.
+    </p>
+
+    <div style="height: 2px; background: rgba(255,255,255,0.08); margin-bottom: 0;"></div>
+
+    <div class="co-value">
+      <span style="font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold);">I</span>
+      <span style="font-family: var(--serif); font-size: 24px; color: #f8f6f0;">Rigor</span>
+      <span style="font-size: 16px; line-height: 1.55; color: #9099ad;">Every figure traceable. Every source dated. Every derivation recoverable.</span>
+    </div>
+    <div class="co-value">
+      <span style="font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold);">II</span>
+      <span style="font-family: var(--serif); font-size: 24px; color: #f8f6f0;">Discretion</span>
+      <span style="font-size: 16px; line-height: 1.55; color: #9099ad;">Client data is treated as testimony &mdash; never shared, never inferred, never sold.</span>
+    </div>
+    <div class="co-value">
+      <span style="font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold);">III</span>
+      <span style="font-family: var(--serif); font-size: 24px; color: #f8f6f0;">Durability</span>
+      <span style="font-size: 16px; line-height: 1.55; color: #9099ad;">We build for the decade, not the quarter. If it can&rsquo;t survive a regime change, it doesn&rsquo;t ship.</span>
+    </div>
+    <div class="co-value">
+      <span style="font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold);">IV</span>
+      <span style="font-family: var(--serif); font-size: 24px; color: #f8f6f0;">Clarity</span>
+      <span style="font-size: 16px; line-height: 1.55; color: #9099ad;">Plain language, honest timelines, no jargon designed to obscure.</span>
+    </div>
+    <div class="co-value">
+      <span style="font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold);">V</span>
+      <span style="font-family: var(--serif); font-size: 24px; color: #f8f6f0;">Accountability</span>
+      <span style="font-size: 16px; line-height: 1.55; color: #9099ad;">A name on every deliverable. A partner on every engagement.</span>
+    </div>
+
+    <div style="margin-top: 48px;">
+      <a href="charter.html" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); color: #f8f6f0; font-size: 14px; font-weight: 500;">
+        Read the full charter <span style="opacity:0.5;">&rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     IV. Offices
+     ═══════════════════════════════════════════════ -->
+<section style="padding: 96px 0 120px; background: var(--paper); border-top: 1px solid var(--paper-line);">
+  <div class="container">
+    <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 24px;">
+      IV. &nbsp; Offices
+    </div>
+    <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px;">
+      Four cities. <em style="font-style: italic; color: var(--gold);">One standard.</em>
+    </h2>
+    <p style="font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 540px; margin-bottom: 48px;">
+      Every office operates under the same charter. Same tools, same practices,
+      same expectation of care.
+    </p>
+
+    <div class="loc-grid">
+      <div class="loc-card">
+        <div class="loc-city">San Francisco</div>
+        <div class="loc-role">Headquarters</div>
+        <div class="loc-desc">Company leadership, Trace engineering, and client operations. HQ since 2025.</div>
+      </div>
+      <div class="loc-card">
+        <div class="loc-city">New York</div>
+        <div class="loc-role">Founding Office</div>
+        <div class="loc-desc">Where it started. Client partnerships, Charterr editorial, and East Coast operations.</div>
+      </div>
+      <div class="loc-card">
+        <div class="loc-city">Cork</div>
+        <div class="loc-role">Engineering</div>
+        <div class="loc-desc">Clad platform engineering and data infrastructure. European time-zone coverage.</div>
+      </div>
+      <div class="loc-card">
+        <div class="loc-city">Austin</div>
+        <div class="loc-role">Dev Operations</div>
+        <div class="loc-desc">Dev service delivery, SMB client support, and technical operations.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Subscribe / CTA -->
+<section class="subscribe">
+  <div class="grain"></div>
+  <div class="container">
+    <div class="subscribe-inner">
+      <div>
+        <div class="h-eyebrow" style="color:var(--gold); margin-bottom:20px;">&#10022; &nbsp; Work with us</div>
+        <h2 class="subscribe-title">
+          Start with a <em>conversation</em>.
+        </h2>
+        <p class="subscribe-deck">
+          No pitch decks. No sales teams. A partner and an engineer &mdash; listening.
+        </p>
+        <div style="margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap;">
+          <a href="contact.html" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: #f8f6f0; color: #0b1220; font-size: 14px; font-weight: 500;">Get in touch <span style="opacity:0.5;">&rarr;</span></a>
+          <a href="careers.html" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); color: #f8f6f0; font-size: 14px; font-weight: 500;">See open roles</a>
+        </div>
+      </div>
+      <div class="subscribe-stats">
+        <div>
+          <div class="stat-n">42</div>
+          <div class="stat-l">People</div>
+        </div>
+        <div>
+          <div class="stat-n">4</div>
+          <div class="stat-l">Offices</div>
+        </div>
+        <div>
+          <div class="stat-n">MMXXI</div>
+          <div class="stat-l">Founded</div>
+        </div>
+        <div>
+          <div class="stat-n">100%</div>
+          <div class="stat-l">Referral-based hires</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>&copy; 2026 Semperr, Inc.</span>
+    <span>San Francisco</span>
+    <span class="gold">&#9670; Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>

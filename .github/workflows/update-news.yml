@@ -1,0 +1,52 @@
+name: Update News Feed
+
+on:
+  schedule:
+    # Runs every 12 hours at 6am and 6pm UTC
+    - cron: '0 6,18 * * *'
+  workflow_dispatch: # Manual trigger for testing
+
+jobs:
+  update-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout news-data branch
+        uses: actions/checkout@v4
+        with:
+          ref: news-data
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install rss-parser
+
+      - name: Fetch and aggregate news
+        run: node scripts/aggregate-news.js
+
+      - name: Commit and force push
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add data/news.json
+
+          # Check if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          # Amend the previous commit to avoid bloat
+          git commit --amend -m "Update news feed - $(date -u +'%Y-%m-%d %H:%M UTC')" || git commit -m "Update news feed - $(date -u +'%Y-%m-%d %H:%M UTC')"
+
+          # Force push to keep only 1 commit
+          git push --force origin news-data
+
+      - name: Trigger Vercel deployment
+        run: |
+          echo "News feed updated successfully"
+          echo "Vercel will auto-deploy if configured to watch news-data branch"

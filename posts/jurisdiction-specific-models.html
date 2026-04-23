@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>The argument for jurisdiction-specific models — The Charter</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="../styles.css"/>
+<link rel="stylesheet" href="../blog.css"/>
+</head>
+<body class="blog-body">
+
+<header class="blog-header">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="../charter.html" class="blog-header-back">← The Charter</a>
+      <span class="blog-wordmark">The Charte<em>rr</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="../charter.html#posts">Archive</a>
+      <a href="../charter.html#subscribe">Subscribe</a>
+      <a href="../index.html">Semperr</a>
+    </nav>
+  </div>
+</header>
+
+<article class="post-article">
+  <div class="container">
+    <div class="post-meta-row" style="justify-content:center;">
+      <span class="cat">Clad</span>
+      <span class="dot"></span>
+      <span>28 March 2026</span>
+      <span class="dot"></span>
+      <span>9 min read</span>
+      <span class="dot"></span>
+      <span style="color:var(--gold-deep);"><span class="reads-dot"></span>6,094 reads</span>
+    </div>
+    <h1 class="post-title" style="text-align:center;">
+      The argument for<br/>
+      jurisdiction-specific <em>models</em>.
+    </h1>
+    <p class="post-deck" style="text-align:center;">
+      Why generic legal AI models fail on cross-border research—and what law firms need instead when precedent spans 1,240 jurisdictions.
+    </p>
+
+    <div class="post-byline-row">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="avatar">H</div>
+        <div>
+          <div class="byline-name">Henry Okafor</div>
+          <div class="byline-role">Partner · San Francisco</div>
+        </div>
+      </div>
+      <div class="post-share">
+        <a href="#">Copy link</a>
+        <a href="#">Email</a>
+        <a href="#">Print</a>
+      </div>
+    </div>
+
+    <div class="post-body">
+      <p class="lede">A partner at a global law firm asked us to build a legal research tool that could search case law across all US federal circuits, all fifty states, the UK, the EU, and "maybe Canada and Australia if it is not too hard." The question was straightforward: can one model handle all of that?</p>
+
+      <p>The answer: technically yes, practically no. You can build a model that searches across all those jurisdictions. Whether it gives you <em>useful</em> answers is a different question entirely.</p>
+
+      <p>The problem is not the number of jurisdictions. It is that each jurisdiction has its own citation conventions, its own hierarchy of precedent, its own doctrinal frameworks, and its own way of signaling what matters. A model trained generically across all of them will miss nuances that a specialized model would catch.</p>
+
+      <div class="pullquote">
+        Generic models find documents. Jurisdiction-specific models find <em>relevant</em> documents.
+      </div>
+
+      <h2>Why jurisdiction matters</h2>
+
+      <p>Consider a simple research question: "Show me cases where courts have enforced forum selection clauses in consumer contracts." The answer depends entirely on which jurisdiction you are in.</p>
+
+      <p>In the US, you need to know whether the clause is in a contract of adhesion, whether it violates public policy in the consumer's home state, and whether the chosen forum is inconvenient enough to warrant dismissal. In the EU, you need to know whether the consumer was adequately informed, whether the clause is in an unfair terms directive blacklist, and whether the chosen forum would deprive the consumer of mandatory protections.</p>
+
+      <p>A generic model might return cases from both jurisdictions that mention "forum selection" and "consumer contracts." But it will not understand which factors matter in which jurisdiction, or how the same legal concept is analyzed differently across systems.</p>
+
+      <h2>What jurisdiction-specific models can do</h2>
+
+      <p>When we build jurisdiction-specific models for Clad, we fine-tune on three things: citation patterns, doctrinal frameworks, and precedential weight.</p>
+
+      <p><strong>Citation patterns:</strong> The model learns how courts in that jurisdiction cite authority. US courts cite to reporters and page numbers. EU courts cite to case numbers and ECLIs. UK courts cite to neutral citations and law reports. The model needs to understand what these citations mean and how to weight them.</p>
+
+      <p><strong>Doctrinal frameworks:</strong> The model learns the tests, standards, and multi-factor balancing analyses that courts use. It knows that New York contract disputes use a four-part test for unconscionability. It knows that California employment cases turn on the Dynamex ABC test. It knows that German courts apply the proportionality principle.</p>
+
+      <p><strong>Precedential weight:</strong> The model understands the hierarchy. It knows that a Second Circuit opinion binds district courts in New York. It knows that a Supreme Court of Canada decision is binding nationwide but a British Columbia Court of Appeal decision is not. It knows that an ECJ ruling supersedes national law.</p>
+
+      <h2>The cost-benefit question</h2>
+
+      <p>Building jurisdiction-specific models is more expensive than building one generic model. You need separate training data, separate fine-tuning runs, and separate validation for each jurisdiction. For a law firm that only practices in one or two jurisdictions, this is overkill.</p>
+
+      <p>But for firms doing cross-border work—M&A, international arbitration, multi-jurisdictional litigation—the alternative is worse. A generic model that cannot distinguish between binding and persuasive authority, or that does not understand how different jurisdictions analyze the same issue, is not actually saving time. It is just making research slower and less reliable.</p>
+
+      <p style="color:var(--gold-deep); font-style:italic; margin-top:2em;">— Henry</p>
+    </div>
+
+    <div class="post-foot">
+      <div class="post-foot-tags">
+        <span class="tag steel">Clad</span>
+        <span class="tag">Legal AI</span>
+        <span class="tag">Cross-Border</span>
+      </div>
+      <div class="post-foot-author">
+        <div class="avatar">H</div>
+        <div class="post-foot-author-body">
+          <div class="post-foot-author-name">Henry Okafor</div>
+          <div class="post-foot-author-role">Partner · San Francisco</div>
+          <p class="post-foot-author-bio">
+            Henry co-founded Semperr in 2021. He leads the firm's legal technology work and writes the Charter on matters concerning Clad.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>© 2026 Semperr Labs, Inc.</span>
+    <span>Made in NYC · Cork · Austin</span>
+    <span class="gold">◆ Semper paratus</span>
+  </div>
+</footer>
+
+</body>
+</html>

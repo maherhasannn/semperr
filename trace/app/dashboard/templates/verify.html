@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Enter sign-in code · Trace{% endblock %}
+{% block content %}
+<div class="centered">
+  <div class="auth-card">
+    <div class="eyebrow">Trace // Confirm email</div>
+    <h1>Enter your code</h1>
+    <p class="sub">We emailed a one-time code to <strong>{{ email }}</strong>. It expires in a few minutes.</p>
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <form method="post" action="/verify">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}"/>
+      <div class="field">
+        <label for="otp">One-time code</label>
+        <input id="otp" name="otp" type="text" inputmode="numeric" pattern="[0-9]*"
+               autocomplete="one-time-code" required autofocus
+               maxlength="16"/>
+      </div>
+      <button class="btn gold" type="submit">Sign in</button>
+      <span class="note" style="margin-left:14px;">
+        Didn't get it? <a href="/invite">Request a new code</a>.
+      </span>
+    </form>
+  </div>
+</div>
+{% endblock %}

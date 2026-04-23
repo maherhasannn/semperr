@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Press &amp; Record — Semperr</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<link rel="stylesheet" href="styles.css"/>
+<link rel="stylesheet" href="blog.css"/>
+
+<style>
+/* ————— Press page — "The Record" ————— */
+
+/* Pixel Curtain */
+#pixel-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  overflow: hidden;
+}
+#pixel-curtain canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+#pixel-curtain.done { display: none; }
+
+/* Data rain background */
+#data-rain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.04;
+  mask-image: linear-gradient(transparent 0%, black 20%, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(transparent 0%, black 20%, black 80%, transparent 100%);
+}
+.rain-col {
+  position: absolute;
+  top: -100%;
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--gold);
+  writing-mode: vertical-lr;
+  animation: rainFall linear infinite;
+  white-space: nowrap;
+}
+@keyframes rainFall {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(calc(200vh + 100%)); }
+}
+
+/* Redacted hero headline */
+.redacted-hero {
+  position: relative;
+  display: inline;
+}
+.redacted-bar {
+  position: absolute;
+  inset: 0;
+  background: var(--ink);
+  display: block;
+  transform-origin: left;
+}
+
+/* Press card — scramble text */
+.press-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin-top: 48px;
+}
+.press-card {
+  display: grid;
+  grid-template-columns: 160px 1fr 200px;
+  gap: 40px;
+  padding: 40px 0;
+  border-bottom: 1px solid var(--paper-line);
+  align-items: start;
+}
+.press-card:first-child {
+  border-top: 1px solid var(--paper-line);
+}
+.press-source {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-top: 6px;
+}
+.press-source-name {
+  color: var(--gold-deep);
+  display: block;
+  margin-bottom: 6px;
+}
+.press-date {
+  font-size: 10px;
+  color: var(--muted);
+}
+.press-headline {
+  font-family: var(--serif);
+  font-size: clamp(22px, 2.4vw, 28px);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin-bottom: 12px;
+  transition: color 0.2s ease;
+}
+.press-card:hover .press-headline {
+  color: var(--gold-deep);
+}
+.press-excerpt {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.press-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 4px 10px;
+  border: 1px solid var(--paper-line);
+  border-radius: 999px;
+  display: inline-block;
+}
+.press-link {
+  padding-top: 6px;
+  text-align: right;
+}
+.press-link a {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 16px;
+  border: 1px solid var(--paper-line);
+  border-radius: 999px;
+  transition: all 0.15s ease;
+}
+.press-link a:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+/* Safe-cracking stat ticker */
+.ticker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.ticker-stat {
+  padding: 40px 24px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  text-align: center;
+}
+.ticker-stat:last-child { border-right: none; }
+.ticker-n {
+  font-family: var(--mono);
+  font-size: 48px;
+  line-height: 1;
+  color: var(--gold);
+  margin-bottom: 12px;
+  letter-spacing: 0.04em;
+}
+.ticker-n .digit {
+  display: inline-block;
+  min-width: 0.6em;
+  text-align: center;
+}
+.ticker-l {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6b7388;
+}
+
+/* Classification stamp */
+.classified-stamp {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 2px solid var(--gold);
+  padding: 6px 16px;
+  transform: rotate(-3deg);
+  opacity: 0.7;
+}
+
+/* Press kit section */
+.kit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 40px;
+}
+.kit-card {
+  padding: 32px 24px;
+  border: 1px solid var(--paper-line);
+  background: var(--paper);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.kit-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold);
+}
+.kit-icon {
+  font-family: var(--mono);
+  font-size: 24px;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+.kit-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.kit-desc {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .press-card { grid-template-columns: 1fr; gap: 12px; }
+  .press-link { text-align: left; }
+  .kit-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .press-card { padding: 24px 0; }
+  .press-headline { font-size: 20px; }
+  .ticker-grid { grid-template-columns: repeat(2, 1fr); }
+  .ticker-stat:nth-child(2) { border-right: none; }
+  .ticker-stat:nth-child(1), .ticker-stat:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .ticker-n { font-size: 36px; }
+  .blog-header-nav { display: none; }
+  #data-rain { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #pixel-curtain { display: none !important; }
+  #data-rain { display: none !important; }
+  .rain-col { animation: none !important; }
+  .redacted-bar { display: none !important; }
+}
+</style>
+</head>
+<body class="blog-body">
+
+<!-- Pixel Curtain -->
+<div id="pixel-curtain"><canvas id="curtain-canvas"></canvas></div>
+
+<!-- Data Rain background -->
+<div id="data-rain"></div>
+
+<!-- Header -->
+<header class="blog-header" style="position: relative; z-index: 10;">
+  <div class="container blog-header-inner">
+    <div class="blog-header-left">
+      <a href="index.html" class="blog-header-back">&larr; Semperr</a>
+      <span class="blog-wordmark">The Reco<em>rd</em></span>
+    </div>
+    <nav class="blog-header-nav">
+      <a href="#coverage">Coverage</a>
+      <a href="#kit">Press kit</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero — redacted headline -->
+<section class="pub-mast" style="position: relative; z-index: 1;">
+  <div class="container">
+    <div class="pub-mast-slug">
+      <span class="classified-stamp">Declassified</span>
+      <span>Media &amp; public record</span>
+      <span>Updated April MMXXVI</span>
+    </div>
+
+    <h1 class="pub-mast-title" id="redacted-title" style="position: relative;">
+      <span class="redacted-word" data-text="Press">
+        <span class="redacted-text" style="visibility: hidden;">Press</span>
+        <span class="redacted-bar"></span>
+      </span>
+      &amp;
+      <span class="redacted-word" data-text="Record">
+        <span class="redacted-text" style="visibility: hidden;">Reco<em>rd</em></span>
+        <span class="redacted-bar"></span>
+      </span>.
+    </h1>
+
+    <p class="pub-mast-deck" id="deck-text" style="opacity: 0;">
+      What others have written about us, and the facts we publish ourselves.
+      No press releases. No spin. The record, as it stands.
+    </p>
+  </div>
+</section>
+
+<!-- Stats ticker — safe-cracking -->
+<section style="padding: 0; background: var(--ink); position: relative; z-index: 1;">
+  <div class="container">
+    <div class="ticker-grid" id="ticker-grid">
+      <div class="ticker-stat">
+        <div class="ticker-n" data-target="42" data-suffix="">--</div>
+        <div class="ticker-l">People</div>
+      </div>
+      <div class="ticker-stat">
+        <div class="ticker-n" data-target="3" data-suffix="">-</div>
+        <div class="ticker-l">Platforms</div>
+      </div>
+      <div class="ticker-stat">
+        <div class="ticker-n" data-target="0" data-suffix="" data-is-zero="true">-</div>
+        <div class="ticker-l">Outside funding</div>
+      </div>
+      <div class="ticker-stat">
+        <div class="ticker-n" data-target="2021" data-suffix="" data-is-year="true">----</div>
+        <div class="ticker-l">Founded</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     Coverage — press mentions with scramble text
+     ═══════════════════════════════════════════════ -->
+<section id="coverage" style="padding: 96px 0 120px; background: var(--paper); position: relative; z-index: 1;">
+  <div class="container">
+    <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 24px;">
+      I. &nbsp; Coverage
+    </div>
+    <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px;">
+      What others have <em style="font-style: italic; color: var(--gold);">written</em>.
+    </h2>
+    <p style="font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 600px;">
+      We don't issue press releases. These are the stories others chose to tell.
+    </p>
+
+    <div class="press-grid" id="press-grid">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     Facts on the record
+     ═══════════════════════════════════════════════ -->
+<section style="padding: 96px 0 120px; background: var(--ink); color: #f8f6f0; position: relative; overflow: hidden; z-index: 1;">
+  <div class="grain"></div>
+  <div class="container" style="position: relative;">
+    <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 24px;">
+      II. &nbsp; On the record
+    </div>
+    <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: #f8f6f0; margin-bottom: 32px;">
+      Facts we publish <em style="font-style: italic; color: var(--gold);">ourselves</em>.
+    </h2>
+
+    <div id="facts-list" style="max-width: 740px;">
+      <!-- Filled by JS — each fact scrambles in -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     Press kit
+     ═══════════════════════════════════════════════ -->
+<section id="kit" style="padding: 96px 0 120px; background: var(--paper-warm); position: relative; z-index: 1;">
+  <div class="container">
+    <div style="font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-deep); margin-bottom: 24px;">
+      III. &nbsp; Press kit
+    </div>
+    <h2 style="font-family: var(--serif); font-weight: 400; font-size: clamp(36px, 4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 12px;">
+      For <em style="font-style: italic; color: var(--gold);">journalists</em>.
+    </h2>
+    <p style="font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 540px;">
+      The following assets are available for editorial use. For interview requests,
+      write to <a href="mailto:press@semperr.co" style="color: var(--gold-deep); text-decoration: underline; text-decoration-color: rgba(201,169,97,0.4);">press@semperr.co</a>.
+    </p>
+
+    <div class="kit-grid">
+      <div class="kit-card">
+        <div class="kit-icon">&#9670;</div>
+        <div class="kit-title">Brand assets</div>
+        <div class="kit-desc">Wordmark, monogram, color palette, and usage guidelines in SVG and PNG.</div>
+      </div>
+      <div class="kit-card">
+        <div class="kit-icon">&#9646;</div>
+        <div class="kit-title">Company brief</div>
+        <div class="kit-desc">One-page overview: founding story, products, team size, offices, and key facts.</div>
+      </div>
+      <div class="kit-card">
+        <div class="kit-icon">&#9998;</div>
+        <div class="kit-title">Partner bios</div>
+        <div class="kit-desc">Short and long-form biographies for Eleanor Voss and Henry Okafor.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="subscribe">
+  <div class="grain"></div>
+  <div class="container">
+    <div class="subscribe-inner">
+      <div>
+        <div class="h-eyebrow" style="color:var(--gold); margin-bottom:20px;">&#10022; &nbsp; Media inquiries</div>
+        <h2 class="subscribe-title">
+          Write to <em>press@semperr.co</em>.
+        </h2>
+        <p class="subscribe-deck">
+          We respond to every inquiry within 24 hours. No publicists, no gatekeepers.
+          A partner reads every message.
+        </p>
+        <div style="margin-top: 28px;">
+          <a href="mailto:press@semperr.co" style="display: inline-flex; align-items: center; gap: 10px; padding: 14px 22px; border-radius: 999px; background: #f8f6f0; color: #0b1220; font-size: 14px; font-weight: 500;">Email press team <span style="opacity:0.5;">&rarr;</span></a>
+        </div>
+      </div>
+      <div class="subscribe-stats">
+        <div>
+          <div class="stat-n">24h</div>
+          <div class="stat-l">Response time</div>
+        </div>
+        <div>
+          <div class="stat-n">0</div>
+          <div class="stat-l">Publicists</div>
+        </div>
+        <div>
+          <div class="stat-n">2</div>
+          <div class="stat-l">Partners available</div>
+        </div>
+        <div>
+          <div class="stat-n">&#10003;</div>
+          <div class="stat-l">Interview ready</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="blog-foot">
+  <div class="container blog-foot-inner">
+    <span>&copy; 2026 Semperr, Inc.</span>
+    <span>San Francisco</span>
+    <span class="gold">&#9670; Semper paratus</span>
+  </div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+
+  /* ═══════════════════════════════════════════════
+     PIXEL CURTAIN — matching the about page
+     ═══════════════════════════════════════════════ */
+  var curtainEl = document.getElementById('pixel-curtain');
+  var curtainCanvas = document.getElementById('curtain-canvas');
+
+  if (!prefersReduced && !sessionStorage.getItem('press_curtain_seen')) {
+    sessionStorage.setItem('press_curtain_seen', '1');
+    var cCtx = curtainCanvas.getContext('2d');
+    var CPIXEL = 10;
+    var cW = window.innerWidth, cH = window.innerHeight;
+    curtainCanvas.width = cW;
+    curtainCanvas.height = cH;
+    var cCols = Math.ceil(cW / CPIXEL), cRows = Math.ceil(cH / CPIXEL);
+    var palette = ['#0b1220', '#141c2e', '#1e2640', '#c9a961', '#a68846', '#0b1220', '#0b1220'];
+    var cPixels = [];
+
+    for (var y = 0; y < cRows; y++) {
+      for (var x = 0; x < cCols; x++) {
+        cPixels.push({
+          x: x, y: y,
+          color: palette[Math.floor(Math.random() * palette.length)],
+          delay: (y / cRows) * 1200 + Math.random() * 300,
+          vy: 0, offsetY: 0, falling: false,
+        });
+      }
+    }
+
+    // Initial draw
+    cPixels.forEach(function(p) {
+      cCtx.fillStyle = p.color;
+      cCtx.fillRect(p.x * CPIXEL, p.y * CPIXEL, CPIXEL, CPIXEL);
+    });
+
+    setTimeout(function() {
+      var start = null;
+      function animate(ts) {
+        if (!start) start = ts;
+        var elapsed = ts - start;
+        cCtx.clearRect(0, 0, cW, cH);
+        var done = true;
+
+        cPixels.forEach(function(p) {
+          if (elapsed < p.delay) {
+            cCtx.fillStyle = p.color;
+            cCtx.fillRect(p.x * CPIXEL, p.y * CPIXEL, CPIXEL, CPIXEL);
+            done = false;
+            return;
+          }
+          var t = (elapsed - p.delay) / 500;
+          if (t >= 1) return;
+          done = false;
+          if (!p.falling) { p.falling = true; p.vy = 1.5 + Math.random() * 3.5; }
+          p.offsetY += p.vy;
+          p.vy += 0.25;
+          cCtx.globalAlpha = Math.max(0, 1 - t);
+          cCtx.fillStyle = p.color;
+          cCtx.fillRect(p.x * CPIXEL + (Math.random() - 0.5) * 1.5, p.y * CPIXEL + p.offsetY, CPIXEL, CPIXEL);
+        });
+        cCtx.globalAlpha = 1;
+        if (done || elapsed > 2200) { curtainEl.classList.add('done'); } else { requestAnimationFrame(animate); }
+      }
+      requestAnimationFrame(animate);
+    }, 300);
+  } else {
+    curtainEl.classList.add('done');
+  }
+
+
+  /* ═══════════════════════════════════════════════
+     DATA RAIN — falling monospace characters
+     ═══════════════════════════════════════════════ */
+  var rainEl = document.getElementById('data-rain');
+  if (!prefersReduced) {
+    var redChars = '\u2588\u2591\u2592\u2593\u2502\u250A\u2500\u253C\u00A7\u00B6\u2022\u25AA';
+    for (var i = 0; i < 30; i++) {
+      var col = document.createElement('div');
+      col.className = 'rain-col';
+      col.style.left = (i * 3.33 + Math.random() * 2) + '%';
+      col.style.animationDuration = (12 + Math.random() * 18) + 's';
+      col.style.animationDelay = (-Math.random() * 20) + 's';
+      col.style.fontSize = (9 + Math.random() * 3) + 'px';
+      var text = '';
+      for (var j = 0; j < 60; j++) {
+        text += redChars[Math.floor(Math.random() * redChars.length)] + ' ';
+      }
+      col.textContent = text;
+      rainEl.appendChild(col);
+    }
+  }
+
+
+  /* ═══════════════════════════════════════════════
+     REDACTED HERO — bars dissolve pixel by pixel
+     ═══════════════════════════════════════════════ */
+  var redactedWords = document.querySelectorAll('.redacted-word');
+  var deckText = document.getElementById('deck-text');
+
+  if (!prefersReduced) {
+    var heroDelay = sessionStorage.getItem('press_curtain_seen_before') ? 200 : 1800;
+    sessionStorage.setItem('press_curtain_seen_before', '1');
+
+    setTimeout(function() {
+      redactedWords.forEach(function(word, wi) {
+        var bar = word.querySelector('.redacted-bar');
+        var textEl = word.querySelector('.redacted-text');
+
+        setTimeout(function() {
+          // Pixelate the bar away
+          var rect = bar.getBoundingClientRect();
+          var w = rect.width, h = rect.height;
+          var pixelSize = 10;
+          var cols = Math.ceil(w / pixelSize);
+          var rows = Math.ceil(h / pixelSize);
+
+          // Create pixel grid over the bar
+          bar.style.display = 'none';
+          var pixelContainer = document.createElement('span');
+          pixelContainer.style.cssText = 'position:absolute;inset:0;display:block;overflow:hidden;';
+          word.appendChild(pixelContainer);
+
+          var pixels = [];
+          for (var py = 0; py < rows; py++) {
+            for (var px = 0; px < cols; px++) {
+              var pxEl = document.createElement('span');
+              pxEl.style.cssText = 'position:absolute;display:block;background:var(--ink);width:' + pixelSize + 'px;height:' + pixelSize + 'px;left:' + (px * pixelSize) + 'px;top:' + (py * pixelSize) + 'px;';
+              pixelContainer.appendChild(pxEl);
+              pixels.push({el: pxEl, x: px, y: py});
+            }
+          }
+
+          // Shuffle and dissolve
+          for (var si = pixels.length - 1; si > 0; si--) {
+            var sj = Math.floor(Math.random() * (si + 1));
+            var tmp = pixels[si]; pixels[si] = pixels[sj]; pixels[sj] = tmp;
+          }
+
+          // Show text underneath
+          textEl.style.visibility = 'visible';
+
+          pixels.forEach(function(p, idx) {
+            setTimeout(function() {
+              p.el.style.transition = 'opacity 0.12s ease, transform 0.12s ease';
+              p.el.style.opacity = '0';
+              p.el.style.transform = 'scale(0.5) translateY(' + (Math.random() * 6 - 3) + 'px)';
+            }, idx * 2);
+          });
+
+          // Clean up after dissolve
+          setTimeout(function() {
+            pixelContainer.remove();
+          }, pixels.length * 2 + 200);
+
+        }, wi * 200);
+      });
+
+      // Fade in deck after hero reveals
+      setTimeout(function() {
+        deckText.style.transition = 'opacity 0.6s ease';
+        deckText.style.opacity = '1';
+      }, redactedWords.length * 200 + 300);
+    }, heroDelay);
+  } else {
+    redactedWords.forEach(function(w) {
+      w.querySelector('.redacted-bar').style.display = 'none';
+      w.querySelector('.redacted-text').style.visibility = 'visible';
+    });
+    deckText.style.opacity = '1';
+  }
+
+
+  /* ═══════════════════════════════════════════════
+     SAFE-CRACKING STAT TICKER
+     ═══════════════════════════════════════════════ */
+  var tickerEls = document.querySelectorAll('.ticker-n[data-target]');
+  var tickerObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        tickerObs.disconnect();
+
+        tickerEls.forEach(function(el, ei) {
+          var target = el.dataset.target;
+          var isYear = el.dataset.isYear === 'true';
+          var isZero = el.dataset.isZero === 'true';
+
+          if (prefersReduced) { el.textContent = target; return; }
+
+          var digits = target.split('');
+          var totalCycles = 20;
+          var resolved = digits.map(function() { return false; });
+          var current = digits.map(function() { return Math.floor(Math.random() * 10); });
+
+          el.innerHTML = '';
+          var spans = digits.map(function(d, di) {
+            var s = document.createElement('span');
+            s.className = 'digit';
+            s.textContent = current[di];
+            el.appendChild(s);
+            return s;
+          });
+
+          var cycle = 0;
+          var interval = setInterval(function() {
+            cycle++;
+            spans.forEach(function(s, di) {
+              if (resolved[di]) return;
+
+              // Each digit resolves at a different time
+              var resolveAt = 8 + di * 4 + ei * 3;
+              if (cycle >= resolveAt) {
+                resolved[di] = true;
+                s.textContent = digits[di];
+                s.style.color = '#c9a961';
+                return;
+              }
+
+              s.textContent = Math.floor(Math.random() * 10);
+            });
+
+            if (resolved.every(function(r) { return r; })) {
+              clearInterval(interval);
+            }
+          }, 50);
+        });
+      }
+    });
+  }, {threshold: 0.3});
+  var tickerGrid = document.getElementById('ticker-grid');
+  if (tickerGrid) tickerObs.observe(tickerGrid);
+
+
+  /* ═══════════════════════════════════════════════
+     PRESS CARDS — Matrix text scramble
+     ═══════════════════════════════════════════════ */
+  var pressData = [
+    {
+      source: 'Financial Times',
+      date: 'March 2026',
+      headline: 'The quiet firm that private equity calls when the data has to be right.',
+      excerpt: 'In an industry crowded with analytics platforms making grand claims, Semperr has carved a niche by making none at all \u2014 and letting the work speak instead.',
+      tag: 'Profile',
+    },
+    {
+      source: 'The Information',
+      date: 'January 2026',
+      headline: 'Semperr\u2019s Trace platform hits 8 million tracked companies, no outside funding.',
+      excerpt: 'The bootstrapped data firm has quietly assembled one of the most comprehensive private-company databases in the industry.',
+      tag: 'Product',
+    },
+    {
+      source: 'Above the Law',
+      date: 'November 2025',
+      headline: 'Clad is what legal research should have been all along.',
+      excerpt: 'A review of Semperr\u2019s legal intelligence platform finds it fast, thorough, and refreshingly free of the AI hype that plagues competitors.',
+      tag: 'Review',
+    },
+    {
+      source: 'TechCrunch',
+      date: 'September 2025',
+      headline: 'How a 42-person company is outbuilding teams ten times its size.',
+      excerpt: 'Semperr\u2019s no-investor, no-press-release approach has produced three platforms now used by hundreds of institutions.',
+      tag: 'Feature',
+    },
+    {
+      source: 'Bloomberg Law',
+      date: 'July 2025',
+      headline: 'AmLaw 200 firms quietly adopt Semperr\u2019s Clad for citation verification.',
+      excerpt: 'The legal intelligence platform has gained traction among top firms looking for alternatives to legacy research tools.',
+      tag: 'Industry',
+    },
+    {
+      source: 'Inc. Magazine',
+      date: 'April 2025',
+      headline: 'Dev by Semperr: the anti-agency for small business tech.',
+      excerpt: 'For a flat monthly fee, small businesses get a named engineer who handles everything from websites to AI receptionists.',
+      tag: 'Profile',
+    },
+  ];
+
+  var pressGrid = document.getElementById('press-grid');
+  pressData.forEach(function(item) {
+    var card = document.createElement('div');
+    card.className = 'press-card';
+    card.innerHTML =
+      '<div class="press-source">' +
+        '<span class="press-source-name">' + item.source + '</span>' +
+        '<span class="press-date">' + item.date + '</span>' +
+      '</div>' +
+      '<div>' +
+        '<div class="press-headline">' + item.headline + '</div>' +
+        '<p class="press-excerpt">' + item.excerpt + '</p>' +
+        '<div style="margin-top: 12px;"><span class="press-tag">' + item.tag + '</span></div>' +
+      '</div>' +
+      '<div class="press-link"><a href="#">Read &rarr;</a></div>';
+    pressGrid.appendChild(card);
+  });
+
+
+  /* ═══════════════════════════════════════════════
+     FACTS ON THE RECORD — plain list
+     ═══════════════════════════════════════════════ */
+  var facts = [
+    'Semperr was founded in 2021 by Eleanor Voss and Henry Okafor in New York City.',
+    'The company has never taken outside investment and has no plans to.',
+    'Trace tracks 8.2 million private companies and 340,000 linked transactions.',
+    'Clad indexes 52 million legal documents across 1,240 jurisdictions.',
+    'Dev serves 300+ small business accounts with dedicated named engineers.',
+    'The team consists of 42 people across offices in San Francisco, New York, Cork, and Austin.',
+    'Every client engagement has a named partner. Every deliverable has a named engineer.',
+    'One hundred percent of hires come through internal referrals.',
+  ];
+
+  var factsList = document.getElementById('facts-list');
+  facts.forEach(function(fact, fi) {
+    var row = document.createElement('div');
+    row.style.cssText = 'padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;gap:20px;align-items:baseline;';
+    if (fi === 0) row.style.borderTop = '1px solid rgba(255,255,255,0.08)';
+
+    var num = document.createElement('span');
+    num.style.cssText = 'font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:var(--gold);flex-shrink:0;width:28px;';
+    num.textContent = String(fi + 1).padStart(2, '0');
+
+    var text = document.createElement('span');
+    text.style.cssText = 'font-size:16px;line-height:1.55;color:#c7cdd9;';
+    text.textContent = fact;
+
+    row.appendChild(num);
+    row.appendChild(text);
+    factsList.appendChild(row);
+  });
+
+})();
+</script>
+
+</body>
+</html>
