@@ -478,12 +478,24 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   }
 
   /* Footer mobile */
-  .footer-inner {
-    flex-direction: column !important;
+  .footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 32px !important;
+  }
+  .footer-brand-col {
+    grid-column: 1 / -1;
     text-align: center;
   }
-  .footer-brand {
-    margin-bottom: 8px;
+  .footer-brand-col p {
+    max-width: 100% !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .footer-col {
+    text-align: center;
+  }
+  .footer-col ul {
+    align-items: center;
   }
 
   /* Article cards with side-by-side layout */
@@ -599,10 +611,157 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .serif[style*="font-size: 48px"] {
     font-size: 36px !important;
   }
+
+  /* Footer small mobile */
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+}
+
+/* Cookie Consent Banner */
+.cookie-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 24px;
+  z-index: 9999;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.cookie-banner.visible {
+  transform: translateY(0);
+}
+
+.cookie-banner-inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.cookie-banner-text {
+  flex: 1;
+  min-width: 280px;
+}
+
+.cookie-banner-text h3 {
+  font-family: var(--serif);
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: var(--paper);
+}
+
+.cookie-banner-text p {
+  font-size: 14px;
+  color: var(--muted-light);
+  line-height: 1.5;
+}
+
+.cookie-banner-text a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.cookie-banner-text a:hover {
+  color: var(--paper);
+}
+
+.cookie-banner-actions {
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.cookie-btn {
+  padding: 12px 24px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.cookie-btn-accept {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.cookie-btn-accept:hover {
+  background: var(--paper);
+}
+
+.cookie-btn-decline {
+  background: transparent;
+  color: var(--muted-light);
+  border: 1px solid var(--muted);
+}
+
+.cookie-btn-decline:hover {
+  border-color: var(--paper);
+  color: var(--paper);
+}
+
+/* Footer link hover effects */
+.footer-col a:hover {
+  color: var(--paper) !important;
+}
+.footer-brand-col a:hover {
+  color: var(--gold) !important;
+}
+
+@media (max-width: 600px) {
+  .cookie-banner {
+    padding: 20px 16px;
+  }
+
+  .cookie-banner-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .cookie-banner-actions {
+    width: 100%;
+  }
+
+  .cookie-btn {
+    flex: 1;
+    text-align: center;
+  }
 }
 </style>
 </head>
 <body>
+
+<!-- Cookie Consent Banner -->
+<div class="cookie-banner" id="cookie-banner">
+  <div class="cookie-banner-inner">
+    <div class="cookie-banner-text">
+      <h3>We value your privacy</h3>
+      <p>
+        We use cookies to enhance your browsing experience and analyze site traffic.
+        By clicking "Accept", you consent to our use of cookies. Read our
+        <a href="privacy.html">Privacy Policy</a> and <a href="terms.html">Terms of Service</a>.
+      </p>
+    </div>
+    <div class="cookie-banner-actions">
+      <button class="cookie-btn cookie-btn-decline" id="cookie-decline">Decline</button>
+      <button class="cookie-btn cookie-btn-accept" id="cookie-accept">Accept</button>
+    </div>
+  </div>
+</div>
 
 <!-- ===== TOP BAR ===== -->
 <div class="top-bar" style="background: var(--ink); color: var(--paper); padding: 12px 0;">
@@ -1435,20 +1594,61 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 
 <!-- ===== FOOTER ===== -->
-<footer style="padding: 32px 0; background: var(--paper);">
+<footer style="padding: 64px 0 32px; background: var(--ink); color: var(--paper);">
   <div class="container">
-    <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-      <div class="footer-brand">
-        <a href="/" class="serif" style="font-size: 18px;">
+    <!-- Footer Main Grid -->
+    <div class="footer-grid" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px;">
+
+      <!-- Brand Column -->
+      <div class="footer-brand-col">
+        <a href="/" class="serif" style="font-size: 24px; display: inline-block; margin-bottom: 16px;">
           The Charter<span style="color: var(--gold);">r</span>
         </a>
-        <span class="hide-mobile" style="color: var(--paper-line); margin: 0 12px;">·</span>
-        <a href="about.html" class="serif hide-mobile" style="font-size: 16px; color: var(--muted);">
-          by Sempe<span style="color: var(--gold);">rr</span>
+        <p style="font-size: 14px; color: var(--muted-light); line-height: 1.6; max-width: 280px; margin-bottom: 20px;">
+          Dispatches on data infrastructure, software, and the institutions that depend on both.
+        </p>
+        <a href="about.html" class="serif" style="font-size: 16px; color: var(--muted-light);">
+          A publication by Sempe<span style="color: var(--gold);">rr</span>
         </a>
       </div>
-      <div class="eyebrow footer-copy" style="color: var(--muted);">
-        © 2026 Semperr Labs
+
+      <!-- Publication Column -->
+      <div class="footer-col">
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 20px;">Publication</div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+          <li><a href="dispatches.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">All Dispatches</a></li>
+          <li><a href="archive.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Archive</a></li>
+          <li><a href="events.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Events</a></li>
+          <li><a href="index.html#subscribe" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Subscribe</a></li>
+        </ul>
+      </div>
+
+      <!-- Company Column -->
+      <div class="footer-col">
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 20px;">Company</div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+          <li><a href="about.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">About</a></li>
+          <li><a href="careers.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Careers</a></li>
+          <li><a href="contact.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Contact</a></li>
+          <li><a href="press.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Press</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal Column -->
+      <div class="footer-col">
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 20px;">Legal</div>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
+          <li><a href="privacy.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Privacy Policy</a></li>
+          <li><a href="terms.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Terms of Service</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Footer Bottom -->
+    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+      <div class="eyebrow" style="color: var(--muted);">
+        © 2026 Semperr Labs, Inc. · San Francisco
       </div>
       <div class="eyebrow" style="color: var(--gold);">
         ◆ Semper paratus
@@ -1526,6 +1726,51 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     window.addEventListener('scroll', updateActiveNav);
     updateActiveNav();
   }
+})();
+
+// Update current date
+(function() {
+  const dateElement = document.getElementById('current-date');
+  if (dateElement) {
+    const now = new Date();
+    const months = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
+                    'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+    const day = now.getDate();
+    const month = months[now.getMonth()];
+    const year = now.getFullYear();
+    dateElement.textContent = `${day} ${month} ${year}`;
+  }
+})();
+
+// Cookie Consent Banner
+(function() {
+  const banner = document.getElementById('cookie-banner');
+  const acceptBtn = document.getElementById('cookie-accept');
+  const declineBtn = document.getElementById('cookie-decline');
+
+  // Check if user has already made a choice
+  const cookieConsent = localStorage.getItem('cookieConsent');
+
+  if (!cookieConsent) {
+    // Show banner after a short delay for better UX
+    setTimeout(function() {
+      banner.classList.add('visible');
+    }, 1000);
+  }
+
+  // Accept cookies
+  acceptBtn.addEventListener('click', function() {
+    localStorage.setItem('cookieConsent', 'accepted');
+    localStorage.setItem('cookieConsentDate', new Date().toISOString());
+    banner.classList.remove('visible');
+  });
+
+  // Decline cookies
+  declineBtn.addEventListener('click', function() {
+    localStorage.setItem('cookieConsent', 'declined');
+    localStorage.setItem('cookieConsentDate', new Date().toISOString());
+    banner.classList.remove('visible');
+  });
 })();
 </script>
 
