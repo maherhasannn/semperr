@@ -19,6 +19,12 @@
   --paper-line: #e4dfcf;
   --gold: #c9a961;
   --gold-deep: #a68846;
+  --blue: #4a7fb5;
+  --emerald: #3d9970;
+  --purple: #7b61a6;
+  --coral: #d4664a;
+  --slate: #7a8599;
+  --amber: #d4a24a;
   --muted: #6b7388;
   --muted-light: #9099ad;
   --serif: "Instrument Serif", "Times New Roman", serif;
@@ -249,6 +255,42 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   transition: opacity 0.3s ease;
 }
 
+/* Mosaic section wrapper */
+.mosaic-section { --section-accent: var(--gold); }
+.mosaic-section .eyebrow-accent { color: var(--section-accent); }
+.mosaic-section .mosaic-card:hover { border-color: var(--section-accent); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.3); }
+.mosaic-section .source-badge.section-badge { background: var(--section-accent); color: var(--ink); }
+
+/* Mosaic grid layouts */
+.mosaic-hero-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; margin-bottom: 20px; }
+.mosaic-stack { display: flex; flex-direction: column; gap: 20px; }
+.mosaic-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.mosaic-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.mosaic-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* Mosaic tile base */
+.mosaic-tile { display: block; position: relative; overflow: hidden; background: var(--ink); transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; border: 2px solid transparent; }
+.mosaic-tile:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.3); border-color: var(--section-accent, var(--gold)); }
+.mosaic-tile:hover img { opacity: 0.75 !important; transition: opacity 0.3s ease; }
+.mosaic-tile img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+.mosaic-tile .tile-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; background: linear-gradient(transparent, rgba(11,18,32,0.95)); }
+.mosaic-tile-hero img { height: 420px; }
+.mosaic-tile-hero .tile-overlay { padding: 32px; }
+.mosaic-tile-md img { height: 240px; }
+.mosaic-tile-sm img { height: 200px; }
+.mosaic-tile-stack { flex: 1; }
+.mosaic-tile-stack img { position: absolute; width: 100%; height: 100%; }
+.mosaic-tile-stack .tile-overlay { z-index: 1; }
+
+/* Category pill color accents */
+.cat-pill[data-accent="gold"]:hover, .cat-pill[data-accent="gold"].active { background: var(--gold); color: var(--ink); border-color: var(--gold); }
+.cat-pill[data-accent="blue"]:hover, .cat-pill[data-accent="blue"].active { background: var(--blue); color: white; border-color: var(--blue); }
+.cat-pill[data-accent="emerald"]:hover, .cat-pill[data-accent="emerald"].active { background: var(--emerald); color: white; border-color: var(--emerald); }
+.cat-pill[data-accent="purple"]:hover, .cat-pill[data-accent="purple"].active { background: var(--purple); color: white; border-color: var(--purple); }
+.cat-pill[data-accent="coral"]:hover, .cat-pill[data-accent="coral"].active { background: var(--coral); color: white; border-color: var(--coral); }
+.cat-pill[data-accent="slate"]:hover, .cat-pill[data-accent="slate"].active { background: var(--slate); color: white; border-color: var(--slate); }
+.cat-pill[data-accent="amber"]:hover, .cat-pill[data-accent="amber"].active { background: var(--amber); color: var(--ink); border-color: var(--amber); }
+
 /* Grid utilities */
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; grid-auto-rows: 1fr; }
 .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 32px; }
@@ -309,25 +351,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .grid-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; grid-auto-rows: 1fr !important; }
   .grid-2-1 { grid-template-columns: 1fr !important; }
 
-  /* News grid mosaic - tablet */
-  #news-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 20px !important;
-  }
-  #news-grid .news-featured {
-    grid-column: span 2 !important;
-    grid-row: span 1 !important;
-    min-height: 360px !important;
-  }
-  #news-grid .news-featured h3 {
-    font-size: 22px !important;
-  }
-  #news-grid .news-featured div[style*="padding: 40px"] {
-    padding: 32px !important;
-  }
-  /* We're Also Reading section - tablet 2 columns */
-  #news-grid div[style*="grid-template-columns: repeat(2, 1fr)"] {
-    gap: 0 24px !important;
+  /* News mosaic grid — tablet */
+  #news-mosaic-grid .mosaic-hero-grid {
+    grid-template-columns: 1fr !important;
   }
 
   /* Masthead */
@@ -339,6 +365,17 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .mosaic-top > div { flex-direction: column !important; gap: 16px !important; }
   .mosaic-row { grid-template-columns: 1fr !important; gap: 16px !important; }
   .mosaic-bottom { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .mosaic-hero-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .mosaic-stack { flex-direction: column !important; gap: 16px !important; }
+  .mosaic-row-3 { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .mosaic-row-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; }
+  .mosaic-row-2 { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .mosaic-tile-stack { min-height: 200px; }
+  .mosaic-tile-stack img { position: relative !important; height: 200px !important; }
+  #news-mosaic-grid .mosaic-hero-grid { grid-template-columns: 1fr !important; }
+  #news-mosaic-grid .mosaic-tile-hero img { height: 260px !important; }
+  #news-mosaic-grid .mosaic-tile-stack { min-height: 200px; }
+  #news-mosaic-grid .mosaic-tile-md img { height: 200px !important; }
 
   /* Content sections */
   .content-split { grid-template-columns: 1fr !important; gap: 40px !important; }
@@ -356,6 +393,29 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   /* Events */
   .events-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
   .events-row-2 { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+
+  /* Event mosaic tiles — tablet */
+  #events .mosaic-row-3 > .mosaic-tile { min-height: 240px !important; }
+  #events .mosaic-row-4 > .mosaic-tile { min-height: 140px !important; }
+
+  /* Craft section — reduce fixed heights on tablet */
+  #craft .mosaic-hero-grid > .mosaic-tile,
+  #craft .mosaic-hero-grid > a { height: 300px !important; }
+
+  /* Industry Voices — tablet adjustments */
+  #curated .mosaic-row-3 > .mosaic-tile {
+    min-height: 240px !important;
+    padding: 28px !important;
+  }
+  #curated .mosaic-tile .serif { font-size: 20px !important; }
+
+  /* Archive — tablet */
+  #archive .mosaic-row-4 > .mosaic-tile { min-height: 200px !important; }
+
+  /* Semperr event callout on tablet */
+  .semperr-event.mosaic-tile { flex-direction: column !important; text-align: center; }
+  .semperr-event-info { flex-direction: column !important; gap: 16px !important; width: 100%; }
+  .semperr-event-cta { width: 100% !important; justify-content: center; }
 }
 
 /* Mobile (max 600px) */
@@ -400,30 +460,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .grid-4 { grid-template-columns: 1fr !important; grid-auto-rows: auto !important; }
   .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
 
-  /* News grid mosaic - mobile */
-  #news-grid {
-    grid-template-columns: 1fr !important;
-    gap: 20px !important;
-  }
-  #news-grid .news-featured {
-    grid-column: span 1 !important;
-    grid-row: span 1 !important;
-    min-height: 320px !important;
-  }
-  #news-grid .news-featured h3 {
-    font-size: 20px !important;
-  }
-  #news-grid .news-featured div[style*="padding: 40px"] {
-    padding: 24px !important;
-  }
-  #news-grid .news-image > div:first-child {
-    height: 200px !important;
-  }
-  /* We're Also Reading section - mobile single column */
-  #news-grid div[style*="grid-template-columns: repeat(2, 1fr)"] {
-    grid-template-columns: 1fr !important;
-    gap: 0 !important;
-  }
+  /* News grid — mobile: already handled by NYT layout overrides */
   .events-row-2 { grid-template-columns: 1fr !important; }
 
   /* Top bar mobile */
@@ -597,13 +634,21 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   }
 
   /* Mosaic hero text */
-  .mosaic-card h2 {
+  .mosaic-card h2, .mosaic-tile h2 {
     font-size: 22px !important;
     line-height: 1.25 !important;
   }
-  .mosaic-card p {
+  .mosaic-card p, .mosaic-tile p {
     font-size: 13px !important;
   }
+  .mosaic-tile h3 {
+    font-size: 16px !important;
+  }
+  .mosaic-tile-hero img { height: 240px !important; }
+  .mosaic-tile-md img { height: 180px !important; }
+  .mosaic-tile-sm img { height: 160px !important; }
+  .mosaic-row-4 { grid-template-columns: 1fr !important; }
+  #news-mosaic-grid .mosaic-row-3 { grid-template-columns: 1fr !important; }
 
   /* Hide author info on small mobile */
   .mosaic-card .author-circle {
@@ -675,6 +720,85 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   section[style*="padding: 64px 0"] {
     padding: 40px 0 !important;
   }
+
+  /* ===== MOSAIC MOBILE FIXES (600px) ===== */
+
+  /* News mosaic grid — reduce min-height */
+  #news-mosaic-grid {
+    min-height: 300px !important;
+  }
+
+  /* Tile overlay padding — tighten for mobile */
+  .tile-overlay {
+    padding: 16px !important;
+  }
+  .mosaic-tile-hero .tile-overlay {
+    padding: 20px !important;
+  }
+
+  /* Event tiles — reduce min-heights */
+  #events .mosaic-row-3 > .mosaic-tile {
+    min-height: 220px !important;
+  }
+  #events .mosaic-row-4 > .mosaic-tile {
+    min-height: 120px !important;
+  }
+  #events .mosaic-row-3 > .mosaic-tile > img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Industry Voices — reduce min-height and padding */
+  #curated .mosaic-row-3 > .mosaic-tile {
+    min-height: 220px !important;
+    padding: 24px !important;
+  }
+  #curated .mosaic-tile .serif {
+    font-size: 18px !important;
+  }
+
+  /* Craft section — reduce fixed heights */
+  #craft .mosaic-hero-grid > .mosaic-tile,
+  #craft .mosaic-hero-grid > a {
+    height: 260px !important;
+  }
+
+  /* Archive tiles — reduce min-height */
+  #archive .mosaic-row-4 > .mosaic-tile {
+    min-height: 180px !important;
+  }
+
+  /* Latest Dispatches — force single column on small screens */
+  .content-split .mosaic-row-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Semperr event callout — adjust for mobile */
+  .semperr-event.mosaic-tile {
+    border-left-width: 3px !important;
+    padding: 24px !important;
+  }
+
+  /* News hero tiles — smaller fonts */
+  #news-mosaic-grid .mosaic-tile-hero h2 {
+    font-size: 22px !important;
+  }
+  #news-mosaic-grid .mosaic-tile-hero p {
+    font-size: 13px !important;
+    display: none;
+  }
+  #news-mosaic-grid .mosaic-tile-stack h3 {
+    font-size: 15px !important;
+  }
+
+  /* Featured section hero */
+  #featured .mosaic-tile-hero h2 {
+    font-size: 22px !important;
+  }
+  #featured .mosaic-tile-hero .tile-overlay p:not(.eyebrow) {
+    display: none;
+  }
 }
 
 /* Small mobile (max 400px) */
@@ -704,6 +828,301 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     grid-template-columns: 1fr !important;
     gap: 24px !important;
   }
+
+  /* ===== MOSAIC 400px REFINEMENTS ===== */
+
+  /* Tighter section padding */
+  section {
+    padding-top: 32px !important;
+    padding-bottom: 32px !important;
+  }
+
+  /* Tile overlays — minimal padding */
+  .tile-overlay {
+    padding: 12px !important;
+  }
+  .mosaic-tile-hero .tile-overlay {
+    padding: 16px !important;
+  }
+
+  /* Smaller tile heights */
+  .mosaic-tile-hero img { height: 200px !important; }
+  .mosaic-tile-md img { height: 160px !important; }
+
+  /* Event tiles further reduction */
+  #events .mosaic-row-3 > .mosaic-tile {
+    min-height: 180px !important;
+  }
+  #events .mosaic-row-4 > .mosaic-tile {
+    min-height: 100px !important;
+  }
+  #events .mosaic-row-4 > .mosaic-tile > div {
+    padding: 14px !important;
+  }
+
+  /* Industry Voices — compact on tiny screens */
+  #curated .mosaic-row-3 > .mosaic-tile {
+    min-height: 180px !important;
+    padding: 20px !important;
+  }
+  #curated .mosaic-tile .serif {
+    font-size: 16px !important;
+  }
+
+  /* Craft section heights */
+  #craft .mosaic-hero-grid > .mosaic-tile,
+  #craft .mosaic-hero-grid > a {
+    height: 220px !important;
+  }
+
+  /* Archive tiles */
+  #archive .mosaic-row-4 > .mosaic-tile {
+    min-height: 160px !important;
+  }
+  #archive .mosaic-tile h3 {
+    font-size: 15px !important;
+  }
+  #archive .mosaic-tile p {
+    font-size: 12px !important;
+  }
+
+  /* Trace/Clad hero text */
+  #trace .mosaic-tile-hero h2,
+  #clad .mosaic-tile-hero h2 {
+    font-size: 20px !important;
+  }
+
+  /* Section headers */
+  .mosaic-section h2[class*="serif"] {
+    font-size: 22px !important;
+  }
+
+  /* Reduce mosaic-row-3 to single column on tiny screens */
+  .mosaic-row-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* News grid */
+  #news-mosaic-grid {
+    min-height: auto !important;
+  }
+}
+
+/* News ticker */
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* NYT-style news layout */
+.nyt-col { padding: 24px 0; }
+.nyt-col-main { padding-right: 28px; border-right: 1px solid var(--paper-line); }
+.nyt-col-mid { padding: 24px 28px; border-right: 1px solid var(--paper-line); }
+.nyt-col-side { padding-left: 28px; }
+
+.nyt-divider {
+  height: 1px;
+  background: var(--paper-line);
+  margin: 20px 0;
+}
+.nyt-divider-bold {
+  height: 2px;
+  background: var(--ink);
+  margin: 20px 0;
+}
+.nyt-section-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--gold);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--paper-line);
+}
+
+/* Headline card — tight, no padding waste */
+.nyt-headline {
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--paper-line);
+  transition: all 0.15s;
+}
+.nyt-headline:hover { padding-left: 6px; }
+.nyt-headline:last-child { border-bottom: none; }
+.nyt-headline h3 {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 6px 0;
+}
+.nyt-headline:hover h3 { color: var(--gold-deep); }
+.nyt-headline p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+.nyt-headline .nyt-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* Lead story card */
+.nyt-lead {
+  display: block;
+  margin-bottom: 20px;
+  transition: all 0.2s;
+}
+.nyt-lead:hover { opacity: 0.92; }
+.nyt-lead img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 16px;
+}
+.nyt-lead h3 {
+  font-family: var(--serif);
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 10px 0;
+  letter-spacing: -0.01em;
+}
+.nyt-lead:hover h3 { color: var(--gold-deep); }
+.nyt-lead p {
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* Thumb card — small image + headline side by side */
+.nyt-thumb {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--paper-line);
+  transition: all 0.15s;
+}
+.nyt-thumb:hover { opacity: 0.88; }
+.nyt-thumb:last-child { border-bottom: none; }
+.nyt-thumb img {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  display: block;
+}
+.nyt-thumb h3 {
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 4px 0;
+}
+.nyt-thumb:hover h3 { color: var(--gold-deep); }
+
+/* Mid-size image card */
+.nyt-mid-card {
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--paper-line);
+  transition: all 0.15s;
+}
+.nyt-mid-card:last-child { border-bottom: none; }
+.nyt-mid-card:hover { opacity: 0.88; }
+.nyt-mid-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  margin-bottom: 12px;
+}
+.nyt-mid-card h3 {
+  font-family: var(--serif);
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 6px 0;
+}
+.nyt-mid-card:hover h3 { color: var(--gold-deep); }
+.nyt-mid-card p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Sidebar number list */
+.nyt-numbered {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--paper-line);
+  transition: all 0.15s;
+}
+.nyt-numbered:last-child { border-bottom: none; }
+.nyt-numbered:hover { padding-left: 4px; }
+.nyt-numbered .nyt-num {
+  font-family: var(--serif);
+  font-size: 28px;
+  color: var(--paper-line);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 28px;
+}
+.nyt-numbered h4 {
+  font-family: var(--serif);
+  font-size: 14px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0;
+}
+.nyt-numbered:hover h4 { color: var(--gold-deep); }
+
+/* Opinion card */
+.nyt-opinion {
+  display: block;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--paper-line);
+  transition: all 0.15s;
+}
+.nyt-opinion:last-child { border-bottom: none; }
+.nyt-opinion:hover { padding-left: 4px; }
+.nyt-opinion h4 {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 4px 0;
+}
+.nyt-opinion:hover h4 { color: var(--gold-deep); }
+
+/* Mobile overrides for news mosaic */
+@media (max-width: 900px) {
+  #news-mosaic-grid .mosaic-hero-grid { grid-template-columns: 1fr !important; }
+  #news-mosaic-grid .mosaic-row-3 { grid-template-columns: 1fr !important; }
+  #news-ticker { display: none; }
+}
+@media (max-width: 600px) {
+  #news-categories { display: none !important; }
 }
 
 /* Cookie Consent Banner */
@@ -913,13 +1332,14 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 <div class="category-nav" style="border-bottom: 1px solid var(--paper-line); padding: 16px 0; position: sticky; top: 0; background: var(--paper); z-index: 100;">
   <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
     <div class="cat-scroll" style="display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 4px;">
-      <a href="#featured" class="cat-pill active">All</a>
-      <a href="#trace" class="cat-pill">Trace</a>
-      <a href="#clad" class="cat-pill">Clad</a>
-      <a href="#craft" class="cat-pill">Craft</a>
-      <a href="#curated" class="cat-pill">Curated</a>
-      <a href="#events" class="cat-pill">Events</a>
-      <a href="#archive" class="cat-pill">Archive</a>
+      <a href="#industry-watch" class="cat-pill active" data-accent="gold">Industry Watch</a>
+      <a href="#featured" class="cat-pill" data-accent="gold">Featured</a>
+      <a href="#trace" class="cat-pill" data-accent="blue">Trace</a>
+      <a href="#clad" class="cat-pill" data-accent="emerald">Clad</a>
+      <a href="#craft" class="cat-pill" data-accent="purple">Craft</a>
+      <a href="#curated" class="cat-pill" data-accent="amber">Voices</a>
+      <a href="#events" class="cat-pill" data-accent="coral">Events</a>
+      <a href="#archive" class="cat-pill" data-accent="slate">Archive</a>
     </div>
     <div class="hide-mobile eyebrow" style="color: var(--muted); flex-shrink: 0; margin-left: 24px;">
       Trusted by <span style="color: var(--gold);">110K+</span>
@@ -928,133 +1348,122 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </div>
 
 
-<!-- ===== MOSAIC GRID ===== -->
+<!-- ===== INDUSTRY WATCH (NEWS) — HERO POSITION ===== -->
+<section id="industry-watch" class="mosaic-section" style="--section-accent: var(--gold); padding: 0 0 64px 0; background: var(--paper);">
+
+  <!-- Breaking News Ticker -->
+  <div id="news-ticker" style="background: var(--ink); color: var(--paper); padding: 10px 0; overflow: hidden; white-space: nowrap;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 0 var(--pad); display: flex; align-items: center; gap: 16px;">
+      <span class="eyebrow" style="color: var(--gold); flex-shrink: 0; font-size: 10px; letter-spacing: 0.15em;">BREAKING</span>
+      <span style="width: 6px; height: 6px; background: var(--gold); border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite;"></span>
+      <div id="ticker-content" style="overflow: hidden; flex: 1;">
+        <div id="ticker-track" style="display: inline-flex; gap: 48px; animation: tickerScroll 60s linear infinite;">
+          <span class="eyebrow" style="color: var(--muted-light); font-size: 11px;">Loading headlines...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section Header + Filters -->
+  <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 0 20px 0; border-bottom: 3px double var(--ink);">
+      <div style="display: flex; align-items: baseline; gap: 24px;">
+        <h2 class="serif" style="font-size: 32px; letter-spacing: -0.02em;">Industry Watch</h2>
+        <span class="eyebrow" style="color: var(--gold);">●</span>
+        <div class="eyebrow" style="color: var(--muted);" id="news-last-updated">Loading...</div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="news-categories">
+        <button class="news-filter active" data-category="all" style="padding: 6px 14px; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.15s;">All</button>
+        <button class="news-filter" data-category="Finance" style="padding: 6px 14px; border: 1px solid var(--paper-line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.15s;">Finance</button>
+        <button class="news-filter" data-category="Legal" style="padding: 6px 14px; border: 1px solid var(--paper-line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.15s;">Legal</button>
+        <button class="news-filter" data-category="AI" style="padding: 6px 14px; border: 1px solid var(--paper-line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.15s;">AI</button>
+        <button class="news-filter" data-category="Enterprise" style="padding: 6px 14px; border: 1px solid var(--paper-line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.15s;">Enterprise</button>
+        <button class="news-filter" data-category="Tech" style="padding: 6px 14px; border: 1px solid var(--paper-line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.15s;">Tech</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- News Mosaic Grid (rendered by JS) -->
+  <div class="container">
+    <div id="news-mosaic-grid" style="margin-top: 24px; min-height: 500px;">
+      <div style="text-align: center; padding: 80px 20px;">
+        <div class="eyebrow" style="color: var(--muted);">Loading latest news...</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== MOSAIC GRID (Featured) ===== -->
 <section id="featured" style="padding: 48px 0;">
   <div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 24px;">
+      <div class="eyebrow" style="color: var(--gold);">Featured Dispatches</div>
+      <a href="dispatches.html" class="eyebrow" style="color: var(--muted);">View all →</a>
+    </div>
 
     <!-- Top Row: Hero + 2 Stacked -->
-    <div class="mosaic-top" style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; margin-bottom: 20px;">
-
-      <!-- Hero Article -->
-      <a href="posts/pe-data-architecture.html" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);" data-tooltip="Essential reading for PE operating partners rebuilding portfolio data systems. Explains why data architecture is now a competitive advantage, not a back-office problem.">
-        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt="" style="width: 100%; height: 420px; object-fit: cover; opacity: 0.7;"/>
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 32px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+    <div class="mosaic-hero-grid" style="margin-bottom: 20px;">
+      <a href="posts/pe-data-architecture.html" class="mosaic-tile mosaic-tile-hero" data-tooltip="Essential reading for PE operating partners rebuilding portfolio data systems.">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt=""/>
+        <div class="tile-overlay" style="padding: 32px;">
           <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
             <span class="source-badge semperr">Semperr</span>
             <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Trace · 12 min</span>
           </div>
-          <h2 class="serif" style="font-size: 32px; line-height: 1.2; color: var(--paper); margin-bottom: 12px;">
-            Why most PE firms are still getting portfolio data architecture wrong.
-          </h2>
-          <p style="font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.5; max-width: 90%;">
-            The edge no longer comes from model access — it comes from proprietary context.
-          </p>
+          <h2 class="serif" style="font-size: 32px; line-height: 1.2; color: var(--paper); margin-bottom: 12px;">Why most PE firms are still getting portfolio data architecture wrong.</h2>
+          <p style="font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.5; max-width: 90%;">The edge no longer comes from model access — it comes from proprietary context.</p>
           <div style="display: flex; align-items: center; gap: 10px; margin-top: 16px;">
             <div class="author-circle" style="width: 32px; height: 32px; font-size: 13px;">Ev</div>
             <span style="color: rgba(255,255,255,0.7); font-size: 14px;">Eleanor Voss</span>
           </div>
         </div>
       </a>
-
-      <!-- Stacked Right -->
-      <div style="display: flex; flex-direction: column; gap: 20px;">
-        <a href="posts/jurisdiction-specific-models.html" class="mosaic-card" style="display: block; position: relative; overflow: hidden; flex: 1; background: var(--ink);" data-tooltip="For law firms doing cross-border work: why generic legal AI fails and what jurisdiction-specific models can do that semantic search cannot.">
-          <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7; position: absolute;"/>
-          <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+      <div class="mosaic-stack">
+        <a href="posts/jurisdiction-specific-models.html" class="mosaic-tile mosaic-tile-stack" data-tooltip="Why generic legal AI fails and what jurisdiction-specific models can do.">
+          <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80" alt=""/>
+          <div class="tile-overlay">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
               <span class="source-badge semperr">Semperr</span>
               <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Clad</span>
             </div>
-            <h3 class="serif" style="font-size: 22px; line-height: 1.25; color: var(--paper);">
-              The argument for jurisdiction-specific models.
-            </h3>
+            <h3 class="serif" style="font-size: 22px; line-height: 1.25; color: var(--paper);">The argument for jurisdiction-specific models.</h3>
           </div>
         </a>
-        <a href="posts/build-things-that-work.html" class="mosaic-card" style="display: block; position: relative; overflow: hidden; flex: 1; background: var(--ink);" data-tooltip="The engineering philosophy behind systems that institutional clients depend on: correctness as the floor, not the ceiling.">
-          <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80" alt="" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7; position: absolute;"/>
-          <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
+        <a href="posts/build-things-that-work.html" class="mosaic-tile mosaic-tile-stack" data-tooltip="The engineering philosophy behind systems that institutional clients depend on.">
+          <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80" alt=""/>
+          <div class="tile-overlay">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
               <span class="source-badge semperr">Semperr</span>
               <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Craft</span>
             </div>
-            <h3 class="serif" style="font-size: 22px; line-height: 1.25; color: var(--paper);">
-              Build things that work the first time.
-            </h3>
+            <h3 class="serif" style="font-size: 22px; line-height: 1.25; color: var(--paper);">Build things that work the first time.</h3>
           </div>
         </a>
       </div>
     </div>
 
-    <!-- Second Row: 3 Equal -->
-    <div class="mosaic-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px;">
-      <a href="https://www.mckinsey.com/industries/private-equity-and-principal-investors/our-insights/private-markets-annual-review" target="_blank" rel="noopener" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);" data-tooltip="McKinsey's annual benchmark for PE industry trends. Essential context for understanding how data capabilities create alpha in an increasingly competitive market.">
-        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt="" style="width: 100%; height: 240px; object-fit: cover; opacity: 0.7;"/>
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-            <span class="source-badge external" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.15); font-weight: 500;">MCKINSEY & COMPANY</span>
-          </div>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">
-            McKinsey's Private Markets Annual Review
-          </h3>
+    <!-- Row of 3 -->
+    <div class="mosaic-row-3" style="margin-bottom: 20px;">
+      <a href="https://www.mckinsey.com/industries/private-equity-and-principal-investors/our-insights/private-markets-annual-review" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-md" data-tooltip="McKinsey's annual benchmark for PE industry trends.">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt=""/>
+        <div class="tile-overlay">
+          <span class="source-badge external" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 12px; display: inline-block;">MCKINSEY & COMPANY</span>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">McKinsey's Private Markets Annual Review</h3>
         </div>
       </a>
-      <a href="https://a16z.com/ai-canon/" target="_blank" rel="noopener" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);" data-tooltip="a16z on why proprietary data infrastructure is the moat in the AI era. Particularly relevant for firms building internal AI capabilities.">
-        <img src="https://d1lamhf6l6yk6d.cloudfront.net/uploads/2023/05/AI-CANON_Twitter.jpg" alt="" style="width: 100%; height: 240px; object-fit: cover; opacity: 0.7;"/>
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-            <span class="source-badge external" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.15); font-weight: 500;">ANDREESSEN HOROWITZ</span>
-          </div>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">
-            Emerging Architectures for LLM Applications
-          </h3>
+      <a href="https://a16z.com/ai-canon/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-md" data-tooltip="a16z on why proprietary data infrastructure is the moat in the AI era.">
+        <img src="https://d1lamhf6l6yk6d.cloudfront.net/uploads/2023/05/AI-CANON_Twitter.jpg" alt=""/>
+        <div class="tile-overlay">
+          <span class="source-badge external" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 12px; display: inline-block;">ANDREESSEN HOROWITZ</span>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">Emerging Architectures for LLM Applications</h3>
         </div>
       </a>
-      <a href="https://www.sequoiacap.com/article/ais-600b-question/" target="_blank" rel="noopener" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);" data-tooltip="Sequoia's perspective on how generative AI changes software economics. Required reading for understanding why services models are returning.">
-        <img src="https://sequoiacap.com/wp-content/uploads/sites/6/2024/06/600B-OG.png" alt="" style="width: 100%; height: 240px; object-fit: cover; opacity: 0.7;"/>
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-            <span class="source-badge external" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.15); font-weight: 500;">SEQUOIA CAPITAL</span>
-          </div>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">
-            AI's $600B Question
-          </h3>
-        </div>
-      </a>
-    </div>
-
-    <!-- Third Row: 2 Wide + 1 Tall -->
-    <div class="mosaic-bottom" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
-      <a href="https://pro.bloomberglaw.com/insights/legal-operations/" target="_blank" rel="noopener" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);" data-tooltip="Bloomberg Law's analysis of AI adoption across law firms. Key trends for understanding what's working in legal tech implementation.">
-        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=500&q=80" alt="" style="width: 100%; height: 200px; object-fit: cover; opacity: 0.7;"/>
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-            <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500;">BLOOMBERG LAW</span>
-          </div>
-          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">
-            Legal AI Adoption Trends 2026
-          </h3>
-        </div>
-      </a>
-      <a href="https://techcrunch.com/tag/data-infrastructure/" target="_blank" rel="noopener" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);" data-tooltip="TechCrunch's coverage of massive infrastructure investments. Essential context for understanding the AI infrastructure buildout.">
-        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&q=80" alt="" style="width: 100%; height: 200px; object-fit: cover; opacity: 0.7;"/>
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-            <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500;">TECHCRUNCH</span>
-          </div>
-          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">
-            Data Infrastructure Coverage
-          </h3>
-        </div>
-      </a>
-      <a href="https://news.crunchbase.com/venture/global-vc-funding-report-q1-2024/" target="_blank" rel="noopener" class="mosaic-card" style="display: block; position: relative; overflow: hidden; background: var(--ink);" data-tooltip="Crunchbase's quarterly funding report. Critical data for understanding where venture capital is flowing in enterprise software.">
-        <img src="https://news.crunchbase.com/wp-content/uploads/AI-cowork.jpg" alt="" style="width: 100%; height: 200px; object-fit: cover; opacity: 0.7;"/>
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-            <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500;">CRUNCHBASE NEWS</span>
-          </div>
-          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">
-            Global VC Funding Report Q1 2024
-          </h3>
+      <a href="https://www.sequoiacap.com/article/ais-600b-question/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-md" data-tooltip="Sequoia's perspective on how generative AI changes software economics.">
+        <img src="https://sequoiacap.com/wp-content/uploads/sites/6/2024/06/600B-OG.png" alt=""/>
+        <div class="tile-overlay">
+          <span class="source-badge external" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 12px; display: inline-block;">SEQUOIA CAPITAL</span>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">AI's $600B Question</h3>
         </div>
       </a>
     </div>
@@ -1066,111 +1475,105 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
-<!-- ===== TRENDING + LATEST SPLIT ===== -->
+<!-- ===== LATEST DISPATCHES (Mosaic) ===== -->
 <section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
-    <div class="content-split" style="display: grid; grid-template-columns: 1fr 340px; gap: 48px;">
+    <div class="content-split" style="display: grid; grid-template-columns: 1fr 300px; gap: 48px;">
 
-      <!-- Main Content: Latest -->
+      <!-- Main: Mosaic row of 4 tiles -->
       <div>
         <div class="eyebrow" style="color: var(--gold); margin-bottom: 24px;">Latest Dispatches</div>
-
-        <article style="display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px solid var(--paper-line);">
-          <a href="posts/unified-portfolio-intelligence.html"><img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?w=400&q=80" alt="" style="width: 100%; height: 140px; object-fit: cover;"/></a>
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-              <span class="source-badge semperr">Semperr</span>
-              <span class="eyebrow" style="color: var(--muted);">Trace</span>
+        <div class="mosaic-row-4" style="grid-template-columns: repeat(2, 1fr);">
+          <a href="posts/unified-portfolio-intelligence.html" class="mosaic-tile mosaic-tile-md">
+            <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?w=400&q=80" alt=""/>
+            <div class="tile-overlay">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span class="source-badge semperr">Semperr</span>
+                <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Trace</span>
+              </div>
+              <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">The case for unified portfolio intelligence platforms.</h3>
+              <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Eleanor Voss · 9 min</p>
             </div>
-            <a href="posts/unified-portfolio-intelligence.html"><h3 class="serif" style="font-size: 22px; line-height: 1.3; margin-bottom: 8px;">The case for unified portfolio intelligence platforms.</h3></a>
-            <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">Why the next generation of PE operating partners are demanding real-time visibility across their entire portfolio stack.</p>
-            <div class="eyebrow" style="color: var(--muted); margin-top: 12px;">Eleanor Voss · 9 min read</div>
-          </div>
-        </article>
-
-        <article style="display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px solid var(--paper-line);">
-          <a href="posts/discovery-broken.html"><img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80" alt="" style="width: 100%; height: 140px; object-fit: cover;"/></a>
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-              <span class="source-badge semperr">Semperr</span>
-              <span class="eyebrow" style="color: var(--muted);">Clad</span>
+          </a>
+          <a href="posts/discovery-broken.html" class="mosaic-tile mosaic-tile-md">
+            <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80" alt=""/>
+            <div class="tile-overlay">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span class="source-badge semperr">Semperr</span>
+                <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Clad</span>
+              </div>
+              <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">Discovery is broken. Here's how we're fixing it.</h3>
+              <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Henry Okafor · 11 min</p>
             </div>
-            <a href="posts/discovery-broken.html"><h3 class="serif" style="font-size: 22px; line-height: 1.3; margin-bottom: 8px;">Discovery is broken. Here's how we're fixing it.</h3></a>
-            <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">Litigation support teams are drowning in documents. Semantic search isn't enough—you need structured extraction at scale.</p>
-            <div class="eyebrow" style="color: var(--muted); margin-top: 12px;">Henry Okafor · 11 min read</div>
-          </div>
-        </article>
-
-        <article style="display: grid; grid-template-columns: 200px 1fr; gap: 24px; padding-bottom: 28px; margin-bottom: 28px; border-bottom: 1px solid var(--paper-line);">
-          <a href="posts/boring-technology.html"><img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&q=80" alt="" style="width: 100%; height: 140px; object-fit: cover;"/></a>
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-              <span class="source-badge semperr">Semperr</span>
-              <span class="eyebrow" style="color: var(--muted);">Craft</span>
+          </a>
+          <a href="posts/boring-technology.html" class="mosaic-tile mosaic-tile-md">
+            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&q=80" alt=""/>
+            <div class="tile-overlay">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span class="source-badge semperr">Semperr</span>
+                <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Craft</span>
+              </div>
+              <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">On choosing boring technology (again).</h3>
+              <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Marco Adair · 7 min</p>
             </div>
-            <a href="posts/boring-technology.html"><h3 class="serif" style="font-size: 22px; line-height: 1.3; margin-bottom: 8px;">On choosing boring technology (again).</h3></a>
-            <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">PostgreSQL, Python, and patience. Why we resist the new and shiny—and why our clients thank us later.</p>
-            <div class="eyebrow" style="color: var(--muted); margin-top: 12px;">Marco Adair · 7 min read</div>
-          </div>
-        </article>
-
-        <article style="display: grid; grid-template-columns: 200px 1fr; gap: 24px;">
-          <a href="posts/lp-data-rooms.html"><img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&q=80" alt="" style="width: 100%; height: 140px; object-fit: cover;"/></a>
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-              <span class="source-badge semperr">Semperr</span>
-              <span class="eyebrow" style="color: var(--muted);">Trace</span>
+          </a>
+          <a href="posts/lp-data-rooms.html" class="mosaic-tile mosaic-tile-md">
+            <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&q=80" alt=""/>
+            <div class="tile-overlay">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span class="source-badge semperr">Semperr</span>
+                <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Trace</span>
+              </div>
+              <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">What LPs actually want from their GPs' data rooms.</h3>
+              <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Anya Reyes · 14 min</p>
             </div>
-            <a href="posts/lp-data-rooms.html"><h3 class="serif" style="font-size: 22px; line-height: 1.3; margin-bottom: 8px;">What LPs actually want from their GPs' data rooms.</h3></a>
-            <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">After 200+ LP interviews, we've learned that the data room problem isn't about data—it's about trust.</p>
-            <div class="eyebrow" style="color: var(--muted); margin-top: 12px;">Anya Reyes · 14 min read</div>
-          </div>
-        </article>
+          </a>
+        </div>
       </div>
 
-      <!-- Sidebar: Trending -->
+      <!-- Sidebar: Most Read (compact numbered tiles) -->
       <aside>
         <div class="eyebrow" style="color: var(--gold); margin-bottom: 24px;">Most Read This Week</div>
-        <div style="display: flex; flex-direction: column; gap: 20px;">
-          <a href="posts/pe-data-architecture.html" style="display: flex; gap: 16px; align-items: flex-start;">
-            <span class="serif" style="font-size: 32px; color: var(--paper-line); line-height: 1;">01</span>
+        <div style="display: flex; flex-direction: column; gap: 0;">
+          <a href="posts/pe-data-architecture.html" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--paper-line); transition: all 0.15s;" onmouseover="this.style.paddingLeft='6px'" onmouseout="this.style.paddingLeft='0'">
+            <span class="serif" style="font-size: 28px; color: var(--gold); line-height: 1; opacity: 0.4;">01</span>
             <div>
-              <h4 class="serif" style="font-size: 16px; line-height: 1.35; margin-bottom: 4px;">Why most PE firms are still getting portfolio data architecture wrong.</h4>
+              <h4 class="serif" style="font-size: 15px; line-height: 1.35; margin-bottom: 4px;">Why most PE firms are still getting portfolio data architecture wrong.</h4>
               <span class="eyebrow" style="color: var(--muted);">14,280 reads</span>
             </div>
           </a>
-          <a href="posts/unified-portfolio-intelligence.html" style="display: flex; gap: 16px; align-items: flex-start;">
-            <span class="serif" style="font-size: 32px; color: var(--paper-line); line-height: 1;">02</span>
+          <a href="posts/unified-portfolio-intelligence.html" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--paper-line); transition: all 0.15s;" onmouseover="this.style.paddingLeft='6px'" onmouseout="this.style.paddingLeft='0'">
+            <span class="serif" style="font-size: 28px; color: var(--gold); line-height: 1; opacity: 0.4;">02</span>
             <div>
-              <h4 class="serif" style="font-size: 16px; line-height: 1.35; margin-bottom: 4px;">The case for unified portfolio intelligence platforms.</h4>
+              <h4 class="serif" style="font-size: 15px; line-height: 1.35; margin-bottom: 4px;">The case for unified portfolio intelligence platforms.</h4>
               <span class="eyebrow" style="color: var(--muted);">11,420 reads</span>
             </div>
           </a>
-          <a href="posts/discovery-broken.html" style="display: flex; gap: 16px; align-items: flex-start;">
-            <span class="serif" style="font-size: 32px; color: var(--paper-line); line-height: 1;">03</span>
+          <a href="posts/discovery-broken.html" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--paper-line); transition: all 0.15s;" onmouseover="this.style.paddingLeft='6px'" onmouseout="this.style.paddingLeft='0'">
+            <span class="serif" style="font-size: 28px; color: var(--gold); line-height: 1; opacity: 0.4;">03</span>
             <div>
-              <h4 class="serif" style="font-size: 16px; line-height: 1.35; margin-bottom: 4px;">Discovery is broken. Here's how we're fixing it.</h4>
+              <h4 class="serif" style="font-size: 15px; line-height: 1.35; margin-bottom: 4px;">Discovery is broken. Here's how we're fixing it.</h4>
               <span class="eyebrow" style="color: var(--muted);">9,856 reads</span>
             </div>
           </a>
-          <a href="posts/lp-data-rooms.html" style="display: flex; gap: 16px; align-items: flex-start;">
-            <span class="serif" style="font-size: 32px; color: var(--paper-line); line-height: 1;">04</span>
+          <a href="posts/lp-data-rooms.html" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--paper-line); transition: all 0.15s;" onmouseover="this.style.paddingLeft='6px'" onmouseout="this.style.paddingLeft='0'">
+            <span class="serif" style="font-size: 28px; color: var(--gold); line-height: 1; opacity: 0.4;">04</span>
             <div>
-              <h4 class="serif" style="font-size: 16px; line-height: 1.35; margin-bottom: 4px;">What LPs actually want from their GPs' data rooms.</h4>
+              <h4 class="serif" style="font-size: 15px; line-height: 1.35; margin-bottom: 4px;">What LPs actually want from their GPs' data rooms.</h4>
               <span class="eyebrow" style="color: var(--muted);">8,234 reads</span>
             </div>
           </a>
-          <a href="posts/jurisdiction-specific-models.html" style="display: flex; gap: 16px; align-items: flex-start;">
-            <span class="serif" style="font-size: 32px; color: var(--paper-line); line-height: 1;">05</span>
+          <a href="posts/jurisdiction-specific-models.html" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; transition: all 0.15s;" onmouseover="this.style.paddingLeft='6px'" onmouseout="this.style.paddingLeft='0'">
+            <span class="serif" style="font-size: 28px; color: var(--gold); line-height: 1; opacity: 0.4;">05</span>
             <div>
-              <h4 class="serif" style="font-size: 16px; line-height: 1.35; margin-bottom: 4px;">The argument for jurisdiction-specific models.</h4>
+              <h4 class="serif" style="font-size: 15px; line-height: 1.35; margin-bottom: 4px;">The argument for jurisdiction-specific models.</h4>
               <span class="eyebrow" style="color: var(--muted);">7,102 reads</span>
             </div>
           </a>
         </div>
 
         <!-- Mini Newsletter -->
-        <div style="margin-top: 40px; padding: 24px; background: var(--ink); color: var(--paper);">
+        <div style="margin-top: 32px; padding: 24px; background: var(--ink); color: var(--paper);">
           <div class="eyebrow" style="color: var(--gold); margin-bottom: 12px;">Newsletter</div>
           <p class="serif" style="font-size: 18px; line-height: 1.4; margin-bottom: 16px;">Get dispatches delivered to your inbox.</p>
           <input type="email" placeholder="you@firm.com" style="width: 100%; padding: 12px; font-size: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--paper); margin-bottom: 12px;"/>
@@ -1182,36 +1585,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
-<!-- ===== LIVE NEWS FEED ===== -->
-<section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line); background: var(--paper-warm);">
-  <div style="max-width: 1400px; margin: 0 auto; padding: 0 var(--pad);">
-    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
-      <div>
-        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">Industry Watch</div>
-        <h2 class="serif" style="font-size: 28px;">Latest news from across the ecosystem.</h2>
-      </div>
-      <div class="eyebrow" style="color: var(--muted);" id="news-last-updated">Loading...</div>
-    </div>
-
-    <!-- News Grid -->
-    <div id="news-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; min-height: 400px; grid-auto-rows: minmax(220px, auto);">
-      <!-- Loading state -->
-      <div style="grid-column: 1 / -1; text-align: center; padding: 80px 20px;">
-        <div class="eyebrow" style="color: var(--muted);">Loading latest news...</div>
-      </div>
-    </div>
-
-    <!-- Category Filter -->
-    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 32px; flex-wrap: wrap;" id="news-categories">
-      <button class="news-filter active" data-category="all" style="padding: 8px 16px; border: 1px solid var(--paper-line); background: var(--ink); color: var(--paper); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s;">All</button>
-      <button class="news-filter" data-category="Finance" style="padding: 8px 16px; border: 1px solid var(--paper-line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s;">Finance</button>
-      <button class="news-filter" data-category="Legal" style="padding: 8px 16px; border: 1px solid var(--paper-line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s;">Legal</button>
-      <button class="news-filter" data-category="AI" style="padding: 8px 16px; border: 1px solid var(--paper-line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s;">AI</button>
-      <button class="news-filter" data-category="Enterprise" style="padding: 8px 16px; border: 1px solid var(--paper-line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s;">Enterprise</button>
-      <button class="news-filter" data-category="Tech" style="padding: 8px 16px; border: 1px solid var(--paper-line); background: transparent; color: var(--ink); font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: all 0.2s;">Tech</button>
-    </div>
-  </div>
-</section>
 
 <!-- ===== BY THE NUMBERS ===== -->
 <section style="padding: 64px 0; background: var(--ink); color: var(--paper);">
@@ -1247,40 +1620,62 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 
 <!-- ===== PRIVATE EQUITY & VENTURE ===== -->
-<section id="trace" style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+<section id="trace" class="mosaic-section" style="--section-accent: var(--blue); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
       <div>
-        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">Trace</div>
+        <div class="eyebrow" style="color: var(--blue); margin-bottom: 8px;">Trace</div>
         <h2 class="serif" style="font-size: 28px;">Private Equity & Venture</h2>
       </div>
       <a href="trace-dispatches.html" class="eyebrow" style="color: var(--muted);">View all →</a>
     </div>
 
-    <div class="grid-4">
-      <a href="posts/pe-data-architecture.html" class="dispatch-card" style="padding: 0; border: none;">
-        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&q=80" alt="" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 16px;"/>
-        <span class="eyebrow" style="color: var(--gold);">Analysis</span>
-        <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">Why most PE firms are getting portfolio data architecture wrong.</h3>
-        <p class="eyebrow" style="color: var(--muted);">Eleanor Voss · 12 min</p>
+    <div class="mosaic-hero-grid" style="margin-bottom: 20px;">
+      <a href="posts/pe-data-architecture.html" class="mosaic-tile mosaic-tile-hero" data-tooltip="Essential reading for PE operating partners rebuilding portfolio data systems.">
+        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80" alt=""/>
+        <div class="tile-overlay" style="padding: 32px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span class="source-badge" style="background: var(--blue); color: white;">Semperr</span>
+            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Analysis · 12 min</span>
+          </div>
+          <h2 class="serif" style="font-size: 28px; line-height: 1.2; color: var(--paper); margin-bottom: 8px;">Why most PE firms are getting portfolio data architecture wrong.</h2>
+          <p style="font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.5;">The edge no longer comes from model access — it comes from proprietary context.</p>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 12px;">Eleanor Voss</p>
+        </div>
       </a>
-      <a href="posts/unified-portfolio-intelligence.html" class="dispatch-card" style="padding: 0; border: none;">
-        <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?w=400&q=80" alt="" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 16px;"/>
-        <span class="eyebrow" style="color: var(--gold);">Infrastructure</span>
-        <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">The case for unified portfolio intelligence platforms.</h3>
-        <p class="eyebrow" style="color: var(--muted);">Eleanor Voss · 9 min</p>
+      <div class="mosaic-stack">
+        <a href="posts/unified-portfolio-intelligence.html" class="mosaic-tile mosaic-tile-stack">
+          <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?w=400&q=80" alt=""/>
+          <div class="tile-overlay">
+            <span class="source-badge" style="background: var(--blue); color: white; margin-bottom: 8px; display: inline-block;">Semperr</span>
+            <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">The case for unified portfolio intelligence platforms.</h3>
+            <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Eleanor Voss · 9 min</p>
+          </div>
+        </a>
+        <a href="https://www.institutionalinvestor.com/section/private-equity" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-stack" data-tooltip="Institutional Investor's deep dive on PE data infrastructure challenges.">
+          <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&q=80" alt=""/>
+          <div class="tile-overlay">
+            <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">INSTITUTIONAL INVESTOR</span>
+            <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">Private equity's data problem is getting worse.</h3>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="mosaic-row-2">
+      <a href="https://pitchbook.com/news" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-sm" data-tooltip="PitchBook on operationalizing portfolio monitoring.">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt=""/>
+        <div class="tile-overlay">
+          <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">PITCHBOOK</span>
+          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">The ops playbook for data-driven PE.</h3>
+        </div>
       </a>
-      <a href="https://www.institutionalinvestor.com/section/private-equity" target="_blank" rel="noopener" class="dispatch-card" style="padding: 0; border: none;" data-tooltip="Institutional Investor's deep dive on why PE firms are struggling with data infrastructure. Critical reading for understanding industry-wide challenges.">
-        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&q=80" alt="" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 16px;"/>
-        <span class="source-badge external" style="margin-bottom: 8px; font-size: 10px; padding: 5px 12px; background: rgba(11,18,32,0.12); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">INSTITUTIONAL INVESTOR</span>
-        <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">Private equity's data problem is getting worse.</h3>
-        <p class="eyebrow" style="color: var(--muted);">External · 6 min</p>
-      </a>
-      <a href="https://pitchbook.com/news" target="_blank" rel="noopener" class="dispatch-card" style="padding: 0; border: none;" data-tooltip="PitchBook on how leading PE firms are operationalizing portfolio monitoring. Practical playbook for data-driven value creation.">
-        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80" alt="" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 16px;"/>
-        <span class="source-badge external" style="margin-bottom: 8px; font-size: 10px; padding: 5px 12px; background: rgba(11,18,32,0.12); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">PITCHBOOK</span>
-        <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">The ops playbook for data-driven PE.</h3>
-        <p class="eyebrow" style="color: var(--muted);">External · 9 min</p>
+      <a href="posts/lp-data-rooms.html" class="mosaic-tile mosaic-tile-sm">
+        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=500&q=80" alt=""/>
+        <div class="tile-overlay">
+          <span class="source-badge" style="background: var(--blue); color: white; margin-bottom: 8px; display: inline-block;">Semperr</span>
+          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">What LPs actually want from their GPs' data rooms.</h3>
+        </div>
       </a>
     </div>
   </div>
@@ -1288,139 +1683,156 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 
 <!-- ===== LEGAL TECHNOLOGY ===== -->
-<section id="clad" style="padding: 64px 0; border-bottom: 1px solid var(--paper-line); background: var(--paper-warm);">
+<section id="clad" class="mosaic-section" style="--section-accent: var(--emerald); padding: 64px 0; border-bottom: 1px solid var(--paper-line); background: var(--paper-warm);">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
       <div>
-        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">Clad</div>
+        <div class="eyebrow" style="color: var(--emerald); margin-bottom: 8px;">Clad</div>
         <h2 class="serif" style="font-size: 28px;">Legal Technology</h2>
       </div>
       <a href="clad-dispatches.html" class="eyebrow" style="color: var(--muted);">View all →</a>
     </div>
 
-    <div class="grid-2-1">
-      <!-- Featured Legal -->
-      <a href="posts/contract-intelligence.html" style="display: block; position: relative; overflow: hidden;">
-        <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80" alt="" style="width: 100%; height: 320px; object-fit: cover;"/>
-        <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 32px; background: linear-gradient(transparent, rgba(11,18,32,0.95));">
-          <span class="source-badge semperr" style="margin-bottom: 12px;">Semperr</span>
-          <h3 class="serif" style="font-size: 28px; line-height: 1.25; color: var(--paper); margin-bottom: 8px;">
-            Contract intelligence at scale: what we learned from 2M documents.
-          </h3>
-          <p style="color: rgba(255,255,255,0.7); font-size: 15px;">Henry Okafor · 15 min read</p>
+    <div class="mosaic-hero-grid" style="margin-bottom: 20px;">
+      <a href="posts/contract-intelligence.html" class="mosaic-tile mosaic-tile-hero">
+        <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80" alt=""/>
+        <div class="tile-overlay" style="padding: 32px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span class="source-badge" style="background: var(--emerald); color: white;">Semperr</span>
+            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">15 min read</span>
+          </div>
+          <h2 class="serif" style="font-size: 28px; line-height: 1.25; color: var(--paper); margin-bottom: 8px;">Contract intelligence at scale: what we learned from 2M documents.</h2>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 12px;">Henry Okafor</p>
         </div>
       </a>
-
-      <!-- Legal List -->
-      <div style="display: flex; flex-direction: column; gap: 20px;">
-        <a href="posts/discovery-broken.html" style="display: block; padding-bottom: 20px; border-bottom: 1px solid var(--paper-line);">
-          <span class="source-badge semperr" style="margin-bottom: 8px;">Semperr</span>
-          <h4 class="serif" style="font-size: 17px; line-height: 1.35; margin: 8px 0;">Discovery is broken. Here's how we're fixing it.</h4>
-          <p class="eyebrow" style="color: var(--muted);">Henry Okafor · 11 min</p>
+      <div class="mosaic-stack">
+        <a href="posts/discovery-broken.html" class="mosaic-tile mosaic-tile-stack">
+          <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80" alt=""/>
+          <div class="tile-overlay">
+            <span class="source-badge" style="background: var(--emerald); color: white; margin-bottom: 8px; display: inline-block;">Semperr</span>
+            <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">Discovery is broken. Here's how we're fixing it.</h3>
+            <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Henry Okafor · 11 min</p>
+          </div>
         </a>
-        <a href="https://www.law.com/legaltechnews/" target="_blank" rel="noopener" style="display: block; padding-bottom: 20px; border-bottom: 1px solid var(--paper-line);" data-tooltip="Law.com's comprehensive coverage of legal tech adoption at Am Law 200 firms. Essential for understanding what leading firms are implementing.">
-          <span class="source-badge external" style="margin-bottom: 8px; font-size: 10px; padding: 5px 12px; background: rgba(11,18,32,0.12); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">LAW.COM</span>
-          <h4 class="serif" style="font-size: 17px; line-height: 1.35; margin: 8px 0;">The technologies reshaping Big Law in 2026.</h4>
-          <p class="eyebrow" style="color: var(--muted);">External · 10 min</p>
-        </a>
-        <a href="https://abovethelaw.com/tag/legal-technology/" target="_blank" rel="noopener" style="display: block; padding-bottom: 20px; border-bottom: 1px solid var(--paper-line);" data-tooltip="Above the Law on how junior associates are adapting to AI tools. Ground-level perspective on what's actually being used in practice.">
-          <span class="source-badge external" style="margin-bottom: 8px; font-size: 10px; padding: 5px 12px; background: rgba(11,18,32,0.12); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">ABOVE THE LAW</span>
-          <h4 class="serif" style="font-size: 17px; line-height: 1.35; margin: 8px 0;">Why associates are quietly becoming prompt engineers.</h4>
-          <p class="eyebrow" style="color: var(--muted);">External · 5 min</p>
-        </a>
-        <a href="posts/jurisdiction-specific-models.html" style="display: block;">
-          <span class="source-badge semperr" style="margin-bottom: 8px;">Semperr</span>
-          <h4 class="serif" style="font-size: 17px; line-height: 1.35; margin: 8px 0;">The argument for jurisdiction-specific models.</h4>
-          <p class="eyebrow" style="color: var(--muted);">Henry Okafor · 9 min</p>
+        <a href="https://www.law.com/legaltechnews/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-stack" data-tooltip="Law.com's coverage of legal tech adoption at Am Law 200 firms.">
+          <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80" alt=""/>
+          <div class="tile-overlay">
+            <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">LAW.COM</span>
+            <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">The technologies reshaping Big Law in 2026.</h3>
+          </div>
         </a>
       </div>
+    </div>
+
+    <div class="mosaic-row-2">
+      <a href="https://abovethelaw.com/tag/legal-technology/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-sm" data-tooltip="Above the Law on how junior associates are adapting to AI tools.">
+        <img src="https://images.unsplash.com/photo-1521791055366-0d553872125f?w=500&q=80" alt=""/>
+        <div class="tile-overlay">
+          <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">ABOVE THE LAW</span>
+          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">Why associates are quietly becoming prompt engineers.</h3>
+        </div>
+      </a>
+      <a href="posts/jurisdiction-specific-models.html" class="mosaic-tile mosaic-tile-sm">
+        <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=500&q=80" alt=""/>
+        <div class="tile-overlay">
+          <span class="source-badge" style="background: var(--emerald); color: white; margin-bottom: 8px; display: inline-block;">Semperr</span>
+          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">The argument for jurisdiction-specific models.</h3>
+        </div>
+      </a>
     </div>
   </div>
 </section>
 
 
 <!-- ===== INDUSTRY VOICES ===== -->
-<section id="curated" style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+<section id="curated" class="mosaic-section" style="--section-accent: var(--amber); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
-    <div class="eyebrow" style="color: var(--gold); margin-bottom: 32px; text-align: center;">Industry Voices</div>
+    <div class="eyebrow" style="color: var(--amber); margin-bottom: 32px; text-align: center;">Industry Voices</div>
 
-    <div class="quotes-grid">
-      <blockquote style="padding: 32px; border-left: 3px solid var(--gold); background: var(--paper-warm);">
-        <p class="serif" style="font-size: 20px; line-height: 1.5; font-style: italic; margin-bottom: 20px;">
+    <div class="mosaic-row-3">
+      <div class="mosaic-tile" style="background: var(--ink); padding: 32px; border-left: 4px solid var(--amber); display: flex; flex-direction: column; justify-content: space-between; min-height: 280px;">
+        <p class="serif" style="font-size: 22px; line-height: 1.5; font-style: italic; color: var(--paper);">
           "The firms that treat data as a strategic asset—not a compliance burden—will be the ones still standing in ten years."
         </p>
-        <footer>
-          <div style="font-weight: 500;">David Rubenstein</div>
-          <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Co-Founder, Carlyle Group</div>
+        <footer style="margin-top: 24px;">
+          <div style="font-weight: 500; color: var(--amber);">David Rubenstein</div>
+          <div class="eyebrow" style="color: var(--muted-light); margin-top: 4px;">Co-Founder, Carlyle Group</div>
         </footer>
-      </blockquote>
+      </div>
 
-      <blockquote style="padding: 32px; border-left: 3px solid var(--gold); background: var(--paper-warm);">
-        <p class="serif" style="font-size: 20px; line-height: 1.5; font-style: italic; margin-bottom: 20px;">
+      <div class="mosaic-tile" style="background: var(--ink); padding: 32px; border-left: 4px solid var(--amber); display: flex; flex-direction: column; justify-content: space-between; min-height: 280px;">
+        <p class="serif" style="font-size: 22px; line-height: 1.5; font-style: italic; color: var(--paper);">
           "Legal AI isn't about replacing lawyers. It's about giving them superpowers they didn't know they needed."
         </p>
-        <footer>
-          <div style="font-weight: 500;">Mary Shen O'Carroll</div>
-          <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Former CLO, Google</div>
+        <footer style="margin-top: 24px;">
+          <div style="font-weight: 500; color: var(--amber);">Mary Shen O'Carroll</div>
+          <div class="eyebrow" style="color: var(--muted-light); margin-top: 4px;">Former CLO, Google</div>
         </footer>
-      </blockquote>
+      </div>
 
-      <blockquote style="padding: 32px; border-left: 3px solid var(--gold); background: var(--paper-warm);">
-        <p class="serif" style="font-size: 20px; line-height: 1.5; font-style: italic; margin-bottom: 20px;">
+      <div class="mosaic-tile" style="background: var(--ink); padding: 32px; border-left: 4px solid var(--amber); display: flex; flex-direction: column; justify-content: space-between; min-height: 280px;">
+        <p class="serif" style="font-size: 22px; line-height: 1.5; font-style: italic; color: var(--paper);">
           "We stopped asking 'what data do we have?' and started asking 'what decisions do we need to make?'"
         </p>
-        <footer>
-          <div style="font-weight: 500;">Sarah Kunst</div>
-          <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Managing Director, Cleo Capital</div>
+        <footer style="margin-top: 24px;">
+          <div style="font-weight: 500; color: var(--amber);">Sarah Kunst</div>
+          <div class="eyebrow" style="color: var(--muted-light); margin-top: 4px;">Managing Director, Cleo Capital</div>
         </footer>
-      </blockquote>
+      </div>
     </div>
   </div>
 </section>
 
 
 <!-- ===== DATA INFRASTRUCTURE ===== -->
-<section id="craft" style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+<section id="craft" class="mosaic-section" style="--section-accent: var(--purple); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
       <div>
-        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">Craft</div>
+        <div class="eyebrow" style="color: var(--purple); margin-bottom: 8px;">Craft</div>
         <h2 class="serif" style="font-size: 28px;">Data Infrastructure</h2>
       </div>
       <a href="craft-dispatches.html" class="eyebrow" style="color: var(--muted);">View all →</a>
     </div>
 
-    <div class="grid-2" style="gap: 32px;">
-      <a href="posts/postgresql-everything.html" style="display: grid; grid-template-columns: 140px 1fr; gap: 20px; padding: 24px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
-        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=300&q=80" alt="" style="width: 100%; height: 100px; object-fit: cover;"/>
-        <div>
-          <span class="source-badge semperr" style="margin-bottom: 8px;">Semperr</span>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">Why we still use PostgreSQL for everything.</h3>
-          <p class="eyebrow" style="color: var(--muted);">Marco Adair · 6 min</p>
+    <div class="mosaic-hero-grid" style="grid-template-columns: 1.2fr 1fr; margin-bottom: 20px;">
+      <a href="posts/postgresql-everything.html" class="mosaic-tile mosaic-tile-hero" style="height: 360px;">
+        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80" alt=""/>
+        <div class="tile-overlay" style="padding: 32px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span class="source-badge" style="background: var(--purple); color: white;">Semperr</span>
+            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">6 min</span>
+          </div>
+          <h2 class="serif" style="font-size: 26px; line-height: 1.2; color: var(--paper); margin-bottom: 8px;">Why we still use PostgreSQL for everything.</h2>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 12px;">Marco Adair</p>
         </div>
       </a>
-      <a href="posts/cost-of-data-later.html" style="display: grid; grid-template-columns: 140px 1fr; gap: 20px; padding: 24px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
-        <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=300&q=80" alt="" style="width: 100%; height: 100px; object-fit: cover;"/>
-        <div>
-          <span class="source-badge semperr" style="margin-bottom: 8px;">Semperr</span>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">The real cost of "we'll figure out the data later."</h3>
-          <p class="eyebrow" style="color: var(--muted);">Eleanor Voss · 8 min</p>
+      <a href="posts/cost-of-data-later.html" class="mosaic-tile" style="height: 360px;">
+        <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=500&q=80" alt=""/>
+        <div class="tile-overlay" style="padding: 28px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span class="source-badge" style="background: var(--purple); color: white;">Semperr</span>
+            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">8 min</span>
+          </div>
+          <h3 class="serif" style="font-size: 20px; line-height: 1.3; color: var(--paper);">The real cost of "we'll figure out the data later."</h3>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Eleanor Voss</p>
         </div>
       </a>
-      <a href="https://a16z.com/ai-canon/" target="_blank" rel="noopener" style="display: grid; grid-template-columns: 140px 1fr; gap: 20px; padding: 24px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'" data-tooltip="a16z's definitive guide to building LLM applications. Required reading for understanding how to architect data infrastructure for AI systems.">
-        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=300&q=80" alt="" style="width: 100%; height: 100px; object-fit: cover;"/>
-        <div>
-          <span class="source-badge external" style="margin-bottom: 8px; font-size: 10px; padding: 5px 12px; background: rgba(11,18,32,0.12); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">ANDREESSEN HOROWITZ</span>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">Emerging architectures for LLM applications.</h3>
-          <p class="eyebrow" style="color: var(--muted);">External · 14 min</p>
+    </div>
+
+    <div class="mosaic-row-2">
+      <a href="https://a16z.com/ai-canon/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-sm" data-tooltip="a16z's definitive guide to building LLM applications.">
+        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&q=80" alt=""/>
+        <div class="tile-overlay">
+          <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">ANDREESSEN HOROWITZ</span>
+          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">Emerging architectures for LLM applications.</h3>
         </div>
       </a>
-      <a href="https://www.sequoiacap.com/article/ais-600b-question/" target="_blank" rel="noopener" style="display: grid; grid-template-columns: 140px 1fr; gap: 20px; padding: 24px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'" data-tooltip="Sequoia's perspective on data infrastructure as competitive moat. Explains why the winners in enterprise software will be those who own the data layer.">
-        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&q=80" alt="" style="width: 100%; height: 100px; object-fit: cover;"/>
-        <div>
-          <span class="source-badge external" style="margin-bottom: 8px; font-size: 10px; padding: 5px 12px; background: rgba(11,18,32,0.12); font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em;">SEQUOIA CAPITAL</span>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.35; margin: 8px 0;">The new data infrastructure stack.</h3>
-          <p class="eyebrow" style="color: var(--muted);">External · 11 min</p>
+      <a href="https://www.sequoiacap.com/article/ais-600b-question/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-sm" data-tooltip="Sequoia's perspective on data infrastructure as competitive moat.">
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80" alt=""/>
+        <div class="tile-overlay">
+          <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">SEQUOIA CAPITAL</span>
+          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">The new data infrastructure stack.</h3>
         </div>
       </a>
     </div>
@@ -1429,152 +1841,107 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 
 <!-- ===== FEATURED EVENTS ===== -->
-<section id="events" style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+<section id="events" class="mosaic-section" style="--section-accent: var(--coral); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 40px;">
       <div>
-        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">Industry Calendar</div>
+        <div class="eyebrow" style="color: var(--coral); margin-bottom: 8px;">Industry Calendar</div>
         <h2 class="serif" style="font-size: 28px;">Upcoming Events</h2>
       </div>
       <a href="events.html" class="eyebrow" style="color: var(--muted);">Full calendar →</a>
     </div>
 
-    <div class="events-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
-
-      <!-- TechCrunch Disrupt -->
-      <a href="https://techcrunch.com/events/disrupt/" target="_blank" rel="noopener" class="event-card" style="display: block; border: 1px solid var(--paper-line); overflow: hidden; transition: all 0.25s;">
-        <div style="position: relative;">
-          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80" alt="" style="width: 100%; height: 160px; object-fit: cover;"/>
-          <div style="position: absolute; top: 12px; left: 12px;">
-            <span class="eyebrow" style="background: var(--ink); color: var(--paper); padding: 6px 10px;">TechCrunch</span>
-          </div>
+    <!-- 3 Main Event Mosaic Tiles -->
+    <div class="mosaic-row-3" style="margin-bottom: 20px;">
+      <a href="https://techcrunch.com/events/disrupt/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 300px;">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80" alt="" style="position: absolute;"/>
+        <div style="position: absolute; top: 16px; left: 16px;">
+          <span style="background: var(--coral); color: white; padding: 6px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;">OCT 28</span>
         </div>
-        <div style="padding: 20px;">
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-            <div style="text-align: center; padding: 8px 12px; background: var(--paper-warm); border: 1px solid var(--paper-line);">
-              <div class="eyebrow" style="color: var(--gold); font-size: 9px;">OCT</div>
-              <div class="serif" style="font-size: 24px; line-height: 1;">28</div>
-            </div>
-            <div>
-              <h3 class="serif" style="font-size: 18px; line-height: 1.3;">TechCrunch Disrupt 2026</h3>
-              <p class="eyebrow" style="color: var(--muted); margin-top: 4px;">San Francisco, CA</p>
-            </div>
-          </div>
-          <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">The flagship startup conference returns with 10,000+ attendees, Startup Battlefield, and the biggest names in tech.</p>
+        <div class="tile-overlay">
+          <span class="eyebrow" style="color: rgba(255,255,255,0.5); margin-bottom: 8px; display: block;">TechCrunch</span>
+          <h3 class="serif" style="font-size: 20px; line-height: 1.3; color: var(--paper); margin-bottom: 6px;">TechCrunch Disrupt 2026</h3>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.5);">San Francisco, CA</p>
         </div>
       </a>
-
-      <!-- SuperReturn -->
-      <a href="https://informaconnect.com/superreturn-international/" target="_blank" rel="noopener" class="event-card" style="display: block; border: 1px solid var(--paper-line); overflow: hidden; transition: all 0.25s;">
-        <div style="position: relative;">
-          <img src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=500&q=80" alt="" style="width: 100%; height: 160px; object-fit: cover;"/>
-          <div style="position: absolute; top: 12px; left: 12px;">
-            <span class="eyebrow" style="background: var(--ink); color: var(--paper); padding: 6px 10px;">Private Equity</span>
-          </div>
+      <a href="https://informaconnect.com/superreturn-international/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 300px;">
+        <img src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=500&q=80" alt="" style="position: absolute;"/>
+        <div style="position: absolute; top: 16px; left: 16px;">
+          <span style="background: var(--coral); color: white; padding: 6px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;">JUN 10</span>
         </div>
-        <div style="padding: 20px;">
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-            <div style="text-align: center; padding: 8px 12px; background: var(--paper-warm); border: 1px solid var(--paper-line);">
-              <div class="eyebrow" style="color: var(--gold); font-size: 9px;">JUN</div>
-              <div class="serif" style="font-size: 24px; line-height: 1;">10</div>
-            </div>
-            <div>
-              <h3 class="serif" style="font-size: 18px; line-height: 1.3;">SuperReturn International</h3>
-              <p class="eyebrow" style="color: var(--muted); margin-top: 4px;">Berlin, Germany</p>
-            </div>
-          </div>
-          <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">The world's largest gathering of private equity and venture capital professionals. 5,000+ LPs and GPs.</p>
+        <div class="tile-overlay">
+          <span class="eyebrow" style="color: rgba(255,255,255,0.5); margin-bottom: 8px; display: block;">Private Equity</span>
+          <h3 class="serif" style="font-size: 20px; line-height: 1.3; color: var(--paper); margin-bottom: 6px;">SuperReturn International</h3>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.5);">Berlin, Germany</p>
         </div>
       </a>
-
-      <!-- ILTACON -->
-      <a href="https://www.iltacon.org/" target="_blank" rel="noopener" class="event-card" style="display: block; border: 1px solid var(--paper-line); overflow: hidden; transition: all 0.25s;">
-        <div style="position: relative;">
-          <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=500&q=80" alt="" style="width: 100%; height: 160px; object-fit: cover;"/>
-          <div style="position: absolute; top: 12px; left: 12px;">
-            <span class="eyebrow" style="background: var(--ink); color: var(--paper); padding: 6px 10px;">Legal Tech</span>
-          </div>
+      <a href="https://www.iltacon.org/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 300px;">
+        <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=500&q=80" alt="" style="position: absolute;"/>
+        <div style="position: absolute; top: 16px; left: 16px;">
+          <span style="background: var(--coral); color: white; padding: 6px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;">AUG 18</span>
         </div>
-        <div style="padding: 20px;">
-          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-            <div style="text-align: center; padding: 8px 12px; background: var(--paper-warm); border: 1px solid var(--paper-line);">
-              <div class="eyebrow" style="color: var(--gold); font-size: 9px;">AUG</div>
-              <div class="serif" style="font-size: 24px; line-height: 1;">18</div>
-            </div>
-            <div>
-              <h3 class="serif" style="font-size: 18px; line-height: 1.3;">ILTACON 2026</h3>
-              <p class="eyebrow" style="color: var(--muted); margin-top: 4px;">National Harbor, MD</p>
-            </div>
-          </div>
-          <p style="font-size: 14px; color: var(--muted); line-height: 1.5;">The premier legal technology conference. Where law firm innovation leaders shape the future of legal practice.</p>
+        <div class="tile-overlay">
+          <span class="eyebrow" style="color: rgba(255,255,255,0.5); margin-bottom: 8px; display: block;">Legal Tech</span>
+          <h3 class="serif" style="font-size: 20px; line-height: 1.3; color: var(--paper); margin-bottom: 6px;">ILTACON 2026</h3>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.5);">National Harbor, MD</p>
         </div>
       </a>
-
     </div>
 
-    <!-- Second Row: Smaller Events -->
-    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 24px;" class="events-row-2">
-
-      <a href="https://www.money2020.com/" target="_blank" rel="noopener" style="display: flex; gap: 16px; padding: 16px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
-        <div style="text-align: center; padding: 8px 10px; background: var(--paper-warm); border: 1px solid var(--paper-line); flex-shrink: 0;">
-          <div class="eyebrow" style="color: var(--gold); font-size: 8px;">OCT</div>
-          <div class="serif" style="font-size: 20px; line-height: 1;">22</div>
-        </div>
-        <div>
-          <h4 class="serif" style="font-size: 15px; line-height: 1.3; margin-bottom: 4px;">Money20/20 USA</h4>
-          <p class="eyebrow" style="color: var(--muted);">Las Vegas, NV</p>
+    <!-- Row of 4 smaller event tiles -->
+    <div class="mosaic-row-4" style="margin-bottom: 24px;">
+      <a href="https://www.money2020.com/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 160px; background: var(--ink);">
+        <div style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+          <span style="background: var(--coral); color: white; padding: 4px 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; width: fit-content;">OCT 22</span>
+          <div style="margin-top: auto; padding-top: 16px;">
+            <h4 class="serif" style="font-size: 16px; line-height: 1.3; color: var(--paper); margin-bottom: 4px;">Money20/20 USA</h4>
+            <p class="eyebrow" style="color: var(--muted-light);">Las Vegas, NV</p>
+          </div>
         </div>
       </a>
-
-      <a href="https://www.ai-expo.net/northamerica/" target="_blank" rel="noopener" style="display: flex; gap: 16px; padding: 16px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
-        <div style="text-align: center; padding: 8px 10px; background: var(--paper-warm); border: 1px solid var(--paper-line); flex-shrink: 0;">
-          <div class="eyebrow" style="color: var(--gold); font-size: 8px;">SEP</div>
-          <div class="serif" style="font-size: 20px; line-height: 1;">11</div>
-        </div>
-        <div>
-          <h4 class="serif" style="font-size: 15px; line-height: 1.3; margin-bottom: 4px;">AI & Big Data Expo</h4>
-          <p class="eyebrow" style="color: var(--muted);">Santa Clara, CA</p>
+      <a href="https://www.ai-expo.net/northamerica/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 160px; background: var(--ink);">
+        <div style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+          <span style="background: var(--coral); color: white; padding: 4px 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; width: fit-content;">SEP 11</span>
+          <div style="margin-top: auto; padding-top: 16px;">
+            <h4 class="serif" style="font-size: 16px; line-height: 1.3; color: var(--paper); margin-bottom: 4px;">AI & Big Data Expo</h4>
+            <p class="eyebrow" style="color: var(--muted-light);">Santa Clara, CA</p>
+          </div>
         </div>
       </a>
-
-      <a href="https://www.saastr.com/saastrsannual/" target="_blank" rel="noopener" style="display: flex; gap: 16px; padding: 16px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
-        <div style="text-align: center; padding: 8px 10px; background: var(--paper-warm); border: 1px solid var(--paper-line); flex-shrink: 0;">
-          <div class="eyebrow" style="color: var(--gold); font-size: 8px;">SEP</div>
-          <div class="serif" style="font-size: 20px; line-height: 1;">10</div>
-        </div>
-        <div>
-          <h4 class="serif" style="font-size: 15px; line-height: 1.3; margin-bottom: 4px;">SaaStr Annual 2026</h4>
-          <p class="eyebrow" style="color: var(--muted);">San Mateo, CA</p>
+      <a href="https://www.saastr.com/saastrsannual/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 160px; background: var(--ink);">
+        <div style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+          <span style="background: var(--coral); color: white; padding: 4px 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; width: fit-content;">SEP 10</span>
+          <div style="margin-top: auto; padding-top: 16px;">
+            <h4 class="serif" style="font-size: 16px; line-height: 1.3; color: var(--paper); margin-bottom: 4px;">SaaStr Annual 2026</h4>
+            <p class="eyebrow" style="color: var(--muted-light);">San Mateo, CA</p>
+          </div>
         </div>
       </a>
-
-      <a href="https://www.datacouncil.ai/events" target="_blank" rel="noopener" style="display: flex; gap: 16px; padding: 16px; border: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--paper-line)'">
-        <div style="text-align: center; padding: 8px 10px; background: var(--paper-warm); border: 1px solid var(--paper-line); flex-shrink: 0;">
-          <div class="eyebrow" style="color: var(--gold); font-size: 8px;">MAY</div>
-          <div class="serif" style="font-size: 20px; line-height: 1;">14</div>
-        </div>
-        <div>
-          <h4 class="serif" style="font-size: 15px; line-height: 1.3; margin-bottom: 4px;">Data Council Austin</h4>
-          <p class="eyebrow" style="color: var(--muted);">Austin, TX</p>
+      <a href="https://www.datacouncil.ai/events" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 160px; background: var(--ink);">
+        <div style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+          <span style="background: var(--coral); color: white; padding: 4px 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; width: fit-content;">MAY 14</span>
+          <div style="margin-top: auto; padding-top: 16px;">
+            <h4 class="serif" style="font-size: 16px; line-height: 1.3; color: var(--paper); margin-bottom: 4px;">Data Council Austin</h4>
+            <p class="eyebrow" style="color: var(--muted-light);">Austin, TX</p>
+          </div>
         </div>
       </a>
-
     </div>
 
-    <!-- Semperr Event Callout -->
-    <div class="semperr-event" style="margin-top: 32px; padding: 32px; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+    <!-- Semperr Event Callout (full-width dark tile) -->
+    <div class="semperr-event mosaic-tile" style="margin-top: 8px; padding: 32px; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; border-left: 4px solid var(--coral);">
       <div class="semperr-event-info" style="display: flex; align-items: center; gap: 20px; flex: 1; min-width: 280px;">
-        <div class="event-date-badge" style="text-align: center; padding: 12px 16px; background: var(--gold); color: var(--ink); flex-shrink: 0;">
+        <div class="event-date-badge" style="text-align: center; padding: 12px 16px; background: var(--coral); color: white; flex-shrink: 0;">
           <div class="eyebrow" style="font-size: 9px;">NOV</div>
           <div class="serif" style="font-size: 28px; line-height: 1;">7</div>
         </div>
         <div>
-          <div class="eyebrow" style="color: var(--gold); margin-bottom: 4px;">Hosted by Semperr</div>
+          <div class="eyebrow" style="color: var(--coral); margin-bottom: 4px;">Hosted by Semperr</div>
           <h3 class="serif" style="font-size: 20px; margin-bottom: 4px;">The Data Room: NYC</h3>
           <p style="color: var(--muted-light); font-size: 13px;">An intimate dinner for 40 PE operating partners.</p>
         </div>
       </div>
-      <a href="contact.html" class="cta-primary semperr-event-cta" style="background: var(--gold); color: var(--ink); border-color: var(--gold); flex-shrink: 0;">
+      <a href="contact.html" class="cta-primary semperr-event-cta" style="background: var(--coral); color: white; border-color: var(--coral); flex-shrink: 0;">
         Request invitation <span style="opacity: 0.6;">→</span>
       </a>
     </div>
@@ -1584,36 +1951,44 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 
 <!-- ===== FROM THE ARCHIVE ===== -->
-<section id="archive" style="padding: 64px 0; border-bottom: 1px solid var(--paper-line); background: var(--paper-warm);">
+<section id="archive" class="mosaic-section" style="--section-accent: var(--slate); padding: 64px 0; border-bottom: 1px solid var(--paper-line); background: var(--paper-warm);">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
       <div>
-        <div class="eyebrow" style="color: var(--gold); margin-bottom: 8px;">From the Archive</div>
+        <div class="eyebrow" style="color: var(--slate); margin-bottom: 8px;">From the Archive</div>
         <h2 class="serif" style="font-size: 28px;">Timeless dispatches.</h2>
       </div>
       <a href="archive.html" class="eyebrow" style="color: var(--muted);">Full archive →</a>
     </div>
 
-    <div class="grid-4">
-      <a href="archive.html" style="display: block;">
-        <div class="eyebrow" style="color: var(--muted); margin-bottom: 8px;">VOL. I · 2021</div>
-        <h3 class="serif" style="font-size: 17px; line-height: 1.35; margin-bottom: 8px;">The five principles we will not compromise.</h3>
-        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">Our founding charter—and why we wrote it publicly.</p>
+    <div class="mosaic-row-4">
+      <a href="archive.html" class="mosaic-tile" style="min-height: 220px; background: var(--ink); background-image: repeating-linear-gradient(45deg, rgba(122,133,153,0.05) 0px, rgba(122,133,153,0.05) 1px, transparent 1px, transparent 12px);">
+        <div style="padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%;">
+          <div class="eyebrow" style="color: var(--slate); margin-bottom: 12px;">VOL. I · 2021</div>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.35; color: var(--paper); margin-bottom: 8px;">The five principles we will not compromise.</h3>
+          <p style="font-size: 13px; color: var(--muted-light); line-height: 1.5;">Our founding charter—and why we wrote it publicly.</p>
+        </div>
       </a>
-      <a href="archive.html" style="display: block;">
-        <div class="eyebrow" style="color: var(--muted); margin-bottom: 8px;">VOL. II · 2022</div>
-        <h3 class="serif" style="font-size: 17px; line-height: 1.35; margin-bottom: 8px;">On saying no to venture capital.</h3>
-        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">Why we chose to grow slowly—and profitably.</p>
+      <a href="archive.html" class="mosaic-tile" style="min-height: 220px; background: var(--ink); background-image: repeating-linear-gradient(45deg, rgba(122,133,153,0.05) 0px, rgba(122,133,153,0.05) 1px, transparent 1px, transparent 12px);">
+        <div style="padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%;">
+          <div class="eyebrow" style="color: var(--slate); margin-bottom: 12px;">VOL. II · 2022</div>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.35; color: var(--paper); margin-bottom: 8px;">On saying no to venture capital.</h3>
+          <p style="font-size: 13px; color: var(--muted-light); line-height: 1.5;">Why we chose to grow slowly—and profitably.</p>
+        </div>
       </a>
-      <a href="archive.html" style="display: block;">
-        <div class="eyebrow" style="color: var(--muted); margin-bottom: 8px;">VOL. III · 2023</div>
-        <h3 class="serif" style="font-size: 17px; line-height: 1.35; margin-bottom: 8px;">The infrastructure nobody wants to build.</h3>
-        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">Data plumbing isn't glamorous. That's the point.</p>
+      <a href="archive.html" class="mosaic-tile" style="min-height: 220px; background: var(--ink); background-image: repeating-linear-gradient(45deg, rgba(122,133,153,0.05) 0px, rgba(122,133,153,0.05) 1px, transparent 1px, transparent 12px);">
+        <div style="padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%;">
+          <div class="eyebrow" style="color: var(--slate); margin-bottom: 12px;">VOL. III · 2023</div>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.35; color: var(--paper); margin-bottom: 8px;">The infrastructure nobody wants to build.</h3>
+          <p style="font-size: 13px; color: var(--muted-light); line-height: 1.5;">Data plumbing isn't glamorous. That's the point.</p>
+        </div>
       </a>
-      <a href="archive.html" style="display: block;">
-        <div class="eyebrow" style="color: var(--muted); margin-bottom: 8px;">VOL. IV · 2024</div>
-        <h3 class="serif" style="font-size: 17px; line-height: 1.35; margin-bottom: 8px;">Why we bet on legal before everyone else.</h3>
-        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">The Clad story—from skepticism to scale.</p>
+      <a href="archive.html" class="mosaic-tile" style="min-height: 220px; background: var(--ink); background-image: repeating-linear-gradient(45deg, rgba(122,133,153,0.05) 0px, rgba(122,133,153,0.05) 1px, transparent 1px, transparent 12px);">
+        <div style="padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%;">
+          <div class="eyebrow" style="color: var(--slate); margin-bottom: 12px;">VOL. IV · 2024</div>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.35; color: var(--paper); margin-bottom: 8px;">Why we bet on legal before everyone else.</h3>
+          <p style="font-size: 13px; color: var(--muted-light); line-height: 1.5;">The Clad story—from skepticism to scale.</p>
+        </div>
       </a>
     </div>
   </div>
@@ -1818,7 +2193,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 // Category nav scroll tracking
 (function() {
   const navLinks = document.querySelectorAll('.cat-pill');
-  const sections = ['featured', 'trace', 'clad', 'craft', 'curated', 'events', 'archive']
+  const sections = ['industry-watch', 'featured', 'trace', 'clad', 'craft', 'curated', 'events', 'archive']
     .map(id => document.getElementById(id))
     .filter(Boolean);
 
@@ -1860,152 +2235,198 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   }
 })();
 
-// Live News Feed
+// Live News Feed — Mosaic tile layout
 (function() {
-  const newsGrid = document.getElementById('news-grid');
+  const newsGrid = document.getElementById('news-mosaic-grid');
   const lastUpdated = document.getElementById('news-last-updated');
   const filters = document.querySelectorAll('.news-filter');
+  const tickerTrack = document.getElementById('ticker-track');
+
+  const FEED_URL = 'https://raw.githubusercontent.com/maherhasannn/semperr/news-data/data/news.json';
 
   let allArticles = [];
   let currentCategory = 'all';
 
-  // Fetch news from news-data branch
-  fetch('https://raw.githubusercontent.com/maherhasannn/semperr/news-data/data/news.json')
+  const url = `${FEED_URL}?t=${Math.floor(Date.now() / (60 * 60 * 1000))}`;
+
+  fetch(url)
     .then(res => res.json())
     .then(data => {
-      allArticles = data.articles;
-
-      // Update last updated timestamp
+      allArticles = Array.isArray(data.articles) ? data.articles : [];
       const updated = new Date(data.lastUpdated);
-      lastUpdated.textContent = `Updated ${updated.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`;
-
-      // Render initial news (first 8 articles)
+      lastUpdated.textContent = Number.isFinite(updated.getTime())
+        ? `Updated ${updated.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
+        : '';
+      buildTicker();
       renderNews();
     })
     .catch(err => {
       console.error('Error fetching news:', err);
-      newsGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 80px 20px;"><div class="eyebrow" style="color: var(--muted);">Unable to load news. Please try again later.</div></div>';
+      newsGrid.innerHTML = '<div style="text-align: center; padding: 80px 20px;"><div class="eyebrow" style="color: var(--muted);">Unable to load news. Please try again later.</div></div>';
     });
 
-  // Render news articles in mosaic layout
+  // -------- helpers --------
+  const esc = (s) => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+
+  function hasValidImage(a) {
+    return a && typeof a.image === 'string' && /^https:\/\//i.test(a.image.trim());
+  }
+
+  function timeAgo(ts) {
+    const diff = Date.now() - ts;
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return mins + 'm ago';
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + 'h ago';
+    const days = Math.floor(hrs / 24);
+    return days + 'd ago';
+  }
+
+  function metaLine(a) {
+    let parts = `<span class="eyebrow" style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;">${esc(a.source)}</span>`;
+    parts += `<span style="color:var(--paper-line);font-size:9px;">·</span>`;
+    parts += `<span class="eyebrow" style="font-size:9px;color:var(--gold);text-transform:uppercase;">${esc(a.category)}</span>`;
+    if (a.publishedAt) {
+      parts += `<span style="color:var(--paper-line);font-size:9px;">·</span>`;
+      parts += `<span class="eyebrow" style="font-size:9px;color:var(--muted);">${timeAgo(a.publishedAt)}</span>`;
+    }
+    return parts;
+  }
+
+  // -------- ticker --------
+  function buildTicker() {
+    const headlines = allArticles.slice(0, 12);
+    if (!headlines.length) return;
+    const items = headlines.map(a =>
+      `<a href="${esc(a.link)}" target="_blank" rel="noopener" style="color: var(--paper); font-family: var(--sans); font-size: 13px; white-space: nowrap; transition: color 0.15s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--paper)'">${esc(a.title)}<span style="color:var(--gold);margin: 0 8px;">·</span><span class="eyebrow" style="color:var(--muted-light);font-size:10px;">${esc(a.source)}</span></a>`
+    ).join('<span style="display:inline-block;width:48px;"></span>');
+    // Duplicate for seamless loop
+    tickerTrack.innerHTML = items + '<span style="display:inline-block;width:48px;"></span>' + items;
+  }
+
+  // -------- mosaic card builders --------
+
+  // Hero tile — large, 2-col span feel
+  function buildMosaicHero(a) {
+    if (!a) return '';
+    const img = hasValidImage(a)
+      ? `<img src="${esc(a.image)}" alt="${esc(a.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'" style="width:100%;height:420px;object-fit:cover;opacity:0.7;"/>`
+      : '';
+    return `
+      <a href="${esc(a.link)}" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-hero">
+        ${img}
+        <div class="tile-overlay" style="padding:32px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+            <span class="source-badge" style="background:var(--gold);color:var(--ink);font-size:9px;padding:4px 10px;">${esc(a.source)}</span>
+            <span class="eyebrow" style="color:rgba(255,255,255,0.6);font-size:9px;">${esc(a.category)}${a.publishedAt ? ' · ' + timeAgo(a.publishedAt) : ''}</span>
+          </div>
+          <h2 class="serif" style="font-size:28px;line-height:1.2;color:var(--paper);margin-bottom:10px;">${esc(a.title)}</h2>
+          ${a.description ? `<p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.5;max-width:90%;">${esc(a.description).slice(0,180)}${a.description.length>180?'…':''}</p>` : ''}
+          ${a.author ? `<p class="eyebrow" style="color:rgba(255,255,255,0.5);margin-top:12px;">By ${esc(a.author)}</p>` : ''}
+        </div>
+      </a>`;
+  }
+
+  // Standard mosaic tile
+  function buildMosaicTile(a) {
+    if (!a) return '';
+    const img = hasValidImage(a)
+      ? `<img src="${esc(a.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'" style="width:100%;height:240px;object-fit:cover;opacity:0.7;"/>`
+      : '';
+    return `
+      <a href="${esc(a.link)}" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-md">
+        ${img || '<div style="width:100%;height:240px;background:var(--ink-soft);"></div>'}
+        <div class="tile-overlay">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span class="source-badge" style="background:var(--gold);color:var(--ink);font-size:9px;padding:4px 10px;">${esc(a.source)}</span>
+            <span class="eyebrow" style="color:rgba(255,255,255,0.6);font-size:9px;">${esc(a.category)}</span>
+          </div>
+          <h3 class="serif" style="font-size:18px;line-height:1.3;color:var(--paper);">${esc(a.title)}</h3>
+          ${a.publishedAt ? `<p class="eyebrow" style="color:rgba(255,255,255,0.4);margin-top:6px;font-size:9px;">${timeAgo(a.publishedAt)}</p>` : ''}
+        </div>
+      </a>`;
+  }
+
+  // Small mosaic tile (stacked)
+  function buildMosaicSmall(a) {
+    if (!a) return '';
+    const img = hasValidImage(a)
+      ? `<img src="${esc(a.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.querySelector('.tile-overlay').style.position='relative'" style="position:absolute;width:100%;height:100%;object-fit:cover;opacity:0.7;"/>`
+      : '';
+    return `
+      <a href="${esc(a.link)}" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-stack" style="flex:1;min-height:180px;">
+        ${img || '<div style="position:absolute;width:100%;height:100%;background:var(--ink-soft);"></div>'}
+        <div class="tile-overlay" style="z-index:1;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+            <span class="eyebrow" style="color:var(--gold);font-size:9px;">${esc(a.source)}</span>
+            <span style="color:rgba(255,255,255,0.3);font-size:9px;">·</span>
+            <span class="eyebrow" style="color:rgba(255,255,255,0.5);font-size:9px;">${esc(a.category)}</span>
+          </div>
+          <h3 class="serif" style="font-size:16px;line-height:1.3;color:var(--paper);">${esc(a.title)}</h3>
+        </div>
+      </a>`;
+  }
+
+  // -------- main render — mosaic tile layout --------
   function renderNews() {
-    let filtered = currentCategory === 'all'
+    const source = currentCategory === 'all'
       ? allArticles
       : allArticles.filter(a => a.category === currentCategory);
 
-    // Show first 10 articles
-    filtered = filtered.slice(0, 10);
-
-    if (filtered.length === 0) {
-      newsGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 80px 20px;"><div class="eyebrow" style="color: var(--muted);">No articles in this category yet.</div></div>';
+    if (!source.length) {
+      newsGrid.innerHTML = '<div style="text-align:center;padding:80px 20px;"><div class="eyebrow" style="color:var(--muted);">No articles in this category yet.</div></div>';
       return;
     }
 
-    // Separate articles with images from those without
-    const withImages = filtered.filter(a => a.image && a.image.trim() !== '');
-    const withoutImages = filtered.filter(a => !a.image || a.image.trim() === '');
+    const withImg = source.filter(hasValidImage);
+    const noImg = source.filter(a => !hasValidImage(a));
+    const imgPool = withImg.slice();
+    const allPool = source.slice();
+    const take = (pool, n) => pool.splice(0, n);
 
     let html = '';
-    let cardIndex = 0;
 
-    // Helper function to create featured card (large, 2x2 with big image)
-    function createFeaturedCard(article) {
-      return `
-        <a href="${article.link}" target="_blank" rel="noopener" class="news-card news-featured" style="grid-column: span 2; grid-row: span 2; position: relative; overflow: hidden; background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%); transition: transform 0.2s; min-height: 480px;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-          <img src="${article.image}" alt="${article.title}" style="width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1;" onerror="this.style.opacity='0'"/>
-          <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 40px; background: linear-gradient(to top, rgba(11,18,32,0.95) 0%, rgba(11,18,32,0.7) 60%, transparent 100%); z-index: 2;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-              <span class="source-badge" style="font-size: 10px; padding: 6px 12px; background: rgba(255,255,255,0.2); color: white; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;">${article.source}</span>
-              <span class="eyebrow" style="color: rgba(255,255,255,0.6); font-size: 10px;">•</span>
-              <span class="eyebrow" style="color: var(--gold); font-size: 10px; text-transform: uppercase;">${article.category}</span>
-            </div>
-            <h3 class="serif" style="font-size: 26px; line-height: 1.25; color: white; margin-bottom: 12px; font-weight: 500;">${article.title}</h3>
-            ${article.description ? `<p style="font-size: 15px; color: rgba(255,255,255,0.85); line-height: 1.5; margin-bottom: 8px;">${article.description.substring(0, 160)}${article.description.length > 160 ? '...' : ''}</p>` : ''}
-            ${article.author ? `<p class="eyebrow" style="color: rgba(255,255,255,0.6); font-size: 11px; margin-top: 12px;">By ${article.author}</p>` : ''}
-          </div>
-        </a>
-      `;
+    // Row 1: Hero (2-col) + 2 stacked
+    const hero = take(imgPool, 1)[0] || take(allPool, 1)[0];
+    const stacked = take(imgPool, 2);
+    if (stacked.length < 2) stacked.push(...take(noImg, 2 - stacked.length));
+
+    html += '<div class="mosaic-hero-grid">';
+    html += buildMosaicHero(hero);
+    html += '<div class="mosaic-stack">';
+    stacked.forEach(a => { html += buildMosaicSmall(a); });
+    html += '</div></div>';
+
+    // Row 2: 3 equal tiles
+    const row2 = take(imgPool, 3);
+    if (row2.length < 3) row2.push(...take(noImg, 3 - row2.length));
+    if (row2.length) {
+      html += '<div class="mosaic-row-3" style="margin-top:20px;">';
+      row2.forEach(a => { html += buildMosaicTile(a); });
+      html += '</div>';
     }
 
-    // Helper function to create image card (regular size, 1 column)
-    function createImageCard(article) {
-      return `
-        <a href="${article.link}" target="_blank" rel="noopener" class="news-card news-image" style="display: flex; flex-direction: column; overflow: hidden; transition: transform 0.2s; border: 1px solid var(--paper-line);" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='var(--gold)'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='var(--paper-line)'">
-          <div style="width: 100%; height: 220px; overflow: hidden; background: linear-gradient(135deg, #e8e6e1 0%, #f5f4f0 100%); position: relative; display: flex; align-items: center; justify-content: center;">
-            <img src="${article.image}" alt="${article.title}" style="width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; top: 0; left: 0;" onerror="this.style.opacity='0'"/>
-          </div>
-          <div style="padding: 20px; flex: 1; display: flex; flex-direction: column; background: white;">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
-              <span class="source-badge" style="font-size: 9px; padding: 4px 10px; background: rgba(11,18,32,0.06); font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;">${article.source}</span>
-              <span class="eyebrow" style="color: var(--muted); font-size: 9px;">•</span>
-              <span class="eyebrow" style="color: var(--gold); font-size: 9px; text-transform: uppercase;">${article.category}</span>
-            </div>
-            <h3 class="serif" style="font-size: 17px; line-height: 1.4; color: var(--ink); margin: 0; font-weight: 500;">${article.title}</h3>
-            ${article.author ? `<p class="eyebrow" style="color: var(--muted); margin-top: auto; padding-top: 12px; font-size: 10px; border-top: 1px solid var(--paper-line);">By ${article.author}</p>` : '<div style="margin-top: auto;"></div>'}
-          </div>
-        </a>
-      `;
-    }
-
-    // Helper function to create text-only card (no image)
-    function createTextCard(article) {
-      return `
-        <a href="${article.link}" target="_blank" rel="noopener" class="news-card news-text" style="display: block; padding: 16px 0; border-bottom: 1px solid var(--paper-line); transition: all 0.2s;" onmouseover="this.style.paddingLeft='8px'" onmouseout="this.style.paddingLeft='0'">
-          <h3 class="serif" style="font-size: 17px; line-height: 1.4; color: var(--ink); margin: 0 0 8px 0; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ink)'">${article.title}</h3>
-          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <span class="eyebrow" style="font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em;">${article.source}</span>
-            <span class="eyebrow" style="color: var(--paper-line); font-size: 9px;">•</span>
-            <span class="eyebrow" style="font-size: 9px; color: var(--gold); text-transform: uppercase;">${article.category}</span>
-            ${article.author ? `<span class="eyebrow" style="color: var(--paper-line); font-size: 9px;">•</span><span class="eyebrow" style="font-size: 9px; color: var(--muted);">${article.author}</span>` : ''}
-          </div>
-        </a>
-      `;
-    }
-
-    // Build mosaic layout
-    // First: Featured card (if we have images)
-    if (withImages.length > 0) {
-      html += createFeaturedCard(withImages[0]);
-      cardIndex++;
-    }
-
-    // Add 3-4 regular image cards
-    const imageCardsToShow = Math.min(4, withImages.length - 1);
-    for (let i = 0; i < imageCardsToShow; i++) {
-      html += createImageCard(withImages[cardIndex]);
-      cardIndex++;
-    }
-
-    // Add "We're Also Reading" section if we have text cards
-    const remainingSlots = 10 - (imageCardsToShow + 1);
-    if (withoutImages.length > 0 && remainingSlots > 0) {
-      html += `
-        <div style="grid-column: 1 / -1; margin: 32px 0 0 0;">
-          <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
-            <div class="eyebrow" style="color: var(--gold); font-size: 11px; white-space: nowrap;">We're Also Reading</div>
-            <div style="height: 1px; background: var(--paper-line); flex: 1;"></div>
-          </div>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 32px;">
-      `;
-
-      // Fill with text-only cards in 2 columns
-      for (let i = 0; i < Math.min(remainingSlots, withoutImages.length); i++) {
-        html += createTextCard(withoutImages[i]);
+    // Row 3: remaining articles as a row of smaller tiles
+    const remaining = imgPool.concat(noImg).slice(0, 6);
+    if (remaining.length) {
+      html += '<div class="mosaic-row-3" style="margin-top:20px;">';
+      remaining.slice(0, 3).forEach(a => { html += buildMosaicTile(a); });
+      html += '</div>';
+      if (remaining.length > 3) {
+        html += '<div class="mosaic-row-3" style="margin-top:20px;">';
+        remaining.slice(3, 6).forEach(a => { html += buildMosaicTile(a); });
+        html += '</div>';
       }
-
-      html += `
-          </div>
-        </div>
-      `;
     }
 
     newsGrid.innerHTML = html;
   }
 
-  // Category filter functionality
+  // -------- filters --------
   filters.forEach(filter => {
     filter.addEventListener('click', function() {
-      // Update active state
       filters.forEach(f => {
         f.classList.remove('active');
         f.style.background = 'transparent';
@@ -2014,8 +2435,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       this.classList.add('active');
       this.style.background = 'var(--ink)';
       this.style.color = 'var(--paper)';
-
-      // Update current category and re-render
       currentCategory = this.dataset.category;
       renderNews();
     });

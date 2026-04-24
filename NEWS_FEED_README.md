@@ -1,138 +1,160 @@
-# Automated News Feed System
+# Automated News Feed — newsdata.io
 
-## 🎯 Overview
+## Overview
 
-Your news feed automatically updates every 12 hours (6am & 6pm UTC) by aggregating articles from 12+ sources across Finance, Legal Tech, AI, and Enterprise.
+The homepage news section pulls fresh articles from
+[newsdata.io](https://newsdata.io) **every 2 hours** (on the even hour, UTC),
+maintains a rolling **1-year archive**, validates every image URL via HEAD
+request before trusting it, and **never downloads external images** — it only
+links to them.
 
-**Zero commit bloat:** The `news-data` branch is force-pushed each update, keeping only 1 commit forever.
-
----
-
-## 📡 How It Works
-
-```
-GitHub Action (every 12 hours)
-  ↓
-Fetches RSS feeds from 12 sources
-  ↓
-Extracts articles with images
-  ↓
-Auto-prunes articles older than 90 days
-  ↓
-Force-pushes to news-data branch
-  ↓
-Updates data/news.json
-```
+The GitHub Action writes to the `news-data` branch as a single force-pushed
+commit so the repo never accumulates news commits.
 
 ---
 
-## 🗞️ Current Sources (12 feeds)
+## How it works
 
-### Finance & PE/VC
-- ✅ Crunchbase News
-- ✅ PE Hub
+```
+GitHub Action (every 2 hours, cron "0 */2 * * *")
+  │
+  ├─ Checkout news-data branch  (reads existing data/news.json)
+  ├─ Pull latest aggregate-news.js from main branch
+  ├─ Run scripts/aggregate-news.js
+  │     ├─ fetch newsdata.io: category=business
+  │     ├─ fetch newsdata.io: category=technology
+  │     ├─ fetch newsdata.io: q="legal tech" OR "legaltech" …
+  │     ├─ normalize → canonical article shape
+  │     ├─ dedupe (fresh batch + existing archive, by link)
+  │     ├─ HEAD-check new image URLs
+  │     │     • require HTTPS + 200 + content-type: image/*
+  │     │     • timeout 5s, concurrency 12
+  │     ├─ merge with existing archive
+  │     ├─ prune > 365 days, cap at 5000 articles
+  │     └─ write data/news.json
+  └─ git commit --amend + force push to news-data
+```
 
-### Legal Tech
-- ✅ Above the Law
-- ✅ Artificial Lawyer
-
-### AI & ML
-- ✅ VentureBeat AI
-- ✅ TechCrunch AI
-
-### Enterprise & Tech
-- ✅ TechCrunch
-- ✅ The Verge
-- ✅ Ars Technica
-- ✅ Hacker News
-- ✅ MIT Tech Review
-- ✅ Wired
-
-**All sources provide images via RSS feeds** (no web scraping needed!)
+The frontend (`index.html`) fetches
+`https://raw.githubusercontent.com/maherhasannn/semperr/news-data/data/news.json`
+with an hourly cache-buster, then renders a robust mosaic that adapts to
+however many images came back.
 
 ---
 
-## 📥 Using the News Feed on Your Site
+## Required setup (one-time)
 
-### Fetch from the news-data branch:
+### 1. Add the API key to GitHub Secrets
 
-```javascript
-// Fetch latest news
-fetch('https://raw.githubusercontent.com/maherhasannn/semperr/news-data/data/news.json')
-  .then(res => res.json())
-  .then(data => {
-    console.log(`${data.articleCount} articles`);
-    console.log(`Last updated: ${data.lastUpdated}`);
+Repo → Settings → Secrets and variables → Actions → **New repository secret**
 
-    // Loop through articles
-    data.articles.forEach(article => {
-      console.log(article.title);
-      console.log(article.source);
-      console.log(article.category);
-      console.log(article.image); // Null if no image
-    });
-  });
+- Name: `NEWSDATA_API_KEY`
+- Value: your `pub_…` key from newsdata.io
+
+### 2. Ensure the `news-data` branch exists
+
+If it doesn't already, create it from main:
+
+```bash
+git checkout --orphan news-data
+git rm -rf .
+mkdir data && echo '{"articles":[],"lastUpdated":"2026-01-01T00:00:00Z","articleCount":0}' > data/news.json
+git add data/news.json
+git commit -m "Initial news-data branch"
+git push origin news-data
 ```
 
-### Article structure:
+### 3. Trigger the first run manually
+
+GitHub → Actions → **Update News Feed** → **Run workflow**
+
+---
+
+## Canonical article shape (`data/news.json`)
 
 ```json
 {
-  "title": "Era computer raises $11M to build...",
-  "link": "https://techcrunch.com/...",
-  "source": "TechCrunch",
-  "category": "Enterprise",
-  "description": "Era thinks that we will see many...",
-  "image": "https://...",
-  "publishedAt": 1776960000000,
-  "author": "Ivan Mehta"
+  "lastUpdated": "2026-04-24T18:53:33.841Z",
+  "articleCount": 70,
+  "provider": "newsdata.io",
+  "retentionDays": 365,
+  "categories": { "Enterprise": 29, "Tech": 24, "AI": 7, "Legal": 10 },
+  "articles": [
+    {
+      "title": "…",
+      "link": "https://…",
+      "source": "Express",
+      "category": "Enterprise",
+      "description": "… (max 240 chars)",
+      "image": "https://…jpg",       // null if no valid image
+      "publishedAt": 1777013580000,   // unix ms
+      "author": "rachel vickers-price"
+    }
+  ]
 }
 ```
 
+Categories assigned by `classify()` in `scripts/aggregate-news.js`:
+
+- `Legal` — legal-focused query, or matches legal keywords
+- `AI` — title/description matches AI/ML keywords
+- `Finance` — business query + venture/funding/M&A keywords
+- `Enterprise` — business query, everything else
+- `Tech` — technology query, non-AI
+
 ---
 
-## 🔧 Manual Trigger
+## Images: linked, never downloaded
 
-Test the workflow anytime:
-1. Go to: `Actions` tab on GitHub
-2. Select `Update News Feed`
-3. Click `Run workflow`
+1. `aggregate-news.js` makes a **HEAD request** on every new `image_url`.
+2. Rejects anything that is not `https://`, not `200 OK`, or whose
+   `Content-Type` doesn't start with `image/`.
+3. Invalid URLs are stored as `image: null` — the frontend then renders the
+   article as a text card instead.
+4. Previously-validated images are **not re-checked** on subsequent runs,
+   which keeps us comfortably under newsdata.io's 200-requests/day free tier.
+5. Client-side `onerror` is a belt-and-braces fallback: if an image fails at
+   render time (e.g. the origin went down after we validated), its media box
+   is hidden so the card gracefully collapses.
 
 ---
 
-## ➕ Adding More Sources
+## Robust mosaic
 
-Edit `scripts/aggregate-news.js`:
+The frontend (`index.html`, the `Live News Feed` IIFE) is now tolerant of
+arbitrary image counts and aspect ratios returned by newsdata.io:
 
-```javascript
-const SOURCES = [
-  // Add any RSS feed
-  { name: 'Source Name', url: 'https://example.com/feed/', category: 'Category' },
-];
+- Featured card only if a valid image exists.
+- Side image cards use `aspect-ratio: 16 / 10` + `object-fit: cover`, so any
+  image shape is cropped consistently.
+- `grid-auto-flow: dense` fills holes left by collapsed / failed cards.
+- **Two mini sections** are injected between rows:
+  - `Editor's Briefs` — 3 headline + snippet cards, mid-grid
+  - `Also on the Radar` — 3 headline + snippet cards, after the main grid
+- `We're Also Reading` — text-only roundup of whatever remains.
+
+---
+
+## Manual runs
+
+```bash
+# Local
+NEWSDATA_API_KEY=pub_xxx npm run update-news
+# writes ./data/news.json
+
+# Remote: GitHub Actions → Update News Feed → Run workflow
 ```
 
-Then push to main. The next scheduled run will include it.
-
 ---
 
-## 📊 Current Stats
+## Tuning
 
-- **100 articles** (last 90 days)
-- **12 sources** aggregated
-- **Auto-prunes** old content
-- **5 categories:** Finance, Legal, AI, Enterprise, Tech
-- **Updates:** Every 12 hours
-- **File size:** ~200KB
-
----
-
-## 🚀 Next Steps
-
-Want to display news on your homepage? I can build:
-
-1. **News carousel** - Rotating featured articles
-2. **Category filters** - Filter by Finance/Legal/AI/Tech
-3. **Latest news sidebar** - Real-time updates
-4. **Email digest** - Daily/weekly newsletter
-
-Just let me know!
+| Knob | Where | Default |
+|---|---|---|
+| Cron schedule | `.github/workflows/update-news.yml` | `0 */2 * * *` |
+| Queries | `QUERIES` in `scripts/aggregate-news.js` | 3 queries |
+| Pages per query | env `NEWSDATA_MAX_PAGES` | `1` (10 articles) |
+| HEAD concurrency | `HEAD_CONCURRENCY` | `12` |
+| HEAD timeout | `HEAD_TIMEOUT_MS` | `5000` ms |
+| Retention | `ONE_YEAR_MS` | 365 days |
+| Archive cap | `MAX_ARCHIVE` | 5000 articles |

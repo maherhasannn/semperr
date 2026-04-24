@@ -2,9 +2,9 @@ name: Update News Feed
 
 on:
   schedule:
-    # Runs every 12 hours at 6am and 6pm UTC
-    - cron: '0 6,18 * * *'
-  workflow_dispatch: # Manual trigger for testing
+    # Every 2 hours on the hour (UTC). 12 runs/day.
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
 
 jobs:
   update-news:
@@ -16,16 +16,26 @@ jobs:
         with:
           ref: news-data
           token: ${{ secrets.GITHUB_TOKEN }}
+          # Fetch the file list needed so we can read the existing archive
+          # (data/news.json) and merge new articles into it.
+          fetch-depth: 1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm install rss-parser
+      - name: Fetch latest aggregator script from main
+        run: |
+          curl -fsSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            "https://raw.githubusercontent.com/${{ github.repository }}/main/scripts/aggregate-news.js" \
+            -o scripts-aggregate-news.js
+          mkdir -p scripts
+          mv scripts-aggregate-news.js scripts/aggregate-news.js
 
-      - name: Fetch and aggregate news
+      - name: Aggregate news from newsdata.io
+        env:
+          NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
         run: node scripts/aggregate-news.js
 
       - name: Commit and force push
@@ -34,19 +44,13 @@ jobs:
           git config user.email "actions@github.com"
           git add data/news.json
 
-          # Check if there are changes
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
           fi
 
-          # Amend the previous commit to avoid bloat
-          git commit --amend -m "Update news feed - $(date -u +'%Y-%m-%d %H:%M UTC')" || git commit -m "Update news feed - $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git commit --amend -m "Update news feed - $(date -u +'%Y-%m-%d %H:%M UTC')" \
+            || git commit -m "Update news feed - $(date -u +'%Y-%m-%d %H:%M UTC')"
 
-          # Force push to keep only 1 commit
+          # Force push to keep the news-data branch at a single commit.
           git push --force origin news-data
-
-      - name: Trigger Vercel deployment
-        run: |
-          echo "News feed updated successfully"
-          echo "Vercel will auto-deploy if configured to watch news-data branch"
