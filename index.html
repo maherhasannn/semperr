@@ -2682,103 +2682,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   flex: 1;
 }
 
-/* ===== 4. PIXEL GAVEL (small scene) ===== */
-.px-gavel-scene {
-  width: 160px;
-  height: 100px;
-  position: relative;
-  image-rendering: pixelated;
-  flex-shrink: 0;
-}
-.px-gavel-head {
-  position: absolute;
-  width: 48px;
-  height: 16px;
-  background: #8b6f47;
-  top: 20px;
-  left: 56px;
-  border: 2px solid #6b5535;
-  animation: gavelStrike 2.5s ease-in-out infinite;
-  transform-origin: left center;
-}
-.px-gavel-head::after {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -12px;
-  width: 12px;
-  height: 20px;
-  background: #a0825a;
-  border: 2px solid #6b5535;
-}
-.px-gavel-handle {
-  position: absolute;
-  width: 4px;
-  height: 40px;
-  background: #6b5535;
-  top: 32px;
-  left: 78px;
-  animation: gavelStrike 2.5s ease-in-out infinite;
-  transform-origin: top center;
-}
-.px-sound-block {
-  position: absolute;
-  bottom: 16px;
-  left: 40px;
-  width: 80px;
-  height: 16px;
-  background: #5a4a35;
-  border: 2px solid #4a3a28;
-  border-radius: 2px;
-}
-.px-sound-block::before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  left: 8px;
-  width: 64px;
-  height: 6px;
-  background: #6b5a40;
-  border-radius: 2px 2px 0 0;
-}
-.px-impact {
-  position: absolute;
-  top: 32px;
-  left: 88px;
-  width: 8px;
-  height: 8px;
-  border: 2px solid var(--gold);
-  border-radius: 50%;
-  opacity: 0;
-  animation: gavelImpact 2.5s ease-out infinite;
-}
-.px-impact-2 {
-  width: 16px;
-  height: 16px;
-  top: 28px;
-  left: 84px;
-  animation-delay: 0.1s;
-}
-@keyframes gavelStrike {
-  0%, 60% { transform: rotate(-15deg); }
-  70% { transform: rotate(5deg); }
-  80%, 100% { transform: rotate(-15deg); }
-}
-@keyframes gavelImpact {
-  0%, 65% { opacity: 0; transform: scale(0.5); }
-  72% { opacity: 1; transform: scale(1); }
-  85%, 100% { opacity: 0; transform: scale(1.8); }
-}
-.px-gavel-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid var(--paper-line);
-}
-.px-gavel-meta { flex: 1; }
-
 /* ===== 5. PIXEL SERVER ROOM BANNER ===== */
 .px-server-banner {
   height: 100px;
@@ -3053,7 +2956,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .px-city-banner { display: none !important; }
   .px-ticker-strip { display: none !important; }
   .px-chart-wrapper { display: none !important; }
-  .px-gavel-wrapper { display: none !important; }
   .px-server-banner { display: none !important; }
   .px-envelope-wrap { display: none !important; }
   .px-handshake-wrap { display: none !important; }
@@ -3890,20 +3792,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       <a href="clad-dispatches.html" class="eyebrow" style="color: var(--emerald);">View all Clad dispatches →</a>
     </div>
 
-    <!-- Pixel gavel -->
-    <div class="px-gavel-wrapper">
-      <div class="px-gavel-scene">
-        <div class="px-gavel-head"></div>
-        <div class="px-gavel-handle"></div>
-        <div class="px-sound-block"></div>
-        <div class="px-impact"></div>
-        <div class="px-impact px-impact-2"></div>
-      </div>
-      <div class="px-gavel-meta">
-        <div class="eyebrow" style="color: var(--emerald); margin-bottom: 6px;">Order in the Court</div>
-        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">Where legal precedent meets machine precision.</p>
-      </div>
-    </div>
   </div>
 </section>
 
