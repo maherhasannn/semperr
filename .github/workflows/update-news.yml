@@ -28,32 +28,36 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Fetch latest aggregator script from main
+      - name: Fetch latest scripts and data from main
         run: |
-          curl -fsSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            "https://raw.githubusercontent.com/${{ github.repository }}/main/scripts/aggregate-news.js" \
-            -o scripts-aggregate-news.js
-          mkdir -p scripts
-          mv scripts-aggregate-news.js scripts/aggregate-news.js
+          mkdir -p scripts data
+          for f in scripts/aggregate-news.js scripts/rotate-quote.js data/quotes.json; do
+            curl -fsSL -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://raw.githubusercontent.com/${{ github.repository }}/main/$f" \
+              -o "$f"
+          done
 
       - name: Aggregate news from newsdata.io
         env:
           NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
         run: node scripts/aggregate-news.js
 
+      - name: Rotate daily quote
+        run: node scripts/rotate-quote.js
+
       - name: Commit and force push
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
-          git add data/news.json
+          git add data/news.json data/daily-quote.json
 
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0
           fi
 
-          git commit --amend -m "Update news feed - $(date -u +'%Y-%m-%d %H:%M UTC')" \
-            || git commit -m "Update news feed - $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git commit --amend -m "Update news feed + daily quote - $(date -u +'%Y-%m-%d %H:%M UTC')" \
+            || git commit -m "Update news feed + daily quote - $(date -u +'%Y-%m-%d %H:%M UTC')"
 
           # Force push to keep the news-data branch at a single commit.
           git push --force origin news-data

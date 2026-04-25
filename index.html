@@ -1594,74 +1594,91 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .brief-title { font-size: 18px; }
 }
 
-/* ===== INDUSTRY VOICES — Broadsheet Editorial ===== */
-.voices-layout {
-  display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: 0;
+/* ===== INDUSTRY VOICES — Daily Quote ===== */
+.voices-daily {
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
 }
-.voices-primary {
-  padding-right: 48px;
-  border-right: 1px solid var(--paper-line);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.voices-daily .voice-topic {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px solid var(--amber);
+  padding: 4px 12px;
+  margin-bottom: 32px;
 }
-.voices-primary blockquote {
+.voices-daily blockquote {
   font-family: var(--serif);
-  font-size: 30px;
+  font-size: 32px;
   line-height: 1.45;
   font-style: italic;
   color: var(--ink);
   margin: 0;
   position: relative;
+  padding: 0 24px;
 }
-.voices-primary blockquote::before {
+.voices-daily blockquote::before {
   content: '\201C';
   font-family: var(--serif);
   font-size: 80px;
   color: var(--amber);
   position: absolute;
-  top: -20px;
+  top: -24px;
   left: -8px;
   line-height: 1;
-  opacity: 0.5;
+  opacity: 0.4;
 }
-.voices-sidebar {
-  padding-left: 48px;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+.voices-daily .voice-attribution {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--paper-line);
+  display: inline-block;
 }
-.voices-sidebar-card {
-  padding: 24px 0;
-  border-bottom: 1px solid var(--paper-line);
+.voices-daily .voice-author {
+  font-weight: 500;
+  color: var(--amber);
+  font-size: 15px;
 }
-.voices-sidebar-card:last-child { border-bottom: none; }
-.voices-sidebar-card blockquote {
-  font-family: var(--serif);
-  font-size: 17px;
-  line-height: 1.5;
-  font-style: italic;
-  color: var(--ink);
-  margin: 0 0 12px 0;
+.voices-daily .voice-role {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.voices-daily .voice-analysis {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--paper-line);
+  text-align: left;
+}
+.voices-daily .voice-analysis-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 12px;
+}
+.voices-daily .voice-analysis p {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0;
 }
 
 @media (max-width: 900px) {
-  .voices-layout { grid-template-columns: 1fr !important; }
-  .voices-primary {
-    padding-right: 0;
-    border-right: none;
-    padding-bottom: 32px;
-    border-bottom: 1px solid var(--paper-line);
-    margin-bottom: 32px;
-  }
-  .voices-primary blockquote { font-size: 24px; }
-  .voices-sidebar { padding-left: 0; }
+  .voices-daily blockquote { font-size: 26px; }
 }
 @media (max-width: 600px) {
-  .voices-primary blockquote { font-size: 20px !important; }
-  .voices-primary blockquote::before { font-size: 48px; top: -12px; }
+  .voices-daily blockquote { font-size: 21px !important; padding: 0 8px; }
+  .voices-daily blockquote::before { font-size: 48px; top: -14px; left: -4px; }
 }
 
 /* ===== CRAFT — Blueprint / Schematic ===== */
@@ -3891,43 +3908,24 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
-<!-- ===== INDUSTRY VOICES — Broadsheet Editorial ===== -->
+<!-- ===== INDUSTRY VOICES — Daily Quote ===== -->
 <section id="curated" class="mosaic-section" style="--section-accent: var(--amber); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
-    <div class="eyebrow" style="color: var(--amber); margin-bottom: 40px; text-align: center;">Industry Voices</div>
+    <div class="eyebrow" style="color: var(--amber); margin-bottom: 40px; text-align: center;">Industry Voices · Daily</div>
 
-    <div class="voices-layout">
-      <!-- Primary pull quote -->
-      <div class="voices-primary">
-        <blockquote>
-          The firms that treat data as a strategic asset — not a compliance burden — will be the ones still standing in ten years.
-        </blockquote>
-        <footer style="margin-top: 24px;">
-          <div style="font-weight: 500; color: var(--amber); font-size: 15px;">David Rubenstein</div>
-          <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Co-Founder, Carlyle Group</div>
-        </footer>
+    <div id="daily-voice" class="voices-daily">
+      <!-- Fallback content shown until JS loads the daily quote -->
+      <div class="voice-topic">Data Strategy</div>
+      <blockquote>
+        The firms that treat data as a strategic asset — not a compliance burden — will be the ones still standing in ten years.
+      </blockquote>
+      <div class="voice-attribution">
+        <div class="voice-author">David Rubenstein</div>
+        <div class="voice-role">Co-Founder, Carlyle Group</div>
       </div>
-
-      <!-- Sidebar quotes -->
-      <div class="voices-sidebar">
-        <div class="voices-sidebar-card">
-          <blockquote>
-            "Legal AI isn't about replacing lawyers. It's about giving them superpowers they didn't know they needed."
-          </blockquote>
-          <footer>
-            <div style="font-weight: 500; color: var(--amber); font-size: 14px;">Mary Shen O'Carroll</div>
-            <div class="eyebrow" style="color: var(--muted); margin-top: 2px;">Former CLO, Google</div>
-          </footer>
-        </div>
-        <div class="voices-sidebar-card">
-          <blockquote>
-            "We stopped asking 'what data do we have?' and started asking 'what decisions do we need to make?'"
-          </blockquote>
-          <footer>
-            <div style="font-weight: 500; color: var(--amber); font-size: 14px;">Sarah Kunst</div>
-            <div class="eyebrow" style="color: var(--muted); margin-top: 2px;">Managing Director, Cleo Capital</div>
-          </footer>
-        </div>
+      <div class="voice-analysis">
+        <div class="voice-analysis-label">The Charterr's Take</div>
+        <p>Rubenstein's framing exposes the central miscalculation in institutional finance: treating data as a cost center to be minimized rather than an edge to be sharpened. The firms that build proprietary data systems aren't just more efficient — they see deals, risks, and patterns their competitors literally cannot perceive.</p>
       </div>
     </div>
   </div>
@@ -4836,6 +4834,36 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+})();
+
+// Daily quote — fetches from news-data branch
+(function() {
+  var QUOTE_URL = 'https://raw.githubusercontent.com/maherhasannn/semperr/news-data/data/daily-quote.json';
+  var container = document.getElementById('daily-voice');
+  if (!container) return;
+
+  // Cache-bust once per hour (same cadence as news feed)
+  var cacheBust = '?t=' + Math.floor(Date.now() / (60 * 60 * 1000));
+
+  fetch(QUOTE_URL + cacheBust)
+    .then(function(res) { return res.ok ? res.json() : null; })
+    .then(function(data) {
+      if (!data || !data.quote) return;
+      var q = data.quote;
+
+      var topicEl = container.querySelector('.voice-topic');
+      var quoteEl = container.querySelector('blockquote');
+      var authorEl = container.querySelector('.voice-author');
+      var roleEl = container.querySelector('.voice-role');
+      var analysisEl = container.querySelector('.voice-analysis p');
+
+      if (topicEl) topicEl.textContent = q.topic || 'Industry';
+      if (quoteEl) quoteEl.textContent = q.text;
+      if (authorEl) authorEl.textContent = q.author;
+      if (roleEl) roleEl.textContent = q.role || '';
+      if (analysisEl) analysisEl.textContent = q.analysis;
+    })
+    .catch(function() { /* keep fallback content */ });
 })();
 </script>
 
