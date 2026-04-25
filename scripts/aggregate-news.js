@@ -59,6 +59,28 @@ const SOURCE_ALLOWLIST = new Set([
   'city a.m.',
 ]);
 
+// Source tier points for scoring (keyed by lowercase source name).
+const SOURCE_TIERS = new Map([
+  // Tier 1 — 30 pts
+  ['bloomberg', 30],
+  ['techcrunch', 30],
+  ['ars technica', 30],
+  ['the verge', 30],
+  ['law360', 30],
+  ['fast company', 30],
+  // Tier 2 — 20 pts
+  ['pe hub', 20],
+  ['crunchbase news', 20],
+  ['above the law', 20],
+  ['artificial lawyer', 20],
+  ['seeking alpha', 20],
+  ['techcrunch ai', 20],
+  ["tom's guide", 20],
+  ['zdnet', 20],
+  ['tech radar', 20],
+]);
+const SOURCE_TIER_DEFAULT = 10; // Tier 3
+
 // US/Canada + Europe only. Post-filtered against the returned `country` field
 // because some aggregators (e.g. Econotimes) list multiple countries.
 const COUNTRY_ALLOWLIST = new Set([
@@ -266,6 +288,56 @@ async function validateAllImages(articles) {
 }
 
 // ---------------------------------------------------------------------------
+// Heuristic article scoring (0–100)
+// ---------------------------------------------------------------------------
+
+function sourceScore(article) {
+  const name = (article.source || '').toLowerCase().trim();
+  return SOURCE_TIERS.get(name) ?? SOURCE_TIER_DEFAULT;
+}
+
+function imageScore(article) {
+  if (!article.image) return 0;
+  const sz = article.imageSize || 0;
+  if (sz > 100_000) return 25;
+  if (sz > 50_000) return 20;
+  if (sz > 10_000) return 12;
+  return 5; // has image but small / unknown size
+}
+
+function recencyScore(article) {
+  const ageMs = Date.now() - (article.publishedAt || Date.now());
+  if (ageMs <= 0) return 20;
+  const hours = ageMs / (1000 * 60 * 60);
+  if (hours >= 48) return 0;
+  return Math.round(20 * (1 - hours / 48));
+}
+
+function descriptionScore(article) {
+  const len = (article.description || '').length;
+  if (len >= 200) return 15;
+  if (len >= 120) return 10;
+  if (len >= 50) return 5;
+  return 0;
+}
+
+function titleScore(article) {
+  const len = (article.title || '').length;
+  if (len >= 40 && len <= 90) return 10;
+  if (len >= 25 && len <= 120) return 6;
+  if (len >= 10) return 3;
+  return 0;
+}
+
+function scoreArticle(article) {
+  return sourceScore(article)
+    + imageScore(article)
+    + recencyScore(article)
+    + descriptionScore(article)
+    + titleScore(article);
+}
+
+// ---------------------------------------------------------------------------
 // Archive merge
 // ---------------------------------------------------------------------------
 
@@ -311,7 +383,9 @@ function mergeAndPrune(archive, fresh) {
   if (retroDroppedSource) console.log(`Retroactively dropped ${retroDroppedSource} archive articles from non-approved sources`);
   if (retroDropped) console.log(`Retroactively dropped ${retroDropped} archive articles outside country allowlist`);
   const all = Array.from(map.values());
-  all.sort((a, b) => b.publishedAt - a.publishedAt);
+  // (Re-)score on every run so recency decays naturally.
+  for (const a of all) a.score = scoreArticle(a);
+  all.sort((a, b) => b.score - a.score || b.publishedAt - a.publishedAt);
   return all.slice(0, MAX_ARCHIVE);
 }
 
