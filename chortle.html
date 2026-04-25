@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Chortle — The Charterr Word Game</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --ink: #0b1220;
+  --ink-soft: #141c2e;
+  --paper: #f8f6f0;
+  --paper-warm: #efeadb;
+  --paper-line: #e4dfcf;
+  --gold: #c9a961;
+  --gold-deep: #a68846;
+  --emerald: #3d9970;
+  --muted: #6b7388;
+  --muted-light: #9099ad;
+  --serif: "Instrument Serif", "Times New Roman", serif;
+  --sans: "Inter Tight", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --maxw: 1200px;
+  --pad: clamp(20px, 4vw, 48px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+a { color: inherit; text-decoration: none; }
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.serif { font-family: var(--serif); }
+
+/* ===== TOP BAR ===== */
+.top-bar a:hover { opacity: 0.8; }
+
+/* ===== GAME LAYOUT ===== */
+.game-page { flex: 1; padding: 48px 0; }
+
+.game-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--paper-line);
+}
+.game-header h1 {
+  font-family: var(--serif);
+  font-size: 48px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.game-header h1 span { color: var(--gold); }
+.game-subtitle {
+  font-size: 15px;
+  color: var(--muted);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* ===== BOARD ===== */
+.board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 32px;
+}
+.board-row {
+  display: flex;
+  gap: 6px;
+}
+.tile {
+  width: 62px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 24px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 2px solid var(--paper-line);
+  background: var(--paper);
+  color: var(--ink);
+  transition: transform 0.1s;
+}
+.tile.filled {
+  border-color: var(--muted-light);
+  animation: pop 0.1s ease;
+}
+.tile.correct {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #fff;
+}
+.tile.present {
+  background: var(--muted);
+  border-color: var(--muted);
+  color: #fff;
+}
+.tile.absent {
+  background: var(--ink-soft);
+  border-color: var(--ink-soft);
+  color: #fff;
+}
+.tile.reveal {
+  animation: flip 0.5s ease forwards;
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+@keyframes flip {
+  0% { transform: rotateX(0deg); }
+  50% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0deg); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  60% { transform: translateY(-10px); }
+}
+
+/* ===== KEYBOARD ===== */
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 32px;
+}
+.keyboard-row {
+  display: flex;
+  gap: 5px;
+}
+.key {
+  height: 52px;
+  min-width: 36px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-line);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.key:hover { background: var(--paper-line); }
+.key:active { transform: scale(0.95); }
+.key.wide {
+  min-width: 56px;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+.key.correct {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #fff;
+}
+.key.present {
+  background: var(--muted);
+  border-color: var(--muted);
+  color: #fff;
+}
+.key.absent {
+  background: var(--ink-soft);
+  border-color: var(--ink-soft);
+  color: rgba(255,255,255,0.5);
+}
+
+/* ===== MESSAGE ===== */
+.message-bar {
+  text-align: center;
+  height: 36px;
+  margin-bottom: 16px;
+}
+.message-bar .msg {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 6px 16px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.message-bar .msg.show { opacity: 1; }
+
+/* ===== STATS MODAL ===== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(11, 18, 32, 0.6);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--paper);
+  border: 1px solid var(--paper-line);
+  padding: 40px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+}
+.modal h2 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--muted);
+  background: none;
+  border: none;
+}
+.stats-grid {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin: 24px 0;
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.stat-num {
+  font-family: var(--mono);
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.stat-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.modal-word {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  margin: 16px 0;
+}
+.btn-new-game {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  padding: 12px 32px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+.btn-new-game:hover { background: var(--ink-soft); }
+
+/* ===== HOW TO PLAY ===== */
+.how-to-play {
+  max-width: 480px;
+  margin: 0 auto;
+  padding-top: 32px;
+  border-top: 1px solid var(--paper-line);
+}
+.how-to-play h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.how-to-play p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+.example-row {
+  display: flex;
+  gap: 4px;
+  margin: 12px 0 16px;
+}
+.example-tile {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  border: 2px solid var(--paper-line);
+  color: var(--ink);
+}
+.example-tile.ex-correct {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #fff;
+}
+.example-tile.ex-present {
+  background: var(--muted);
+  border-color: var(--muted);
+  color: #fff;
+}
+.example-tile.ex-absent {
+  background: var(--ink-soft);
+  border-color: var(--ink-soft);
+  color: #fff;
+}
+
+/* ===== FOOTER ===== */
+footer a:hover { color: var(--paper) !important; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .game-header h1 { font-size: 36px; }
+  .tile { width: 52px; height: 52px; font-size: 20px; }
+  .key { height: 46px; min-width: 30px; padding: 0 7px; font-size: 12px; }
+  .key.wide { min-width: 48px; font-size: 10px; }
+  .modal { padding: 28px 20px; }
+}
+@media (max-width: 400px) {
+  .tile { width: 46px; height: 46px; font-size: 18px; }
+  .key { height: 42px; min-width: 26px; padding: 0 5px; font-size: 11px; }
+  .key.wide { min-width: 42px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar" style="background: var(--ink); color: var(--paper); padding: 12px 0;">
+  <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+    <a href="/" class="serif" style="font-size: 16px;">
+      The Charter<span style="color: var(--gold);">r</span> <span style="font-size: 14px; color: var(--muted-light);">by</span> Sempe<span style="color: var(--gold);">rr</span>
+    </a>
+    <a href="/" class="eyebrow" style="color: var(--muted-light);">← Back to The Charterr</a>
+  </div>
+</div>
+
+<!-- ===== GAME ===== -->
+<main class="game-page">
+  <div class="container">
+
+    <div class="game-header">
+      <h1 class="serif">C<span>h</span>ortle</h1>
+      <p class="game-subtitle">A daily-ish word game from the newsroom. Five letters, six tries, all industry.</p>
+    </div>
+
+    <div class="message-bar"><span class="msg" id="msg"></span></div>
+
+    <div class="board" id="board"></div>
+
+    <div class="keyboard" id="keyboard"></div>
+
+    <div class="how-to-play">
+      <h3>How to Play</h3>
+      <p>Guess the industry word in 6 tries. Each guess must be a valid 5-letter word. After each guess, the tiles will change color to show how close you are.</p>
+
+      <div class="example-row">
+        <div class="example-tile ex-correct">Y</div>
+        <div class="example-tile">I</div>
+        <div class="example-tile">E</div>
+        <div class="example-tile">L</div>
+        <div class="example-tile">D</div>
+      </div>
+      <p><strong>Gold</strong> means the letter is in the word and in the correct spot.</p>
+
+      <div class="example-row">
+        <div class="example-tile">A</div>
+        <div class="example-tile ex-present">U</div>
+        <div class="example-tile">D</div>
+        <div class="example-tile">I</div>
+        <div class="example-tile">T</div>
+      </div>
+      <p><strong>Gray</strong> means the letter is in the word but in the wrong spot.</p>
+
+      <div class="example-row">
+        <div class="example-tile">T</div>
+        <div class="example-tile">R</div>
+        <div class="example-tile">A</div>
+        <div class="example-tile">D</div>
+        <div class="example-tile ex-absent">E</div>
+      </div>
+      <p><strong>Dark</strong> means the letter is not in the word at all.</p>
+
+      <p style="margin-top: 20px; font-style: italic; color: var(--muted-light);">All words are drawn from finance, legal, data, and enterprise vocabulary.</p>
+    </div>
+
+  </div>
+</main>
+
+<!-- ===== STATS MODAL ===== -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <h2 class="serif" id="modal-title">Well played</h2>
+    <div class="modal-word" id="modal-word"></div>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <span class="stat-num" id="stat-played">0</span>
+        <span class="stat-label">Played</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" id="stat-won">0</span>
+        <span class="stat-label">Won</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" id="stat-streak">0</span>
+        <span class="stat-label">Streak</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" id="stat-pct">0</span>
+        <span class="stat-label">Win %</span>
+      </div>
+    </div>
+    <button class="btn-new-game" id="btn-new">New Word</button>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer style="padding: 40px 0 24px; background: var(--ink); color: var(--paper); margin-top: auto;">
+  <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+    <a href="/" class="serif" style="font-size: 16px;">
+      The Charter<span style="color: var(--gold);">r</span>
+    </a>
+    <div class="eyebrow" style="color: var(--muted);">© 2026 Semperr Labs, Inc.</div>
+    <div class="eyebrow" style="color: var(--gold);">◆ Semper paratus</div>
+  </div>
+</footer>
+
+<script>
+(function() {
+  'use strict';
+
+  // ===== WORD LIST =====
+  const WORDS = [
+    'YIELD', 'AUDIT', 'HEDGE', 'ALPHA', 'QUANT',
+    'TRADE', 'STOCK', 'BONDS', 'FUNDS', 'ASSET',
+    'DEBIT', 'FLOAT', 'GRANT', 'INDEX', 'QUOTA',
+    'RALLY', 'SHARE', 'TRUST', 'VALUE', 'VAULT',
+    'BENCH', 'SCALE', 'MODEL', 'PIVOT', 'STAKE',
+    'PRIME', 'DELTA', 'MERGE', 'BRIEF', 'CLAIM'
+  ];
+
+  // Valid 5-letter words for guessing (includes answer words + common english words)
+  // We'll be lenient: accept any 5-letter alphabetical input
+  const MAX_GUESSES = 6;
+  const WORD_LENGTH = 5;
+
+  // ===== STATE =====
+  let answer = '';
+  let guesses = [];
+  let currentGuess = '';
+  let gameOver = false;
+  let revealInProgress = false;
+
+  // ===== STATS =====
+  function loadStats() {
+    try {
+      return JSON.parse(localStorage.getItem('chortle-stats')) || { played: 0, won: 0, streak: 0 };
+    } catch { return { played: 0, won: 0, streak: 0 }; }
+  }
+  function saveStats(s) {
+    localStorage.setItem('chortle-stats', JSON.stringify(s));
+  }
+
+  // ===== INIT =====
+  function pickWord() {
+    return WORDS[Math.floor(Math.random() * WORDS.length)];
+  }
+
+  function init() {
+    answer = pickWord();
+    guesses = [];
+    currentGuess = '';
+    gameOver = false;
+    revealInProgress = false;
+    buildBoard();
+    buildKeyboard();
+    hideMsg();
+    document.getElementById('modal').classList.remove('open');
+  }
+
+  // ===== BOARD =====
+  function buildBoard() {
+    const board = document.getElementById('board');
+    board.innerHTML = '';
+    for (let r = 0; r < MAX_GUESSES; r++) {
+      const row = document.createElement('div');
+      row.className = 'board-row';
+      row.setAttribute('data-row', r);
+      for (let c = 0; c < WORD_LENGTH; c++) {
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.setAttribute('data-col', c);
+        row.appendChild(tile);
+      }
+      board.appendChild(row);
+    }
+  }
+
+  function updateBoard() {
+    const rowIdx = guesses.length;
+    if (rowIdx >= MAX_GUESSES) return;
+    const row = document.querySelector(`.board-row[data-row="${rowIdx}"]`);
+    if (!row) return;
+    const tiles = row.querySelectorAll('.tile');
+    for (let i = 0; i < WORD_LENGTH; i++) {
+      const ch = currentGuess[i] || '';
+      tiles[i].textContent = ch;
+      if (ch) {
+        tiles[i].classList.add('filled');
+      } else {
+        tiles[i].classList.remove('filled');
+      }
+    }
+  }
+
+  // ===== KEYBOARD =====
+  const KB_ROWS = [
+    ['Q','W','E','R','T','Y','U','I','O','P'],
+    ['A','S','D','F','G','H','J','K','L'],
+    ['ENTER','Z','X','C','V','B','N','M','⌫']
+  ];
+
+  let keyStates = {};
+
+  function buildKeyboard() {
+    keyStates = {};
+    const kb = document.getElementById('keyboard');
+    kb.innerHTML = '';
+    KB_ROWS.forEach(row => {
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'keyboard-row';
+      row.forEach(k => {
+        const btn = document.createElement('button');
+        btn.className = 'key' + (k === 'ENTER' || k === '⌫' ? ' wide' : '');
+        btn.textContent = k;
+        btn.setAttribute('data-key', k);
+        btn.addEventListener('click', () => handleKey(k));
+        rowDiv.appendChild(btn);
+      });
+      kb.appendChild(rowDiv);
+    });
+  }
+
+  function updateKeyboard(guess, result) {
+    for (let i = 0; i < guess.length; i++) {
+      const letter = guess[i];
+      const state = result[i];
+      const prev = keyStates[letter];
+      // Priority: correct > present > absent
+      if (state === 'correct') {
+        keyStates[letter] = 'correct';
+      } else if (state === 'present' && prev !== 'correct') {
+        keyStates[letter] = 'present';
+      } else if (!prev) {
+        keyStates[letter] = 'absent';
+      }
+    }
+    // Update DOM
+    document.querySelectorAll('.key').forEach(btn => {
+      const k = btn.getAttribute('data-key');
+      if (keyStates[k]) {
+        btn.className = 'key' + (k === 'ENTER' || k === '⌫' ? ' wide' : '') + ' ' + keyStates[k];
+      }
+    });
+  }
+
+  // ===== EVALUATE GUESS =====
+  function evaluate(guess) {
+    const result = Array(WORD_LENGTH).fill('absent');
+    const ansArr = answer.split('');
+    const used = Array(WORD_LENGTH).fill(false);
+
+    // First pass: correct
+    for (let i = 0; i < WORD_LENGTH; i++) {
+      if (guess[i] === ansArr[i]) {
+        result[i] = 'correct';
+        used[i] = true;
+      }
+    }
+    // Second pass: present
+    for (let i = 0; i < WORD_LENGTH; i++) {
+      if (result[i] === 'correct') continue;
+      for (let j = 0; j < WORD_LENGTH; j++) {
+        if (!used[j] && guess[i] === ansArr[j]) {
+          result[i] = 'present';
+          used[j] = true;
+          break;
+        }
+      }
+    }
+    return result;
+  }
+
+  // ===== REVEAL =====
+  function revealRow(rowIdx, result, guess, cb) {
+    revealInProgress = true;
+    const row = document.querySelector(`.board-row[data-row="${rowIdx}"]`);
+    const tiles = row.querySelectorAll('.tile');
+    let i = 0;
+    function next() {
+      if (i >= WORD_LENGTH) {
+        revealInProgress = false;
+        if (cb) cb();
+        return;
+      }
+      const tile = tiles[i];
+      tile.classList.add('reveal');
+      setTimeout(() => {
+        tile.classList.add(result[i]);
+        i++;
+        next();
+      }, 250);
+    }
+    next();
+  }
+
+  function bounceRow(rowIdx) {
+    const row = document.querySelector(`.board-row[data-row="${rowIdx}"]`);
+    const tiles = row.querySelectorAll('.tile');
+    tiles.forEach((tile, i) => {
+      setTimeout(() => {
+        tile.style.animation = 'bounce 0.5s ease';
+        tile.addEventListener('animationend', () => { tile.style.animation = ''; }, { once: true });
+      }, i * 80);
+    });
+  }
+
+  // ===== MESSAGES =====
+  let msgTimer;
+  function showMsg(text, duration) {
+    const el = document.getElementById('msg');
+    el.textContent = text;
+    el.classList.add('show');
+    clearTimeout(msgTimer);
+    if (duration) {
+      msgTimer = setTimeout(() => el.classList.remove('show'), duration);
+    }
+  }
+  function hideMsg() {
+    document.getElementById('msg').classList.remove('show');
+  }
+
+  // ===== MODAL =====
+  function showModal(won) {
+    const stats = loadStats();
+    document.getElementById('modal-title').textContent = won ? 'Well played' : 'Next time';
+    document.getElementById('modal-word').textContent = answer;
+    document.getElementById('stat-played').textContent = stats.played;
+    document.getElementById('stat-won').textContent = stats.won;
+    document.getElementById('stat-streak').textContent = stats.streak;
+    document.getElementById('stat-pct').textContent = stats.played ? Math.round((stats.won / stats.played) * 100) : 0;
+    document.getElementById('modal').classList.add('open');
+  }
+
+  // ===== SUBMIT GUESS =====
+  function submitGuess() {
+    if (currentGuess.length !== WORD_LENGTH) {
+      showMsg('Not enough letters', 1200);
+      // Shake current row
+      const row = document.querySelector(`.board-row[data-row="${guesses.length}"]`);
+      row.style.animation = 'shake 0.4s ease';
+      row.addEventListener('animationend', () => { row.style.animation = ''; }, { once: true });
+      return;
+    }
+
+    const guess = currentGuess.toUpperCase();
+    const result = evaluate(guess);
+    const rowIdx = guesses.length;
+    guesses.push(guess);
+    currentGuess = '';
+
+    revealRow(rowIdx, result, guess, () => {
+      updateKeyboard(guess, result);
+
+      const won = result.every(r => r === 'correct');
+      if (won) {
+        gameOver = true;
+        const msgs = ['Genius', 'Magnificent', 'Impressive', 'Splendid', 'Great', 'Phew'];
+        showMsg(msgs[rowIdx] || 'Nice', 1800);
+        bounceRow(rowIdx);
+        const stats = loadStats();
+        stats.played++;
+        stats.won++;
+        stats.streak++;
+        saveStats(stats);
+        setTimeout(() => showModal(true), 2200);
+      } else if (guesses.length >= MAX_GUESSES) {
+        gameOver = true;
+        showMsg(answer, 3000);
+        const stats = loadStats();
+        stats.played++;
+        stats.streak = 0;
+        saveStats(stats);
+        setTimeout(() => showModal(false), 2200);
+      }
+    });
+  }
+
+  // ===== INPUT =====
+  function handleKey(k) {
+    if (gameOver || revealInProgress) return;
+
+    if (k === 'ENTER') {
+      submitGuess();
+      return;
+    }
+    if (k === '⌫' || k === 'BACKSPACE') {
+      currentGuess = currentGuess.slice(0, -1);
+      updateBoard();
+      return;
+    }
+    if (/^[A-Z]$/i.test(k) && currentGuess.length < WORD_LENGTH) {
+      currentGuess += k.toUpperCase();
+      updateBoard();
+    }
+  }
+
+  // Physical keyboard
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (e.key === 'Enter') handleKey('ENTER');
+    else if (e.key === 'Backspace') handleKey('⌫');
+    else if (/^[a-zA-Z]$/.test(e.key)) handleKey(e.key.toUpperCase());
+  });
+
+  // Modal
+  document.getElementById('modal-close').addEventListener('click', () => {
+    document.getElementById('modal').classList.remove('open');
+  });
+  document.getElementById('btn-new').addEventListener('click', init);
+  document.getElementById('modal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) document.getElementById('modal').classList.remove('open');
+  });
+
+  // Start
+  init();
+})();
+</script>
+
+</body>
+</html>

@@ -1907,6 +1907,344 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .spine-grid { grid-template-columns: 1fr !important; }
   .spine-card { min-height: 220px; }
 }
+
+/* ===== PIXEL DESK SCENE ===== */
+.pixel-desk-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  padding: 40px 0 8px 0;
+  margin-top: 28px;
+  border-top: 1px solid var(--paper-line);
+}
+.pixel-desk-scene {
+  position: relative;
+  width: 320px;
+  height: 200px;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+.pixel-desk-text {
+  flex: 1;
+}
+
+/* Pixel unit = 4px */
+
+/* Desk surface */
+.px-desk {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 320px;
+  height: 12px;
+  background: #8b6f47;
+  border-top: 4px solid #a0825a;
+}
+.px-desk::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 12px;
+  width: 296px;
+  height: 8px;
+  background: #7a6040;
+}
+
+/* Monitor */
+.px-monitor {
+  position: absolute;
+  bottom: 56px;
+  left: 80px;
+  width: 160px;
+  height: 108px;
+  background: #2a2a2e;
+  border: 4px solid #1a1a1e;
+}
+.px-monitor::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  background: #0d1117;
+  box-shadow: inset 0 0 12px rgba(0,0,0,0.5);
+}
+/* Monitor stand */
+.px-stand {
+  position: absolute;
+  bottom: 24px;
+  left: 148px;
+  width: 24px;
+  height: 32px;
+  background: #1a1a1e;
+}
+.px-base {
+  position: absolute;
+  bottom: 16px;
+  left: 128px;
+  width: 64px;
+  height: 8px;
+  background: #2a2a2e;
+}
+
+/* Screen content */
+.px-screen {
+  position: absolute;
+  bottom: 68px;
+  left: 92px;
+  z-index: 2;
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1.8;
+  color: #7ee787;
+}
+.px-screen-line { white-space: nowrap; }
+.px-screen .line-blue { color: #79c0ff; }
+.px-screen .line-gold { color: var(--gold); }
+.px-screen .line-muted { color: #484f58; }
+.px-cursor {
+  display: inline-block;
+  width: 6px;
+  height: 10px;
+  background: #7ee787;
+  animation: cursorBlink 1s step-end infinite;
+  vertical-align: middle;
+  margin-left: 1px;
+}
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Scanlines overlay on monitor */
+.px-monitor::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* Coffee mug */
+.px-coffee {
+  position: absolute;
+  bottom: 16px;
+  left: 268px;
+  width: 28px;
+  height: 28px;
+  background: #e8e0d0;
+  border: 4px solid #d4cbb8;
+}
+.px-coffee::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 8px;
+  background: #5c3d2e;
+  border-top: 2px solid #7a5540;
+}
+/* Mug handle */
+.px-coffee::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: -10px;
+  width: 8px;
+  height: 16px;
+  border: 3px solid #d4cbb8;
+  border-left: none;
+}
+
+/* Steam particles */
+.px-steam {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255,255,255,0.5);
+  animation: steamRise 2.4s ease-out infinite;
+}
+.px-steam-1 { left: 274px; bottom: 48px; animation-delay: 0s; }
+.px-steam-2 { left: 282px; bottom: 48px; animation-delay: 0.8s; }
+.px-steam-3 { left: 278px; bottom: 48px; animation-delay: 1.6s; }
+@keyframes steamRise {
+  0% { transform: translateY(0) translateX(0); opacity: 0.6; }
+  25% { transform: translateY(-8px) translateX(3px); opacity: 0.5; }
+  50% { transform: translateY(-16px) translateX(-2px); opacity: 0.35; }
+  75% { transform: translateY(-24px) translateX(4px); opacity: 0.15; }
+  100% { transform: translateY(-32px) translateX(1px); opacity: 0; }
+}
+
+/* Papers stack */
+.px-papers {
+  position: absolute;
+  bottom: 16px;
+  left: 20px;
+  width: 44px;
+  height: 32px;
+  background: #f0ebe0;
+  border: 1px solid #d4cbb8;
+}
+.px-papers::before {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  width: 38px;
+  height: 2px;
+  background: #c8c0b0;
+  box-shadow:
+    0 -6px 0 #c8c0b0,
+    0 -12px 0 #c8c0b0,
+    0 -18px 0 #c8c0b0;
+}
+.px-papers::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 3px;
+  width: 44px;
+  height: 36px;
+  background: #f4efe4;
+  border: 1px solid #d4cbb8;
+  transform: rotate(-3deg);
+}
+
+/* Plant */
+.px-plant-pot {
+  position: absolute;
+  bottom: 16px;
+  left: 250px;
+  width: 16px;
+  height: 16px;
+  background: #c67b5c;
+  border: 2px solid #a66048;
+}
+.px-plant-leaf {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #3d9970;
+}
+.px-plant-leaf-1 { bottom: 36px; left: 250px; transform: rotate(-20deg); }
+.px-plant-leaf-2 { bottom: 40px; left: 256px; }
+.px-plant-leaf-3 { bottom: 36px; left: 262px; transform: rotate(20deg); }
+.px-plant-stem {
+  position: absolute;
+  bottom: 32px;
+  left: 257px;
+  width: 4px;
+  height: 12px;
+  background: #2d7a55;
+}
+
+/* Keyboard */
+.px-keyboard {
+  position: absolute;
+  bottom: 16px;
+  left: 108px;
+  width: 100px;
+  height: 24px;
+  background: #d4d0c8;
+  border: 2px solid #bbb7ad;
+  border-radius: 1px;
+}
+.px-keyboard::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 90px;
+  height: 4px;
+  background: #c0bbb0;
+  box-shadow:
+    0 6px 0 #c0bbb0,
+    0 12px 0 #c0bbb0;
+}
+
+/* Monitor power LED */
+.px-led {
+  position: absolute;
+  bottom: 60px;
+  left: 157px;
+  width: 4px;
+  height: 4px;
+  background: #7ee787;
+  border-radius: 50%;
+  animation: ledPulse 3s ease-in-out infinite;
+}
+@keyframes ledPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Chortle promo card */
+.chortle-promo {
+  display: block;
+  background: var(--paper-warm);
+  border: 1px solid var(--paper-line);
+  padding: 16px 20px;
+  max-width: 280px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.chortle-promo:hover {
+  border-color: var(--gold);
+  box-shadow: 0 2px 12px rgba(201, 169, 97, 0.12);
+}
+.chortle-promo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.chortle-arrow {
+  font-family: var(--mono);
+  font-size: 16px;
+  color: var(--gold);
+  transition: transform 0.2s;
+}
+.chortle-promo:hover .chortle-arrow { transform: translateX(3px); }
+.chortle-mini-board {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.chortle-mini-row {
+  display: flex;
+  gap: 3px;
+}
+.cm-tile {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--paper-line);
+  background: var(--paper);
+}
+.cm-tile.cm-correct { background: var(--gold); border-color: var(--gold); color: #fff; }
+.cm-tile.cm-present { background: var(--muted); border-color: var(--muted); }
+.cm-tile.cm-absent { background: var(--ink-soft); border-color: var(--ink-soft); }
+
+/* Hide on tablet and mobile */
+@media (max-width: 900px) {
+  .pixel-desk-wrapper { display: none !important; }
+}
 </style>
 </head>
 <body>
@@ -2050,6 +2388,81 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       <div style="text-align: center; padding: 80px 20px;">
         <div class="eyebrow" style="color: var(--muted);">Loading latest news...</div>
       </div>
+    </div>
+
+    <!-- Pixel Desk Scene (desktop only) -->
+    <div class="pixel-desk-wrapper">
+      <div class="pixel-desk-scene">
+        <!-- Monitor -->
+        <div class="px-monitor"></div>
+        <div class="px-stand"></div>
+        <div class="px-base"></div>
+        <div class="px-led"></div>
+        <!-- Screen content -->
+        <div class="px-screen">
+          <div class="px-screen-line line-muted">// portfolio-engine v4.2</div>
+          <div class="px-screen-line"><span class="line-blue">const</span> data = <span class="line-blue">await</span> ingest()</div>
+          <div class="px-screen-line"><span class="line-blue">await</span> pipeline.run(<span class="px-cursor"></span>)</div>
+          <div class="px-screen-line line-gold">► 2,847 records processed</div>
+        </div>
+        <!-- Desk -->
+        <div class="px-desk"></div>
+        <!-- Keyboard -->
+        <div class="px-keyboard"></div>
+        <!-- Papers -->
+        <div class="px-papers"></div>
+        <!-- Coffee -->
+        <div class="px-coffee"></div>
+        <div class="px-steam px-steam-1"></div>
+        <div class="px-steam px-steam-2"></div>
+        <div class="px-steam px-steam-3"></div>
+      </div>
+
+      <div class="pixel-desk-text">
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 12px;">From the Desk</div>
+        <p class="serif" style="font-size: 20px; line-height: 1.5; color: var(--ink); margin-bottom: 12px; max-width: 420px;">
+          Our chief data scientist Maher, somewhere between his third espresso and a pipeline breakthrough.
+        </p>
+        <p style="font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; max-width: 400px;">
+          The Charterr is edited from San Francisco, where the Semperr team ships data infrastructure for the firms that can't afford to get it wrong.
+        </p>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="eyebrow" style="color: var(--muted-light);">The Charterr Newsroom</span>
+          <span style="color: var(--paper-line);">·</span>
+          <span class="eyebrow" style="color: var(--muted-light);">San Francisco, CA</span>
+        </div>
+      </div>
+
+      <a href="chortle.html" class="chortle-promo">
+        <div class="chortle-promo-header">
+          <span class="eyebrow" style="color: var(--gold);">Play Chortle</span>
+          <span class="chortle-arrow">→</span>
+        </div>
+        <div class="chortle-mini-board">
+          <div class="chortle-mini-row">
+            <span class="cm-tile cm-correct">C</span>
+            <span class="cm-tile cm-correct">H</span>
+            <span class="cm-tile cm-correct">O</span>
+            <span class="cm-tile cm-correct">R</span>
+            <span class="cm-tile cm-absent">T</span>
+          </div>
+          <div class="chortle-mini-row">
+            <span class="cm-tile cm-absent"></span>
+            <span class="cm-tile cm-present"></span>
+            <span class="cm-tile cm-absent"></span>
+            <span class="cm-tile cm-absent"></span>
+            <span class="cm-tile cm-correct"></span>
+          </div>
+          <div class="chortle-mini-row">
+            <span class="cm-tile"></span>
+            <span class="cm-tile"></span>
+            <span class="cm-tile"></span>
+            <span class="cm-tile"></span>
+            <span class="cm-tile"></span>
+          </div>
+        </div>
+        <p style="font-size: 13px; color: var(--muted); margin-top: 10px;">Our industry word game. Five letters, six tries.</p>
+      </a>
     </div>
   </div>
 </section>
@@ -2746,6 +3159,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
         <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
           <li><a href="dispatches.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">All Dispatches</a></li>
           <li><a href="news-archive.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">News Archive</a></li>
+          <li><a href="chortle.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Chortle</a></li>
           <li><a href="archive.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Archive</a></li>
           <li><a href="events.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Events</a></li>
           <li><a href="index.html#subscribe" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Subscribe</a></li>
@@ -3104,17 +3518,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       html += '</div>';
     }
 
-    // ── BOTTOM ZONE: single-column list (capped at 6) ──
-    const bottomCap = 6;
-    const bottomArr = take(bottomCap);
-    if (bottomArr.length) {
-      html += '<div class="nyt-section-break"><span>Across the Wire</span></div>';
-      html += '<div class="news-bottom-zone">';
-      bottomArr.forEach(a => { html += buildListCard(a); });
-      html += '</div>';
-    }
-
-    // ── ARCHIVE LINK — if more articles exist beyond the 24 shown ──
+    // ── ARCHIVE LINK — if more articles remain beyond the 18 shown ──
     const remaining = sorted.length - idx;
     if (remaining > 0) {
       html += `<div style="text-align:center;padding:32px 0 8px 0;border-top:1px solid var(--paper-line);margin-top:24px;">
