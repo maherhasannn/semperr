@@ -28,6 +28,37 @@ if (!API_KEY) {
   process.exit(1);
 }
 
+// Curated source allowlist — only pull from reputable, on-brand publications.
+// Source names are lowercased for case-insensitive matching.
+const SOURCE_ALLOWLIST = new Set([
+  // Legal
+  'above the law',
+  'artificial lawyer',
+  'law360',
+  // Tech
+  'techcrunch',
+  'techcrunch ai',
+  'ars technica',
+  'the verge',
+  'zdnet',
+  'tech radar',
+  'tom\'s guide',
+  // Finance
+  'pe hub',
+  'crunchbase news',
+  'seeking alpha',
+  // Enterprise / General
+  'bloomberg',
+  'fast company',
+  // AI
+  'complete ai training',
+  'analytics and insight',
+  'contentgrip',
+  // Legal (general press covering legal)
+  'theglobeandmail',
+  'city a.m.',
+]);
+
 // US/Canada + Europe only. Post-filtered against the returned `country` field
 // because some aggregators (e.g. Econotimes) list multiple countries.
 const COUNTRY_ALLOWLIST = new Set([
@@ -139,12 +170,19 @@ function cleanDescription(text, maxLength = 240) {
   return cleaned;
 }
 
+function passesSourceFilter(r) {
+  const name = (r.source_name || r.source_id || '').toLowerCase().trim();
+  return SOURCE_ALLOWLIST.has(name);
+}
+
 function normalize(raw, query) {
   const out = [];
   let droppedForCountry = 0;
+  let droppedForSource = 0;
   for (const r of raw) {
     if (!r.title || !r.link) continue;
     if (r.duplicate) continue;
+    if (!passesSourceFilter(r)) { droppedForSource++; continue; }
     if (!passesCountryFilter(r)) { droppedForCountry++; continue; }
     const primaryCountry = Array.isArray(r.country)
       ? (r.country.find(c => COUNTRY_ALLOWLIST.has(String(c).toLowerCase())) || r.country[0])
@@ -162,6 +200,9 @@ function normalize(raw, query) {
       author: Array.isArray(r.creator) && r.creator.length ? r.creator[0] : null,
     };
     out.push(article);
+  }
+  if (droppedForSource) {
+    console.log(`[${query.name}] dropped ${droppedForSource} articles from non-approved sources`);
   }
   if (droppedForCountry) {
     console.log(`[${query.name}] dropped ${droppedForCountry} articles outside US/EU allowlist`);
@@ -247,9 +288,14 @@ function mergeAndPrune(archive, fresh) {
   // Retroactively apply country allowlist so any previously-stored foreign
   // article gets purged on next run.
   let retroDropped = 0;
+  let retroDroppedSource = 0;
   for (const a of archive) {
     if (!a || !a.link) continue;
     if (a.publishedAt <= cutoff) continue;
+    if (a.source && !SOURCE_ALLOWLIST.has(String(a.source).toLowerCase().trim())) {
+      retroDroppedSource++;
+      continue;
+    }
     if (a.country && !COUNTRY_ALLOWLIST.has(String(a.country).toLowerCase())) {
       retroDropped++;
       continue;
@@ -262,7 +308,8 @@ function mergeAndPrune(archive, fresh) {
   for (const a of fresh) {
     if (a.publishedAt > cutoff) map.set(a.link, a);
   }
-  if (retroDropped) console.log(`Retroactively dropped ${retroDropped} archive articles outside allowlist`);
+  if (retroDroppedSource) console.log(`Retroactively dropped ${retroDroppedSource} archive articles from non-approved sources`);
+  if (retroDropped) console.log(`Retroactively dropped ${retroDropped} archive articles outside country allowlist`);
   const all = Array.from(map.values());
   all.sort((a, b) => b.publishedAt - a.publishedAt);
   return all.slice(0, MAX_ARCHIVE);
