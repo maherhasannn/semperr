@@ -1438,19 +1438,25 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   display: grid;
   grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
   gap: 12px;
+  transition: grid-template-columns 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
+.dossier-grid:has(.dossier-card:nth-child(1):hover) { grid-template-columns: 2.2fr 0.8fr 0.8fr 0.8fr 0.8fr; }
+.dossier-grid:has(.dossier-card:nth-child(2):hover) { grid-template-columns: 0.8fr 2.2fr 0.8fr 0.8fr 0.8fr; }
+.dossier-grid:has(.dossier-card:nth-child(3):hover) { grid-template-columns: 0.8fr 0.8fr 2.2fr 0.8fr 0.8fr; }
+.dossier-grid:has(.dossier-card:nth-child(4):hover) { grid-template-columns: 0.8fr 0.8fr 0.8fr 2.2fr 0.8fr; }
+.dossier-grid:has(.dossier-card:nth-child(5):hover) { grid-template-columns: 0.8fr 0.8fr 0.8fr 0.8fr 2.2fr; }
 .dossier-card {
   display: flex;
   flex-direction: column;
   background: var(--ink);
   min-height: 420px;
+  min-width: 0;
   position: relative;
   overflow: hidden;
   border: 2px solid transparent;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .dossier-card:hover {
-  transform: translateY(-4px);
   box-shadow: 0 20px 40px -12px rgba(0,0,0,0.3);
   border-color: var(--blue);
 }
@@ -1468,6 +1474,20 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
+  min-width: 0;
+}
+.dossier-card-body > div {
+  min-width: 0;
+  overflow: hidden;
+}
+.dossier-card-body h3,
+.dossier-card-body p,
+.dossier-card-body .source-badge,
+.dossier-card-body .eyebrow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .dossier-card-body .dossier-index {
   font-family: var(--mono);
@@ -2241,9 +2261,616 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .cm-tile.cm-present { background: var(--muted); border-color: var(--muted); }
 .cm-tile.cm-absent { background: var(--ink-soft); border-color: var(--ink-soft); }
 
-/* Hide on tablet and mobile */
+/* ===== PIXEL ANIMATIONS — shared ===== */
+.px-banner {
+  overflow: hidden;
+  position: relative;
+  image-rendering: pixelated;
+  display: block;
+}
+.px-scene-small {
+  position: relative;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+.px-interstitial {
+  text-align: center;
+  padding: 40px 0;
+}
+
+/* ===== 1. PIXEL CITYSCAPE BANNER ===== */
+.px-city-banner {
+  height: 120px;
+  background: #0b1220;
+  position: relative;
+}
+.px-city-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #0a0e1a 0%, #141c2e 60%, #1a2540 100%);
+}
+/* Stars */
+.px-star {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #fff;
+  animation: starTwinkle 3s ease-in-out infinite;
+}
+.px-star:nth-child(1) { top: 12px; left: 8%; animation-delay: 0s; }
+.px-star:nth-child(2) { top: 8px; left: 22%; animation-delay: 1.2s; }
+.px-star:nth-child(3) { top: 20px; left: 45%; animation-delay: 0.6s; }
+.px-star:nth-child(4) { top: 6px; left: 67%; animation-delay: 2s; }
+.px-star:nth-child(5) { top: 16px; left: 80%; animation-delay: 0.3s; }
+.px-star:nth-child(6) { top: 10px; left: 92%; animation-delay: 1.8s; }
+@keyframes starTwinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+/* Buildings */
+.px-building {
+  position: absolute;
+  bottom: 0;
+  background: #141c2e;
+}
+.px-building::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: #1a2540;
+}
+.px-bld-1 { left: 2%; width: 40px; height: 64px; }
+.px-bld-2 { left: 8%; width: 28px; height: 88px; }
+.px-bld-3 { left: 14%; width: 48px; height: 52px; }
+.px-bld-4 { left: 22%; width: 32px; height: 76px; }
+.px-bld-5 { left: 30%; width: 56px; height: 96px; }
+.px-bld-6 { left: 40%; width: 36px; height: 60px; }
+.px-bld-7 { left: 48%; width: 44px; height: 84px; }
+.px-bld-8 { left: 56%; width: 28px; height: 72px; }
+.px-bld-9 { left: 62%; width: 52px; height: 100px; }
+.px-bld-10 { left: 72%; width: 36px; height: 56px; }
+.px-bld-11 { left: 78%; width: 44px; height: 80px; }
+.px-bld-12 { left: 86%; width: 32px; height: 68px; }
+.px-bld-13 { left: 92%; width: 48px; height: 48px; }
+/* Windows */
+.px-win {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #c9a961;
+  opacity: 0.8;
+}
+.px-win.off { background: #1a2540; opacity: 0.3; }
+.px-win.blink { animation: winBlink 4s ease-in-out infinite; }
+@keyframes winBlink {
+  0%, 45%, 55%, 100% { background: #c9a961; opacity: 0.8; }
+  50% { background: #1a2540; opacity: 0.3; }
+}
+/* Antenna */
+.px-antenna {
+  position: absolute;
+  width: 4px;
+  background: #2a3550;
+}
+.px-antenna-light {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #d4664a;
+  border-radius: 50%;
+  animation: antennaFlash 2s ease-in-out infinite;
+}
+@keyframes antennaFlash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+/* Cloud */
+.px-cloud {
+  position: absolute;
+  animation: cloudDrift 40s linear infinite;
+}
+.px-cloud-block {
+  position: absolute;
+  height: 8px;
+  background: rgba(255,255,255,0.06);
+}
+@keyframes cloudDrift {
+  0% { transform: translateX(-120px); }
+  100% { transform: translateX(calc(100vw + 120px)); }
+}
+/* City label */
+.px-city-label {
+  position: absolute;
+  bottom: 8px;
+  right: var(--pad);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ===== 2. PIXEL TICKER TAPE ===== */
+.px-ticker-strip {
+  background: var(--ink);
+  padding: 0;
+  overflow: hidden;
+  height: 36px;
+  position: relative;
+}
+.px-ticker-track {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  animation: tickerScroll 30s linear infinite;
+  white-space: nowrap;
+  gap: 0;
+}
+.px-ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--muted-light);
+  flex-shrink: 0;
+}
+.px-ticker-sym { color: var(--paper); font-weight: 600; }
+.px-ticker-up { color: #7ee787; }
+.px-ticker-down { color: #d4664a; }
+.px-ticker-dot {
+  width: 3px;
+  height: 3px;
+  background: var(--gold);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ===== 3. PIXEL STOCK CHART (small scene) ===== */
+.px-chart-scene {
+  width: 200px;
+  height: 120px;
+  background: #0f1520;
+  border: 2px solid #1a2540;
+  padding: 8px;
+  position: relative;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+.px-chart-label {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.px-chart-canvas {
+  width: 100%;
+  height: 80px;
+  position: relative;
+}
+.px-chart-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.px-chart-line svg {
+  width: 100%;
+  height: 100%;
+}
+.px-chart-gridline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+}
+.px-chart-val {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: #7ee787;
+}
+.px-chart-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--paper-line);
+}
+.px-chart-meta {
+  flex: 1;
+}
+
+/* ===== 4. PIXEL GAVEL (small scene) ===== */
+.px-gavel-scene {
+  width: 160px;
+  height: 100px;
+  position: relative;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+.px-gavel-head {
+  position: absolute;
+  width: 48px;
+  height: 16px;
+  background: #8b6f47;
+  top: 20px;
+  left: 56px;
+  border: 2px solid #6b5535;
+  animation: gavelStrike 2.5s ease-in-out infinite;
+  transform-origin: left center;
+}
+.px-gavel-head::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -12px;
+  width: 12px;
+  height: 20px;
+  background: #a0825a;
+  border: 2px solid #6b5535;
+}
+.px-gavel-handle {
+  position: absolute;
+  width: 4px;
+  height: 40px;
+  background: #6b5535;
+  top: 32px;
+  left: 78px;
+  animation: gavelStrike 2.5s ease-in-out infinite;
+  transform-origin: top center;
+}
+.px-sound-block {
+  position: absolute;
+  bottom: 16px;
+  left: 40px;
+  width: 80px;
+  height: 16px;
+  background: #5a4a35;
+  border: 2px solid #4a3a28;
+  border-radius: 2px;
+}
+.px-sound-block::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 8px;
+  width: 64px;
+  height: 6px;
+  background: #6b5a40;
+  border-radius: 2px 2px 0 0;
+}
+.px-impact {
+  position: absolute;
+  top: 32px;
+  left: 88px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--gold);
+  border-radius: 50%;
+  opacity: 0;
+  animation: gavelImpact 2.5s ease-out infinite;
+}
+.px-impact-2 {
+  width: 16px;
+  height: 16px;
+  top: 28px;
+  left: 84px;
+  animation-delay: 0.1s;
+}
+@keyframes gavelStrike {
+  0%, 60% { transform: rotate(-15deg); }
+  70% { transform: rotate(5deg); }
+  80%, 100% { transform: rotate(-15deg); }
+}
+@keyframes gavelImpact {
+  0%, 65% { opacity: 0; transform: scale(0.5); }
+  72% { opacity: 1; transform: scale(1); }
+  85%, 100% { opacity: 0; transform: scale(1.8); }
+}
+.px-gavel-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--paper-line);
+}
+.px-gavel-meta { flex: 1; }
+
+/* ===== 5. PIXEL SERVER ROOM BANNER ===== */
+.px-server-banner {
+  height: 100px;
+  background: #080c14;
+  position: relative;
+  overflow: hidden;
+}
+.px-rack {
+  position: absolute;
+  bottom: 0;
+  width: 64px;
+  height: 84px;
+  background: #12161e;
+  border: 2px solid #1a2030;
+}
+.px-rack::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: #2a3040;
+}
+.px-rack-slot {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  height: 8px;
+  background: #0a0e16;
+  border: 1px solid #1a2030;
+}
+.px-rack-led {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+.px-led-green { background: #7ee787; }
+.px-led-amber { background: #d4a24a; }
+.px-led-red { background: #d4664a; }
+.px-led-blink {
+  animation: serverLedBlink 1.5s ease-in-out infinite;
+}
+.px-led-blink-fast {
+  animation: serverLedBlink 0.6s ease-in-out infinite;
+}
+.px-led-blink-slow {
+  animation: serverLedBlink 3s ease-in-out infinite;
+}
+@keyframes serverLedBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+.px-cable {
+  position: absolute;
+  width: 2px;
+  background: #1a2540;
+}
+.px-cable-blue { background: #2a4a7a; }
+.px-cable-gold { background: #6b5a30; }
+.px-server-label {
+  position: absolute;
+  bottom: 6px;
+  right: var(--pad);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.15);
+}
+/* Fan */
+.px-fan {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #2a3040;
+  border-radius: 50%;
+  animation: fanSpin 1s linear infinite;
+}
+.px-fan::before, .px-fan::after {
+  content: '';
+  position: absolute;
+  background: #2a3040;
+}
+.px-fan::before {
+  top: 5px; left: 2px;
+  width: 8px; height: 2px;
+}
+.px-fan::after {
+  top: 2px; left: 5px;
+  width: 2px; height: 8px;
+}
+@keyframes fanSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ===== 6. PIXEL ENVELOPE (micro) ===== */
+.px-envelope-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 32px 0;
+  image-rendering: pixelated;
+}
+.px-envelope-scene {
+  position: relative;
+  width: 80px;
+  height: 56px;
+}
+.px-envelope-body {
+  position: absolute;
+  bottom: 0;
+  width: 80px;
+  height: 44px;
+  background: var(--paper-warm);
+  border: 2px solid var(--paper-line);
+}
+.px-envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  border-left: 40px solid transparent;
+  border-right: 40px solid transparent;
+  border-top: 24px solid var(--paper-line);
+  animation: flapOpen 3s ease-in-out infinite;
+}
+.px-envelope-letter {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  width: 56px;
+  height: 36px;
+  background: var(--paper);
+  border: 1px solid var(--paper-line);
+  animation: letterSlide 3s ease-in-out infinite;
+}
+.px-envelope-letter::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 8px; right: 8px;
+  height: 2px;
+  background: var(--paper-line);
+  box-shadow: 0 6px 0 var(--paper-line), 0 12px 0 var(--paper-line);
+}
+.px-wax-seal {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  background: var(--coral);
+  border-radius: 50%;
+  border: 1px solid #b5503a;
+  z-index: 2;
+}
+@keyframes flapOpen {
+  0%, 30% { transform: rotateX(0deg); }
+  50% { transform: rotateX(180deg); }
+  70%, 100% { transform: rotateX(0deg); }
+}
+@keyframes letterSlide {
+  0%, 25% { transform: translateY(0); }
+  45% { transform: translateY(-16px); }
+  65% { transform: translateY(-16px); }
+  85%, 100% { transform: translateY(0); }
+}
+
+/* ===== 7. PIXEL HANDSHAKE (micro) ===== */
+.px-handshake-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 32px 0;
+  image-rendering: pixelated;
+}
+.px-handshake-scene {
+  position: relative;
+  width: 100px;
+  height: 52px;
+}
+.px-hand-l, .px-hand-r {
+  position: absolute;
+  bottom: 8px;
+  width: 36px;
+  height: 20px;
+  background: var(--paper-warm);
+  border: 2px solid var(--paper-line);
+  border-radius: 2px;
+}
+.px-hand-l {
+  left: 4px;
+  animation: handLeft 2s ease-in-out infinite;
+}
+.px-hand-r {
+  right: 4px;
+  animation: handRight 2s ease-in-out infinite;
+}
+.px-hand-l::after, .px-hand-r::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  width: 8px;
+  height: 4px;
+  background: var(--paper-line);
+}
+.px-hand-l::after { right: -2px; border-radius: 0 2px 2px 0; }
+.px-hand-r::after { left: -2px; border-radius: 2px 0 0 2px; }
+/* Sleeve cuffs */
+.px-cuff-l, .px-cuff-r {
+  position: absolute;
+  bottom: 4px;
+  width: 16px;
+  height: 28px;
+  border: 2px solid var(--paper-line);
+}
+.px-cuff-l {
+  left: 0;
+  background: var(--ink);
+  animation: handLeft 2s ease-in-out infinite;
+}
+.px-cuff-r {
+  right: 0;
+  background: var(--ink-soft);
+  animation: handRight 2s ease-in-out infinite;
+}
+.px-shake-spark {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  opacity: 0;
+  animation: shakeSpark 2s ease-out infinite;
+}
+.px-shake-spark::before, .px-shake-spark::after {
+  content: '';
+  position: absolute;
+  background: var(--gold);
+}
+.px-shake-spark::before {
+  top: 2px; left: 0;
+  width: 6px; height: 2px;
+}
+.px-shake-spark::after {
+  top: 0; left: 2px;
+  width: 2px; height: 6px;
+}
+@keyframes handLeft {
+  0%, 30% { transform: translateX(-8px); }
+  50%, 70% { transform: translateX(8px); }
+  100% { transform: translateX(-8px); }
+}
+@keyframes handRight {
+  0%, 30% { transform: translateX(8px); }
+  50%, 70% { transform: translateX(-8px); }
+  100% { transform: translateX(8px); }
+}
+@keyframes shakeSpark {
+  0%, 40% { opacity: 0; }
+  50% { opacity: 1; }
+  70%, 100% { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+}
+
+/* Hide all pixel animations on tablet and mobile */
 @media (max-width: 900px) {
   .pixel-desk-wrapper { display: none !important; }
+  .px-city-banner { display: none !important; }
+  .px-ticker-strip { display: none !important; }
+  .px-chart-wrapper { display: none !important; }
+  .px-gavel-wrapper { display: none !important; }
+  .px-server-banner { display: none !important; }
+  .px-envelope-wrap { display: none !important; }
+  .px-handshake-wrap { display: none !important; }
 }
 </style>
 </head>
@@ -2548,6 +3175,162 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
+<!-- ===== PIXEL CITYSCAPE BANNER ===== -->
+<div class="px-city-banner px-banner">
+  <div class="px-city-sky">
+    <div class="px-star"></div>
+    <div class="px-star"></div>
+    <div class="px-star"></div>
+    <div class="px-star"></div>
+    <div class="px-star"></div>
+    <div class="px-star"></div>
+  </div>
+  <!-- Buildings -->
+  <div class="px-building px-bld-1">
+    <div class="px-win" style="top:8px;left:8px;"></div>
+    <div class="px-win off" style="top:8px;left:20px;"></div>
+    <div class="px-win blink" style="top:20px;left:8px;"></div>
+    <div class="px-win" style="top:20px;left:20px;"></div>
+    <div class="px-win off" style="top:32px;left:8px;"></div>
+    <div class="px-win" style="top:32px;left:20px;"></div>
+  </div>
+  <div class="px-building px-bld-2">
+    <div class="px-win" style="top:8px;left:8px;"></div>
+    <div class="px-win blink" style="top:20px;left:8px;"></div>
+    <div class="px-win" style="top:32px;left:8px;"></div>
+    <div class="px-win off" style="top:44px;left:8px;"></div>
+    <div class="px-win" style="top:56px;left:8px;"></div>
+  </div>
+  <div class="px-building px-bld-3">
+    <div class="px-win off" style="top:8px;left:8px;"></div>
+    <div class="px-win" style="top:8px;left:20px;"></div>
+    <div class="px-win" style="top:8px;left:32px;"></div>
+    <div class="px-win blink" style="top:20px;left:8px;"></div>
+    <div class="px-win off" style="top:20px;left:20px;"></div>
+    <div class="px-win" style="top:20px;left:32px;"></div>
+  </div>
+  <div class="px-building px-bld-4">
+    <div class="px-win" style="top:8px;left:8px;"></div>
+    <div class="px-win off" style="top:20px;left:8px;"></div>
+    <div class="px-win blink" style="top:32px;left:8px;"></div>
+    <div class="px-win" style="top:44px;left:8px;"></div>
+  </div>
+  <div class="px-building px-bld-5">
+    <div class="px-antenna" style="top:-20px;left:26px;height:20px;"></div>
+    <div class="px-antenna-light" style="top:-24px;left:26px;"></div>
+    <div class="px-win" style="top:8px;left:8px;"></div>
+    <div class="px-win blink" style="top:8px;left:20px;"></div>
+    <div class="px-win off" style="top:8px;left:36px;"></div>
+    <div class="px-win" style="top:20px;left:8px;"></div>
+    <div class="px-win" style="top:20px;left:20px;"></div>
+    <div class="px-win blink" style="top:20px;left:36px;"></div>
+    <div class="px-win off" style="top:32px;left:8px;"></div>
+    <div class="px-win" style="top:32px;left:20px;"></div>
+    <div class="px-win" style="top:32px;left:36px;"></div>
+    <div class="px-win blink" style="top:44px;left:8px;"></div>
+    <div class="px-win off" style="top:44px;left:20px;"></div>
+    <div class="px-win" style="top:44px;left:36px;"></div>
+    <div class="px-win" style="top:56px;left:8px;"></div>
+    <div class="px-win" style="top:56px;left:20px;"></div>
+    <div class="px-win off" style="top:56px;left:36px;"></div>
+  </div>
+  <div class="px-building px-bld-6">
+    <div class="px-win off" style="top:8px;left:8px;"></div>
+    <div class="px-win" style="top:8px;left:20px;"></div>
+    <div class="px-win blink" style="top:20px;left:8px;"></div>
+    <div class="px-win off" style="top:20px;left:20px;"></div>
+    <div class="px-win" style="top:32px;left:8px;"></div>
+  </div>
+  <div class="px-building px-bld-7">
+    <div class="px-antenna" style="top:-16px;left:20px;height:16px;"></div>
+    <div class="px-antenna-light" style="top:-20px;left:20px;animation-delay:1s;"></div>
+    <div class="px-win blink" style="top:8px;left:8px;"></div>
+    <div class="px-win" style="top:8px;left:20px;"></div>
+    <div class="px-win off" style="top:8px;left:32px;"></div>
+    <div class="px-win" style="top:20px;left:8px;"></div>
+    <div class="px-win blink" style="top:20px;left:20px;"></div>
+    <div class="px-win" style="top:20px;left:32px;"></div>
+    <div class="px-win off" style="top:32px;left:8px;"></div>
+    <div class="px-win" style="top:32px;left:20px;"></div>
+    <div class="px-win blink" style="top:32px;left:32px;"></div>
+    <div class="px-win" style="top:44px;left:8px;"></div>
+    <div class="px-win off" style="top:44px;left:20px;"></div>
+    <div class="px-win" style="top:44px;left:32px;"></div>
+  </div>
+  <div class="px-building px-bld-8">
+    <div class="px-win" style="top:8px;left:8px;"></div>
+    <div class="px-win blink" style="top:20px;left:8px;"></div>
+    <div class="px-win off" style="top:32px;left:8px;"></div>
+    <div class="px-win" style="top:44px;left:8px;"></div>
+  </div>
+  <div class="px-building px-bld-9">
+    <div class="px-antenna" style="top:-24px;left:24px;height:24px;"></div>
+    <div class="px-antenna-light" style="top:-28px;left:24px;animation-delay:0.5s;"></div>
+    <div class="px-win blink" style="top:8px;left:8px;"></div>
+    <div class="px-win" style="top:8px;left:20px;"></div>
+    <div class="px-win" style="top:8px;left:36px;"></div>
+    <div class="px-win off" style="top:20px;left:8px;"></div>
+    <div class="px-win blink" style="top:20px;left:20px;"></div>
+    <div class="px-win" style="top:20px;left:36px;"></div>
+    <div class="px-win" style="top:32px;left:8px;"></div>
+    <div class="px-win off" style="top:32px;left:20px;"></div>
+    <div class="px-win blink" style="top:32px;left:36px;"></div>
+    <div class="px-win" style="top:44px;left:8px;"></div>
+    <div class="px-win" style="top:44px;left:20px;"></div>
+    <div class="px-win off" style="top:44px;left:36px;"></div>
+    <div class="px-win blink" style="top:56px;left:8px;"></div>
+    <div class="px-win" style="top:56px;left:20px;"></div>
+    <div class="px-win" style="top:56px;left:36px;"></div>
+    <div class="px-win off" style="top:68px;left:8px;"></div>
+    <div class="px-win blink" style="top:68px;left:20px;"></div>
+    <div class="px-win" style="top:68px;left:36px;"></div>
+  </div>
+  <div class="px-building px-bld-10">
+    <div class="px-win" style="top:8px;left:8px;"></div>
+    <div class="px-win off" style="top:8px;left:20px;"></div>
+    <div class="px-win blink" style="top:20px;left:8px;"></div>
+    <div class="px-win" style="top:20px;left:20px;"></div>
+    <div class="px-win" style="top:32px;left:8px;"></div>
+  </div>
+  <div class="px-building px-bld-11">
+    <div class="px-win off" style="top:8px;left:8px;"></div>
+    <div class="px-win blink" style="top:8px;left:20px;"></div>
+    <div class="px-win" style="top:8px;left:32px;"></div>
+    <div class="px-win" style="top:20px;left:8px;"></div>
+    <div class="px-win off" style="top:20px;left:20px;"></div>
+    <div class="px-win blink" style="top:20px;left:32px;"></div>
+    <div class="px-win" style="top:32px;left:8px;"></div>
+    <div class="px-win" style="top:32px;left:20px;"></div>
+    <div class="px-win off" style="top:32px;left:32px;"></div>
+    <div class="px-win blink" style="top:44px;left:8px;"></div>
+    <div class="px-win" style="top:44px;left:20px;"></div>
+    <div class="px-win" style="top:44px;left:32px;"></div>
+  </div>
+  <div class="px-building px-bld-12">
+    <div class="px-win blink" style="top:8px;left:8px;"></div>
+    <div class="px-win" style="top:20px;left:8px;"></div>
+    <div class="px-win off" style="top:32px;left:8px;"></div>
+    <div class="px-win" style="top:44px;left:8px;"></div>
+  </div>
+  <div class="px-building px-bld-13">
+    <div class="px-win" style="top:8px;left:8px;"></div>
+    <div class="px-win off" style="top:8px;left:20px;"></div>
+    <div class="px-win" style="top:8px;left:32px;"></div>
+    <div class="px-win blink" style="top:20px;left:8px;"></div>
+    <div class="px-win" style="top:20px;left:20px;"></div>
+  </div>
+  <!-- Cloud -->
+  <div class="px-cloud" style="top: 20px;">
+    <div class="px-cloud-block" style="top:0;left:8px;width:32px;"></div>
+    <div class="px-cloud-block" style="top:8px;left:0;width:48px;"></div>
+  </div>
+  <div class="px-cloud" style="top: 35px; animation-delay: -20s;">
+    <div class="px-cloud-block" style="top:0;left:4px;width:24px;"></div>
+    <div class="px-cloud-block" style="top:8px;left:0;width:36px;"></div>
+  </div>
+  <span class="px-city-label">San Francisco, CA</span>
+</div>
+
 <!-- ===== LATEST DISPATCHES — Feature Well ===== -->
 <section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
@@ -2641,6 +3424,53 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
+<!-- ===== PIXEL TICKER TAPE ===== -->
+<div class="px-ticker-strip">
+  <div class="px-ticker-track">
+    <span class="px-ticker-item"><span class="px-ticker-sym">SMPR</span> <span class="px-ticker-up">▲ 4.2%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">DATA</span> <span class="px-ticker-up">▲ 1.8%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">CHRT</span> <span class="px-ticker-down">▼ 0.3%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">PIPE</span> <span class="px-ticker-up">▲ 2.7%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">CLAD</span> <span class="px-ticker-up">▲ 3.1%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">TRCE</span> <span class="px-ticker-down">▼ 0.9%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">CRFT</span> <span class="px-ticker-up">▲ 5.4%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">LGAL</span> <span class="px-ticker-up">▲ 1.2%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">INFR</span> <span class="px-ticker-down">▼ 0.6%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">VALT</span> <span class="px-ticker-up">▲ 2.1%</span></span>
+    <span class="px-ticker-dot"></span>
+    <!-- Duplicate for seamless loop -->
+    <span class="px-ticker-item"><span class="px-ticker-sym">SMPR</span> <span class="px-ticker-up">▲ 4.2%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">DATA</span> <span class="px-ticker-up">▲ 1.8%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">CHRT</span> <span class="px-ticker-down">▼ 0.3%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">PIPE</span> <span class="px-ticker-up">▲ 2.7%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">CLAD</span> <span class="px-ticker-up">▲ 3.1%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">TRCE</span> <span class="px-ticker-down">▼ 0.9%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">CRFT</span> <span class="px-ticker-up">▲ 5.4%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">LGAL</span> <span class="px-ticker-up">▲ 1.2%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">INFR</span> <span class="px-ticker-down">▼ 0.6%</span></span>
+    <span class="px-ticker-dot"></span>
+    <span class="px-ticker-item"><span class="px-ticker-sym">VALT</span> <span class="px-ticker-up">▲ 2.1%</span></span>
+    <span class="px-ticker-dot"></span>
+  </div>
+</div>
+
 <!-- ===== PRIVATE EQUITY & VENTURE — Dossier Layout ===== -->
 <section id="trace" class="mosaic-section" style="--section-accent: var(--blue); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
@@ -2709,6 +3539,41 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
           </div>
         </div>
       </a>
+    </div>
+
+    <!-- Pixel stock chart -->
+    <div class="px-chart-wrapper">
+      <div class="px-chart-scene">
+        <div class="px-chart-label">SMPR Index</div>
+        <div class="px-chart-canvas">
+          <div class="px-chart-gridline" style="bottom: 25%;"></div>
+          <div class="px-chart-gridline" style="bottom: 50%;"></div>
+          <div class="px-chart-gridline" style="bottom: 75%;"></div>
+          <div class="px-chart-line">
+            <svg viewBox="0 0 180 80" preserveAspectRatio="none">
+              <polyline fill="none" stroke="#7ee787" stroke-width="2"
+                points="0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8">
+                <animate attributeName="points" dur="4s" repeatCount="indefinite"
+                  values="0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8;
+                          0,58 12,52 24,55 36,45 48,40 60,35 72,30 84,32 96,28 108,24 120,20 132,22 144,18 156,15 168,10 180,6;
+                          0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8"/>
+              </polyline>
+              <polyline fill="rgba(126,231,135,0.08)" stroke="none"
+                points="0,80 0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8 180,80">
+                <animate attributeName="points" dur="4s" repeatCount="indefinite"
+                  values="0,80 0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8 180,80;
+                          0,80 0,58 12,52 24,55 36,45 48,40 60,35 72,30 84,32 96,28 108,24 120,20 132,22 144,18 156,15 168,10 180,6 180,80;
+                          0,80 0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8 180,80"/>
+              </polyline>
+            </svg>
+          </div>
+          <div class="px-chart-val">+4.2</div>
+        </div>
+      </div>
+      <div class="px-chart-meta">
+        <div class="eyebrow" style="color: var(--blue); margin-bottom: 6px;">Market Pulse</div>
+        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">Tracking deal flow velocity across our monitored sectors. Updated continuously.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -2786,6 +3651,21 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
     <div style="text-align: center; margin-top: 32px;">
       <a href="clad-dispatches.html" class="eyebrow" style="color: var(--emerald);">View all Clad dispatches →</a>
+    </div>
+
+    <!-- Pixel gavel -->
+    <div class="px-gavel-wrapper">
+      <div class="px-gavel-scene">
+        <div class="px-gavel-head"></div>
+        <div class="px-gavel-handle"></div>
+        <div class="px-sound-block"></div>
+        <div class="px-impact"></div>
+        <div class="px-impact px-impact-2"></div>
+      </div>
+      <div class="px-gavel-meta">
+        <div class="eyebrow" style="color: var(--emerald); margin-bottom: 6px;">Order in the Court</div>
+        <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">Where legal precedent meets machine precision.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -2905,6 +3785,87 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   </div>
 </section>
 
+
+<!-- ===== PIXEL SERVER ROOM BANNER ===== -->
+<div class="px-server-banner px-banner">
+  <!-- Rack 1 -->
+  <div class="px-rack" style="left: 4%;">
+    <div class="px-rack-slot" style="top:8px;"><div class="px-rack-led px-led-green px-led-blink" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:22px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div><div class="px-rack-led px-led-amber px-led-blink-fast" style="top:2px;right:12px;"></div></div>
+    <div class="px-rack-slot" style="top:36px;"><div class="px-rack-led px-led-green px-led-blink-slow" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:50px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:64px;"><div class="px-rack-led px-led-red px-led-blink" style="top:2px;right:4px;"></div><div class="px-rack-led px-led-green" style="top:2px;right:12px;"></div></div>
+  </div>
+  <!-- Rack 2 -->
+  <div class="px-rack" style="left: 12%;">
+    <div class="px-rack-slot" style="top:8px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:22px;"><div class="px-rack-led px-led-amber px-led-blink-slow" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:36px;"><div class="px-rack-led px-led-green px-led-blink" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:50px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div><div class="px-rack-led px-led-green px-led-blink-fast" style="top:2px;right:12px;"></div></div>
+    <div class="px-rack-slot" style="top:64px;"><div class="px-rack-led px-led-green px-led-blink-slow" style="top:2px;right:4px;"></div></div>
+    <div class="px-fan" style="bottom:4px;right:4px;"></div>
+  </div>
+  <!-- Rack 3 -->
+  <div class="px-rack" style="left: 24%;">
+    <div class="px-rack-slot" style="top:8px;"><div class="px-rack-led px-led-green px-led-blink-fast" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:22px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:36px;"><div class="px-rack-led px-led-amber px-led-blink" style="top:2px;right:4px;"></div><div class="px-rack-led px-led-green" style="top:2px;right:12px;"></div></div>
+    <div class="px-rack-slot" style="top:50px;"><div class="px-rack-led px-led-green px-led-blink-slow" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:64px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+  </div>
+  <!-- Cables -->
+  <div class="px-cable px-cable-blue" style="left:22%;top:20px;height:40px;"></div>
+  <div class="px-cable px-cable-gold" style="left:23%;top:30px;height:50px;"></div>
+  <!-- Rack 4 -->
+  <div class="px-rack" style="left: 36%;">
+    <div class="px-rack-slot" style="top:8px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:22px;"><div class="px-rack-led px-led-green px-led-blink" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:36px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:50px;"><div class="px-rack-led px-led-amber px-led-blink-fast" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:64px;"><div class="px-rack-led px-led-green px-led-blink-slow" style="top:2px;right:4px;"></div></div>
+    <div class="px-fan" style="bottom:4px;right:4px;"></div>
+  </div>
+  <!-- Rack 5 -->
+  <div class="px-rack" style="left: 48%;">
+    <div class="px-rack-slot" style="top:8px;"><div class="px-rack-led px-led-green px-led-blink" style="top:2px;right:4px;"></div><div class="px-rack-led px-led-green" style="top:2px;right:12px;"></div></div>
+    <div class="px-rack-slot" style="top:22px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:36px;"><div class="px-rack-led px-led-green px-led-blink-fast" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:50px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:64px;"><div class="px-rack-led px-led-amber px-led-blink" style="top:2px;right:4px;"></div></div>
+  </div>
+  <!-- Cables -->
+  <div class="px-cable px-cable-blue" style="left:46%;top:10px;height:55px;"></div>
+  <!-- Rack 6 -->
+  <div class="px-rack" style="left: 60%;">
+    <div class="px-rack-slot" style="top:8px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:22px;"><div class="px-rack-led px-led-green px-led-blink-slow" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:36px;"><div class="px-rack-led px-led-green px-led-blink" style="top:2px;right:4px;"></div><div class="px-rack-led px-led-green" style="top:2px;right:12px;"></div></div>
+    <div class="px-rack-slot" style="top:50px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:64px;"><div class="px-rack-led px-led-green px-led-blink-fast" style="top:2px;right:4px;"></div></div>
+    <div class="px-fan" style="bottom:4px;right:4px;"></div>
+  </div>
+  <!-- Rack 7 -->
+  <div class="px-rack" style="left: 72%;">
+    <div class="px-rack-slot" style="top:8px;"><div class="px-rack-led px-led-green px-led-blink" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:22px;"><div class="px-rack-led px-led-amber" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:36px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:50px;"><div class="px-rack-led px-led-green px-led-blink-slow" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:64px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+  </div>
+  <!-- Cables -->
+  <div class="px-cable px-cable-gold" style="left:70%;top:15px;height:45px;"></div>
+  <div class="px-cable px-cable-blue" style="left:71%;top:25px;height:50px;"></div>
+  <!-- Rack 8 -->
+  <div class="px-rack" style="left: 84%;">
+    <div class="px-rack-slot" style="top:8px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div><div class="px-rack-led px-led-green px-led-blink-fast" style="top:2px;right:12px;"></div></div>
+    <div class="px-rack-slot" style="top:22px;"><div class="px-rack-led px-led-green px-led-blink" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:36px;"><div class="px-rack-led px-led-green" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:50px;"><div class="px-rack-led px-led-red px-led-blink-slow" style="top:2px;right:4px;"></div></div>
+    <div class="px-rack-slot" style="top:64px;"><div class="px-rack-led px-led-green px-led-blink" style="top:2px;right:4px;"></div></div>
+    <div class="px-fan" style="bottom:4px;right:4px;"></div>
+  </div>
+  <span class="px-server-label">Semperr Infrastructure · US-West-2</span>
+</div>
 
 <!-- ===== FEATURED EVENTS — Timeline ===== -->
 <section id="events" class="mosaic-section" style="--section-accent: var(--coral); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">

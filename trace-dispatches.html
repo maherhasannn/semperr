@@ -13,82 +13,8 @@
 <link rel="stylesheet" href="styles.css"/>
 <link rel="stylesheet" href="blog.css"/>
 
-<style>
-/* Trace-specific animations */
-@keyframes dataFlow {
-  0% { transform: translateX(-100%); opacity: 0; }
-  50% { opacity: 1; }
-  100% { transform: translateX(100%); opacity: 0; }
-}
-
-@keyframes pixelPulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-}
-
-.trace-pixel-viz {
-  position: fixed;
-  top: 100px;
-  right: 40px;
-  width: 200px;
-  z-index: 10;
-  display: none;
-}
-
-@media (min-width: 1400px) {
-  .trace-pixel-viz { display: block; }
-}
-
-.data-bar {
-  height: 4px;
-  background: var(--gold);
-  margin: 4px 0;
-  animation: dataFlow 3s ease-in-out infinite;
-  image-rendering: pixelated;
-}
-
-.data-bar:nth-child(2) { animation-delay: 0.5s; background: var(--steel); }
-.data-bar:nth-child(3) { animation-delay: 1s; background: var(--rust); }
-.data-bar:nth-child(4) { animation-delay: 1.5s; background: var(--green); }
-
-.pixel-grid {
-  display: grid;
-  grid-template-columns: repeat(8, 8px);
-  gap: 4px;
-  margin-top: 24px;
-}
-
-.pixel-cell {
-  width: 8px;
-  height: 8px;
-  background: var(--gold);
-  animation: pixelPulse 2s ease-in-out infinite;
-}
-</style>
 </head>
 <body class="blog-body">
-
-<!-- Pixel Data Visualization -->
-<div class="trace-pixel-viz">
-  <div style="font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 12px;">
-    Live Data Stream
-  </div>
-  <div class="data-bar"></div>
-  <div class="data-bar"></div>
-  <div class="data-bar"></div>
-  <div class="data-bar"></div>
-
-  <div class="pixel-grid" style="margin-top: 32px;">
-    <div class="pixel-cell" style="animation-delay: 0s;"></div>
-    <div class="pixel-cell" style="animation-delay: 0.1s;"></div>
-    <div class="pixel-cell" style="animation-delay: 0.2s;"></div>
-    <div class="pixel-cell" style="animation-delay: 0.3s;"></div>
-    <div class="pixel-cell" style="animation-delay: 0.4s;"></div>
-    <div class="pixel-cell" style="animation-delay: 0.5s;"></div>
-    <div class="pixel-cell" style="animation-delay: 0.6s;"></div>
-    <div class="pixel-cell" style="animation-delay: 0.7s;"></div>
-  </div>
-</div>
 
 <!-- Header -->
 <header class="blog-header">
