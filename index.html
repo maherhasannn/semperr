@@ -2283,6 +2283,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   height: 120px;
   background: #0b1220;
   position: relative;
+  overflow: hidden;
 }
 .px-city-sky {
   position: absolute;
@@ -2433,56 +2434,191 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   100% { transform: translateX(-50%); }
 }
 
-/* ===== 3. PIXEL STOCK CHART (small scene) ===== */
+/* ===== 3. PIXEL STOCK CHART (trading terminal scene) ===== */
 .px-chart-scene {
-  width: 200px;
-  height: 120px;
-  background: #0f1520;
+  width: 240px;
+  height: 140px;
+  background: #0a0e18;
   border: 2px solid #1a2540;
-  padding: 8px;
   position: relative;
   flex-shrink: 0;
   image-rendering: pixelated;
+  overflow: hidden;
 }
-.px-chart-label {
+/* Terminal header bar */
+.px-term-bar {
+  height: 14px;
+  background: #141c2e;
+  border-bottom: 1px solid #1a2540;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  gap: 4px;
+}
+.px-term-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+}
+.px-term-dot:nth-child(1) { background: #d4664a; }
+.px-term-dot:nth-child(2) { background: #c9a961; }
+.px-term-dot:nth-child(3) { background: #7ee787; }
+.px-term-title {
   font-family: var(--mono);
-  font-size: 8px;
-  color: var(--muted);
+  font-size: 6px;
+  color: rgba(255,255,255,0.25);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  margin-bottom: 4px;
+  margin-left: auto;
 }
+/* Chart area */
 .px-chart-canvas {
-  width: 100%;
-  height: 80px;
-  position: relative;
-}
-.px-chart-line {
   position: absolute;
-  bottom: 0;
+  top: 14px;
   left: 0;
-  width: 100%;
-  height: 100%;
-}
-.px-chart-line svg {
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 28px;
+  overflow: hidden;
 }
 .px-chart-gridline {
   position: absolute;
   left: 0;
   right: 0;
   height: 1px;
-  background: rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.04);
 }
-.px-chart-val {
+/* Scrolling chart line */
+.px-chart-line {
   position: absolute;
-  top: 4px;
-  right: 4px;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  animation: chartScroll 12s linear infinite;
+}
+.px-chart-line svg {
+  width: 100%;
+  height: 100%;
+}
+@keyframes chartScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+/* Price tag that follows the line */
+.px-chart-price {
+  position: absolute;
+  top: 8px;
+  right: 6px;
   font-family: var(--mono);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #7ee787;
+  animation: priceFlicker 3s steps(1) infinite;
+}
+@keyframes priceFlicker {
+  0%      { content: ''; }
+  0%, 30% { opacity: 1; }
+  32%     { opacity: 0.4; }
+  34%, 100% { opacity: 1; }
+}
+.px-chart-price-sub {
+  font-family: var(--mono);
+  font-size: 8px;
+  color: #7ee787;
+  position: absolute;
+  top: 26px;
+  right: 6px;
+  animation: pctCycle 6s steps(1) infinite;
+}
+@keyframes pctCycle {
+  0%   { content: ''; color: #7ee787; }
+  50%  { color: #7ee787; }
+  100% { color: #7ee787; }
+}
+/* Live cursor dot on the chart edge */
+.px-chart-cursor {
+  position: absolute;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  background: #7ee787;
+  border-radius: 50%;
+  animation: cursorPulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(126,231,135,0.6);
+}
+@keyframes cursorPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.6); opacity: 0.5; }
+}
+/* Bottom status bar with data bars */
+.px-term-status {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: #0d1220;
+  border-top: 1px solid #1a2540;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  gap: 6px;
+}
+.px-data-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.px-data-bar {
+  width: 6px;
+  background: var(--bar-color, #7ee787);
+  animation: barPump var(--bar-dur, 2s) ease-in-out infinite;
+  animation-delay: var(--bar-delay, 0s);
+}
+@keyframes barPump {
+  0%, 100% { height: var(--bar-min, 4px); opacity: 0.5; }
+  50% { height: var(--bar-max, 14px); opacity: 1; }
+}
+.px-data-label {
+  font-family: var(--mono);
+  font-size: 5px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.05em;
+}
+/* Blinking transmit indicator */
+.px-transmit {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #7ee787;
+  margin-left: auto;
+  animation: txBlink 0.8s steps(1) infinite;
+}
+@keyframes txBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.15; }
+}
+.px-tx-label {
+  font-family: var(--mono);
+  font-size: 6px;
+  color: rgba(126,231,135,0.4);
+  letter-spacing: 0.08em;
+  margin-left: 4px;
+}
+/* Scanline overlay */
+.px-chart-scene::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
 }
 .px-chart-wrapper {
   display: flex;
@@ -2983,7 +3119,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       <span class="eyebrow" style="color: var(--gold); flex-shrink: 0; font-size: 10px; letter-spacing: 0.15em;">BREAKING</span>
       <span style="width: 6px; height: 6px; background: var(--gold); border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite;"></span>
       <div id="ticker-content" style="overflow: hidden; flex: 1;">
-        <div id="ticker-track" style="display: inline-flex; gap: 48px; animation: tickerScroll 60s linear infinite;">
+        <div id="ticker-track" style="display: inline-flex; gap: 48px;">
           <span class="eyebrow" style="color: var(--muted-light); font-size: 11px;">Loading headlines...</span>
         </div>
       </div>
@@ -3541,37 +3677,88 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       </a>
     </div>
 
-    <!-- Pixel stock chart -->
+    <!-- Pixel trading terminal -->
     <div class="px-chart-wrapper">
       <div class="px-chart-scene">
-        <div class="px-chart-label">SMPR Index</div>
+        <!-- Terminal title bar -->
+        <div class="px-term-bar">
+          <div class="px-term-dot"></div>
+          <div class="px-term-dot"></div>
+          <div class="px-term-dot"></div>
+          <span class="px-term-title">SMPR Terminal</span>
+        </div>
+
+        <!-- Chart canvas -->
         <div class="px-chart-canvas">
-          <div class="px-chart-gridline" style="bottom: 25%;"></div>
-          <div class="px-chart-gridline" style="bottom: 50%;"></div>
-          <div class="px-chart-gridline" style="bottom: 75%;"></div>
+          <div class="px-chart-gridline" style="bottom: 20%;"></div>
+          <div class="px-chart-gridline" style="bottom: 40%;"></div>
+          <div class="px-chart-gridline" style="bottom: 60%;"></div>
+          <div class="px-chart-gridline" style="bottom: 80%;"></div>
+
+          <!-- Scrolling line — doubled for seamless loop -->
           <div class="px-chart-line">
-            <svg viewBox="0 0 180 80" preserveAspectRatio="none">
-              <polyline fill="none" stroke="#7ee787" stroke-width="2"
-                points="0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8">
-                <animate attributeName="points" dur="4s" repeatCount="indefinite"
-                  values="0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8;
-                          0,58 12,52 24,55 36,45 48,40 60,35 72,30 84,32 96,28 108,24 120,20 132,22 144,18 156,15 168,10 180,6;
-                          0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8"/>
+            <svg viewBox="0 0 480 80" preserveAspectRatio="none">
+              <!-- Fill under line -->
+              <polyline fill="rgba(126,231,135,0.06)" stroke="none"
+                points="0,80 0,62 8,58 16,60 24,52 32,48 40,55 48,40 56,42 64,35 72,38 80,28 88,32 96,24 104,30 112,22 120,26 128,18 136,24 144,16 152,20 160,14 168,22 176,18 184,12 192,16 200,10 208,14 216,8 224,12 232,6 240,10
+                        240,62 248,58 256,60 264,52 272,48 280,55 288,40 296,42 304,35 312,38 320,28 328,32 336,24 344,30 352,22 360,26 368,18 376,24 384,16 392,20 400,14 408,22 416,18 424,12 432,16 440,10 448,14 456,8 464,12 472,6 480,10 480,80">
+                <animate attributeName="points" dur="8s" repeatCount="indefinite"
+                  values="0,80 0,62 8,58 16,60 24,52 32,48 40,55 48,40 56,42 64,35 72,38 80,28 88,32 96,24 104,30 112,22 120,26 128,18 136,24 144,16 152,20 160,14 168,22 176,18 184,12 192,16 200,10 208,14 216,8 224,12 232,6 240,10 240,62 248,58 256,60 264,52 272,48 280,55 288,40 296,42 304,35 312,38 320,28 328,32 336,24 344,30 352,22 360,26 368,18 376,24 384,16 392,20 400,14 408,22 416,18 424,12 432,16 440,10 448,14 456,8 464,12 472,6 480,10 480,80;
+                         0,80 0,60 8,56 16,62 24,50 32,46 40,52 48,38 56,44 64,32 72,36 80,30 88,26 96,28 104,24 112,20 120,28 128,16 136,22 144,18 152,14 160,18 168,20 176,14 184,10 192,18 200,8 208,12 216,10 224,6 232,8 240,4 240,60 248,56 256,62 264,50 272,46 280,52 288,38 296,44 304,32 312,36 320,30 328,26 336,28 344,24 352,20 360,28 368,16 376,22 384,18 392,14 400,18 408,20 416,14 424,10 432,18 440,8 448,12 456,10 464,6 472,8 480,4 480,80;
+                         0,80 0,62 8,58 16,60 24,52 32,48 40,55 48,40 56,42 64,35 72,38 80,28 88,32 96,24 104,30 112,22 120,26 128,18 136,24 144,16 152,20 160,14 168,22 176,18 184,12 192,16 200,10 208,14 216,8 224,12 232,6 240,10 240,62 248,58 256,60 264,52 272,48 280,55 288,40 296,42 304,35 312,38 320,28 328,32 336,24 344,30 352,22 360,26 368,18 376,24 384,16 392,20 400,14 408,22 416,18 424,12 432,16 440,10 448,14 456,8 464,12 472,6 480,10 480,80"/>
               </polyline>
-              <polyline fill="rgba(126,231,135,0.08)" stroke="none"
-                points="0,80 0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8 180,80">
-                <animate attributeName="points" dur="4s" repeatCount="indefinite"
-                  values="0,80 0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8 180,80;
-                          0,80 0,58 12,52 24,55 36,45 48,40 60,35 72,30 84,32 96,28 108,24 120,20 132,22 144,18 156,15 168,10 180,6 180,80;
-                          0,80 0,60 12,55 24,58 36,42 48,45 60,30 72,35 84,28 96,32 108,20 120,24 132,18 144,22 156,12 168,15 180,8 180,80"/>
+              <!-- Stroke line -->
+              <polyline fill="none" stroke="#7ee787" stroke-width="2"
+                points="0,62 8,58 16,60 24,52 32,48 40,55 48,40 56,42 64,35 72,38 80,28 88,32 96,24 104,30 112,22 120,26 128,18 136,24 144,16 152,20 160,14 168,22 176,18 184,12 192,16 200,10 208,14 216,8 224,12 232,6 240,10
+                        240,62 248,58 256,60 264,52 272,48 280,55 288,40 296,42 304,35 312,38 320,28 328,32 336,24 344,30 352,22 360,26 368,18 376,24 384,16 392,20 400,14 408,22 416,18 424,12 432,16 440,10 448,14 456,8 464,12 472,6 480,10">
+                <animate attributeName="points" dur="8s" repeatCount="indefinite"
+                  values="0,62 8,58 16,60 24,52 32,48 40,55 48,40 56,42 64,35 72,38 80,28 88,32 96,24 104,30 112,22 120,26 128,18 136,24 144,16 152,20 160,14 168,22 176,18 184,12 192,16 200,10 208,14 216,8 224,12 232,6 240,10 240,62 248,58 256,60 264,52 272,48 280,55 288,40 296,42 304,35 312,38 320,28 328,32 336,24 344,30 352,22 360,26 368,18 376,24 384,16 392,20 400,14 408,22 416,18 424,12 432,16 440,10 448,14 456,8 464,12 472,6 480,10;
+                         0,60 8,56 16,62 24,50 32,46 40,52 48,38 56,44 64,32 72,36 80,30 88,26 96,28 104,24 112,20 120,28 128,16 136,22 144,18 152,14 160,18 168,20 176,14 184,10 192,18 200,8 208,12 216,10 224,6 232,8 240,4 240,60 248,56 256,62 264,50 272,46 280,52 288,38 296,44 304,32 312,36 320,30 328,26 336,28 344,24 352,20 360,28 368,16 376,22 384,18 392,14 400,18 408,20 416,14 424,10 432,18 440,8 448,12 456,10 464,6 472,8 480,4;
+                         0,62 8,58 16,60 24,52 32,48 40,55 48,40 56,42 64,35 72,38 80,28 88,32 96,24 104,30 112,22 120,26 128,18 136,24 144,16 152,20 160,14 168,22 176,18 184,12 192,16 200,10 208,14 216,8 224,12 232,6 240,10 240,62 248,58 256,60 264,52 272,48 280,55 288,40 296,42 304,35 312,38 320,28 328,32 336,24 344,30 352,22 360,26 368,18 376,24 384,16 392,20 400,14 408,22 416,18 424,12 432,16 440,10 448,14 456,8 464,12 472,6 480,10"/>
               </polyline>
             </svg>
           </div>
-          <div class="px-chart-val">+4.2</div>
+
+          <!-- Live cursor on right edge -->
+          <div class="px-chart-cursor" style="bottom: 12%;"></div>
+
+          <!-- Price readout -->
+          <div class="px-chart-price">142.8</div>
+          <div class="px-chart-price-sub">▲ 4.2%</div>
+        </div>
+
+        <!-- Bottom status bar with volume bars -->
+        <div class="px-term-status">
+          <div class="px-data-col">
+            <div class="px-data-bar" style="--bar-color:#7ee787;--bar-min:3px;--bar-max:12px;--bar-dur:1.8s;--bar-delay:0s;"></div>
+            <span class="px-data-label">VOL</span>
+          </div>
+          <div class="px-data-col">
+            <div class="px-data-bar" style="--bar-color:#4a7fb5;--bar-min:4px;--bar-max:10px;--bar-dur:2.2s;--bar-delay:0.3s;"></div>
+            <span class="px-data-label">BID</span>
+          </div>
+          <div class="px-data-col">
+            <div class="px-data-bar" style="--bar-color:#c9a961;--bar-min:2px;--bar-max:14px;--bar-dur:1.6s;--bar-delay:0.6s;"></div>
+            <span class="px-data-label">ASK</span>
+          </div>
+          <div class="px-data-col">
+            <div class="px-data-bar" style="--bar-color:#7ee787;--bar-min:5px;--bar-max:11px;--bar-dur:2.5s;--bar-delay:0.2s;"></div>
+            <span class="px-data-label">FLW</span>
+          </div>
+          <div class="px-data-col">
+            <div class="px-data-bar" style="--bar-color:#d4664a;--bar-min:3px;--bar-max:9px;--bar-dur:2s;--bar-delay:0.8s;"></div>
+            <span class="px-data-label">RSK</span>
+          </div>
+          <div class="px-data-col">
+            <div class="px-data-bar" style="--bar-color:#4a7fb5;--bar-min:4px;--bar-max:13px;--bar-dur:1.9s;--bar-delay:0.4s;"></div>
+            <span class="px-data-label">DPT</span>
+          </div>
+          <div class="px-transmit"></div>
+          <span class="px-tx-label">LIVE</span>
         </div>
       </div>
       <div class="px-chart-meta">
-        <div class="eyebrow" style="color: var(--blue); margin-bottom: 6px;">Market Pulse</div>
+        <a href="market-pulse.html" class="eyebrow" style="color: var(--blue); margin-bottom: 6px; display: block;">Market Pulse →</a>
         <p style="font-size: 13px; color: var(--muted); line-height: 1.5;">Tracking deal flow velocity across our monitored sectors. Updated continuously.</p>
       </div>
     </div>
@@ -4315,6 +4502,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     ).join('<span style="display:inline-block;width:48px;"></span>');
     // Duplicate for seamless loop
     tickerTrack.innerHTML = items + '<span style="display:inline-block;width:48px;"></span>' + items;
+    // Start animation after layout so translateX(-50%) uses the correct width
+    requestAnimationFrame(function() {
+      tickerTrack.style.animation = 'tickerScroll 60s linear infinite';
+    });
   }
 
   // -------- newspaper card builders --------
@@ -4538,6 +4729,80 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     localStorage.setItem('cookieConsentDate', new Date().toISOString());
     banner.classList.remove('visible');
   });
+})();
+
+// Pixel terminal — live price ticker
+(function() {
+  var priceEl = document.querySelector('.px-chart-price');
+  var pctEl = document.querySelector('.px-chart-price-sub');
+  if (!priceEl) return;
+  var base = 142.8;
+  setInterval(function() {
+    var delta = (Math.random() - 0.4) * 0.6;
+    base = Math.max(138, Math.min(148, base + delta));
+    var pct = ((base - 137) / 137 * 100).toFixed(1);
+    priceEl.textContent = base.toFixed(1);
+    pctEl.textContent = '\u25B2 ' + pct + '%';
+    if (delta < 0) {
+      priceEl.style.color = '#d4664a';
+      pctEl.style.color = '#d4664a';
+    } else {
+      priceEl.style.color = '#7ee787';
+      pctEl.style.color = '#7ee787';
+    }
+  }, 1200);
+})();
+
+// Pixel cityscape parallax (desktop only)
+(function() {
+  if (window.matchMedia('(max-width: 768px)').matches) return;
+
+  const banner = document.querySelector('.px-city-banner');
+  if (!banner) return;
+
+  const sky = banner.querySelector('.px-city-sky');
+  const buildings = banner.querySelectorAll('.px-building');
+  const clouds = banner.querySelectorAll('.px-cloud');
+  const stars = banner.querySelectorAll('.px-star');
+  const label = banner.querySelector('.px-city-label');
+
+  let ticking = false;
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function() {
+      const rect = banner.getBoundingClientRect();
+      const viewH = window.innerHeight;
+      // Normalized position: 0 when banner enters bottom, 1 when it leaves top
+      const progress = 1 - (rect.bottom / (viewH + rect.height));
+      // Offset in px centered around 0
+      const offset = (progress - 0.5) * 60;
+
+      if (sky) sky.style.transform = 'translateY(' + (offset * 0.15) + 'px)';
+
+      stars.forEach(function(s) {
+        s.style.transform = 'translateY(' + (offset * 0.2) + 'px)';
+      });
+
+      buildings.forEach(function(b, i) {
+        // Taller buildings (higher z) move slightly more for depth
+        var rate = 0.3 + (i % 4) * 0.08;
+        b.style.transform = 'translateY(' + (offset * rate) + 'px)';
+      });
+
+      clouds.forEach(function(c) {
+        c.style.marginTop = (offset * 0.1) + 'px';
+      });
+
+      if (label) label.style.transform = 'translateY(' + (offset * 0.05) + 'px)';
+
+      ticking = false;
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
 })();
 </script>
 
