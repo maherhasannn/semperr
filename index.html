@@ -90,6 +90,7 @@ a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
 
 .container { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad); }
+.container-wide { max-width: 1600px; margin: 0 auto; padding: 0 var(--pad); }
 .eyebrow {
   font-family: var(--mono);
   font-size: 10px;
@@ -351,11 +352,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .grid-4 { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; grid-auto-rows: 1fr !important; }
   .grid-2-1 { grid-template-columns: 1fr !important; }
 
-  /* News mosaic grid — tablet */
-  #news-mosaic-grid .mosaic-hero-grid {
-    grid-template-columns: 1fr !important;
-  }
-
   /* Masthead */
   .masthead-grid { grid-template-columns: 1fr !important; text-align: center !important; }
   .masthead-grid .eyebrow { justify-content: center; }
@@ -372,10 +368,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .mosaic-row-2 { grid-template-columns: 1fr !important; gap: 16px !important; }
   .mosaic-tile-stack { min-height: 200px; }
   .mosaic-tile-stack img { position: relative !important; height: 200px !important; }
-  #news-mosaic-grid .mosaic-hero-grid { grid-template-columns: 1fr !important; }
-  #news-mosaic-grid .mosaic-tile-hero img { height: 260px !important; }
-  #news-mosaic-grid .mosaic-tile-stack { min-height: 200px; }
-  #news-mosaic-grid .mosaic-tile-md img { height: 200px !important; }
 
   /* Content sections */
   .content-split { grid-template-columns: 1fr !important; gap: 40px !important; }
@@ -648,7 +640,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .mosaic-tile-md img { height: 180px !important; }
   .mosaic-tile-sm img { height: 160px !important; }
   .mosaic-row-4 { grid-template-columns: 1fr !important; }
-  #news-mosaic-grid .mosaic-row-3 { grid-template-columns: 1fr !important; }
 
   /* Hide author info on small mobile */
   .mosaic-card .author-circle {
@@ -723,11 +714,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
   /* ===== MOSAIC MOBILE FIXES (600px) ===== */
 
-  /* News mosaic grid — reduce min-height */
-  #news-mosaic-grid {
-    min-height: 300px !important;
-  }
-
   /* Tile overlay padding — tighten for mobile */
   .tile-overlay {
     padding: 16px !important;
@@ -780,25 +766,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     padding: 24px !important;
   }
 
-  /* News hero tiles — smaller fonts */
-  #news-mosaic-grid .mosaic-tile-hero h2 {
-    font-size: 22px !important;
-  }
-  #news-mosaic-grid .mosaic-tile-hero p {
-    font-size: 13px !important;
-    display: none;
-  }
-  #news-mosaic-grid .mosaic-tile-stack h3 {
-    font-size: 15px !important;
-  }
-
-  /* Featured section hero */
-  #featured .mosaic-tile-hero h2 {
-    font-size: 22px !important;
-  }
-  #featured .mosaic-tile-hero .tile-overlay p:not(.eyebrow) {
-    display: none;
-  }
 }
 
 /* Small mobile (max 400px) */
@@ -902,10 +869,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     grid-template-columns: 1fr !important;
   }
 
-  /* News grid */
-  #news-mosaic-grid {
-    min-height: auto !important;
-  }
 }
 
 /* News ticker */
@@ -936,14 +899,56 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .nyt-section-label {
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.14em;
+  font-size: 11px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   font-weight: 500;
   color: var(--gold);
   margin-bottom: 16px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--paper-line);
+}
+
+/* Classic newspaper section break — rule + centered label + rule */
+.nyt-section-break {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 28px 0 20px 0;
+}
+.nyt-section-break::before,
+.nyt-section-break::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--ink);
+}
+.nyt-section-break span {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+/* Editor's Pick callout */
+.nyt-editors-pick {
+  background: rgba(201,169,97,0.07);
+  border-left: 3px solid var(--gold);
+  padding: 14px !important;
+  margin-bottom: 4px;
+}
+.nyt-editors-pick-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--gold);
+  margin-bottom: 6px;
+  display: block;
 }
 
 /* Headline card — tight, no padding waste */
@@ -957,7 +962,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .nyt-headline:last-child { border-bottom: none; }
 .nyt-headline h3 {
   font-family: var(--serif);
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.35;
   font-weight: 400;
   color: var(--ink);
@@ -986,19 +991,19 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 .nyt-lead:hover { opacity: 0.92; }
 .nyt-lead img {
   width: 100%;
-  height: 320px;
+  height: 400px;
   object-fit: cover;
   display: block;
   margin-bottom: 16px;
 }
 .nyt-lead h3 {
   font-family: var(--serif);
-  font-size: 28px;
+  font-size: 36px;
   line-height: 1.2;
   font-weight: 400;
   color: var(--ink);
   margin: 0 0 10px 0;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 .nyt-lead:hover h3 { color: var(--gold-deep); }
 .nyt-lead p {
@@ -1115,14 +1120,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 .nyt-opinion:hover h4 { color: var(--gold-deep); }
 
-/* Mobile overrides for news mosaic */
+/* Mobile overrides for news */
 @media (max-width: 900px) {
-  #news-mosaic-grid .mosaic-hero-grid { grid-template-columns: 1fr !important; }
-  #news-mosaic-grid .mosaic-row-3 { grid-template-columns: 1fr !important; }
   #news-ticker { display: none; }
-}
-@media (max-width: 600px) {
-  #news-categories { display: none !important; }
 }
 
 /* Cookie Consent Banner */
@@ -1247,6 +1247,666 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     text-align: center;
   }
 }
+
+/* ===== NEWSPAPER LAYOUT ZONES ===== */
+
+/* Top zone: lead story + right-rail headlines */
+.news-top-zone {
+  display: grid;
+  grid-template-columns: 8fr 4fr;
+  gap: 0;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--paper-line);
+}
+.news-top-zone .nyt-col-main { padding-right: 28px; border-right: 1px solid var(--paper-line); }
+.news-top-zone .nyt-col-side { padding-left: 28px; }
+
+/* Mid zone: 3-column thumb grid */
+.news-mid-zone {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0;
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--paper-line);
+}
+.news-mid-zone > div { padding: 0 20px; }
+.news-mid-zone > div:first-child { padding-left: 0; }
+.news-mid-zone > div:last-child { padding-right: 0; }
+.news-mid-zone > div:not(:last-child) { border-right: 1px solid var(--paper-line); }
+
+/* Bottom zone: single-column list */
+.news-bottom-zone {
+  max-width: 100%;
+}
+
+/* List card — full-width row */
+.nyt-list-card {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--paper-line);
+  transition: all 0.15s;
+}
+.nyt-list-card:last-child { border-bottom: none; }
+.nyt-list-card:hover { opacity: 0.88; }
+.nyt-list-card img {
+  width: 100%;
+  height: 95px;
+  object-fit: cover;
+  display: block;
+}
+.nyt-list-card h3 {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 0 0 6px 0;
+}
+.nyt-list-card:hover h3 { color: var(--gold-deep); }
+.nyt-list-card p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0 0 6px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ===== NEWSPAPER RESPONSIVE — 900px (tablet) ===== */
+@media (max-width: 900px) {
+  .news-top-zone {
+    grid-template-columns: 1fr 1fr;
+  }
+  .news-mid-zone {
+    grid-template-columns: 1fr 1fr;
+  }
+  .news-mid-zone > div:nth-child(3) {
+    grid-column: 1 / -1;
+    padding: 0;
+    border-right: none;
+    border-top: 1px solid var(--paper-line);
+    padding-top: 14px;
+    margin-top: 14px;
+  }
+  .nyt-list-card {
+    grid-template-columns: 120px 1fr;
+    gap: 16px;
+  }
+}
+
+/* ===== NEWSPAPER RESPONSIVE — 600px (mobile) ===== */
+@media (max-width: 600px) {
+  .news-top-zone {
+    grid-template-columns: 1fr;
+  }
+  .news-top-zone .nyt-col-main {
+    padding-right: 0;
+    border-right: none;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--paper-line);
+  }
+  .news-top-zone .nyt-col-side {
+    padding-left: 0;
+    padding-top: 20px;
+  }
+  .news-mid-zone {
+    grid-template-columns: 1fr;
+  }
+  .news-mid-zone > div {
+    padding: 0 !important;
+    border-right: none !important;
+  }
+  .news-mid-zone > div:not(:first-child) {
+    border-top: 1px solid var(--paper-line);
+    padding-top: 14px !important;
+    margin-top: 14px;
+  }
+  #news-categories {
+    display: none;
+  }
+  .nyt-list-card {
+    grid-template-columns: 100px 1fr;
+    gap: 12px;
+  }
+  .nyt-list-card img {
+    height: 70px;
+  }
+  .nyt-lead img {
+    height: 220px;
+  }
+  .nyt-lead h3 {
+    font-size: 24px;
+  }
+}
+
+/* ===== LATEST DISPATCHES — Feature Well ===== */
+.feature-well-hero {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+  margin-bottom: 20px;
+  border: 2px solid transparent;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.feature-well-hero:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.3);
+  border-color: var(--gold);
+}
+.feature-well-hero img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  opacity: 0.7;
+}
+.feature-well-hero:hover img { opacity: 0.6; }
+.feature-well-hero .tile-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 40px;
+  background: linear-gradient(transparent, rgba(11,18,32,0.95));
+}
+.feature-well-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 20px;
+}
+.feature-well-row .mosaic-tile img { height: 220px; }
+
+@media (max-width: 900px) {
+  .feature-well-hero img { height: 300px; }
+  .feature-well-row { grid-template-columns: 1fr !important; gap: 16px !important; }
+  .feature-well-row .mosaic-tile img { height: 200px; }
+}
+@media (max-width: 600px) {
+  .feature-well-hero img { height: 240px !important; }
+  .feature-well-hero .tile-overlay { padding: 24px !important; }
+  .feature-well-hero .tile-overlay h2 { font-size: 22px !important; }
+}
+
+/* ===== TRACE — Dossier / Filing Cabinet ===== */
+.dossier-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr 1fr;
+  gap: 12px;
+}
+.dossier-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ink);
+  min-height: 420px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.dossier-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -12px rgba(0,0,0,0.3);
+  border-color: var(--blue);
+}
+.dossier-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+.dossier-card:hover img { opacity: 0.5; }
+.dossier-card-body {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.dossier-card-body .dossier-index {
+  font-family: var(--mono);
+  font-size: 48px;
+  font-weight: 300;
+  color: rgba(74,127,181,0.15);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.dossier-card:first-child { grid-row: 1 / 1; }
+.dossier-card:first-child img { height: 220px; }
+.dossier-card:first-child .dossier-index { font-size: 64px; }
+
+@media (max-width: 900px) {
+  .dossier-grid { grid-template-columns: 1fr 1fr !important; }
+  .dossier-card { min-height: 320px; }
+  .dossier-card:first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .dossier-grid { grid-template-columns: 1fr !important; }
+  .dossier-card { min-height: 280px; }
+  .dossier-card img { height: 140px !important; }
+}
+
+/* ===== CLAD — Courtroom Brief ===== */
+.brief-stack {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.brief-card {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 0;
+  border-top: 3px solid var(--emerald);
+  padding: 28px 0;
+  transition: all 0.2s;
+}
+.brief-card:hover { padding-left: 8px; }
+.brief-card:hover .brief-title { color: var(--emerald); }
+.brief-index {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--emerald);
+  padding-top: 4px;
+  opacity: 0.6;
+}
+.brief-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.35;
+  color: var(--ink);
+  margin-bottom: 8px;
+  transition: color 0.2s;
+}
+.brief-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 10px;
+}
+.brief-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .brief-card { grid-template-columns: 1fr; }
+  .brief-index { margin-bottom: 8px; }
+  .brief-title { font-size: 18px; }
+}
+
+/* ===== INDUSTRY VOICES — Broadsheet Editorial ===== */
+.voices-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 0;
+}
+.voices-primary {
+  padding-right: 48px;
+  border-right: 1px solid var(--paper-line);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.voices-primary blockquote {
+  font-family: var(--serif);
+  font-size: 30px;
+  line-height: 1.45;
+  font-style: italic;
+  color: var(--ink);
+  margin: 0;
+  position: relative;
+}
+.voices-primary blockquote::before {
+  content: '\201C';
+  font-family: var(--serif);
+  font-size: 80px;
+  color: var(--amber);
+  position: absolute;
+  top: -20px;
+  left: -8px;
+  line-height: 1;
+  opacity: 0.5;
+}
+.voices-sidebar {
+  padding-left: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.voices-sidebar-card {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--paper-line);
+}
+.voices-sidebar-card:last-child { border-bottom: none; }
+.voices-sidebar-card blockquote {
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--ink);
+  margin: 0 0 12px 0;
+}
+
+@media (max-width: 900px) {
+  .voices-layout { grid-template-columns: 1fr !important; }
+  .voices-primary {
+    padding-right: 0;
+    border-right: none;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--paper-line);
+    margin-bottom: 32px;
+  }
+  .voices-primary blockquote { font-size: 24px; }
+  .voices-sidebar { padding-left: 0; }
+}
+@media (max-width: 600px) {
+  .voices-primary blockquote { font-size: 20px !important; }
+  .voices-primary blockquote::before { font-size: 48px; top: -12px; }
+}
+
+/* ===== CRAFT — Blueprint / Schematic ===== */
+.blueprint-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 12px;
+}
+.blueprint-card {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: var(--ink);
+  border: 1px dashed rgba(123,97,166,0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.blueprint-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px -8px rgba(0,0,0,0.3);
+  border-color: var(--purple);
+  border-style: solid;
+}
+.blueprint-card:hover img { opacity: 0.55; }
+.blueprint-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.65;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.blueprint-card .tile-overlay {
+  position: relative;
+  z-index: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100%;
+  background: linear-gradient(transparent 30%, rgba(11,18,32,0.9));
+}
+.bp-main {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  min-height: 400px;
+}
+.bp-main .tile-overlay { padding: 32px; }
+.bp-side-top {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 190px;
+}
+.bp-side-bottom {
+  grid-column: 2;
+  grid-row: 2;
+  min-height: 190px;
+}
+.bp-bottom-left {
+  grid-column: 1;
+  min-height: 200px;
+}
+.bp-bottom-right {
+  grid-column: 2;
+  min-height: 200px;
+}
+/* blueprint corner markers */
+.blueprint-card::before {
+  content: '+';
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: rgba(123,97,166,0.25);
+  z-index: 2;
+}
+.blueprint-card::after {
+  content: '+';
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: rgba(123,97,166,0.25);
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  .blueprint-grid { grid-template-columns: 1fr 1fr !important; }
+  .bp-main { grid-column: 1 / -1; grid-row: auto; min-height: 300px; }
+  .bp-side-top, .bp-side-bottom { grid-column: auto; grid-row: auto; }
+}
+@media (max-width: 600px) {
+  .blueprint-grid { grid-template-columns: 1fr !important; }
+  .bp-main, .bp-side-top, .bp-side-bottom, .bp-bottom-left, .bp-bottom-right {
+    grid-column: auto; min-height: 220px;
+  }
+}
+
+/* ===== EVENTS — Timeline ===== */
+.timeline-list {
+  position: relative;
+  padding-left: 40px;
+}
+.timeline-list::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--coral);
+  opacity: 0.3;
+}
+.timeline-item {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 24px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--paper-line);
+  position: relative;
+  transition: all 0.2s;
+}
+.timeline-item:last-child { border-bottom: none; }
+.timeline-item:hover { padding-left: 8px; }
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -33px;
+  top: 36px;
+  width: 9px;
+  height: 9px;
+  background: var(--coral);
+  border-radius: 50%;
+  border: 2px solid var(--paper);
+  z-index: 1;
+}
+.timeline-item:first-child::before {
+  width: 13px;
+  height: 13px;
+  left: -35px;
+  top: 34px;
+}
+.timeline-date {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--coral);
+  padding-top: 4px;
+}
+.timeline-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.3;
+  color: var(--ink);
+  margin-bottom: 6px;
+  transition: color 0.2s;
+}
+.timeline-item:hover .timeline-title { color: var(--coral); }
+.timeline-location {
+  font-size: 13px;
+  color: var(--muted);
+}
+.timeline-org {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.timeline-callout {
+  margin-top: 24px;
+  padding: 28px 32px;
+  background: var(--ink);
+  border-left: 4px solid var(--coral);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  transition: all 0.2s;
+}
+.timeline-callout:hover {
+  box-shadow: 0 8px 24px -8px rgba(0,0,0,0.2);
+}
+
+@media (max-width: 600px) {
+  .timeline-list { padding-left: 28px; }
+  .timeline-list::before { left: 8px; }
+  .timeline-item::before { left: -24px; }
+  .timeline-item:first-child::before { left: -26px; }
+  .timeline-item { grid-template-columns: 60px 1fr; gap: 16px; }
+  .timeline-title { font-size: 17px; }
+  .timeline-callout { flex-direction: column; align-items: stretch; text-align: center; }
+}
+
+/* ===== ARCHIVE — Book Spines ===== */
+.spine-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.spine-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: var(--ink);
+  min-height: 340px;
+  padding: 28px 24px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(122,133,153,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.spine-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(0,0,0,0.3);
+  border-color: var(--slate);
+}
+.spine-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gold);
+  opacity: 0.6;
+}
+.spine-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(122,133,153,0.04) 0px,
+    rgba(122,133,153,0.04) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+  pointer-events: none;
+}
+.spine-vol {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: auto;
+  padding-bottom: 24px;
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  position: absolute;
+  top: 20px;
+  right: 16px;
+  opacity: 0.4;
+}
+.spine-title {
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1.35;
+  color: var(--paper);
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+.spine-desc {
+  font-size: 13px;
+  color: var(--muted-light);
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+.spine-year {
+  font-family: var(--serif);
+  font-size: 56px;
+  color: rgba(201,169,97,0.08);
+  position: absolute;
+  top: 16px;
+  left: 20px;
+  line-height: 1;
+}
+
+@media (max-width: 900px) {
+  .spine-grid { grid-template-columns: 1fr 1fr !important; }
+  .spine-card { min-height: 280px; }
+}
+@media (max-width: 600px) {
+  .spine-grid { grid-template-columns: 1fr !important; }
+  .spine-card { min-height: 220px; }
+}
 </style>
 </head>
 <body>
@@ -1294,7 +1954,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 
 <!-- ===== MASTHEAD ===== -->
-<header style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
+<header style="padding: 64px 0; border-bottom: 3px double var(--ink);">
   <div class="container">
     <div class="masthead-grid" style="display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: end;">
       <div>
@@ -1303,6 +1963,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
           <span style="color: var(--paper-line);">·</span>
           <span id="current-date">22 APRIL 2026</span>
         </div>
+        <div style="width: 48px; height: 2px; background: var(--gold); margin-bottom: 12px;"></div>
         <h1 class="serif hero-title" style="font-size: clamp(48px, 8vw, 96px); letter-spacing: -0.03em; line-height: 0.95;">
           The Charter<span class="slide-r" style="color: var(--gold);">r</span><span style="color: var(--gold);">.</span>
         </h1>
@@ -1349,11 +2010,11 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
 
 <!-- ===== INDUSTRY WATCH (NEWS) — HERO POSITION ===== -->
-<section id="industry-watch" class="mosaic-section" style="--section-accent: var(--gold); padding: 0 0 64px 0; background: var(--paper);">
+<section id="industry-watch" style="padding: 0 0 64px 0; background: var(--paper);">
 
   <!-- Breaking News Ticker -->
   <div id="news-ticker" style="background: var(--ink); color: var(--paper); padding: 10px 0; overflow: hidden; white-space: nowrap;">
-    <div style="max-width: 1400px; margin: 0 auto; padding: 0 var(--pad); display: flex; align-items: center; gap: 16px;">
+    <div style="max-width: 1600px; margin: 0 auto; padding: 0 var(--pad); display: flex; align-items: center; gap: 16px;">
       <span class="eyebrow" style="color: var(--gold); flex-shrink: 0; font-size: 10px; letter-spacing: 0.15em;">BREAKING</span>
       <span style="width: 6px; height: 6px; background: var(--gold); border-radius: 50%; flex-shrink: 0; animation: pulse 2s infinite;"></span>
       <div id="ticker-content" style="overflow: hidden; flex: 1;">
@@ -1365,10 +2026,10 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   </div>
 
   <!-- Section Header + Filters -->
-  <div class="container">
+  <div class="container-wide">
     <div style="display: flex; justify-content: space-between; align-items: center; padding: 24px 0 20px 0; border-bottom: 3px double var(--ink);">
       <div style="display: flex; align-items: baseline; gap: 24px;">
-        <h2 class="serif" style="font-size: 32px; letter-spacing: -0.02em;">Industry Watch</h2>
+        <h2 class="serif" style="font-size: 38px; letter-spacing: -0.02em;">Industry Watch</h2>
         <span class="eyebrow" style="color: var(--gold);">●</span>
         <div class="eyebrow" style="color: var(--muted);" id="news-last-updated">Loading...</div>
       </div>
@@ -1384,7 +2045,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   </div>
 
   <!-- News Mosaic Grid (rendered by JS) -->
-  <div class="container">
+  <div class="container-wide">
     <div id="news-mosaic-grid" style="margin-top: 24px; min-height: 500px;">
       <div style="text-align: center; padding: 80px 20px;">
         <div class="eyebrow" style="color: var(--muted);">Loading latest news...</div>
@@ -1402,70 +2063,69 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       <a href="dispatches.html" class="eyebrow" style="color: var(--muted);">View all →</a>
     </div>
 
-    <!-- Top Row: Hero + 2 Stacked -->
-    <div class="mosaic-hero-grid" style="margin-bottom: 20px;">
-      <a href="posts/pe-data-architecture.html" class="mosaic-tile mosaic-tile-hero" data-tooltip="Essential reading for PE operating partners rebuilding portfolio data systems.">
-        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt=""/>
-        <div class="tile-overlay" style="padding: 32px;">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-            <span class="source-badge semperr">Semperr</span>
-            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Trace · 12 min</span>
-          </div>
-          <h2 class="serif" style="font-size: 32px; line-height: 1.2; color: var(--paper); margin-bottom: 12px;">Why most PE firms are still getting portfolio data architecture wrong.</h2>
-          <p style="font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.5; max-width: 90%;">The edge no longer comes from model access — it comes from proprietary context.</p>
-          <div style="display: flex; align-items: center; gap: 10px; margin-top: 16px;">
-            <div class="author-circle" style="width: 32px; height: 32px; font-size: 13px;">Ev</div>
-            <span style="color: rgba(255,255,255,0.7); font-size: 14px;">Eleanor Voss</span>
-          </div>
-        </div>
-      </a>
-      <div class="mosaic-stack">
-        <a href="posts/jurisdiction-specific-models.html" class="mosaic-tile mosaic-tile-stack" data-tooltip="Why generic legal AI fails and what jurisdiction-specific models can do.">
-          <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80" alt=""/>
-          <div class="tile-overlay">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-              <span class="source-badge semperr">Semperr</span>
-              <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Clad</span>
-            </div>
-            <h3 class="serif" style="font-size: 22px; line-height: 1.25; color: var(--paper);">The argument for jurisdiction-specific models.</h3>
-          </div>
-        </a>
-        <a href="posts/build-things-that-work.html" class="mosaic-tile mosaic-tile-stack" data-tooltip="The engineering philosophy behind systems that institutional clients depend on.">
-          <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=600&q=80" alt=""/>
-          <div class="tile-overlay">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-              <span class="source-badge semperr">Semperr</span>
-              <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Craft</span>
-            </div>
-            <h3 class="serif" style="font-size: 22px; line-height: 1.25; color: var(--paper);">Build things that work the first time.</h3>
+    <!-- Newspaper-style: Lead + Also Read -->
+    <div class="news-top-zone">
+      <!-- Left: Lead story -->
+      <div class="nyt-col-main">
+        <a href="posts/pe-data-architecture.html" class="nyt-lead" data-tooltip="Essential reading for PE operating partners rebuilding portfolio data systems.">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80" alt=""/>
+          <h3>Why most PE firms are still getting portfolio data architecture wrong.</h3>
+          <p>The edge no longer comes from model access — it comes from proprietary context.</p>
+          <div style="display:flex;align-items:center;gap:10px;margin-top:10px;">
+            <span style="font-size:13px;color:var(--ink);font-style:italic;font-family:var(--serif);">By Eleanor Voss</span>
+            <span style="color:var(--paper-line);font-size:9px;">·</span>
+            <span class="eyebrow" style="font-size:9px;color:var(--muted);">Semperr</span>
+            <span style="color:var(--paper-line);font-size:9px;">·</span>
+            <span class="eyebrow" style="font-size:9px;color:var(--gold);">Trace</span>
+            <span style="color:var(--paper-line);font-size:9px;">·</span>
+            <span class="eyebrow" style="font-size:9px;color:var(--muted);">12 min</span>
           </div>
         </a>
       </div>
-    </div>
-
-    <!-- Row of 3 -->
-    <div class="mosaic-row-3" style="margin-bottom: 20px;">
-      <a href="https://www.mckinsey.com/industries/private-equity-and-principal-investors/our-insights/private-markets-annual-review" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-md" data-tooltip="McKinsey's annual benchmark for PE industry trends.">
-        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt=""/>
-        <div class="tile-overlay">
-          <span class="source-badge external" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 12px; display: inline-block;">MCKINSEY & COMPANY</span>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">McKinsey's Private Markets Annual Review</h3>
-        </div>
-      </a>
-      <a href="https://a16z.com/ai-canon/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-md" data-tooltip="a16z on why proprietary data infrastructure is the moat in the AI era.">
-        <img src="https://d1lamhf6l6yk6d.cloudfront.net/uploads/2023/05/AI-CANON_Twitter.jpg" alt=""/>
-        <div class="tile-overlay">
-          <span class="source-badge external" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 12px; display: inline-block;">ANDREESSEN HOROWITZ</span>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">Emerging Architectures for LLM Applications</h3>
-        </div>
-      </a>
-      <a href="https://www.sequoiacap.com/article/ais-600b-question/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-md" data-tooltip="Sequoia's perspective on how generative AI changes software economics.">
-        <img src="https://sequoiacap.com/wp-content/uploads/sites/6/2024/06/600B-OG.png" alt=""/>
-        <div class="tile-overlay">
-          <span class="source-badge external" style="font-size: 11px; padding: 6px 12px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 12px; display: inline-block;">SEQUOIA CAPITAL</span>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">AI's $600B Question</h3>
-        </div>
-      </a>
+      <!-- Right: Also Read -->
+      <div class="nyt-col-side">
+        <div class="nyt-section-label">Also Read</div>
+        <a href="posts/jurisdiction-specific-models.html" class="nyt-headline" data-tooltip="Why generic legal AI fails and what jurisdiction-specific models can do.">
+          <h3>The argument for jurisdiction-specific models.</h3>
+          <div class="nyt-meta" style="display:flex;align-items:center;gap:8px;">
+            <span class="eyebrow" style="font-size:9px;color:var(--muted);">Semperr</span>
+            <span style="color:var(--paper-line);font-size:9px;">·</span>
+            <span class="eyebrow" style="font-size:9px;color:var(--gold);">Clad</span>
+          </div>
+        </a>
+        <a href="posts/build-things-that-work.html" class="nyt-headline" data-tooltip="The engineering philosophy behind systems that institutional clients depend on.">
+          <h3>Build things that work the first time.</h3>
+          <div class="nyt-meta" style="display:flex;align-items:center;gap:8px;">
+            <span class="eyebrow" style="font-size:9px;color:var(--muted);">Semperr</span>
+            <span style="color:var(--paper-line);font-size:9px;">·</span>
+            <span class="eyebrow" style="font-size:9px;color:var(--gold);">Craft</span>
+          </div>
+        </a>
+        <a href="https://www.mckinsey.com/industries/private-equity-and-principal-investors/our-insights/private-markets-annual-review" target="_blank" rel="noopener" class="nyt-headline" data-tooltip="McKinsey's annual benchmark for PE industry trends.">
+          <h3>McKinsey's Private Markets Annual Review</h3>
+          <div class="nyt-meta" style="display:flex;align-items:center;gap:8px;">
+            <span class="eyebrow" style="font-size:9px;color:var(--muted);">McKinsey &amp; Company</span>
+            <span style="color:var(--paper-line);font-size:9px;">·</span>
+            <span class="eyebrow" style="font-size:9px;color:var(--gold);">Finance</span>
+          </div>
+        </a>
+        <a href="https://a16z.com/ai-canon/" target="_blank" rel="noopener" class="nyt-headline" data-tooltip="a16z on why proprietary data infrastructure is the moat in the AI era.">
+          <h3>Emerging Architectures for LLM Applications</h3>
+          <div class="nyt-meta" style="display:flex;align-items:center;gap:8px;">
+            <span class="eyebrow" style="font-size:9px;color:var(--muted);">Andreessen Horowitz</span>
+            <span style="color:var(--paper-line);font-size:9px;">·</span>
+            <span class="eyebrow" style="font-size:9px;color:var(--gold);">AI</span>
+          </div>
+        </a>
+        <a href="https://www.sequoiacap.com/article/ais-600b-question/" target="_blank" rel="noopener" class="nyt-headline" data-tooltip="Sequoia's perspective on how generative AI changes software economics.">
+          <h3>AI's $600B Question</h3>
+          <div class="nyt-meta" style="display:flex;align-items:center;gap:8px;">
+            <span class="eyebrow" style="font-size:9px;color:var(--muted);">Sequoia Capital</span>
+            <span style="color:var(--paper-line);font-size:9px;">·</span>
+            <span class="eyebrow" style="font-size:9px;color:var(--gold);">AI</span>
+          </div>
+        </a>
+      </div>
     </div>
 
     <div style="text-align: center; margin-top: 40px;">
@@ -1475,111 +2135,60 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
-<!-- ===== LATEST DISPATCHES (Mosaic) ===== -->
+<!-- ===== LATEST DISPATCHES — Feature Well ===== -->
 <section style="padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
-    <div class="content-split" style="display: grid; grid-template-columns: 1fr 300px; gap: 48px;">
+    <div class="eyebrow" style="color: var(--gold); margin-bottom: 24px;">Latest Dispatches</div>
 
-      <!-- Main: Mosaic row of 4 tiles -->
-      <div>
-        <div class="eyebrow" style="color: var(--gold); margin-bottom: 24px;">Latest Dispatches</div>
-        <div class="mosaic-row-4" style="grid-template-columns: repeat(2, 1fr);">
-          <a href="posts/unified-portfolio-intelligence.html" class="mosaic-tile mosaic-tile-md">
-            <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?w=400&q=80" alt=""/>
-            <div class="tile-overlay">
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                <span class="source-badge semperr">Semperr</span>
-                <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Trace</span>
-              </div>
-              <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">The case for unified portfolio intelligence platforms.</h3>
-              <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Eleanor Voss · 9 min</p>
-            </div>
-          </a>
-          <a href="posts/discovery-broken.html" class="mosaic-tile mosaic-tile-md">
-            <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80" alt=""/>
-            <div class="tile-overlay">
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                <span class="source-badge semperr">Semperr</span>
-                <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Clad</span>
-              </div>
-              <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">Discovery is broken. Here's how we're fixing it.</h3>
-              <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Henry Okafor · 11 min</p>
-            </div>
-          </a>
-          <a href="posts/boring-technology.html" class="mosaic-tile mosaic-tile-md">
-            <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&q=80" alt=""/>
-            <div class="tile-overlay">
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                <span class="source-badge semperr">Semperr</span>
-                <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Craft</span>
-              </div>
-              <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">On choosing boring technology (again).</h3>
-              <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Marco Adair · 7 min</p>
-            </div>
-          </a>
-          <a href="posts/lp-data-rooms.html" class="mosaic-tile mosaic-tile-md">
-            <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&q=80" alt=""/>
-            <div class="tile-overlay">
-              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                <span class="source-badge semperr">Semperr</span>
-                <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Trace</span>
-              </div>
-              <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">What LPs actually want from their GPs' data rooms.</h3>
-              <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Anya Reyes · 14 min</p>
-            </div>
-          </a>
+    <!-- Full-bleed hero -->
+    <a href="posts/unified-portfolio-intelligence.html" class="feature-well-hero">
+      <img src="https://images.unsplash.com/photo-1639322537228-f710d846310a?w=1200&q=80" alt=""/>
+      <div class="tile-overlay">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <span class="source-badge semperr">Semperr</span>
+          <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Trace · 9 min</span>
         </div>
+        <h2 class="serif" style="font-size: 32px; line-height: 1.2; color: var(--paper); max-width: 640px;">The case for unified portfolio intelligence platforms.</h2>
+        <p style="font-size: 15px; color: rgba(255,255,255,0.65); margin-top: 10px; max-width: 500px; line-height: 1.5;">Why fragmented data stacks are the single biggest drag on PE operating performance.</p>
+        <p class="eyebrow" style="color: rgba(255,255,255,0.45); margin-top: 12px;">Eleanor Voss</p>
       </div>
+    </a>
 
-      <!-- Sidebar: Most Read (compact numbered tiles) -->
-      <aside>
-        <div class="eyebrow" style="color: var(--gold); margin-bottom: 24px;">Most Read This Week</div>
-        <div style="display: flex; flex-direction: column; gap: 0;">
-          <a href="posts/pe-data-architecture.html" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--paper-line); transition: all 0.15s;" onmouseover="this.style.paddingLeft='6px'" onmouseout="this.style.paddingLeft='0'">
-            <span class="serif" style="font-size: 28px; color: var(--gold); line-height: 1; opacity: 0.4;">01</span>
-            <div>
-              <h4 class="serif" style="font-size: 15px; line-height: 1.35; margin-bottom: 4px;">Why most PE firms are still getting portfolio data architecture wrong.</h4>
-              <span class="eyebrow" style="color: var(--muted);">14,280 reads</span>
-            </div>
-          </a>
-          <a href="posts/unified-portfolio-intelligence.html" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--paper-line); transition: all 0.15s;" onmouseover="this.style.paddingLeft='6px'" onmouseout="this.style.paddingLeft='0'">
-            <span class="serif" style="font-size: 28px; color: var(--gold); line-height: 1; opacity: 0.4;">02</span>
-            <div>
-              <h4 class="serif" style="font-size: 15px; line-height: 1.35; margin-bottom: 4px;">The case for unified portfolio intelligence platforms.</h4>
-              <span class="eyebrow" style="color: var(--muted);">11,420 reads</span>
-            </div>
-          </a>
-          <a href="posts/discovery-broken.html" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--paper-line); transition: all 0.15s;" onmouseover="this.style.paddingLeft='6px'" onmouseout="this.style.paddingLeft='0'">
-            <span class="serif" style="font-size: 28px; color: var(--gold); line-height: 1; opacity: 0.4;">03</span>
-            <div>
-              <h4 class="serif" style="font-size: 15px; line-height: 1.35; margin-bottom: 4px;">Discovery is broken. Here's how we're fixing it.</h4>
-              <span class="eyebrow" style="color: var(--muted);">9,856 reads</span>
-            </div>
-          </a>
-          <a href="posts/lp-data-rooms.html" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--paper-line); transition: all 0.15s;" onmouseover="this.style.paddingLeft='6px'" onmouseout="this.style.paddingLeft='0'">
-            <span class="serif" style="font-size: 28px; color: var(--gold); line-height: 1; opacity: 0.4;">04</span>
-            <div>
-              <h4 class="serif" style="font-size: 15px; line-height: 1.35; margin-bottom: 4px;">What LPs actually want from their GPs' data rooms.</h4>
-              <span class="eyebrow" style="color: var(--muted);">8,234 reads</span>
-            </div>
-          </a>
-          <a href="posts/jurisdiction-specific-models.html" style="display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; transition: all 0.15s;" onmouseover="this.style.paddingLeft='6px'" onmouseout="this.style.paddingLeft='0'">
-            <span class="serif" style="font-size: 28px; color: var(--gold); line-height: 1; opacity: 0.4;">05</span>
-            <div>
-              <h4 class="serif" style="font-size: 15px; line-height: 1.35; margin-bottom: 4px;">The argument for jurisdiction-specific models.</h4>
-              <span class="eyebrow" style="color: var(--muted);">7,102 reads</span>
-            </div>
-          </a>
+    <!-- Asymmetric 3-up row -->
+    <div class="feature-well-row">
+      <a href="posts/discovery-broken.html" class="mosaic-tile" style="border: 2px solid transparent;">
+        <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&q=80" alt=""/>
+        <div class="tile-overlay">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="source-badge semperr">Semperr</span>
+            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Clad</span>
+          </div>
+          <h3 class="serif" style="font-size: 20px; line-height: 1.3; color: var(--paper);">Discovery is broken. Here's how we're fixing it.</h3>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Henry Okafor · 11 min</p>
         </div>
-
-        <!-- Mini Newsletter -->
-        <div style="margin-top: 32px; padding: 24px; background: var(--ink); color: var(--paper);">
-          <div class="eyebrow" style="color: var(--gold); margin-bottom: 12px;">Newsletter</div>
-          <p class="serif" style="font-size: 18px; line-height: 1.4; margin-bottom: 16px;">Get dispatches delivered to your inbox.</p>
-          <input type="email" placeholder="you@firm.com" style="width: 100%; padding: 12px; font-size: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: var(--paper); margin-bottom: 12px;"/>
-          <button style="width: 100%; padding: 12px; font-size: 13px; font-weight: 500; background: var(--gold); color: var(--ink); border: none; cursor: pointer;">Subscribe →</button>
+      </a>
+      <a href="posts/boring-technology.html" class="mosaic-tile" style="border: 2px solid transparent;">
+        <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&q=80" alt=""/>
+        <div class="tile-overlay">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="source-badge semperr">Semperr</span>
+            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Craft</span>
+          </div>
+          <h3 class="serif" style="font-size: 16px; line-height: 1.3; color: var(--paper);">On choosing boring technology (again).</h3>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Marco Adair · 7 min</p>
         </div>
-      </aside>
+      </a>
+      <a href="posts/lp-data-rooms.html" class="mosaic-tile" style="border: 2px solid transparent;">
+        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&q=80" alt=""/>
+        <div class="tile-overlay">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="source-badge semperr">Semperr</span>
+            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Trace</span>
+          </div>
+          <h3 class="serif" style="font-size: 16px; line-height: 1.3; color: var(--paper);">What LPs actually want from their GPs' data rooms.</h3>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Anya Reyes · 14 min</p>
+        </div>
+      </a>
     </div>
   </div>
 </section>
@@ -1619,62 +2228,72 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
-<!-- ===== PRIVATE EQUITY & VENTURE ===== -->
+<!-- ===== PRIVATE EQUITY & VENTURE — Dossier Layout ===== -->
 <section id="trace" class="mosaic-section" style="--section-accent: var(--blue); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
       <div>
         <div class="eyebrow" style="color: var(--blue); margin-bottom: 8px;">Trace</div>
-        <h2 class="serif" style="font-size: 28px;">Private Equity & Venture</h2>
+        <h2 class="serif" style="font-size: 28px;">Private Equity &amp; Venture</h2>
       </div>
       <a href="trace-dispatches.html" class="eyebrow" style="color: var(--muted);">View all →</a>
     </div>
 
-    <div class="mosaic-hero-grid" style="margin-bottom: 20px;">
-      <a href="posts/pe-data-architecture.html" class="mosaic-tile mosaic-tile-hero" data-tooltip="Essential reading for PE operating partners rebuilding portfolio data systems.">
+    <div class="dossier-grid">
+      <a href="posts/pe-data-architecture.html" class="dossier-card" data-tooltip="Essential reading for PE operating partners rebuilding portfolio data systems.">
         <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80" alt=""/>
-        <div class="tile-overlay" style="padding: 32px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
-            <span class="source-badge" style="background: var(--blue); color: white;">Semperr</span>
-            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">Analysis · 12 min</span>
+        <div class="dossier-card-body">
+          <div class="dossier-index">01</div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+              <span class="source-badge" style="background: var(--blue); color: white;">Semperr</span>
+              <span class="eyebrow" style="color: rgba(255,255,255,0.5);">Analysis · 12 min</span>
+            </div>
+            <h3 class="serif" style="font-size: 22px; line-height: 1.25; color: var(--paper); margin-bottom: 8px;">Why most PE firms are getting portfolio data architecture wrong.</h3>
+            <p style="font-size: 13px; color: var(--muted-light); line-height: 1.5;">The edge no longer comes from model access — it comes from proprietary context.</p>
+            <p class="eyebrow" style="color: rgba(255,255,255,0.4); margin-top: 10px;">Eleanor Voss</p>
           </div>
-          <h2 class="serif" style="font-size: 28px; line-height: 1.2; color: var(--paper); margin-bottom: 8px;">Why most PE firms are getting portfolio data architecture wrong.</h2>
-          <p style="font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.5;">The edge no longer comes from model access — it comes from proprietary context.</p>
-          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 12px;">Eleanor Voss</p>
         </div>
       </a>
-      <div class="mosaic-stack">
-        <a href="posts/unified-portfolio-intelligence.html" class="mosaic-tile mosaic-tile-stack">
-          <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?w=400&q=80" alt=""/>
-          <div class="tile-overlay">
+      <a href="posts/unified-portfolio-intelligence.html" class="dossier-card">
+        <img src="https://images.unsplash.com/photo-1559526324-593bc073d938?w=400&q=80" alt=""/>
+        <div class="dossier-card-body">
+          <div class="dossier-index">02</div>
+          <div>
             <span class="source-badge" style="background: var(--blue); color: white; margin-bottom: 8px; display: inline-block;">Semperr</span>
-            <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">The case for unified portfolio intelligence platforms.</h3>
-            <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Eleanor Voss · 9 min</p>
+            <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">The case for unified portfolio intelligence platforms.</h3>
+            <p class="eyebrow" style="color: rgba(255,255,255,0.4); margin-top: 8px;">Eleanor Voss · 9 min</p>
           </div>
-        </a>
-        <a href="https://www.institutionalinvestor.com/section/private-equity" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-stack" data-tooltip="Institutional Investor's deep dive on PE data infrastructure challenges.">
-          <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&q=80" alt=""/>
-          <div class="tile-overlay">
-            <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">INSTITUTIONAL INVESTOR</span>
-            <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">Private equity's data problem is getting worse.</h3>
-          </div>
-        </a>
-      </div>
-    </div>
-
-    <div class="mosaic-row-2">
-      <a href="https://pitchbook.com/news" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-sm" data-tooltip="PitchBook on operationalizing portfolio monitoring.">
-        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt=""/>
-        <div class="tile-overlay">
-          <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">PITCHBOOK</span>
-          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">The ops playbook for data-driven PE.</h3>
         </div>
       </a>
-      <a href="posts/lp-data-rooms.html" class="mosaic-tile mosaic-tile-sm">
+      <a href="https://www.institutionalinvestor.com/section/private-equity" target="_blank" rel="noopener" class="dossier-card" data-tooltip="Institutional Investor's deep dive on PE data infrastructure challenges.">
+        <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&q=80" alt=""/>
+        <div class="dossier-card-body">
+          <div class="dossier-index">03</div>
+          <div>
+            <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">INSTITUTIONAL INVESTOR</span>
+            <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">Private equity's data problem is getting worse.</h3>
+          </div>
+        </div>
+      </a>
+      <a href="https://pitchbook.com/news" target="_blank" rel="noopener" class="dossier-card" data-tooltip="PitchBook on operationalizing portfolio monitoring.">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt=""/>
+        <div class="dossier-card-body">
+          <div class="dossier-index">04</div>
+          <div>
+            <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">PITCHBOOK</span>
+            <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">The ops playbook for data-driven PE.</h3>
+          </div>
+        </div>
+      </a>
+      <a href="posts/lp-data-rooms.html" class="dossier-card">
         <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=500&q=80" alt=""/>
-        <div class="tile-overlay">
-          <span class="source-badge" style="background: var(--blue); color: white; margin-bottom: 8px; display: inline-block;">Semperr</span>
-          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">What LPs actually want from their GPs' data rooms.</h3>
+        <div class="dossier-card-body">
+          <div class="dossier-index">05</div>
+          <div>
+            <span class="source-badge" style="background: var(--blue); color: white; margin-bottom: 8px; display: inline-block;">Semperr</span>
+            <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">What LPs actually want from their GPs' data rooms.</h3>
+          </div>
         </div>
       </a>
     </div>
@@ -1682,109 +2301,127 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
-<!-- ===== LEGAL TECHNOLOGY ===== -->
+<!-- ===== LEGAL TECHNOLOGY — Courtroom Brief ===== -->
 <section id="clad" class="mosaic-section" style="--section-accent: var(--emerald); padding: 64px 0; border-bottom: 1px solid var(--paper-line); background: var(--paper-warm);">
   <div class="container">
-    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
-      <div>
-        <div class="eyebrow" style="color: var(--emerald); margin-bottom: 8px;">Clad</div>
-        <h2 class="serif" style="font-size: 28px;">Legal Technology</h2>
-      </div>
-      <a href="clad-dispatches.html" class="eyebrow" style="color: var(--muted);">View all →</a>
+    <div style="text-align: center; margin-bottom: 40px;">
+      <div class="eyebrow" style="color: var(--emerald); margin-bottom: 8px;">Clad</div>
+      <h2 class="serif" style="font-size: 28px;">Legal Technology</h2>
+      <div style="width: 40px; height: 2px; background: var(--emerald); margin: 16px auto 0; opacity: 0.5;"></div>
     </div>
 
-    <div class="mosaic-hero-grid" style="margin-bottom: 20px;">
-      <a href="posts/contract-intelligence.html" class="mosaic-tile mosaic-tile-hero">
-        <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=800&q=80" alt=""/>
-        <div class="tile-overlay" style="padding: 32px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+    <div class="brief-stack">
+      <a href="posts/contract-intelligence.html" class="brief-card">
+        <div class="brief-index">§ 01</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
             <span class="source-badge" style="background: var(--emerald); color: white;">Semperr</span>
-            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">15 min read</span>
+            <span class="eyebrow" style="color: var(--muted);">15 min read</span>
           </div>
-          <h2 class="serif" style="font-size: 28px; line-height: 1.25; color: var(--paper); margin-bottom: 8px;">Contract intelligence at scale: what we learned from 2M documents.</h2>
-          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 12px;">Henry Okafor</p>
+          <div class="brief-title">Contract intelligence at scale: what we learned from 2M documents.</div>
+          <div class="brief-desc">Systematic extraction of obligation, risk, and renewal data across enterprise contract portfolios.</div>
+          <div class="brief-meta">
+            <span style="font-size: 13px; color: var(--ink); font-style: italic; font-family: var(--serif);">Henry Okafor</span>
+          </div>
         </div>
       </a>
-      <div class="mosaic-stack">
-        <a href="posts/discovery-broken.html" class="mosaic-tile mosaic-tile-stack">
-          <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&q=80" alt=""/>
-          <div class="tile-overlay">
-            <span class="source-badge" style="background: var(--emerald); color: white; margin-bottom: 8px; display: inline-block;">Semperr</span>
-            <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">Discovery is broken. Here's how we're fixing it.</h3>
-            <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Henry Okafor · 11 min</p>
+      <a href="posts/discovery-broken.html" class="brief-card">
+        <div class="brief-index">§ 02</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <span class="source-badge" style="background: var(--emerald); color: white;">Semperr</span>
+            <span class="eyebrow" style="color: var(--muted);">11 min read</span>
           </div>
-        </a>
-        <a href="https://www.law.com/legaltechnews/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-stack" data-tooltip="Law.com's coverage of legal tech adoption at Am Law 200 firms.">
-          <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80" alt=""/>
-          <div class="tile-overlay">
-            <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">LAW.COM</span>
-            <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">The technologies reshaping Big Law in 2026.</h3>
+          <div class="brief-title">Discovery is broken. Here's how we're fixing it.</div>
+          <div class="brief-desc">The document review process hasn't changed in 30 years. We think it should.</div>
+          <div class="brief-meta">
+            <span style="font-size: 13px; color: var(--ink); font-style: italic; font-family: var(--serif);">Henry Okafor</span>
           </div>
-        </a>
-      </div>
+        </div>
+      </a>
+      <a href="https://www.law.com/legaltechnews/" target="_blank" rel="noopener" class="brief-card" data-tooltip="Law.com's coverage of legal tech adoption at Am Law 200 firms.">
+        <div class="brief-index">§ 03</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <span class="source-badge external" style="font-size: 9px; padding: 4px 10px; background: rgba(11,18,32,0.08);">LAW.COM</span>
+          </div>
+          <div class="brief-title">The technologies reshaping Big Law in 2026.</div>
+          <div class="brief-desc">From AI-assisted research to automated compliance, a comprehensive survey of adoption at Am Law 200 firms.</div>
+        </div>
+      </a>
+      <a href="https://abovethelaw.com/tag/legal-technology/" target="_blank" rel="noopener" class="brief-card" data-tooltip="Above the Law on how junior associates are adapting to AI tools.">
+        <div class="brief-index">§ 04</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <span class="source-badge external" style="font-size: 9px; padding: 4px 10px; background: rgba(11,18,32,0.08);">ABOVE THE LAW</span>
+          </div>
+          <div class="brief-title">Why associates are quietly becoming prompt engineers.</div>
+          <div class="brief-desc">The gap between firms that train for AI fluency and those that don't is becoming a talent differentiator.</div>
+        </div>
+      </a>
+      <a href="posts/jurisdiction-specific-models.html" class="brief-card">
+        <div class="brief-index">§ 05</div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <span class="source-badge" style="background: var(--emerald); color: white;">Semperr</span>
+          </div>
+          <div class="brief-title">The argument for jurisdiction-specific models.</div>
+          <div class="brief-desc">Why generic legal AI fails and what jurisdiction-specific architectures can actually deliver.</div>
+        </div>
+      </a>
     </div>
 
-    <div class="mosaic-row-2">
-      <a href="https://abovethelaw.com/tag/legal-technology/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-sm" data-tooltip="Above the Law on how junior associates are adapting to AI tools.">
-        <img src="https://images.unsplash.com/photo-1521791055366-0d553872125f?w=500&q=80" alt=""/>
-        <div class="tile-overlay">
-          <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">ABOVE THE LAW</span>
-          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">Why associates are quietly becoming prompt engineers.</h3>
-        </div>
-      </a>
-      <a href="posts/jurisdiction-specific-models.html" class="mosaic-tile mosaic-tile-sm">
-        <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=500&q=80" alt=""/>
-        <div class="tile-overlay">
-          <span class="source-badge" style="background: var(--emerald); color: white; margin-bottom: 8px; display: inline-block;">Semperr</span>
-          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">The argument for jurisdiction-specific models.</h3>
-        </div>
-      </a>
+    <div style="text-align: center; margin-top: 32px;">
+      <a href="clad-dispatches.html" class="eyebrow" style="color: var(--emerald);">View all Clad dispatches →</a>
     </div>
   </div>
 </section>
 
 
-<!-- ===== INDUSTRY VOICES ===== -->
+<!-- ===== INDUSTRY VOICES — Broadsheet Editorial ===== -->
 <section id="curated" class="mosaic-section" style="--section-accent: var(--amber); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
-    <div class="eyebrow" style="color: var(--amber); margin-bottom: 32px; text-align: center;">Industry Voices</div>
+    <div class="eyebrow" style="color: var(--amber); margin-bottom: 40px; text-align: center;">Industry Voices</div>
 
-    <div class="mosaic-row-3">
-      <div class="mosaic-tile" style="background: var(--ink); padding: 32px; border-left: 4px solid var(--amber); display: flex; flex-direction: column; justify-content: space-between; min-height: 280px;">
-        <p class="serif" style="font-size: 22px; line-height: 1.5; font-style: italic; color: var(--paper);">
-          "The firms that treat data as a strategic asset—not a compliance burden—will be the ones still standing in ten years."
-        </p>
+    <div class="voices-layout">
+      <!-- Primary pull quote -->
+      <div class="voices-primary">
+        <blockquote>
+          The firms that treat data as a strategic asset — not a compliance burden — will be the ones still standing in ten years.
+        </blockquote>
         <footer style="margin-top: 24px;">
-          <div style="font-weight: 500; color: var(--amber);">David Rubenstein</div>
-          <div class="eyebrow" style="color: var(--muted-light); margin-top: 4px;">Co-Founder, Carlyle Group</div>
+          <div style="font-weight: 500; color: var(--amber); font-size: 15px;">David Rubenstein</div>
+          <div class="eyebrow" style="color: var(--muted); margin-top: 4px;">Co-Founder, Carlyle Group</div>
         </footer>
       </div>
 
-      <div class="mosaic-tile" style="background: var(--ink); padding: 32px; border-left: 4px solid var(--amber); display: flex; flex-direction: column; justify-content: space-between; min-height: 280px;">
-        <p class="serif" style="font-size: 22px; line-height: 1.5; font-style: italic; color: var(--paper);">
-          "Legal AI isn't about replacing lawyers. It's about giving them superpowers they didn't know they needed."
-        </p>
-        <footer style="margin-top: 24px;">
-          <div style="font-weight: 500; color: var(--amber);">Mary Shen O'Carroll</div>
-          <div class="eyebrow" style="color: var(--muted-light); margin-top: 4px;">Former CLO, Google</div>
-        </footer>
-      </div>
-
-      <div class="mosaic-tile" style="background: var(--ink); padding: 32px; border-left: 4px solid var(--amber); display: flex; flex-direction: column; justify-content: space-between; min-height: 280px;">
-        <p class="serif" style="font-size: 22px; line-height: 1.5; font-style: italic; color: var(--paper);">
-          "We stopped asking 'what data do we have?' and started asking 'what decisions do we need to make?'"
-        </p>
-        <footer style="margin-top: 24px;">
-          <div style="font-weight: 500; color: var(--amber);">Sarah Kunst</div>
-          <div class="eyebrow" style="color: var(--muted-light); margin-top: 4px;">Managing Director, Cleo Capital</div>
-        </footer>
+      <!-- Sidebar quotes -->
+      <div class="voices-sidebar">
+        <div class="voices-sidebar-card">
+          <blockquote>
+            "Legal AI isn't about replacing lawyers. It's about giving them superpowers they didn't know they needed."
+          </blockquote>
+          <footer>
+            <div style="font-weight: 500; color: var(--amber); font-size: 14px;">Mary Shen O'Carroll</div>
+            <div class="eyebrow" style="color: var(--muted); margin-top: 2px;">Former CLO, Google</div>
+          </footer>
+        </div>
+        <div class="voices-sidebar-card">
+          <blockquote>
+            "We stopped asking 'what data do we have?' and started asking 'what decisions do we need to make?'"
+          </blockquote>
+          <footer>
+            <div style="font-weight: 500; color: var(--amber); font-size: 14px;">Sarah Kunst</div>
+            <div class="eyebrow" style="color: var(--muted); margin-top: 2px;">Managing Director, Cleo Capital</div>
+          </footer>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 
-<!-- ===== DATA INFRASTRUCTURE ===== -->
+<!-- ===== DATA INFRASTRUCTURE — Blueprint Grid ===== -->
 <section id="craft" class="mosaic-section" style="--section-accent: var(--purple); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
@@ -1795,40 +2432,56 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       <a href="craft-dispatches.html" class="eyebrow" style="color: var(--muted);">View all →</a>
     </div>
 
-    <div class="mosaic-hero-grid" style="grid-template-columns: 1.2fr 1fr; margin-bottom: 20px;">
-      <a href="posts/postgresql-everything.html" class="mosaic-tile mosaic-tile-hero" style="height: 360px;">
+    <div class="blueprint-grid">
+      <!-- L-shaped main card spanning 2 rows -->
+      <a href="posts/postgresql-everything.html" class="blueprint-card bp-main">
         <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80" alt=""/>
-        <div class="tile-overlay" style="padding: 32px;">
+        <div class="tile-overlay">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
             <span class="source-badge" style="background: var(--purple); color: white;">Semperr</span>
             <span class="eyebrow" style="color: rgba(255,255,255,0.6);">6 min</span>
           </div>
           <h2 class="serif" style="font-size: 26px; line-height: 1.2; color: var(--paper); margin-bottom: 8px;">Why we still use PostgreSQL for everything.</h2>
-          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 12px;">Marco Adair</p>
+          <p style="font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.5;">The boring database choice that keeps outperforming the alternatives.</p>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.4); margin-top: 12px;">Marco Adair</p>
         </div>
       </a>
-      <a href="posts/cost-of-data-later.html" class="mosaic-tile" style="height: 360px;">
+
+      <!-- Side top -->
+      <a href="posts/cost-of-data-later.html" class="blueprint-card bp-side-top">
         <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=500&q=80" alt=""/>
-        <div class="tile-overlay" style="padding: 28px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <div class="tile-overlay">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
             <span class="source-badge" style="background: var(--purple); color: white;">Semperr</span>
             <span class="eyebrow" style="color: rgba(255,255,255,0.6);">8 min</span>
           </div>
-          <h3 class="serif" style="font-size: 20px; line-height: 1.3; color: var(--paper);">The real cost of "we'll figure out the data later."</h3>
-          <p class="eyebrow" style="color: rgba(255,255,255,0.5); margin-top: 8px;">Eleanor Voss</p>
+          <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">The real cost of "we'll figure out the data later."</h3>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.4); margin-top: 6px;">Eleanor Voss</p>
         </div>
       </a>
-    </div>
 
-    <div class="mosaic-row-2">
-      <a href="https://a16z.com/ai-canon/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-sm" data-tooltip="a16z's definitive guide to building LLM applications.">
+      <!-- Side bottom -->
+      <a href="https://a16z.com/ai-canon/" target="_blank" rel="noopener" class="blueprint-card bp-side-bottom" data-tooltip="a16z's definitive guide to building LLM applications.">
         <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&q=80" alt=""/>
         <div class="tile-overlay">
           <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">ANDREESSEN HOROWITZ</span>
           <h3 class="serif" style="font-size: 17px; line-height: 1.3; color: var(--paper);">Emerging architectures for LLM applications.</h3>
         </div>
       </a>
-      <a href="https://www.sequoiacap.com/article/ais-600b-question/" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-sm" data-tooltip="Sequoia's perspective on data infrastructure as competitive moat.">
+
+      <!-- Bottom row -->
+      <a href="posts/boring-technology.html" class="blueprint-card bp-bottom-left">
+        <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=500&q=80" alt=""/>
+        <div class="tile-overlay">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="source-badge" style="background: var(--purple); color: white;">Semperr</span>
+            <span class="eyebrow" style="color: rgba(255,255,255,0.6);">7 min</span>
+          </div>
+          <h3 class="serif" style="font-size: 18px; line-height: 1.3; color: var(--paper);">On choosing boring technology (again).</h3>
+          <p class="eyebrow" style="color: rgba(255,255,255,0.4); margin-top: 6px;">Marco Adair</p>
+        </div>
+      </a>
+      <a href="https://www.sequoiacap.com/article/ais-600b-question/" target="_blank" rel="noopener" class="blueprint-card bp-bottom-right" data-tooltip="Sequoia's perspective on data infrastructure as competitive moat.">
         <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80" alt=""/>
         <div class="tile-overlay">
           <span class="source-badge external" style="font-size: 10px; padding: 5px 10px; background: rgba(255,255,255,0.15); font-weight: 500; margin-bottom: 8px; display: inline-block;">SEQUOIA CAPITAL</span>
@@ -1840,7 +2493,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
-<!-- ===== FEATURED EVENTS ===== -->
+<!-- ===== FEATURED EVENTS — Timeline ===== -->
 <section id="events" class="mosaic-section" style="--section-accent: var(--coral); padding: 64px 0; border-bottom: 1px solid var(--paper-line);">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 40px;">
@@ -1851,97 +2504,79 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       <a href="events.html" class="eyebrow" style="color: var(--muted);">Full calendar →</a>
     </div>
 
-    <!-- 3 Main Event Mosaic Tiles -->
-    <div class="mosaic-row-3" style="margin-bottom: 20px;">
-      <a href="https://techcrunch.com/events/disrupt/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 300px;">
-        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&q=80" alt="" style="position: absolute;"/>
-        <div style="position: absolute; top: 16px; left: 16px;">
-          <span style="background: var(--coral); color: white; padding: 6px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;">OCT 28</span>
-        </div>
-        <div class="tile-overlay">
-          <span class="eyebrow" style="color: rgba(255,255,255,0.5); margin-bottom: 8px; display: block;">TechCrunch</span>
-          <h3 class="serif" style="font-size: 20px; line-height: 1.3; color: var(--paper); margin-bottom: 6px;">TechCrunch Disrupt 2026</h3>
-          <p class="eyebrow" style="color: rgba(255,255,255,0.5);">San Francisco, CA</p>
+    <div class="timeline-list">
+      <a href="https://www.datacouncil.ai/events" target="_blank" rel="noopener" class="timeline-item">
+        <div class="timeline-date">May 14</div>
+        <div>
+          <div class="timeline-title">Data Council Austin</div>
+          <div class="timeline-location">Austin, TX</div>
+          <div class="timeline-org">Data Council</div>
         </div>
       </a>
-      <a href="https://informaconnect.com/superreturn-international/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 300px;">
-        <img src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=500&q=80" alt="" style="position: absolute;"/>
-        <div style="position: absolute; top: 16px; left: 16px;">
-          <span style="background: var(--coral); color: white; padding: 6px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;">JUN 10</span>
-        </div>
-        <div class="tile-overlay">
-          <span class="eyebrow" style="color: rgba(255,255,255,0.5); margin-bottom: 8px; display: block;">Private Equity</span>
-          <h3 class="serif" style="font-size: 20px; line-height: 1.3; color: var(--paper); margin-bottom: 6px;">SuperReturn International</h3>
-          <p class="eyebrow" style="color: rgba(255,255,255,0.5);">Berlin, Germany</p>
+      <a href="https://informaconnect.com/superreturn-international/" target="_blank" rel="noopener" class="timeline-item">
+        <div class="timeline-date">Jun 10</div>
+        <div>
+          <div class="timeline-title">SuperReturn International</div>
+          <div class="timeline-location">Berlin, Germany</div>
+          <div class="timeline-org">Private Equity</div>
         </div>
       </a>
-      <a href="https://www.iltacon.org/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 300px;">
-        <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=500&q=80" alt="" style="position: absolute;"/>
-        <div style="position: absolute; top: 16px; left: 16px;">
-          <span style="background: var(--coral); color: white; padding: 6px 12px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;">AUG 18</span>
-        </div>
-        <div class="tile-overlay">
-          <span class="eyebrow" style="color: rgba(255,255,255,0.5); margin-bottom: 8px; display: block;">Legal Tech</span>
-          <h3 class="serif" style="font-size: 20px; line-height: 1.3; color: var(--paper); margin-bottom: 6px;">ILTACON 2026</h3>
-          <p class="eyebrow" style="color: rgba(255,255,255,0.5);">National Harbor, MD</p>
+      <a href="https://www.iltacon.org/" target="_blank" rel="noopener" class="timeline-item">
+        <div class="timeline-date">Aug 18</div>
+        <div>
+          <div class="timeline-title">ILTACON 2026</div>
+          <div class="timeline-location">National Harbor, MD</div>
+          <div class="timeline-org">Legal Tech</div>
         </div>
       </a>
-    </div>
-
-    <!-- Row of 4 smaller event tiles -->
-    <div class="mosaic-row-4" style="margin-bottom: 24px;">
-      <a href="https://www.money2020.com/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 160px; background: var(--ink);">
-        <div style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-          <span style="background: var(--coral); color: white; padding: 4px 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; width: fit-content;">OCT 22</span>
-          <div style="margin-top: auto; padding-top: 16px;">
-            <h4 class="serif" style="font-size: 16px; line-height: 1.3; color: var(--paper); margin-bottom: 4px;">Money20/20 USA</h4>
-            <p class="eyebrow" style="color: var(--muted-light);">Las Vegas, NV</p>
-          </div>
+      <a href="https://www.saastr.com/saastrsannual/" target="_blank" rel="noopener" class="timeline-item">
+        <div class="timeline-date">Sep 10</div>
+        <div>
+          <div class="timeline-title">SaaStr Annual 2026</div>
+          <div class="timeline-location">San Mateo, CA</div>
+          <div class="timeline-org">SaaS</div>
         </div>
       </a>
-      <a href="https://www.ai-expo.net/northamerica/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 160px; background: var(--ink);">
-        <div style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-          <span style="background: var(--coral); color: white; padding: 4px 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; width: fit-content;">SEP 11</span>
-          <div style="margin-top: auto; padding-top: 16px;">
-            <h4 class="serif" style="font-size: 16px; line-height: 1.3; color: var(--paper); margin-bottom: 4px;">AI & Big Data Expo</h4>
-            <p class="eyebrow" style="color: var(--muted-light);">Santa Clara, CA</p>
-          </div>
+      <a href="https://www.ai-expo.net/northamerica/" target="_blank" rel="noopener" class="timeline-item">
+        <div class="timeline-date">Sep 11</div>
+        <div>
+          <div class="timeline-title">AI &amp; Big Data Expo</div>
+          <div class="timeline-location">Santa Clara, CA</div>
+          <div class="timeline-org">AI / Data</div>
         </div>
       </a>
-      <a href="https://www.saastr.com/saastrsannual/" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 160px; background: var(--ink);">
-        <div style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-          <span style="background: var(--coral); color: white; padding: 4px 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; width: fit-content;">SEP 10</span>
-          <div style="margin-top: auto; padding-top: 16px;">
-            <h4 class="serif" style="font-size: 16px; line-height: 1.3; color: var(--paper); margin-bottom: 4px;">SaaStr Annual 2026</h4>
-            <p class="eyebrow" style="color: var(--muted-light);">San Mateo, CA</p>
-          </div>
+      <a href="https://www.money2020.com/" target="_blank" rel="noopener" class="timeline-item">
+        <div class="timeline-date">Oct 22</div>
+        <div>
+          <div class="timeline-title">Money20/20 USA</div>
+          <div class="timeline-location">Las Vegas, NV</div>
+          <div class="timeline-org">Fintech</div>
         </div>
       </a>
-      <a href="https://www.datacouncil.ai/events" target="_blank" rel="noopener" class="mosaic-tile" style="min-height: 160px; background: var(--ink);">
-        <div style="padding: 20px; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-          <span style="background: var(--coral); color: white; padding: 4px 10px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; display: inline-block; width: fit-content;">MAY 14</span>
-          <div style="margin-top: auto; padding-top: 16px;">
-            <h4 class="serif" style="font-size: 16px; line-height: 1.3; color: var(--paper); margin-bottom: 4px;">Data Council Austin</h4>
-            <p class="eyebrow" style="color: var(--muted-light);">Austin, TX</p>
-          </div>
+      <a href="https://techcrunch.com/events/disrupt/" target="_blank" rel="noopener" class="timeline-item">
+        <div class="timeline-date">Oct 28</div>
+        <div>
+          <div class="timeline-title">TechCrunch Disrupt 2026</div>
+          <div class="timeline-location">San Francisco, CA</div>
+          <div class="timeline-org">TechCrunch</div>
         </div>
       </a>
     </div>
 
-    <!-- Semperr Event Callout (full-width dark tile) -->
-    <div class="semperr-event mosaic-tile" style="margin-top: 8px; padding: 32px; background: var(--ink); color: var(--paper); display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; border-left: 4px solid var(--coral);">
-      <div class="semperr-event-info" style="display: flex; align-items: center; gap: 20px; flex: 1; min-width: 280px;">
-        <div class="event-date-badge" style="text-align: center; padding: 12px 16px; background: var(--coral); color: white; flex-shrink: 0;">
+    <!-- Semperr Event Callout -->
+    <div class="timeline-callout">
+      <div style="display: flex; align-items: center; gap: 20px; flex: 1; min-width: 280px;">
+        <div style="text-align: center; padding: 12px 16px; background: var(--coral); color: white; flex-shrink: 0;">
           <div class="eyebrow" style="font-size: 9px;">NOV</div>
           <div class="serif" style="font-size: 28px; line-height: 1;">7</div>
         </div>
         <div>
           <div class="eyebrow" style="color: var(--coral); margin-bottom: 4px;">Hosted by Semperr</div>
-          <h3 class="serif" style="font-size: 20px; margin-bottom: 4px;">The Data Room: NYC</h3>
+          <h3 class="serif" style="font-size: 20px; margin-bottom: 4px; color: var(--paper);">The Data Room: NYC</h3>
           <p style="color: var(--muted-light); font-size: 13px;">An intimate dinner for 40 PE operating partners.</p>
         </div>
       </div>
-      <a href="contact.html" class="cta-primary semperr-event-cta" style="background: var(--coral); color: white; border-color: var(--coral); flex-shrink: 0;">
+      <a href="contact.html" class="cta-primary" style="background: var(--coral); color: white; border-color: var(--coral); flex-shrink: 0;">
         Request invitation <span style="opacity: 0.6;">→</span>
       </a>
     </div>
@@ -1950,7 +2585,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
-<!-- ===== FROM THE ARCHIVE ===== -->
+<!-- ===== FROM THE ARCHIVE — Book Spines ===== -->
 <section id="archive" class="mosaic-section" style="--section-accent: var(--slate); padding: 64px 0; border-bottom: 1px solid var(--paper-line); background: var(--paper-warm);">
   <div class="container">
     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px;">
@@ -1961,34 +2596,34 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       <a href="archive.html" class="eyebrow" style="color: var(--muted);">Full archive →</a>
     </div>
 
-    <div class="mosaic-row-4">
-      <a href="archive.html" class="mosaic-tile" style="min-height: 220px; background: var(--ink); background-image: repeating-linear-gradient(45deg, rgba(122,133,153,0.05) 0px, rgba(122,133,153,0.05) 1px, transparent 1px, transparent 12px);">
-        <div style="padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%;">
-          <div class="eyebrow" style="color: var(--slate); margin-bottom: 12px;">VOL. I · 2021</div>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.35; color: var(--paper); margin-bottom: 8px;">The five principles we will not compromise.</h3>
-          <p style="font-size: 13px; color: var(--muted-light); line-height: 1.5;">Our founding charter—and why we wrote it publicly.</p>
-        </div>
+    <div class="spine-grid">
+      <a href="archive.html" class="spine-card">
+        <span class="spine-year">21</span>
+        <span class="spine-vol">Vol. I · 2021</span>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px; position: relative; z-index: 1;">VOL. I</div>
+        <div class="spine-title">The five principles we will not compromise.</div>
+        <div class="spine-desc">Our founding charter — and why we wrote it publicly.</div>
       </a>
-      <a href="archive.html" class="mosaic-tile" style="min-height: 220px; background: var(--ink); background-image: repeating-linear-gradient(45deg, rgba(122,133,153,0.05) 0px, rgba(122,133,153,0.05) 1px, transparent 1px, transparent 12px);">
-        <div style="padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%;">
-          <div class="eyebrow" style="color: var(--slate); margin-bottom: 12px;">VOL. II · 2022</div>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.35; color: var(--paper); margin-bottom: 8px;">On saying no to venture capital.</h3>
-          <p style="font-size: 13px; color: var(--muted-light); line-height: 1.5;">Why we chose to grow slowly—and profitably.</p>
-        </div>
+      <a href="archive.html" class="spine-card">
+        <span class="spine-year">22</span>
+        <span class="spine-vol">Vol. II · 2022</span>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px; position: relative; z-index: 1;">VOL. II</div>
+        <div class="spine-title">On saying no to venture capital.</div>
+        <div class="spine-desc">Why we chose to grow slowly — and profitably.</div>
       </a>
-      <a href="archive.html" class="mosaic-tile" style="min-height: 220px; background: var(--ink); background-image: repeating-linear-gradient(45deg, rgba(122,133,153,0.05) 0px, rgba(122,133,153,0.05) 1px, transparent 1px, transparent 12px);">
-        <div style="padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%;">
-          <div class="eyebrow" style="color: var(--slate); margin-bottom: 12px;">VOL. III · 2023</div>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.35; color: var(--paper); margin-bottom: 8px;">The infrastructure nobody wants to build.</h3>
-          <p style="font-size: 13px; color: var(--muted-light); line-height: 1.5;">Data plumbing isn't glamorous. That's the point.</p>
-        </div>
+      <a href="archive.html" class="spine-card">
+        <span class="spine-year">23</span>
+        <span class="spine-vol">Vol. III · 2023</span>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px; position: relative; z-index: 1;">VOL. III</div>
+        <div class="spine-title">The infrastructure nobody wants to build.</div>
+        <div class="spine-desc">Data plumbing isn't glamorous. That's the point.</div>
       </a>
-      <a href="archive.html" class="mosaic-tile" style="min-height: 220px; background: var(--ink); background-image: repeating-linear-gradient(45deg, rgba(122,133,153,0.05) 0px, rgba(122,133,153,0.05) 1px, transparent 1px, transparent 12px);">
-        <div style="padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%;">
-          <div class="eyebrow" style="color: var(--slate); margin-bottom: 12px;">VOL. IV · 2024</div>
-          <h3 class="serif" style="font-size: 18px; line-height: 1.35; color: var(--paper); margin-bottom: 8px;">Why we bet on legal before everyone else.</h3>
-          <p style="font-size: 13px; color: var(--muted-light); line-height: 1.5;">The Clad story—from skepticism to scale.</p>
-        </div>
+      <a href="archive.html" class="spine-card">
+        <span class="spine-year">24</span>
+        <span class="spine-vol">Vol. IV · 2024</span>
+        <div class="eyebrow" style="color: var(--gold); margin-bottom: 16px; position: relative; z-index: 1;">VOL. IV</div>
+        <div class="spine-title">Why we bet on legal before everyone else.</div>
+        <div class="spine-desc">The Clad story — from skepticism to scale.</div>
       </a>
     </div>
   </div>
@@ -2110,6 +2745,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
         <div class="eyebrow" style="color: var(--gold); margin-bottom: 20px;">Publication</div>
         <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px;">
           <li><a href="dispatches.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">All Dispatches</a></li>
+          <li><a href="news-archive.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">News Archive</a></li>
           <li><a href="archive.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Archive</a></li>
           <li><a href="events.html" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Events</a></li>
           <li><a href="index.html#subscribe" style="font-size: 14px; color: var(--muted-light); transition: color 0.2s;">Subscribe</a></li>
@@ -2306,70 +2942,87 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     tickerTrack.innerHTML = items + '<span style="display:inline-block;width:48px;"></span>' + items;
   }
 
-  // -------- mosaic card builders --------
+  // -------- newspaper card builders --------
 
-  // Hero tile — large, 2-col span feel
-  function buildMosaicHero(a) {
+  // Lead card — large image on top, serif headline below, white bg
+  function buildLeadCard(a) {
     if (!a) return '';
     const img = hasValidImage(a)
-      ? `<img src="${esc(a.image)}" alt="${esc(a.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'" style="width:100%;height:420px;object-fit:cover;opacity:0.7;"/>`
+      ? `<img src="${esc(a.image)}" alt="${esc(a.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'"/>`
       : '';
     return `
-      <a href="${esc(a.link)}" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-hero">
+      <a href="${esc(a.link)}" target="_blank" rel="noopener" class="nyt-lead">
         ${img}
-        <div class="tile-overlay" style="padding:32px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-            <span class="source-badge" style="background:var(--gold);color:var(--ink);font-size:9px;padding:4px 10px;">${esc(a.source)}</span>
-            <span class="eyebrow" style="color:rgba(255,255,255,0.6);font-size:9px;">${esc(a.category)}${a.publishedAt ? ' · ' + timeAgo(a.publishedAt) : ''}</span>
-          </div>
-          <h2 class="serif" style="font-size:28px;line-height:1.2;color:var(--paper);margin-bottom:10px;">${esc(a.title)}</h2>
-          ${a.description ? `<p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.5;max-width:90%;">${esc(a.description).slice(0,180)}${a.description.length>180?'…':''}</p>` : ''}
-          ${a.author ? `<p class="eyebrow" style="color:rgba(255,255,255,0.5);margin-top:12px;">By ${esc(a.author)}</p>` : ''}
+        <h3>${esc(a.title)}</h3>
+        ${a.description ? `<p style="margin-bottom:10px;">${esc(a.description).slice(0,200)}${a.description.length>200?'…':''}</p>` : ''}
+        <div class="nyt-meta" style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+          ${a.author ? `<span style="font-size:13px;color:var(--ink);font-style:italic;font-family:var(--serif);">By ${esc(a.author)}</span><span style="color:var(--paper-line);font-size:9px;">·</span>` : ''}
+          <span class="eyebrow" style="font-size:9px;color:var(--muted);">${esc(a.source)}</span>
+          <span style="color:var(--paper-line);font-size:9px;">·</span>
+          <span class="eyebrow" style="font-size:9px;color:var(--gold);">${esc(a.category)}</span>
+          ${a.publishedAt ? `<span style="color:var(--paper-line);font-size:9px;">·</span><span class="eyebrow" style="font-size:9px;color:var(--muted);">${timeAgo(a.publishedAt)}</span>` : ''}
         </div>
       </a>`;
   }
 
-  // Standard mosaic tile
-  function buildMosaicTile(a) {
+  // Headline item — text-only, serif headline + meta, border-bottom
+  function buildHeadlineItem(a) {
+    if (!a) return '';
+    return `
+      <a href="${esc(a.link)}" target="_blank" rel="noopener" class="nyt-headline">
+        <h3>${esc(a.title)}</h3>
+        <div class="nyt-meta" style="display:flex;align-items:center;gap:8px;">
+          <span class="eyebrow" style="font-size:9px;color:var(--muted);">${esc(a.source)}</span>
+          <span style="color:var(--paper-line);font-size:9px;">·</span>
+          <span class="eyebrow" style="font-size:9px;color:var(--gold);">${esc(a.category)}</span>
+          ${a.publishedAt ? `<span style="color:var(--paper-line);font-size:9px;">·</span><span class="eyebrow" style="font-size:9px;color:var(--muted);">${timeAgo(a.publishedAt)}</span>` : ''}
+        </div>
+      </a>`;
+  }
+
+  // Thumb card — 120px thumbnail left, headline + meta right
+  function buildThumbCard(a) {
     if (!a) return '';
     const img = hasValidImage(a)
-      ? `<img src="${esc(a.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'" style="width:100%;height:240px;object-fit:cover;opacity:0.7;"/>`
+      ? `<img src="${esc(a.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.gridTemplateColumns='1fr'"/>`
       : '';
     return `
-      <a href="${esc(a.link)}" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-md">
-        ${img || '<div style="width:100%;height:240px;background:var(--ink-soft);"></div>'}
-        <div class="tile-overlay">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <span class="source-badge" style="background:var(--gold);color:var(--ink);font-size:9px;padding:4px 10px;">${esc(a.source)}</span>
-            <span class="eyebrow" style="color:rgba(255,255,255,0.6);font-size:9px;">${esc(a.category)}</span>
+      <a href="${esc(a.link)}" target="_blank" rel="noopener" class="nyt-thumb"${!img ? ' style="grid-template-columns:1fr;"' : ''}>
+        ${img ? img : ''}
+        <div>
+          <h3>${esc(a.title)}</h3>
+          <div class="nyt-meta" style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+            <span class="eyebrow" style="font-size:9px;color:var(--muted);">${esc(a.source)}</span>
+            <span style="color:var(--paper-line);font-size:9px;">·</span>
+            <span class="eyebrow" style="font-size:9px;color:var(--gold);">${esc(a.category)}</span>
           </div>
-          <h3 class="serif" style="font-size:18px;line-height:1.3;color:var(--paper);">${esc(a.title)}</h3>
-          ${a.publishedAt ? `<p class="eyebrow" style="color:rgba(255,255,255,0.4);margin-top:6px;font-size:9px;">${timeAgo(a.publishedAt)}</p>` : ''}
         </div>
       </a>`;
   }
 
-  // Small mosaic tile (stacked)
-  function buildMosaicSmall(a) {
+  // List card — full-width row: 140px thumbnail + headline + description + meta
+  function buildListCard(a) {
     if (!a) return '';
     const img = hasValidImage(a)
-      ? `<img src="${esc(a.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.querySelector('.tile-overlay').style.position='relative'" style="position:absolute;width:100%;height:100%;object-fit:cover;opacity:0.7;"/>`
+      ? `<img src="${esc(a.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.gridTemplateColumns='1fr'"/>`
       : '';
     return `
-      <a href="${esc(a.link)}" target="_blank" rel="noopener" class="mosaic-tile mosaic-tile-stack" style="flex:1;min-height:180px;">
-        ${img || '<div style="position:absolute;width:100%;height:100%;background:var(--ink-soft);"></div>'}
-        <div class="tile-overlay" style="z-index:1;">
-          <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
-            <span class="eyebrow" style="color:var(--gold);font-size:9px;">${esc(a.source)}</span>
-            <span style="color:rgba(255,255,255,0.3);font-size:9px;">·</span>
-            <span class="eyebrow" style="color:rgba(255,255,255,0.5);font-size:9px;">${esc(a.category)}</span>
+      <a href="${esc(a.link)}" target="_blank" rel="noopener" class="nyt-list-card"${!img ? ' style="grid-template-columns:1fr;"' : ''}>
+        ${img ? img : ''}
+        <div>
+          <h3>${esc(a.title)}</h3>
+          ${a.description ? `<p>${esc(a.description).slice(0,160)}${a.description.length>160?'…':''}</p>` : ''}
+          <div class="nyt-meta" style="display:flex;align-items:center;gap:8px;">
+            <span class="eyebrow" style="font-size:9px;color:var(--muted);">${esc(a.source)}</span>
+            <span style="color:var(--paper-line);font-size:9px;">·</span>
+            <span class="eyebrow" style="font-size:9px;color:var(--gold);">${esc(a.category)}</span>
+            ${a.publishedAt ? `<span style="color:var(--paper-line);font-size:9px;">·</span><span class="eyebrow" style="font-size:9px;color:var(--muted);">${timeAgo(a.publishedAt)}</span>` : ''}
           </div>
-          <h3 class="serif" style="font-size:16px;line-height:1.3;color:var(--paper);">${esc(a.title)}</h3>
         </div>
       </a>`;
   }
 
-  // -------- main render — mosaic tile layout --------
+  // -------- main render — newspaper editorial layout --------
   function renderNews() {
     const source = currentCategory === 'all'
       ? allArticles
@@ -2380,45 +3033,95 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       return;
     }
 
-    const withImg = source.filter(hasValidImage);
+    // Sort: big images (>50KB) first for lead position
+    const bigImg = source.filter(a => hasValidImage(a) && (a.imageSize || 0) > 50000);
+    const smallImg = source.filter(a => hasValidImage(a) && (a.imageSize || 0) <= 50000);
     const noImg = source.filter(a => !hasValidImage(a));
-    const imgPool = withImg.slice();
-    const allPool = source.slice();
-    const take = (pool, n) => pool.splice(0, n);
+    const sorted = [...bigImg, ...smallImg, ...noImg];
+
+    let idx = 0;
+    const take = (n) => {
+      const slice = sorted.slice(idx, idx + n);
+      idx += slice.length;
+      return slice;
+    };
 
     let html = '';
 
-    // Row 1: Hero (2-col) + 2 stacked
-    const hero = take(imgPool, 1)[0] || take(allPool, 1)[0];
-    const stacked = take(imgPool, 2);
-    if (stacked.length < 2) stacked.push(...take(noImg, 2 - stacked.length));
+    // ── TOP ZONE: lead (8fr) + right rail headlines (4fr) ──
+    const leadArr = take(1);
+    const railArr = take(5);
 
-    html += '<div class="mosaic-hero-grid">';
-    html += buildMosaicHero(hero);
-    html += '<div class="mosaic-stack">';
-    stacked.forEach(a => { html += buildMosaicSmall(a); });
-    html += '</div></div>';
-
-    // Row 2: 3 equal tiles
-    const row2 = take(imgPool, 3);
-    if (row2.length < 3) row2.push(...take(noImg, 3 - row2.length));
-    if (row2.length) {
-      html += '<div class="mosaic-row-3" style="margin-top:20px;">';
-      row2.forEach(a => { html += buildMosaicTile(a); });
+    if (leadArr.length) {
+      html += '<div class="news-top-zone">';
+      html += '<div class="nyt-col-main">';
+      html += buildLeadCard(leadArr[0]);
+      html += '</div>';
+      html += '<div class="nyt-col-side">';
+      html += '<div class="nyt-section-label">Latest Headlines</div>';
+      railArr.forEach(a => { html += buildHeadlineItem(a); });
+      html += '</div>';
       html += '</div>';
     }
 
-    // Row 3: remaining articles as a row of smaller tiles
-    const remaining = imgPool.concat(noImg).slice(0, 6);
-    if (remaining.length) {
-      html += '<div class="mosaic-row-3" style="margin-top:20px;">';
-      remaining.slice(0, 3).forEach(a => { html += buildMosaicTile(a); });
-      html += '</div>';
-      if (remaining.length > 3) {
-        html += '<div class="mosaic-row-3" style="margin-top:20px;">';
-        remaining.slice(3, 6).forEach(a => { html += buildMosaicTile(a); });
+    // ── SECTION BREAK ──
+    const midArr = take(12);
+    if (midArr.length) {
+      html += '<div class="nyt-section-break"><span>More Headlines</span></div>';
+
+      // ── MID ZONE: 3-column thumb grid ──
+      // First card gets Editor's Pick callout
+      const colCount = 3;
+      const perCol = Math.ceil(midArr.length / colCount);
+      html += '<div class="news-mid-zone">';
+      for (let c = 0; c < colCount; c++) {
+        html += '<div>';
+        const colItems = midArr.slice(c * perCol, (c + 1) * perCol);
+        colItems.forEach((a, i) => {
+          if (c === 0 && i === 0) {
+            // Editor's Pick — first item in first column
+            const img = hasValidImage(a)
+              ? `<img src="${esc(a.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.style.gridTemplateColumns='1fr'"/>`
+              : '';
+            html += `<a href="${esc(a.link)}" target="_blank" rel="noopener" class="nyt-thumb nyt-editors-pick"${!img ? ' style="grid-template-columns:1fr;"' : ''}>
+              ${img}
+              <div>
+                <span class="nyt-editors-pick-label">Editor's Pick</span>
+                <h3>${esc(a.title)}</h3>
+                <div class="nyt-meta" style="display:flex;align-items:center;gap:6px;margin-top:4px;">
+                  <span class="eyebrow" style="font-size:9px;color:var(--muted);">${esc(a.source)}</span>
+                  <span style="color:var(--paper-line);font-size:9px;">·</span>
+                  <span class="eyebrow" style="font-size:9px;color:var(--gold);">${esc(a.category)}</span>
+                </div>
+              </div>
+            </a>`;
+          } else {
+            html += buildThumbCard(a);
+          }
+        });
         html += '</div>';
       }
+      html += '</div>';
+    }
+
+    // ── BOTTOM ZONE: single-column list (capped at 6) ──
+    const bottomCap = 6;
+    const bottomArr = take(bottomCap);
+    if (bottomArr.length) {
+      html += '<div class="nyt-section-break"><span>Across the Wire</span></div>';
+      html += '<div class="news-bottom-zone">';
+      bottomArr.forEach(a => { html += buildListCard(a); });
+      html += '</div>';
+    }
+
+    // ── ARCHIVE LINK — if more articles exist beyond the 24 shown ──
+    const remaining = sorted.length - idx;
+    if (remaining > 0) {
+      html += `<div style="text-align:center;padding:32px 0 8px 0;border-top:1px solid var(--paper-line);margin-top:24px;">
+        <a href="news-archive.html" style="font-family:var(--serif);font-size:18px;color:var(--ink);transition:color 0.2s;" onmouseover="this.style.color='var(--gold-deep)'" onmouseout="this.style.color='var(--ink)'">
+          Continue reading in the archive →
+        </a>
+      </div>`;
     }
 
     newsGrid.innerHTML = html;

@@ -157,6 +157,7 @@ function normalize(raw, query) {
       category: classify(r, query.baseCategory),
       description: cleanDescription(r.description),
       image: typeof r.image_url === 'string' && r.image_url.trim() ? r.image_url.trim() : null,
+      imageSize: 0,
       publishedAt: parsePubDate(r.pubDate),
       author: Array.isArray(r.creator) && r.creator.length ? r.creator[0] : null,
     };
@@ -188,7 +189,8 @@ async function validateImage(url) {
     if (!res.ok) return null;
     const ct = (res.headers.get('content-type') || '').toLowerCase();
     if (!ct.startsWith('image/')) return null;
-    return url;
+    const cl = parseInt(res.headers.get('content-length') || '0', 10);
+    return { url, size: cl || 0 };
   } catch {
     return null;
   } finally {
@@ -205,9 +207,15 @@ async function validateAllImages(articles) {
       const idx = i++;
       const a = articles[idx];
       if (!a.image) continue;
-      const ok = await validateImage(a.image);
-      if (ok) kept++;
-      else { a.image = null; dropped++; }
+      const result = await validateImage(a.image);
+      if (result) {
+        kept++;
+        a.imageSize = result.size;
+      } else {
+        a.image = null;
+        a.imageSize = 0;
+        dropped++;
+      }
     }
   }
   const workers = Array.from({ length: HEAD_CONCURRENCY }, worker);
@@ -294,7 +302,12 @@ async function main() {
   const archiveByLink = new Map(archive.map(a => [a.link, a]));
   const toValidate = fresh.filter(a => {
     const existing = archiveByLink.get(a.link);
-    return !(existing && existing.image && existing.image === a.image);
+    if (existing && existing.image && existing.image === a.image) {
+      // Carry forward imageSize from prior run
+      a.imageSize = existing.imageSize || 0;
+      return false;
+    }
+    return true;
   });
   console.log(`Image HEAD checks needed: ${toValidate.length} / ${fresh.length}`);
   await validateAllImages(toValidate);
