@@ -665,10 +665,11 @@ footer a:hover { color: var(--paper) !important; }
         if (cb) cb();
         return;
       }
-      const tile = tiles[i];
+      const idx = i;
+      const tile = tiles[idx];
       tile.classList.add('reveal');
       setTimeout(() => {
-        tile.classList.add(result[i]);
+        tile.classList.add(result[idx]);
         i++;
         next();
       }, 250);
