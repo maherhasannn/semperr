@@ -441,6 +441,41 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .semperr-event.mosaic-tile { flex-direction: column !important; text-align: center; }
   .semperr-event-info { flex-direction: column !important; gap: 16px !important; width: 100%; }
   .semperr-event-cta { width: 100% !important; justify-content: center; }
+
+  /* Masthead — reduce gap on tablet */
+  .masthead-grid { gap: 24px !important; }
+
+  /* Subscribe section — reduce gap on tablet */
+  .subscribe-grid { gap: 32px !important; }
+
+  /* Footer grid — 2 columns on tablet */
+  .footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 32px !important;
+  }
+  .footer-brand-col {
+    grid-column: 1 / -1;
+  }
+
+  /* Industry Watch header — stack on tablet */
+  #industry-watch > .container-wide > div:first-child {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: flex-start !important;
+  }
+  #industry-watch #news-categories {
+    flex-wrap: wrap;
+  }
+
+  /* Section padding — reduce on tablet */
+  header[style*="padding: 64px"] {
+    padding: 40px 0 !important;
+  }
+
+  /* Timeline callout — adjust for tablet */
+  .timeline-callout {
+    padding: 24px !important;
+  }
 }
 
 /* Mobile (max 600px) */
@@ -483,7 +518,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
   /* Grids to single column */
   .grid-4 { grid-template-columns: 1fr !important; grid-auto-rows: auto !important; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .stats-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
 
   /* News grid — mobile: already handled by NYT layout overrides */
   .events-row-2 { grid-template-columns: 1fr !important; }
@@ -544,19 +579,47 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     padding: 16px !important;
   }
 
-  /* Subscribe section */
-  #subscribe .grid-2 {
-    gap: 32px !important;
+  /* Subscribe section — stack and reduce gap */
+  .subscribe-grid {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .subscribe-text {
+    text-align: center;
+  }
+  .subscribe-heading {
+    font-size: 26px !important;
+  }
+  .subscribe-form {
+    padding: 24px !important;
   }
   #subscribe h2 {
-    font-size: 28px !important;
+    font-size: 26px !important;
   }
 
-  /* Footer */
+  /* Footer — stack and center */
   footer .container > div {
     flex-direction: column !important;
     text-align: center;
     gap: 16px !important;
+  }
+  .footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+  }
+  .footer-brand-col {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+  .footer-brand-col p {
+    max-width: 100% !important;
+    margin: 0 auto 20px;
+  }
+  .footer-col {
+    text-align: center;
+  }
+  .footer-col ul {
+    align-items: center;
   }
 
   /* Semperr event callout mobile */
@@ -588,21 +651,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
     width: 100%;
   }
 
-  /* Subscribe section mobile */
+  /* Subscribe section — reduce outer padding */
   .subscribe-section {
     padding: 48px 0 !important;
-  }
-  .subscribe-grid {
-    gap: 32px !important;
-  }
-  .subscribe-text {
-    text-align: center;
-  }
-  .subscribe-heading {
-    font-size: 26px !important;
-  }
-  .subscribe-form {
-    padding: 24px !important;
   }
 
   /* Archive section */
@@ -624,27 +675,6 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   .work-cta-buttons .cta-primary,
   .work-cta-buttons .cta-secondary {
     width: 100%;
-  }
-
-  /* Footer mobile */
-  .footer-grid {
-    grid-template-columns: 1fr 1fr !important;
-    gap: 32px !important;
-  }
-  .footer-brand-col {
-    grid-column: 1 / -1;
-    text-align: center;
-  }
-  .footer-brand-col p {
-    max-width: 100% !important;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .footer-col {
-    text-align: center;
-  }
-  .footer-col ul {
-    align-items: center;
   }
 
   /* Article cards with side-by-side layout */
@@ -692,7 +722,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   /* Subscribe stats grid */
   #subscribe .stats-grid {
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
+    gap: 10px !important;
   }
   #subscribe .stats-grid .serif {
     font-size: 22px !important;
@@ -743,6 +773,42 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   /* Section vertical spacing tighten */
   section[style*="padding: 64px 0"] {
     padding: 40px 0 !important;
+  }
+
+  /* Masthead mobile — reduce padding and gap */
+  header[style*="padding: 64px"] {
+    padding: 32px 0 !important;
+  }
+  .masthead-grid {
+    gap: 16px !important;
+  }
+  .masthead-grid p {
+    max-width: 100% !important;
+  }
+
+  /* Industry Watch header — stack title and filters */
+  #industry-watch > .container-wide > div:first-child {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: flex-start !important;
+    padding: 16px 0 12px !important;
+  }
+  #industry-watch > .container-wide > div:first-child > div:first-child {
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+  #industry-watch > .container-wide > div:first-child h2 {
+    font-size: 26px !important;
+  }
+
+  /* By the Numbers — reduce padding inside cards */
+  section[style*="background: var(--ink)"] .stats-grid > div {
+    padding: 20px 16px !important;
+  }
+
+  /* Reduce "By the Numbers" section inner spacing */
+  section[style*="background: var(--ink)"] > .container > div[style*="text-align: center"][style*="margin-bottom: 48px"] {
+    margin-bottom: 28px !important;
   }
 
   /* ===== MOSAIC MOBILE FIXES (600px) ===== */
