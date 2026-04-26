@@ -2394,199 +2394,243 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   padding: 40px 0;
 }
 
-/* ===== 1. PIXEL GOLDEN GATE BRIDGE BANNER ===== */
-.px-gg-banner {
-  height: 140px;
-  background: #0b1220;
+/* ===== 1. GOLDEN GATE BRIDGE BANNER ===== */
+/* Inspired by jannypie's Pure CSS Golden Gate Bridge (codepen.io/jannypie/pen/bGEaYq) */
+.gg-banner {
+  height: 160px;
   position: relative;
   overflow: hidden;
-  image-rendering: pixelated;
-}
-.px-gg-sky {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, #0a0e1a 0%, #101828 50%, #162040 100%);
+  background: linear-gradient(180deg, #0a0e1a 0%, #0e1525 40%, #122040 70%, #071733 100%);
 }
 /* Stars */
-.px-gg-star {
+.gg-star {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 2px;
+  height: 2px;
   background: #fff;
-  animation: starTwinkle 3s ease-in-out infinite;
+  border-radius: 50%;
+  animation: ggTwinkle 3s ease-in-out infinite;
 }
-.px-gg-star:nth-child(1) { top: 10px; left: 6%; animation-delay: 0s; }
-.px-gg-star:nth-child(2) { top: 6px; left: 18%; animation-delay: 1.2s; }
-.px-gg-star:nth-child(3) { top: 16px; left: 42%; animation-delay: 0.6s; }
-.px-gg-star:nth-child(4) { top: 4px; left: 58%; animation-delay: 2s; }
-.px-gg-star:nth-child(5) { top: 12px; left: 76%; animation-delay: 0.3s; }
-.px-gg-star:nth-child(6) { top: 8px; left: 90%; animation-delay: 1.8s; }
-.px-gg-star:nth-child(7) { top: 18px; left: 15%; animation-delay: 2.4s; }
-.px-gg-star:nth-child(8) { top: 3px; left: 84%; animation-delay: 0.9s; }
-@keyframes starTwinkle {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
+.gg-star:nth-child(1) { top: 12px; left: 5%; animation-delay: 0s; }
+.gg-star:nth-child(2) { top: 8px; left: 15%; animation-delay: 1.4s; }
+.gg-star:nth-child(3) { top: 20px; left: 25%; animation-delay: 0.6s; }
+.gg-star:nth-child(4) { top: 6px; left: 40%; animation-delay: 2.1s; }
+.gg-star:nth-child(5) { top: 14px; left: 55%; animation-delay: 0.3s; }
+.gg-star:nth-child(6) { top: 4px; left: 70%; animation-delay: 1.8s; }
+.gg-star:nth-child(7) { top: 18px; left: 82%; animation-delay: 2.5s; }
+.gg-star:nth-child(8) { top: 10px; left: 93%; animation-delay: 0.9s; }
+.gg-star.bright { width: 3px; height: 3px; }
+@keyframes ggTwinkle {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.15; }
 }
-/* Water */
-.px-gg-water {
+
+/* Marin headlands (background hills) */
+.gg-hill {
+  position: absolute;
+  bottom: 40px;
+  border-radius: 50%;
+}
+.gg-hill-1 { left: -5%; width: 35%; height: 70px; background: #0e1c12; }
+.gg-hill-2 { left: 10%; width: 30%; height: 55px; background: #0c1a10; }
+.gg-hill-3 { right: -5%; width: 35%; height: 65px; background: #0e1c12; }
+.gg-hill-4 { right: 8%; width: 28%; height: 50px; background: #0c1a10; }
+
+/* Bay water */
+.gg-bay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 28px;
-  background: linear-gradient(180deg, #0c1528 0%, #091020 100%);
+  height: 40px;
+  background: linear-gradient(180deg, #071733 0%, #050f28 100%);
 }
-.px-gg-wave {
-  position: absolute;
-  width: 100%;
-  height: 4px;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0px,
-    transparent 24px,
-    rgba(74,127,181,0.08) 24px,
-    rgba(74,127,181,0.08) 28px
-  );
-  animation: waveShift 4s linear infinite;
-}
-.px-gg-wave:nth-child(1) { top: 0; }
-.px-gg-wave:nth-child(2) { top: 8px; animation-delay: -1.5s; animation-direction: reverse; }
-.px-gg-wave:nth-child(3) { top: 16px; animation-delay: -3s; }
-@keyframes waveShift {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(28px); }
-}
-/* Road deck */
-.px-gg-deck {
-  position: absolute;
-  bottom: 28px;
-  left: 0;
-  right: 0;
-  height: 8px;
-  background: #c0362c;
-  border-top: 2px solid #d4453a;
-  border-bottom: 2px solid #8a2820;
-  z-index: 3;
-}
-/* Tower base structure */
-.px-gg-tower {
-  position: absolute;
-  bottom: 28px;
-  width: 20px;
-  z-index: 4;
-}
-.px-gg-tower-l { left: 32%; }
-.px-gg-tower-r { left: 64%; }
-/* Tower shaft */
-.px-gg-tower-shaft {
-  position: absolute;
-  bottom: 0;
-  left: 2px;
-  width: 16px;
-  height: 96px;
-  background: #c0362c;
-  border: 2px solid #8a2820;
-  border-bottom: none;
-}
-.px-gg-tower-shaft::before {
+.gg-bay::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: #d4453a;
+  height: 1px;
+  background: rgba(74,127,181,0.1);
 }
-/* Tower cross-beams */
-.px-gg-xbeam {
+
+/* Bridge wrapper — positions all bridge parts */
+.gg-bridge {
   position: absolute;
+  bottom: 40px;
   left: 0;
   right: 0;
-  height: 4px;
-  background: #a83028;
+  height: 116px;
 }
-.px-gg-xbeam:nth-child(1) { top: 18px; }
-.px-gg-xbeam:nth-child(2) { top: 42px; }
-.px-gg-xbeam:nth-child(3) { top: 66px; }
-/* Tower art-deco top */
-.px-gg-tower-cap {
+
+/* Road deck */
+.gg-deck {
   position: absolute;
-  bottom: 96px;
-  left: 4px;
-  width: 12px;
-  height: 12px;
-  background: #c0362c;
-  border: 2px solid #8a2820;
-  border-bottom: none;
+  bottom: 0;
+  left: 8%;
+  right: 8%;
+  height: 6px;
+  background: #cc4400;
+  z-index: 4;
 }
-.px-gg-tower-cap::before {
+.gg-deck::before {
   content: '';
   position: absolute;
-  bottom: 12px;
-  left: 2px;
-  width: 8px;
-  height: 6px;
-  background: #c0362c;
-  border: 2px solid #8a2820;
-  border-bottom: none;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e06020;
 }
-/* Blinking aviation light on tower */
-.px-gg-light {
+.gg-deck::after {
+  content: '';
   position: absolute;
-  bottom: 118px;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #882200;
+}
+
+/* Towers */
+.gg-tower {
+  position: absolute;
+  bottom: 0;
+  z-index: 5;
+}
+.gg-tower-1 { left: 32%; }
+.gg-tower-2 { left: 63%; }
+/* Tower columns (two legs per tower) */
+.gg-tower-col {
+  position: absolute;
+  bottom: 0;
+  width: 6px;
+  height: 104px;
+  background: linear-gradient(90deg, #993300, #cc4400 30%, #dd5510 50%, #cc4400 70%, #993300);
+}
+.gg-tower-col.left { left: 0; }
+.gg-tower-col.right { left: 14px; }
+/* Tower cross-bracing */
+.gg-tower-cross {
+  position: absolute;
+  left: 6px;
+  width: 8px;
+  height: 3px;
+  background: #bb3800;
+}
+.gg-tower-cross:nth-child(3) { bottom: 14px; }
+.gg-tower-cross:nth-child(4) { bottom: 38px; }
+.gg-tower-cross:nth-child(5) { bottom: 62px; }
+.gg-tower-cross:nth-child(6) { bottom: 86px; }
+/* Tower cap */
+.gg-tower-cap {
+  position: absolute;
+  top: -4px;
+  left: -1px;
+  width: 22px;
+  height: 4px;
+  background: #cc4400;
+}
+/* Aviation warning lights */
+.gg-light {
+  position: absolute;
+  top: -8px;
   left: 8px;
   width: 4px;
   height: 4px;
-  background: #ff4444;
+  background: #ff3333;
   border-radius: 50%;
-  z-index: 5;
-  animation: ggLightFlash 2s ease-in-out infinite;
+  animation: ggLightFlash 2.5s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(255,51,51,0.6);
 }
-.px-gg-tower-r .px-gg-light { animation-delay: 1s; }
+.gg-tower-2 .gg-light { animation-delay: 1.2s; }
 @keyframes ggLightFlash {
-  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(255,68,68,0.8); }
-  50% { opacity: 0.15; box-shadow: none; }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.1; }
 }
-/* Main suspension cables — pixel stepped curves */
-.px-gg-cable {
+
+/* Main cables — uses border-radius trick for smooth catenary curves */
+.gg-cable {
   position: absolute;
+  border: 2px solid #cc4400;
+  border-top: none;
+  background: transparent;
+  z-index: 3;
+}
+/* Left approach: left edge → tower 1 */
+.gg-cable-left {
+  left: 8%;
+  width: 24%;
+  bottom: 6px;
+  height: 64px;
+  border-radius: 0 0 50% 40%;
+  border-right: none;
+}
+/* Center span: tower 1 → tower 2 */
+.gg-cable-center {
+  left: 32.5%;
+  width: 31%;
+  bottom: 6px;
+  height: 72px;
+  border-radius: 0 0 50% 50%;
+}
+/* Right approach: tower 2 → right edge */
+.gg-cable-right {
+  right: 8%;
+  width: 24%;
+  bottom: 6px;
+  height: 64px;
+  border-radius: 0 0 40% 50%;
+  border-left: none;
+}
+/* Back cables (creates depth) */
+.gg-cable.back {
+  border-color: rgba(153,51,0,0.4);
+  bottom: 8px;
+}
+.gg-cable-left.back { height: 62px; }
+.gg-cable-center.back { height: 70px; }
+.gg-cable-right.back { height: 62px; }
+
+/* Suspender cables (vertical lines from cable to deck) */
+.gg-suspender {
+  position: absolute;
+  width: 1px;
+  background: rgba(204,68,0,0.2);
+  bottom: 6px;
   z-index: 2;
 }
-.px-gg-cable-seg {
+
+/* Fog layers */
+.gg-fog {
   position: absolute;
-  height: 4px;
-  background: #c0362c;
-  opacity: 0.7;
-}
-/* Suspender cables (vertical) */
-.px-gg-suspender {
-  position: absolute;
-  width: 2px;
-  background: rgba(192,54,44,0.35);
-  bottom: 36px;
-  z-index: 2;
-}
-/* Fog */
-.px-gg-fog {
-  position: absolute;
-  bottom: 20px;
-  height: 20px;
   z-index: 6;
-  animation: fogDrift var(--fog-dur, 35s) linear infinite;
-  opacity: var(--fog-opacity, 0.06);
+  animation: ggFogDrift var(--fog-dur, 40s) linear infinite;
 }
-.px-gg-fog-block {
+.gg-fog-wisp {
   position: absolute;
-  background: #fff;
-  height: 100%;
-  border-radius: 2px;
+  background: rgba(200,200,210,0.035);
+  border-radius: 50%;
 }
-@keyframes fogDrift {
-  0% { transform: translateX(-300px); }
-  100% { transform: translateX(calc(100vw + 300px)); }
+@keyframes ggFogDrift {
+  0% { transform: translateX(-500px); }
+  100% { transform: translateX(calc(100vw + 500px)); }
 }
+
+/* Subtle bridge reflection on water */
+.gg-reflection {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(180deg, rgba(204,68,0,0.03) 0%, transparent 50%);
+  z-index: 1;
+}
+
 /* Label */
-.px-gg-label {
+.gg-label {
   position: absolute;
   bottom: 6px;
   right: var(--pad);
@@ -2594,7 +2638,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.15);
   z-index: 7;
 }
 
@@ -3109,7 +3153,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* Hide all pixel animations on tablet and mobile */
 @media (max-width: 900px) {
   .pixel-desk-wrapper { display: none !important; }
-  .px-gg-banner { display: none !important; }
+  .gg-banner { display: none !important; }
   .px-ticker-strip { display: none !important; }
   .px-chart-wrapper { display: none !important; }
   .px-server-banner { display: none !important; }
@@ -3419,102 +3463,100 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
-<!-- ===== PIXEL GOLDEN GATE BRIDGE BANNER ===== -->
-<div class="px-gg-banner px-banner">
-  <div class="px-gg-sky">
-    <div class="px-gg-star"></div>
-    <div class="px-gg-star"></div>
-    <div class="px-gg-star"></div>
-    <div class="px-gg-star"></div>
-    <div class="px-gg-star"></div>
-    <div class="px-gg-star"></div>
-    <div class="px-gg-star"></div>
-    <div class="px-gg-star"></div>
-  </div>
+<!-- ===== GOLDEN GATE BRIDGE BANNER ===== -->
+<div class="gg-banner">
+  <!-- Stars -->
+  <div class="gg-star bright"></div>
+  <div class="gg-star"></div>
+  <div class="gg-star"></div>
+  <div class="gg-star bright"></div>
+  <div class="gg-star"></div>
+  <div class="gg-star"></div>
+  <div class="gg-star"></div>
+  <div class="gg-star bright"></div>
 
-  <!-- Road deck -->
-  <div class="px-gg-deck"></div>
+  <!-- Marin headlands -->
+  <div class="gg-hill gg-hill-1"></div>
+  <div class="gg-hill gg-hill-2"></div>
+  <div class="gg-hill gg-hill-3"></div>
+  <div class="gg-hill gg-hill-4"></div>
 
-  <!-- Left tower -->
-  <div class="px-gg-tower px-gg-tower-l">
-    <div class="px-gg-tower-shaft">
-      <div class="px-gg-xbeam"></div>
-      <div class="px-gg-xbeam"></div>
-      <div class="px-gg-xbeam"></div>
+  <!-- Bridge -->
+  <div class="gg-bridge">
+    <!-- Back cables (depth layer) -->
+    <div class="gg-cable gg-cable-left back"></div>
+    <div class="gg-cable gg-cable-center back"></div>
+    <div class="gg-cable gg-cable-right back"></div>
+
+    <!-- Front cables -->
+    <div class="gg-cable gg-cable-left"></div>
+    <div class="gg-cable gg-cable-center"></div>
+    <div class="gg-cable gg-cable-right"></div>
+
+    <!-- Suspender cables -->
+    <div class="gg-suspender" style="left:18%;height:38px;"></div>
+    <div class="gg-suspender" style="left:22%;height:50px;"></div>
+    <div class="gg-suspender" style="left:26%;height:56px;"></div>
+    <div class="gg-suspender" style="left:37%;height:62px;"></div>
+    <div class="gg-suspender" style="left:41%;height:44px;"></div>
+    <div class="gg-suspender" style="left:45%;height:28px;"></div>
+    <div class="gg-suspender" style="left:48%;height:18px;"></div>
+    <div class="gg-suspender" style="left:52%;height:18px;"></div>
+    <div class="gg-suspender" style="left:55%;height:28px;"></div>
+    <div class="gg-suspender" style="left:59%;height:44px;"></div>
+    <div class="gg-suspender" style="left:70%;height:56px;"></div>
+    <div class="gg-suspender" style="left:74%;height:50px;"></div>
+    <div class="gg-suspender" style="left:78%;height:38px;"></div>
+
+    <!-- Road deck -->
+    <div class="gg-deck"></div>
+
+    <!-- Tower 1 -->
+    <div class="gg-tower gg-tower-1">
+      <div class="gg-tower-col left"></div>
+      <div class="gg-tower-col right"></div>
+      <div class="gg-tower-cross"></div>
+      <div class="gg-tower-cross"></div>
+      <div class="gg-tower-cross"></div>
+      <div class="gg-tower-cross"></div>
+      <div class="gg-tower-cap"></div>
+      <div class="gg-light"></div>
     </div>
-    <div class="px-gg-tower-cap"></div>
-    <div class="px-gg-light"></div>
-  </div>
 
-  <!-- Right tower -->
-  <div class="px-gg-tower px-gg-tower-r">
-    <div class="px-gg-tower-shaft">
-      <div class="px-gg-xbeam"></div>
-      <div class="px-gg-xbeam"></div>
-      <div class="px-gg-xbeam"></div>
+    <!-- Tower 2 -->
+    <div class="gg-tower gg-tower-2">
+      <div class="gg-tower-col left"></div>
+      <div class="gg-tower-col right"></div>
+      <div class="gg-tower-cross"></div>
+      <div class="gg-tower-cross"></div>
+      <div class="gg-tower-cross"></div>
+      <div class="gg-tower-cross"></div>
+      <div class="gg-tower-cap"></div>
+      <div class="gg-light"></div>
     </div>
-    <div class="px-gg-tower-cap"></div>
-    <div class="px-gg-light"></div>
   </div>
 
-  <!-- Main cables — left approach (edge to left tower) -->
-  <div class="px-gg-cable-seg" style="left:8%;bottom:36px;width:6%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:14%;bottom:40px;width:5%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:19%;bottom:48px;width:5%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:24%;bottom:58px;width:4%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:28%;bottom:72px;width:4%;height:4px;"></div>
-
-  <!-- Main cables — center span (left tower to right tower) -->
-  <div class="px-gg-cable-seg" style="left:34%;bottom:100px;width:4%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:38%;bottom:80px;width:4%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:42%;bottom:64px;width:4%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:46%;bottom:52px;width:4%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:50%;bottom:46px;width:4%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:54%;bottom:52px;width:4%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:58%;bottom:64px;width:4%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:62%;bottom:80px;width:3%;height:4px;"></div>
-
-  <!-- Main cables — right approach (right tower to edge) -->
-  <div class="px-gg-cable-seg" style="left:66%;bottom:100px;width:3%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:69%;bottom:72px;width:4%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:73%;bottom:58px;width:5%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:78%;bottom:48px;width:5%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:83%;bottom:40px;width:5%;height:4px;"></div>
-  <div class="px-gg-cable-seg" style="left:88%;bottom:36px;width:6%;height:4px;"></div>
-
-  <!-- Suspender cables (vertical lines from main cable to deck) -->
-  <div class="px-gg-suspender" style="left:36%;height:64px;"></div>
-  <div class="px-gg-suspender" style="left:40%;height:44px;"></div>
-  <div class="px-gg-suspender" style="left:44%;height:28px;"></div>
-  <div class="px-gg-suspender" style="left:48%;height:16px;"></div>
-  <div class="px-gg-suspender" style="left:52%;height:12px;"></div>
-  <div class="px-gg-suspender" style="left:56%;height:16px;"></div>
-  <div class="px-gg-suspender" style="left:60%;height:28px;"></div>
-
-  <!-- Water -->
-  <div class="px-gg-water">
-    <div class="px-gg-wave"></div>
-    <div class="px-gg-wave"></div>
-    <div class="px-gg-wave"></div>
-  </div>
+  <!-- Bay water -->
+  <div class="gg-bay"></div>
+  <div class="gg-reflection"></div>
 
   <!-- Fog layers -->
-  <div class="px-gg-fog" style="--fog-dur:38s;--fog-opacity:0.05;bottom:24px;">
-    <div class="px-gg-fog-block" style="left:0;width:200px;"></div>
-    <div class="px-gg-fog-block" style="left:240px;width:160px;"></div>
-    <div class="px-gg-fog-block" style="left:440px;width:120px;"></div>
+  <div class="gg-fog" style="--fog-dur:45s;bottom:30px;">
+    <div class="gg-fog-wisp" style="left:0;top:0;width:260px;height:24px;"></div>
+    <div class="gg-fog-wisp" style="left:300px;top:4px;width:180px;height:18px;"></div>
+    <div class="gg-fog-wisp" style="left:520px;top:2px;width:140px;height:20px;"></div>
   </div>
-  <div class="px-gg-fog" style="--fog-dur:50s;--fog-opacity:0.04;bottom:30px;animation-delay:-18s;">
-    <div class="px-gg-fog-block" style="left:0;width:140px;"></div>
-    <div class="px-gg-fog-block" style="left:180px;width:220px;"></div>
-    <div class="px-gg-fog-block" style="left:460px;width:100px;"></div>
+  <div class="gg-fog" style="--fog-dur:55s;bottom:22px;animation-delay:-20s;">
+    <div class="gg-fog-wisp" style="left:0;top:0;width:200px;height:20px;"></div>
+    <div class="gg-fog-wisp" style="left:240px;top:6px;width:280px;height:16px;"></div>
   </div>
-  <div class="px-gg-fog" style="--fog-dur:30s;--fog-opacity:0.07;bottom:18px;animation-delay:-8s;">
-    <div class="px-gg-fog-block" style="left:0;width:180px;"></div>
-    <div class="px-gg-fog-block" style="left:260px;width:140px;"></div>
+  <div class="gg-fog" style="--fog-dur:35s;bottom:36px;animation-delay:-10s;">
+    <div class="gg-fog-wisp" style="left:0;top:0;width:160px;height:16px;"></div>
+    <div class="gg-fog-wisp" style="left:200px;top:2px;width:220px;height:14px;"></div>
+    <div class="gg-fog-wisp" style="left:460px;top:0;width:120px;height:18px;"></div>
   </div>
 
-  <span class="px-gg-label">San Francisco, CA</span>
+  <span class="gg-label">San Francisco, CA</span>
 </div>
 
 <!-- ===== LATEST DISPATCHES — Feature Well ===== -->
@@ -4770,19 +4812,18 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   }, 1200);
 })();
 
-// Pixel Golden Gate Bridge parallax (desktop only)
+// Golden Gate Bridge parallax (desktop only)
 (function() {
   if (window.matchMedia('(max-width: 768px)').matches) return;
 
-  var banner = document.querySelector('.px-gg-banner');
+  var banner = document.querySelector('.gg-banner');
   if (!banner) return;
 
-  var sky = banner.querySelector('.px-gg-sky');
-  var towers = banner.querySelectorAll('.px-gg-tower');
-  var cables = banner.querySelectorAll('.px-gg-cable-seg');
-  var stars = banner.querySelectorAll('.px-gg-star');
-  var fogLayers = banner.querySelectorAll('.px-gg-fog');
-  var label = banner.querySelector('.px-gg-label');
+  var stars = banner.querySelectorAll('.gg-star');
+  var hills = banner.querySelectorAll('.gg-hill');
+  var bridge = banner.querySelector('.gg-bridge');
+  var fogLayers = banner.querySelectorAll('.gg-fog');
+  var label = banner.querySelector('.gg-label');
 
   var ticking = false;
 
@@ -4793,27 +4834,23 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       var rect = banner.getBoundingClientRect();
       var viewH = window.innerHeight;
       var progress = 1 - (rect.bottom / (viewH + rect.height));
-      var offset = (progress - 0.5) * 60;
-
-      if (sky) sky.style.transform = 'translateY(' + (offset * 0.15) + 'px)';
+      var offset = (progress - 0.5) * 50;
 
       stars.forEach(function(s) {
-        s.style.transform = 'translateY(' + (offset * 0.25) + 'px)';
+        s.style.transform = 'translateY(' + (offset * 0.3) + 'px)';
       });
 
-      towers.forEach(function(t) {
-        t.style.transform = 'translateY(' + (offset * 0.08) + 'px)';
+      hills.forEach(function(h, i) {
+        h.style.transform = 'translateY(' + (offset * (0.1 + i * 0.03)) + 'px)';
       });
 
-      cables.forEach(function(c) {
-        c.style.transform = 'translateY(' + (offset * 0.06) + 'px)';
-      });
+      if (bridge) bridge.style.transform = 'translateY(' + (offset * 0.06) + 'px)';
 
       fogLayers.forEach(function(f) {
-        f.style.marginTop = (offset * 0.12) + 'px';
+        f.style.marginTop = (offset * 0.1) + 'px';
       });
 
-      if (label) label.style.transform = 'translateY(' + (offset * 0.05) + 'px)';
+      if (label) label.style.transform = 'translateY(' + (offset * 0.04) + 'px)';
 
       ticking = false;
     });
