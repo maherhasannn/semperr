@@ -2394,118 +2394,208 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   padding: 40px 0;
 }
 
-/* ===== 1. PIXEL CITYSCAPE BANNER ===== */
-.px-city-banner {
-  height: 120px;
+/* ===== 1. PIXEL GOLDEN GATE BRIDGE BANNER ===== */
+.px-gg-banner {
+  height: 140px;
   background: #0b1220;
   position: relative;
   overflow: hidden;
+  image-rendering: pixelated;
 }
-.px-city-sky {
+.px-gg-sky {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, #0a0e1a 0%, #141c2e 60%, #1a2540 100%);
+  background: linear-gradient(180deg, #0a0e1a 0%, #101828 50%, #162040 100%);
 }
 /* Stars */
-.px-star {
+.px-gg-star {
   position: absolute;
   width: 4px;
   height: 4px;
   background: #fff;
   animation: starTwinkle 3s ease-in-out infinite;
 }
-.px-star:nth-child(1) { top: 12px; left: 8%; animation-delay: 0s; }
-.px-star:nth-child(2) { top: 8px; left: 22%; animation-delay: 1.2s; }
-.px-star:nth-child(3) { top: 20px; left: 45%; animation-delay: 0.6s; }
-.px-star:nth-child(4) { top: 6px; left: 67%; animation-delay: 2s; }
-.px-star:nth-child(5) { top: 16px; left: 80%; animation-delay: 0.3s; }
-.px-star:nth-child(6) { top: 10px; left: 92%; animation-delay: 1.8s; }
+.px-gg-star:nth-child(1) { top: 10px; left: 6%; animation-delay: 0s; }
+.px-gg-star:nth-child(2) { top: 6px; left: 18%; animation-delay: 1.2s; }
+.px-gg-star:nth-child(3) { top: 16px; left: 42%; animation-delay: 0.6s; }
+.px-gg-star:nth-child(4) { top: 4px; left: 58%; animation-delay: 2s; }
+.px-gg-star:nth-child(5) { top: 12px; left: 76%; animation-delay: 0.3s; }
+.px-gg-star:nth-child(6) { top: 8px; left: 90%; animation-delay: 1.8s; }
+.px-gg-star:nth-child(7) { top: 18px; left: 15%; animation-delay: 2.4s; }
+.px-gg-star:nth-child(8) { top: 3px; left: 84%; animation-delay: 0.9s; }
 @keyframes starTwinkle {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.2; }
 }
-/* Buildings */
-.px-building {
+/* Water */
+.px-gg-water {
   position: absolute;
   bottom: 0;
-  background: #141c2e;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: linear-gradient(180deg, #0c1528 0%, #091020 100%);
 }
-.px-building::before {
+.px-gg-wave {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 24px,
+    rgba(74,127,181,0.08) 24px,
+    rgba(74,127,181,0.08) 28px
+  );
+  animation: waveShift 4s linear infinite;
+}
+.px-gg-wave:nth-child(1) { top: 0; }
+.px-gg-wave:nth-child(2) { top: 8px; animation-delay: -1.5s; animation-direction: reverse; }
+.px-gg-wave:nth-child(3) { top: 16px; animation-delay: -3s; }
+@keyframes waveShift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(28px); }
+}
+/* Road deck */
+.px-gg-deck {
+  position: absolute;
+  bottom: 28px;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: #c0362c;
+  border-top: 2px solid #d4453a;
+  border-bottom: 2px solid #8a2820;
+  z-index: 3;
+}
+/* Tower base structure */
+.px-gg-tower {
+  position: absolute;
+  bottom: 28px;
+  width: 20px;
+  z-index: 4;
+}
+.px-gg-tower-l { left: 32%; }
+.px-gg-tower-r { left: 64%; }
+/* Tower shaft */
+.px-gg-tower-shaft {
+  position: absolute;
+  bottom: 0;
+  left: 2px;
+  width: 16px;
+  height: 96px;
+  background: #c0362c;
+  border: 2px solid #8a2820;
+  border-bottom: none;
+}
+.px-gg-tower-shaft::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 4px;
-  background: #1a2540;
+  background: #d4453a;
 }
-.px-bld-1 { left: 2%; width: 40px; height: 64px; }
-.px-bld-2 { left: 8%; width: 28px; height: 88px; }
-.px-bld-3 { left: 14%; width: 48px; height: 52px; }
-.px-bld-4 { left: 22%; width: 32px; height: 76px; }
-.px-bld-5 { left: 30%; width: 56px; height: 96px; }
-.px-bld-6 { left: 40%; width: 36px; height: 60px; }
-.px-bld-7 { left: 48%; width: 44px; height: 84px; }
-.px-bld-8 { left: 56%; width: 28px; height: 72px; }
-.px-bld-9 { left: 62%; width: 52px; height: 100px; }
-.px-bld-10 { left: 72%; width: 36px; height: 56px; }
-.px-bld-11 { left: 78%; width: 44px; height: 80px; }
-.px-bld-12 { left: 86%; width: 32px; height: 68px; }
-.px-bld-13 { left: 92%; width: 48px; height: 48px; }
-/* Windows */
-.px-win {
+/* Tower cross-beams */
+.px-gg-xbeam {
   position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #a83028;
+}
+.px-gg-xbeam:nth-child(1) { top: 18px; }
+.px-gg-xbeam:nth-child(2) { top: 42px; }
+.px-gg-xbeam:nth-child(3) { top: 66px; }
+/* Tower art-deco top */
+.px-gg-tower-cap {
+  position: absolute;
+  bottom: 96px;
+  left: 4px;
+  width: 12px;
+  height: 12px;
+  background: #c0362c;
+  border: 2px solid #8a2820;
+  border-bottom: none;
+}
+.px-gg-tower-cap::before {
+  content: '';
+  position: absolute;
+  bottom: 12px;
+  left: 2px;
+  width: 8px;
+  height: 6px;
+  background: #c0362c;
+  border: 2px solid #8a2820;
+  border-bottom: none;
+}
+/* Blinking aviation light on tower */
+.px-gg-light {
+  position: absolute;
+  bottom: 118px;
+  left: 8px;
   width: 4px;
   height: 4px;
-  background: #c9a961;
-  opacity: 0.8;
-}
-.px-win.off { background: #1a2540; opacity: 0.3; }
-.px-win.blink { animation: winBlink 4s ease-in-out infinite; }
-@keyframes winBlink {
-  0%, 45%, 55%, 100% { background: #c9a961; opacity: 0.8; }
-  50% { background: #1a2540; opacity: 0.3; }
-}
-/* Antenna */
-.px-antenna {
-  position: absolute;
-  width: 4px;
-  background: #2a3550;
-}
-.px-antenna-light {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: #d4664a;
+  background: #ff4444;
   border-radius: 50%;
-  animation: antennaFlash 2s ease-in-out infinite;
+  z-index: 5;
+  animation: ggLightFlash 2s ease-in-out infinite;
 }
-@keyframes antennaFlash {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
+.px-gg-tower-r .px-gg-light { animation-delay: 1s; }
+@keyframes ggLightFlash {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px rgba(255,68,68,0.8); }
+  50% { opacity: 0.15; box-shadow: none; }
 }
-/* Cloud */
-.px-cloud {
+/* Main suspension cables — pixel stepped curves */
+.px-gg-cable {
   position: absolute;
-  animation: cloudDrift 40s linear infinite;
+  z-index: 2;
 }
-.px-cloud-block {
+.px-gg-cable-seg {
   position: absolute;
-  height: 8px;
-  background: rgba(255,255,255,0.06);
+  height: 4px;
+  background: #c0362c;
+  opacity: 0.7;
 }
-@keyframes cloudDrift {
-  0% { transform: translateX(-120px); }
-  100% { transform: translateX(calc(100vw + 120px)); }
-}
-/* City label */
-.px-city-label {
+/* Suspender cables (vertical) */
+.px-gg-suspender {
   position: absolute;
-  bottom: 8px;
+  width: 2px;
+  background: rgba(192,54,44,0.35);
+  bottom: 36px;
+  z-index: 2;
+}
+/* Fog */
+.px-gg-fog {
+  position: absolute;
+  bottom: 20px;
+  height: 20px;
+  z-index: 6;
+  animation: fogDrift var(--fog-dur, 35s) linear infinite;
+  opacity: var(--fog-opacity, 0.06);
+}
+.px-gg-fog-block {
+  position: absolute;
+  background: #fff;
+  height: 100%;
+  border-radius: 2px;
+}
+@keyframes fogDrift {
+  0% { transform: translateX(-300px); }
+  100% { transform: translateX(calc(100vw + 300px)); }
+}
+/* Label */
+.px-gg-label {
+  position: absolute;
+  bottom: 6px;
   right: var(--pad);
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.18);
+  z-index: 7;
 }
 
 /* ===== 2. PIXEL TICKER TAPE ===== */
@@ -3019,7 +3109,7 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 /* Hide all pixel animations on tablet and mobile */
 @media (max-width: 900px) {
   .pixel-desk-wrapper { display: none !important; }
-  .px-city-banner { display: none !important; }
+  .px-gg-banner { display: none !important; }
   .px-ticker-strip { display: none !important; }
   .px-chart-wrapper { display: none !important; }
   .px-server-banner { display: none !important; }
@@ -3329,160 +3419,102 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 </section>
 
 
-<!-- ===== PIXEL CITYSCAPE BANNER ===== -->
-<div class="px-city-banner px-banner">
-  <div class="px-city-sky">
-    <div class="px-star"></div>
-    <div class="px-star"></div>
-    <div class="px-star"></div>
-    <div class="px-star"></div>
-    <div class="px-star"></div>
-    <div class="px-star"></div>
+<!-- ===== PIXEL GOLDEN GATE BRIDGE BANNER ===== -->
+<div class="px-gg-banner px-banner">
+  <div class="px-gg-sky">
+    <div class="px-gg-star"></div>
+    <div class="px-gg-star"></div>
+    <div class="px-gg-star"></div>
+    <div class="px-gg-star"></div>
+    <div class="px-gg-star"></div>
+    <div class="px-gg-star"></div>
+    <div class="px-gg-star"></div>
+    <div class="px-gg-star"></div>
   </div>
-  <!-- Buildings -->
-  <div class="px-building px-bld-1">
-    <div class="px-win" style="top:8px;left:8px;"></div>
-    <div class="px-win off" style="top:8px;left:20px;"></div>
-    <div class="px-win blink" style="top:20px;left:8px;"></div>
-    <div class="px-win" style="top:20px;left:20px;"></div>
-    <div class="px-win off" style="top:32px;left:8px;"></div>
-    <div class="px-win" style="top:32px;left:20px;"></div>
+
+  <!-- Road deck -->
+  <div class="px-gg-deck"></div>
+
+  <!-- Left tower -->
+  <div class="px-gg-tower px-gg-tower-l">
+    <div class="px-gg-tower-shaft">
+      <div class="px-gg-xbeam"></div>
+      <div class="px-gg-xbeam"></div>
+      <div class="px-gg-xbeam"></div>
+    </div>
+    <div class="px-gg-tower-cap"></div>
+    <div class="px-gg-light"></div>
   </div>
-  <div class="px-building px-bld-2">
-    <div class="px-win" style="top:8px;left:8px;"></div>
-    <div class="px-win blink" style="top:20px;left:8px;"></div>
-    <div class="px-win" style="top:32px;left:8px;"></div>
-    <div class="px-win off" style="top:44px;left:8px;"></div>
-    <div class="px-win" style="top:56px;left:8px;"></div>
+
+  <!-- Right tower -->
+  <div class="px-gg-tower px-gg-tower-r">
+    <div class="px-gg-tower-shaft">
+      <div class="px-gg-xbeam"></div>
+      <div class="px-gg-xbeam"></div>
+      <div class="px-gg-xbeam"></div>
+    </div>
+    <div class="px-gg-tower-cap"></div>
+    <div class="px-gg-light"></div>
   </div>
-  <div class="px-building px-bld-3">
-    <div class="px-win off" style="top:8px;left:8px;"></div>
-    <div class="px-win" style="top:8px;left:20px;"></div>
-    <div class="px-win" style="top:8px;left:32px;"></div>
-    <div class="px-win blink" style="top:20px;left:8px;"></div>
-    <div class="px-win off" style="top:20px;left:20px;"></div>
-    <div class="px-win" style="top:20px;left:32px;"></div>
+
+  <!-- Main cables — left approach (edge to left tower) -->
+  <div class="px-gg-cable-seg" style="left:8%;bottom:36px;width:6%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:14%;bottom:40px;width:5%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:19%;bottom:48px;width:5%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:24%;bottom:58px;width:4%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:28%;bottom:72px;width:4%;height:4px;"></div>
+
+  <!-- Main cables — center span (left tower to right tower) -->
+  <div class="px-gg-cable-seg" style="left:34%;bottom:100px;width:4%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:38%;bottom:80px;width:4%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:42%;bottom:64px;width:4%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:46%;bottom:52px;width:4%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:50%;bottom:46px;width:4%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:54%;bottom:52px;width:4%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:58%;bottom:64px;width:4%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:62%;bottom:80px;width:3%;height:4px;"></div>
+
+  <!-- Main cables — right approach (right tower to edge) -->
+  <div class="px-gg-cable-seg" style="left:66%;bottom:100px;width:3%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:69%;bottom:72px;width:4%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:73%;bottom:58px;width:5%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:78%;bottom:48px;width:5%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:83%;bottom:40px;width:5%;height:4px;"></div>
+  <div class="px-gg-cable-seg" style="left:88%;bottom:36px;width:6%;height:4px;"></div>
+
+  <!-- Suspender cables (vertical lines from main cable to deck) -->
+  <div class="px-gg-suspender" style="left:36%;height:64px;"></div>
+  <div class="px-gg-suspender" style="left:40%;height:44px;"></div>
+  <div class="px-gg-suspender" style="left:44%;height:28px;"></div>
+  <div class="px-gg-suspender" style="left:48%;height:16px;"></div>
+  <div class="px-gg-suspender" style="left:52%;height:12px;"></div>
+  <div class="px-gg-suspender" style="left:56%;height:16px;"></div>
+  <div class="px-gg-suspender" style="left:60%;height:28px;"></div>
+
+  <!-- Water -->
+  <div class="px-gg-water">
+    <div class="px-gg-wave"></div>
+    <div class="px-gg-wave"></div>
+    <div class="px-gg-wave"></div>
   </div>
-  <div class="px-building px-bld-4">
-    <div class="px-win" style="top:8px;left:8px;"></div>
-    <div class="px-win off" style="top:20px;left:8px;"></div>
-    <div class="px-win blink" style="top:32px;left:8px;"></div>
-    <div class="px-win" style="top:44px;left:8px;"></div>
+
+  <!-- Fog layers -->
+  <div class="px-gg-fog" style="--fog-dur:38s;--fog-opacity:0.05;bottom:24px;">
+    <div class="px-gg-fog-block" style="left:0;width:200px;"></div>
+    <div class="px-gg-fog-block" style="left:240px;width:160px;"></div>
+    <div class="px-gg-fog-block" style="left:440px;width:120px;"></div>
   </div>
-  <div class="px-building px-bld-5">
-    <div class="px-antenna" style="top:-20px;left:26px;height:20px;"></div>
-    <div class="px-antenna-light" style="top:-24px;left:26px;"></div>
-    <div class="px-win" style="top:8px;left:8px;"></div>
-    <div class="px-win blink" style="top:8px;left:20px;"></div>
-    <div class="px-win off" style="top:8px;left:36px;"></div>
-    <div class="px-win" style="top:20px;left:8px;"></div>
-    <div class="px-win" style="top:20px;left:20px;"></div>
-    <div class="px-win blink" style="top:20px;left:36px;"></div>
-    <div class="px-win off" style="top:32px;left:8px;"></div>
-    <div class="px-win" style="top:32px;left:20px;"></div>
-    <div class="px-win" style="top:32px;left:36px;"></div>
-    <div class="px-win blink" style="top:44px;left:8px;"></div>
-    <div class="px-win off" style="top:44px;left:20px;"></div>
-    <div class="px-win" style="top:44px;left:36px;"></div>
-    <div class="px-win" style="top:56px;left:8px;"></div>
-    <div class="px-win" style="top:56px;left:20px;"></div>
-    <div class="px-win off" style="top:56px;left:36px;"></div>
+  <div class="px-gg-fog" style="--fog-dur:50s;--fog-opacity:0.04;bottom:30px;animation-delay:-18s;">
+    <div class="px-gg-fog-block" style="left:0;width:140px;"></div>
+    <div class="px-gg-fog-block" style="left:180px;width:220px;"></div>
+    <div class="px-gg-fog-block" style="left:460px;width:100px;"></div>
   </div>
-  <div class="px-building px-bld-6">
-    <div class="px-win off" style="top:8px;left:8px;"></div>
-    <div class="px-win" style="top:8px;left:20px;"></div>
-    <div class="px-win blink" style="top:20px;left:8px;"></div>
-    <div class="px-win off" style="top:20px;left:20px;"></div>
-    <div class="px-win" style="top:32px;left:8px;"></div>
+  <div class="px-gg-fog" style="--fog-dur:30s;--fog-opacity:0.07;bottom:18px;animation-delay:-8s;">
+    <div class="px-gg-fog-block" style="left:0;width:180px;"></div>
+    <div class="px-gg-fog-block" style="left:260px;width:140px;"></div>
   </div>
-  <div class="px-building px-bld-7">
-    <div class="px-antenna" style="top:-16px;left:20px;height:16px;"></div>
-    <div class="px-antenna-light" style="top:-20px;left:20px;animation-delay:1s;"></div>
-    <div class="px-win blink" style="top:8px;left:8px;"></div>
-    <div class="px-win" style="top:8px;left:20px;"></div>
-    <div class="px-win off" style="top:8px;left:32px;"></div>
-    <div class="px-win" style="top:20px;left:8px;"></div>
-    <div class="px-win blink" style="top:20px;left:20px;"></div>
-    <div class="px-win" style="top:20px;left:32px;"></div>
-    <div class="px-win off" style="top:32px;left:8px;"></div>
-    <div class="px-win" style="top:32px;left:20px;"></div>
-    <div class="px-win blink" style="top:32px;left:32px;"></div>
-    <div class="px-win" style="top:44px;left:8px;"></div>
-    <div class="px-win off" style="top:44px;left:20px;"></div>
-    <div class="px-win" style="top:44px;left:32px;"></div>
-  </div>
-  <div class="px-building px-bld-8">
-    <div class="px-win" style="top:8px;left:8px;"></div>
-    <div class="px-win blink" style="top:20px;left:8px;"></div>
-    <div class="px-win off" style="top:32px;left:8px;"></div>
-    <div class="px-win" style="top:44px;left:8px;"></div>
-  </div>
-  <div class="px-building px-bld-9">
-    <div class="px-antenna" style="top:-24px;left:24px;height:24px;"></div>
-    <div class="px-antenna-light" style="top:-28px;left:24px;animation-delay:0.5s;"></div>
-    <div class="px-win blink" style="top:8px;left:8px;"></div>
-    <div class="px-win" style="top:8px;left:20px;"></div>
-    <div class="px-win" style="top:8px;left:36px;"></div>
-    <div class="px-win off" style="top:20px;left:8px;"></div>
-    <div class="px-win blink" style="top:20px;left:20px;"></div>
-    <div class="px-win" style="top:20px;left:36px;"></div>
-    <div class="px-win" style="top:32px;left:8px;"></div>
-    <div class="px-win off" style="top:32px;left:20px;"></div>
-    <div class="px-win blink" style="top:32px;left:36px;"></div>
-    <div class="px-win" style="top:44px;left:8px;"></div>
-    <div class="px-win" style="top:44px;left:20px;"></div>
-    <div class="px-win off" style="top:44px;left:36px;"></div>
-    <div class="px-win blink" style="top:56px;left:8px;"></div>
-    <div class="px-win" style="top:56px;left:20px;"></div>
-    <div class="px-win" style="top:56px;left:36px;"></div>
-    <div class="px-win off" style="top:68px;left:8px;"></div>
-    <div class="px-win blink" style="top:68px;left:20px;"></div>
-    <div class="px-win" style="top:68px;left:36px;"></div>
-  </div>
-  <div class="px-building px-bld-10">
-    <div class="px-win" style="top:8px;left:8px;"></div>
-    <div class="px-win off" style="top:8px;left:20px;"></div>
-    <div class="px-win blink" style="top:20px;left:8px;"></div>
-    <div class="px-win" style="top:20px;left:20px;"></div>
-    <div class="px-win" style="top:32px;left:8px;"></div>
-  </div>
-  <div class="px-building px-bld-11">
-    <div class="px-win off" style="top:8px;left:8px;"></div>
-    <div class="px-win blink" style="top:8px;left:20px;"></div>
-    <div class="px-win" style="top:8px;left:32px;"></div>
-    <div class="px-win" style="top:20px;left:8px;"></div>
-    <div class="px-win off" style="top:20px;left:20px;"></div>
-    <div class="px-win blink" style="top:20px;left:32px;"></div>
-    <div class="px-win" style="top:32px;left:8px;"></div>
-    <div class="px-win" style="top:32px;left:20px;"></div>
-    <div class="px-win off" style="top:32px;left:32px;"></div>
-    <div class="px-win blink" style="top:44px;left:8px;"></div>
-    <div class="px-win" style="top:44px;left:20px;"></div>
-    <div class="px-win" style="top:44px;left:32px;"></div>
-  </div>
-  <div class="px-building px-bld-12">
-    <div class="px-win blink" style="top:8px;left:8px;"></div>
-    <div class="px-win" style="top:20px;left:8px;"></div>
-    <div class="px-win off" style="top:32px;left:8px;"></div>
-    <div class="px-win" style="top:44px;left:8px;"></div>
-  </div>
-  <div class="px-building px-bld-13">
-    <div class="px-win" style="top:8px;left:8px;"></div>
-    <div class="px-win off" style="top:8px;left:20px;"></div>
-    <div class="px-win" style="top:8px;left:32px;"></div>
-    <div class="px-win blink" style="top:20px;left:8px;"></div>
-    <div class="px-win" style="top:20px;left:20px;"></div>
-  </div>
-  <!-- Cloud -->
-  <div class="px-cloud" style="top: 20px;">
-    <div class="px-cloud-block" style="top:0;left:8px;width:32px;"></div>
-    <div class="px-cloud-block" style="top:8px;left:0;width:48px;"></div>
-  </div>
-  <div class="px-cloud" style="top: 35px; animation-delay: -20s;">
-    <div class="px-cloud-block" style="top:0;left:4px;width:24px;"></div>
-    <div class="px-cloud-block" style="top:8px;left:0;width:36px;"></div>
-  </div>
-  <span class="px-city-label">San Francisco, CA</span>
+
+  <span class="px-gg-label">San Francisco, CA</span>
 </div>
 
 <!-- ===== LATEST DISPATCHES — Feature Well ===== -->
@@ -4738,46 +4770,47 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   }, 1200);
 })();
 
-// Pixel cityscape parallax (desktop only)
+// Pixel Golden Gate Bridge parallax (desktop only)
 (function() {
   if (window.matchMedia('(max-width: 768px)').matches) return;
 
-  const banner = document.querySelector('.px-city-banner');
+  var banner = document.querySelector('.px-gg-banner');
   if (!banner) return;
 
-  const sky = banner.querySelector('.px-city-sky');
-  const buildings = banner.querySelectorAll('.px-building');
-  const clouds = banner.querySelectorAll('.px-cloud');
-  const stars = banner.querySelectorAll('.px-star');
-  const label = banner.querySelector('.px-city-label');
+  var sky = banner.querySelector('.px-gg-sky');
+  var towers = banner.querySelectorAll('.px-gg-tower');
+  var cables = banner.querySelectorAll('.px-gg-cable-seg');
+  var stars = banner.querySelectorAll('.px-gg-star');
+  var fogLayers = banner.querySelectorAll('.px-gg-fog');
+  var label = banner.querySelector('.px-gg-label');
 
-  let ticking = false;
+  var ticking = false;
 
   function onScroll() {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(function() {
-      const rect = banner.getBoundingClientRect();
-      const viewH = window.innerHeight;
-      // Normalized position: 0 when banner enters bottom, 1 when it leaves top
-      const progress = 1 - (rect.bottom / (viewH + rect.height));
-      // Offset in px centered around 0
-      const offset = (progress - 0.5) * 60;
+      var rect = banner.getBoundingClientRect();
+      var viewH = window.innerHeight;
+      var progress = 1 - (rect.bottom / (viewH + rect.height));
+      var offset = (progress - 0.5) * 60;
 
       if (sky) sky.style.transform = 'translateY(' + (offset * 0.15) + 'px)';
 
       stars.forEach(function(s) {
-        s.style.transform = 'translateY(' + (offset * 0.2) + 'px)';
+        s.style.transform = 'translateY(' + (offset * 0.25) + 'px)';
       });
 
-      buildings.forEach(function(b, i) {
-        // Taller buildings (higher z) move slightly more for depth
-        var rate = 0.3 + (i % 4) * 0.08;
-        b.style.transform = 'translateY(' + (offset * rate) + 'px)';
+      towers.forEach(function(t) {
+        t.style.transform = 'translateY(' + (offset * 0.08) + 'px)';
       });
 
-      clouds.forEach(function(c) {
-        c.style.marginTop = (offset * 0.1) + 'px';
+      cables.forEach(function(c) {
+        c.style.transform = 'translateY(' + (offset * 0.06) + 'px)';
+      });
+
+      fogLayers.forEach(function(f) {
+        f.style.marginTop = (offset * 0.12) + 'px';
       });
 
       if (label) label.style.transform = 'translateY(' + (offset * 0.05) + 'px)';
