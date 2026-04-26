@@ -2395,46 +2395,56 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 }
 
 /* ===== 1. GOLDEN GATE BRIDGE BANNER ===== */
-/* Inspired by jannypie's Pure CSS Golden Gate Bridge (codepen.io/jannypie/pen/bGEaYq) */
 .gg-banner {
-  height: 160px;
+  height: 180px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #0a0e1a 0%, #0e1525 40%, #122040 70%, #071733 100%);
+  background: linear-gradient(180deg,
+    #070b15 0%,
+    #0c1220 20%,
+    #111d35 45%,
+    #142848 65%,
+    #0f2240 80%,
+    #091a33 100%);
 }
+
 /* Stars */
 .gg-star {
   position: absolute;
-  width: 2px;
-  height: 2px;
+  width: 1.5px;
+  height: 1.5px;
   background: #fff;
   border-radius: 50%;
-  animation: ggTwinkle 3s ease-in-out infinite;
+  opacity: 0;
+  animation: ggTwinkle 4s ease-in-out infinite;
 }
-.gg-star:nth-child(1) { top: 12px; left: 5%; animation-delay: 0s; }
-.gg-star:nth-child(2) { top: 8px; left: 15%; animation-delay: 1.4s; }
-.gg-star:nth-child(3) { top: 20px; left: 25%; animation-delay: 0.6s; }
-.gg-star:nth-child(4) { top: 6px; left: 40%; animation-delay: 2.1s; }
-.gg-star:nth-child(5) { top: 14px; left: 55%; animation-delay: 0.3s; }
-.gg-star:nth-child(6) { top: 4px; left: 70%; animation-delay: 1.8s; }
-.gg-star:nth-child(7) { top: 18px; left: 82%; animation-delay: 2.5s; }
-.gg-star:nth-child(8) { top: 10px; left: 93%; animation-delay: 0.9s; }
-.gg-star.bright { width: 3px; height: 3px; }
+.gg-star:nth-child(1)  { top: 10px; left: 4%;  animation-delay: 0s; }
+.gg-star:nth-child(2)  { top: 22px; left: 11%; animation-delay: 1.7s; }
+.gg-star:nth-child(3)  { top: 6px;  left: 20%; animation-delay: 0.4s; }
+.gg-star:nth-child(4)  { top: 16px; left: 31%; animation-delay: 2.8s; }
+.gg-star:nth-child(5)  { top: 8px;  left: 44%; animation-delay: 1.1s; }
+.gg-star:nth-child(6)  { top: 24px; left: 56%; animation-delay: 3.2s; }
+.gg-star:nth-child(7)  { top: 12px; left: 68%; animation-delay: 0.7s; }
+.gg-star:nth-child(8)  { top: 4px;  left: 78%; animation-delay: 2.3s; }
+.gg-star:nth-child(9)  { top: 18px; left: 88%; animation-delay: 1.5s; }
+.gg-star:nth-child(10) { top: 28px; left: 95%; animation-delay: 3.6s; }
+.gg-star.bright { width: 2px; height: 2px; }
 @keyframes ggTwinkle {
-  0%, 100% { opacity: 0.9; }
-  50% { opacity: 0.15; }
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.1; }
 }
 
-/* Marin headlands (background hills) */
+/* Marin headlands (layered dark silhouette hills) */
 .gg-hill {
   position: absolute;
-  bottom: 40px;
-  border-radius: 50%;
+  border-radius: 50% 50% 0 0;
 }
-.gg-hill-1 { left: -5%; width: 35%; height: 70px; background: #0e1c12; }
-.gg-hill-2 { left: 10%; width: 30%; height: 55px; background: #0c1a10; }
-.gg-hill-3 { right: -5%; width: 35%; height: 65px; background: #0e1c12; }
-.gg-hill-4 { right: 8%; width: 28%; height: 50px; background: #0c1a10; }
+.gg-hill-far-l  { bottom: 52px; left: -8%;  width: 40%; height: 60px; background: #0a160d; }
+.gg-hill-far-r  { bottom: 52px; right: -8%; width: 38%; height: 55px; background: #0a160d; }
+.gg-hill-mid-l  { bottom: 48px; left: -3%;  width: 32%; height: 44px; background: #0d1f11; }
+.gg-hill-mid-r  { bottom: 48px; right: -3%; width: 30%; height: 40px; background: #0d1f11; }
+.gg-hill-near-l { bottom: 44px; left: 2%;   width: 24%; height: 30px; background: #112716; }
+.gg-hill-near-r { bottom: 44px; right: 2%;  width: 22%; height: 28px; background: #112716; }
 
 /* Bay water */
 .gg-bay {
@@ -2442,8 +2452,9 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   bottom: 0;
   left: 0;
   right: 0;
-  height: 40px;
-  background: linear-gradient(180deg, #071733 0%, #050f28 100%);
+  height: 44px;
+  background: linear-gradient(180deg, #081b38 0%, #061530 40%, #040e22 100%);
+  z-index: 2;
 }
 .gg-bay::before {
   content: '';
@@ -2452,27 +2463,38 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   left: 0;
   right: 0;
   height: 1px;
-  background: rgba(74,127,181,0.1);
+  background: rgba(90,140,200,0.08);
 }
 
-/* Bridge wrapper — positions all bridge parts */
+/* Bridge structure wrapper */
 .gg-bridge {
   position: absolute;
-  bottom: 40px;
+  bottom: 44px;
   left: 0;
   right: 0;
-  height: 116px;
+  height: 130px;
+  z-index: 3;
+}
+
+/* SVG cables layer — covers the full bridge wrapper */
+.gg-cables-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
 }
 
 /* Road deck */
 .gg-deck {
   position: absolute;
   bottom: 0;
-  left: 8%;
-  right: 8%;
-  height: 6px;
-  background: #cc4400;
-  z-index: 4;
+  left: 6%;
+  right: 6%;
+  height: 5px;
+  background: linear-gradient(180deg, #d45515 0%, #c04010 50%, #a03008 100%);
+  z-index: 3;
 }
 .gg-deck::before {
   content: '';
@@ -2481,152 +2503,131 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   left: 0;
   right: 0;
   height: 1px;
-  background: #e06020;
+  background: #e86828;
 }
 .gg-deck::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: 0;
   left: 0;
   right: 0;
-  height: 2px;
-  background: #882200;
+  height: 1px;
+  background: #802808;
 }
 
-/* Towers */
+/* Towers — each tower is two tapered columns + horizontal struts + cap */
 .gg-tower {
   position: absolute;
   bottom: 0;
+  width: 24px;
+  height: 126px;
   z-index: 5;
 }
-.gg-tower-1 { left: 32%; }
-.gg-tower-2 { left: 63%; }
-/* Tower columns (two legs per tower) */
+.gg-tower-1 { left: calc(30% - 12px); }
+.gg-tower-2 { left: calc(65% - 12px); }
+
+/* Tower columns (two legs) */
 .gg-tower-col {
   position: absolute;
   bottom: 0;
-  width: 6px;
-  height: 104px;
-  background: linear-gradient(90deg, #993300, #cc4400 30%, #dd5510 50%, #cc4400 70%, #993300);
+  width: 5px;
+  height: 100%;
+  z-index: 1;
 }
-.gg-tower-col.left { left: 0; }
-.gg-tower-col.right { left: 14px; }
-/* Tower cross-bracing */
-.gg-tower-cross {
+.gg-tower-col::before {
+  content: '';
   position: absolute;
-  left: 6px;
-  width: 8px;
-  height: 3px;
-  background: #bb3800;
+  inset: 0;
+  background: linear-gradient(90deg, #8a2800 0%, #c04010 25%, #d45515 50%, #c04010 75%, #8a2800 100%);
 }
-.gg-tower-cross:nth-child(3) { bottom: 14px; }
-.gg-tower-cross:nth-child(4) { bottom: 38px; }
-.gg-tower-cross:nth-child(5) { bottom: 62px; }
-.gg-tower-cross:nth-child(6) { bottom: 86px; }
-/* Tower cap */
+/* Subtle shadow on inner side */
+.gg-tower-col::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: rgba(0,0,0,0.15);
+}
+.gg-tower-col.left  { left: 2px; }
+.gg-tower-col.right { right: 2px; }
+.gg-tower-col.left::after  { right: 0; }
+.gg-tower-col.right::after { left: 0; }
+
+/* Horizontal cross struts */
+.gg-tower-strut {
+  position: absolute;
+  left: 7px;
+  width: 10px;
+  height: 3px;
+  background: linear-gradient(180deg, #c04010 0%, #a03008 100%);
+  z-index: 2;
+}
+.gg-tower-strut:nth-of-type(3) { bottom: 10px; }
+.gg-tower-strut:nth-of-type(4) { bottom: 32px; }
+.gg-tower-strut:nth-of-type(5) { bottom: 54px; }
+.gg-tower-strut:nth-of-type(6) { bottom: 76px; }
+.gg-tower-strut:nth-of-type(7) { bottom: 98px; }
+
+/* Tower top portal (arched opening between struts) */
 .gg-tower-cap {
   position: absolute;
-  top: -4px;
-  left: -1px;
-  width: 22px;
-  height: 4px;
-  background: #cc4400;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 5px;
+  background: linear-gradient(90deg, #993300, #c04010 30%, #d45515 50%, #c04010 70%, #993300);
+  z-index: 3;
+  border-radius: 1px 1px 0 0;
 }
+
 /* Aviation warning lights */
 .gg-light {
   position: absolute;
-  top: -8px;
-  left: 8px;
-  width: 4px;
-  height: 4px;
-  background: #ff3333;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 3px;
+  background: #ff4444;
   border-radius: 50%;
-  animation: ggLightFlash 2.5s ease-in-out infinite;
-  box-shadow: 0 0 6px rgba(255,51,51,0.6);
+  box-shadow: 0 0 4px rgba(255,68,68,0.7), 0 0 10px rgba(255,68,68,0.3);
+  animation: ggLightFlash 2s ease-in-out infinite;
+  z-index: 4;
 }
-.gg-tower-2 .gg-light { animation-delay: 1.2s; }
+.gg-tower-2 .gg-light { animation-delay: 1s; }
 @keyframes ggLightFlash {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.1; }
+  50% { opacity: 0.08; }
 }
 
-/* Main cables — uses border-radius trick for smooth catenary curves */
-.gg-cable {
+/* Warm glow on water from bridge lights */
+.gg-glow {
   position: absolute;
-  border: 2px solid #cc4400;
-  border-top: none;
-  background: transparent;
+  bottom: 0;
+  left: 20%;
+  right: 20%;
+  height: 44px;
+  background: radial-gradient(ellipse 80% 100% at 50% 0%, rgba(200,80,20,0.04) 0%, transparent 70%);
   z-index: 3;
-}
-/* Left approach: left edge → tower 1 */
-.gg-cable-left {
-  left: 8%;
-  width: 24%;
-  bottom: 6px;
-  height: 64px;
-  border-radius: 0 0 50% 40%;
-  border-right: none;
-}
-/* Center span: tower 1 → tower 2 */
-.gg-cable-center {
-  left: 32.5%;
-  width: 31%;
-  bottom: 6px;
-  height: 72px;
-  border-radius: 0 0 50% 50%;
-}
-/* Right approach: tower 2 → right edge */
-.gg-cable-right {
-  right: 8%;
-  width: 24%;
-  bottom: 6px;
-  height: 64px;
-  border-radius: 0 0 40% 50%;
-  border-left: none;
-}
-/* Back cables (creates depth) */
-.gg-cable.back {
-  border-color: rgba(153,51,0,0.4);
-  bottom: 8px;
-}
-.gg-cable-left.back { height: 62px; }
-.gg-cable-center.back { height: 70px; }
-.gg-cable-right.back { height: 62px; }
-
-/* Suspender cables (vertical lines from cable to deck) */
-.gg-suspender {
-  position: absolute;
-  width: 1px;
-  background: rgba(204,68,0,0.2);
-  bottom: 6px;
-  z-index: 2;
 }
 
 /* Fog layers */
 .gg-fog {
   position: absolute;
   z-index: 6;
-  animation: ggFogDrift var(--fog-dur, 40s) linear infinite;
+  pointer-events: none;
+  animation: ggFogDrift var(--fog-dur, 50s) linear infinite;
 }
 .gg-fog-wisp {
   position: absolute;
-  background: rgba(200,200,210,0.035);
+  background: rgba(180,190,210,0.025);
   border-radius: 50%;
+  filter: blur(2px);
 }
 @keyframes ggFogDrift {
-  0% { transform: translateX(-500px); }
-  100% { transform: translateX(calc(100vw + 500px)); }
-}
-
-/* Subtle bridge reflection on water */
-.gg-reflection {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background: linear-gradient(180deg, rgba(204,68,0,0.03) 0%, transparent 50%);
-  z-index: 1;
+  0%   { transform: translateX(-600px); }
+  100% { transform: translateX(calc(100vw + 600px)); }
 }
 
 /* Label */
@@ -2638,8 +2639,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   font-size: 9px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.15);
-  z-index: 7;
+  color: rgba(255,255,255,0.12);
+  z-index: 8;
 }
 
 /* ===== 2. PIXEL TICKER TAPE ===== */
@@ -3468,6 +3469,8 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   <!-- Stars -->
   <div class="gg-star bright"></div>
   <div class="gg-star"></div>
+  <div class="gg-star bright"></div>
+  <div class="gg-star"></div>
   <div class="gg-star"></div>
   <div class="gg-star bright"></div>
   <div class="gg-star"></div>
@@ -3475,62 +3478,98 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
   <div class="gg-star"></div>
   <div class="gg-star bright"></div>
 
-  <!-- Marin headlands -->
-  <div class="gg-hill gg-hill-1"></div>
-  <div class="gg-hill gg-hill-2"></div>
-  <div class="gg-hill gg-hill-3"></div>
-  <div class="gg-hill gg-hill-4"></div>
+  <!-- Marin headlands — three depth layers -->
+  <div class="gg-hill gg-hill-far-l"></div>
+  <div class="gg-hill gg-hill-far-r"></div>
+  <div class="gg-hill gg-hill-mid-l"></div>
+  <div class="gg-hill gg-hill-mid-r"></div>
+  <div class="gg-hill gg-hill-near-l"></div>
+  <div class="gg-hill gg-hill-near-r"></div>
 
-  <!-- Bridge -->
+  <!-- Bridge structure -->
   <div class="gg-bridge">
-    <!-- Back cables (depth layer) -->
-    <div class="gg-cable gg-cable-left back"></div>
-    <div class="gg-cable gg-cable-center back"></div>
-    <div class="gg-cable gg-cable-right back"></div>
+    <!--
+      SVG layer for cables + suspenders.
+      viewBox 0 0 1000 130: x=0..1000 maps to full width; y=0 is top of bridge zone, y=130 is deck.
+      Tower 1 at x≈300 (30%), Tower 2 at x≈650 (65%).
+      Deck at y=130. Tower tops at y=4.
+      Cable sag: side spans sag to ~y=80, center span sags to ~y=95.
+      preserveAspectRatio="none" so it stretches to fill the container.
+      vector-effect="non-scaling-stroke" keeps stroke widths constant.
+    -->
+    <svg class="gg-cables-svg" viewBox="0 0 1000 130" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Back cable pair (parallax depth — slightly offset, dimmer) -->
+      <g opacity="0.25" stroke="#993300" fill="none">
+        <!-- Left side span: anchorage(60,4) → tower1 top(300,4), sag to ~y=82 -->
+        <path d="M 60,6 C 120,82 240,82 300,6" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        <!-- Center main span: tower1(300,4) → tower2(650,4), sag to ~y=98 -->
+        <path d="M 300,6 C 380,100 570,100 650,6" stroke-width="2" vector-effect="non-scaling-stroke"/>
+        <!-- Right side span: tower2(650,4) → anchorage(940,4), sag to ~y=82 -->
+        <path d="M 650,6 C 760,82 880,82 940,6" stroke-width="2" vector-effect="non-scaling-stroke"/>
+      </g>
 
-    <!-- Front cables -->
-    <div class="gg-cable gg-cable-left"></div>
-    <div class="gg-cable gg-cable-center"></div>
-    <div class="gg-cable gg-cable-right"></div>
+      <!-- Suspender cables (vertical lines from main cable down to deck) -->
+      <g stroke="rgba(190,75,20,0.18)" stroke-width="1" vector-effect="non-scaling-stroke">
+        <!-- Left span suspenders -->
+        <line x1="120" y1="42" x2="120" y2="130"/>
+        <line x1="160" y1="58" x2="160" y2="130"/>
+        <line x1="200" y1="70" x2="200" y2="130"/>
+        <line x1="240" y1="72" x2="240" y2="130"/>
+        <line x1="270" y1="52" x2="270" y2="130"/>
+        <!-- Center span suspenders -->
+        <line x1="340" y1="38" x2="340" y2="130"/>
+        <line x1="380" y1="60" x2="380" y2="130"/>
+        <line x1="420" y1="76" x2="420" y2="130"/>
+        <line x1="460" y1="86" x2="460" y2="130"/>
+        <line x1="500" y1="90" x2="500" y2="130"/>
+        <line x1="540" y1="86" x2="540" y2="130"/>
+        <line x1="580" y1="76" x2="580" y2="130"/>
+        <line x1="620" y1="60" x2="620" y2="130"/>
+        <line x1="660" y1="38" x2="660" y2="130"/>
+        <!-- Right span suspenders -->
+        <line x1="730" y1="52" x2="730" y2="130"/>
+        <line x1="760" y1="72" x2="760" y2="130"/>
+        <line x1="800" y1="70" x2="800" y2="130"/>
+        <line x1="840" y1="58" x2="840" y2="130"/>
+        <line x1="880" y1="42" x2="880" y2="130"/>
+      </g>
 
-    <!-- Suspender cables -->
-    <div class="gg-suspender" style="left:18%;height:38px;"></div>
-    <div class="gg-suspender" style="left:22%;height:50px;"></div>
-    <div class="gg-suspender" style="left:26%;height:56px;"></div>
-    <div class="gg-suspender" style="left:37%;height:62px;"></div>
-    <div class="gg-suspender" style="left:41%;height:44px;"></div>
-    <div class="gg-suspender" style="left:45%;height:28px;"></div>
-    <div class="gg-suspender" style="left:48%;height:18px;"></div>
-    <div class="gg-suspender" style="left:52%;height:18px;"></div>
-    <div class="gg-suspender" style="left:55%;height:28px;"></div>
-    <div class="gg-suspender" style="left:59%;height:44px;"></div>
-    <div class="gg-suspender" style="left:70%;height:56px;"></div>
-    <div class="gg-suspender" style="left:74%;height:50px;"></div>
-    <div class="gg-suspender" style="left:78%;height:38px;"></div>
+      <!-- Front main cables -->
+      <g stroke="#c04010" fill="none">
+        <!-- Left side span -->
+        <path d="M 60,4 C 120,80 240,80 300,4" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+        <!-- Center main span -->
+        <path d="M 300,4 C 380,98 570,98 650,4" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+        <!-- Right side span -->
+        <path d="M 650,4 C 760,80 880,80 940,4" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+      </g>
+    </svg>
 
     <!-- Road deck -->
     <div class="gg-deck"></div>
 
-    <!-- Tower 1 -->
+    <!-- Tower 1 (south tower — closer to SF) -->
     <div class="gg-tower gg-tower-1">
       <div class="gg-tower-col left"></div>
       <div class="gg-tower-col right"></div>
-      <div class="gg-tower-cross"></div>
-      <div class="gg-tower-cross"></div>
-      <div class="gg-tower-cross"></div>
-      <div class="gg-tower-cross"></div>
+      <div class="gg-tower-strut"></div>
+      <div class="gg-tower-strut"></div>
+      <div class="gg-tower-strut"></div>
+      <div class="gg-tower-strut"></div>
+      <div class="gg-tower-strut"></div>
       <div class="gg-tower-cap"></div>
       <div class="gg-light"></div>
     </div>
 
-    <!-- Tower 2 -->
+    <!-- Tower 2 (north tower — closer to Marin) -->
     <div class="gg-tower gg-tower-2">
       <div class="gg-tower-col left"></div>
       <div class="gg-tower-col right"></div>
-      <div class="gg-tower-cross"></div>
-      <div class="gg-tower-cross"></div>
-      <div class="gg-tower-cross"></div>
-      <div class="gg-tower-cross"></div>
+      <div class="gg-tower-strut"></div>
+      <div class="gg-tower-strut"></div>
+      <div class="gg-tower-strut"></div>
+      <div class="gg-tower-strut"></div>
+      <div class="gg-tower-strut"></div>
       <div class="gg-tower-cap"></div>
       <div class="gg-light"></div>
     </div>
@@ -3538,22 +3577,24 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
 
   <!-- Bay water -->
   <div class="gg-bay"></div>
-  <div class="gg-reflection"></div>
+
+  <!-- Warm glow on water -->
+  <div class="gg-glow"></div>
 
   <!-- Fog layers -->
-  <div class="gg-fog" style="--fog-dur:45s;bottom:30px;">
-    <div class="gg-fog-wisp" style="left:0;top:0;width:260px;height:24px;"></div>
-    <div class="gg-fog-wisp" style="left:300px;top:4px;width:180px;height:18px;"></div>
-    <div class="gg-fog-wisp" style="left:520px;top:2px;width:140px;height:20px;"></div>
+  <div class="gg-fog" style="--fog-dur:50s;bottom:34px;">
+    <div class="gg-fog-wisp" style="left:0;top:0;width:300px;height:22px;"></div>
+    <div class="gg-fog-wisp" style="left:340px;top:4px;width:200px;height:16px;"></div>
+    <div class="gg-fog-wisp" style="left:600px;top:2px;width:180px;height:18px;"></div>
   </div>
-  <div class="gg-fog" style="--fog-dur:55s;bottom:22px;animation-delay:-20s;">
-    <div class="gg-fog-wisp" style="left:0;top:0;width:200px;height:20px;"></div>
-    <div class="gg-fog-wisp" style="left:240px;top:6px;width:280px;height:16px;"></div>
+  <div class="gg-fog" style="--fog-dur:65s;bottom:26px;animation-delay:-25s;">
+    <div class="gg-fog-wisp" style="left:0;top:0;width:240px;height:18px;"></div>
+    <div class="gg-fog-wisp" style="left:280px;top:4px;width:320px;height:14px;"></div>
   </div>
-  <div class="gg-fog" style="--fog-dur:35s;bottom:36px;animation-delay:-10s;">
-    <div class="gg-fog-wisp" style="left:0;top:0;width:160px;height:16px;"></div>
-    <div class="gg-fog-wisp" style="left:200px;top:2px;width:220px;height:14px;"></div>
-    <div class="gg-fog-wisp" style="left:460px;top:0;width:120px;height:18px;"></div>
+  <div class="gg-fog" style="--fog-dur:40s;bottom:40px;animation-delay:-12s;">
+    <div class="gg-fog-wisp" style="left:0;top:0;width:180px;height:14px;"></div>
+    <div class="gg-fog-wisp" style="left:220px;top:2px;width:240px;height:12px;"></div>
+    <div class="gg-fog-wisp" style="left:500px;top:0;width:160px;height:16px;"></div>
   </div>
 
   <span class="gg-label">San Francisco, CA</span>
@@ -4834,23 +4875,24 @@ button { font: inherit; color: inherit; background: none; border: none; cursor: 
       var rect = banner.getBoundingClientRect();
       var viewH = window.innerHeight;
       var progress = 1 - (rect.bottom / (viewH + rect.height));
-      var offset = (progress - 0.5) * 50;
+      var offset = (progress - 0.5) * 40;
 
       stars.forEach(function(s) {
-        s.style.transform = 'translateY(' + (offset * 0.3) + 'px)';
+        s.style.transform = 'translateY(' + (offset * 0.25) + 'px)';
       });
 
       hills.forEach(function(h, i) {
-        h.style.transform = 'translateY(' + (offset * (0.1 + i * 0.03)) + 'px)';
+        var depth = [0.06, 0.06, 0.09, 0.09, 0.12, 0.12];
+        h.style.transform = 'translateY(' + (offset * (depth[i] || 0.08)) + 'px)';
       });
 
-      if (bridge) bridge.style.transform = 'translateY(' + (offset * 0.06) + 'px)';
+      if (bridge) bridge.style.transform = 'translateY(' + (offset * 0.05) + 'px)';
 
       fogLayers.forEach(function(f) {
-        f.style.marginTop = (offset * 0.1) + 'px';
+        f.style.marginTop = (offset * 0.08) + 'px';
       });
 
-      if (label) label.style.transform = 'translateY(' + (offset * 0.04) + 'px)';
+      if (label) label.style.transform = 'translateY(' + (offset * 0.03) + 'px)';
 
       ticking = false;
     });
