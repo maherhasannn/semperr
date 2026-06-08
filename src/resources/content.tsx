@@ -19,31 +19,10 @@ const newsletter: Newsletter = {
 };
 
 const social: Social = [
-  // Links are automatically displayed.
-  // Import new icons in /once-ui/icons.ts
-  // Set essentials: true for links you want to show on the about page
-  {
-    name: "GitHub",
-    icon: "github",
-    link: "https://github.com/once-ui-system",
-    essential: true,
-  },
   {
     name: "LinkedIn",
     icon: "linkedin",
-    link: "https://www.linkedin.com/company/once-ui/",
-    essential: true,
-  },
-  {
-    name: "Instagram",
-    icon: "instagram",
-    link: "https://www.instagram.com/once_ui/",
-    essential: false,
-  },
-  {
-    name: "Threads",
-    icon: "threads",
-    link: "https://www.threads.com/@once_ui",
+    link: "https://www.linkedin.com/company/semperr/",
     essential: true,
   },
   {
@@ -58,34 +37,26 @@ const home: Home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: `${person.name}'s Portfolio`,
-  description: `Portfolio website showcasing my work as a ${person.role}`,
-  headline: <>Building bridges between design and code</>,
+  title: "Semperr — More Cases, Better Clients",
+  description: "Semperr is a data brokerage that helps law firms drive lead volume and connect with higher-value clients.",
+  headline: <>Your firm deserves a fuller pipeline</>,
   featured: {
-    display: true,
-    title: (
-      <Row gap="12" vertical="center">
-        <strong className="ml-4">Once UI</strong>{" "}
-        <Line background="brand-alpha-strong" vert height="20" />
-        <Text marginRight="4" onBackground="brand-medium">
-          Featured work
-        </Text>
-      </Row>
-    ),
-    href: "/work/building-once-ui-a-customizable-design-system",
+    display: false,
+    title: <></>,
+    href: "",
   },
   subline: (
     <>
-    I'm Selene, a design engineer at <Text as="span" size="xl" weight="strong">ONCE UI</Text>, where I craft intuitive <br /> user experiences. After hours, I build my own projects.
-</>
+      We partner with law firms to unlock <Text as="span" size="xl" weight="strong">high-intent leads</Text> through proprietary data sourcing — so you can focus on practicing law, not chasing clients.
+    </>
   ),
 };
 
 const about: About = {
   path: "/about",
   label: "About",
-  title: `About – ${person.name}`,
-  description: `Meet ${person.name}, ${person.role} from ${person.location}`,
+  title: "About Semperr",
+  description: "Learn how Semperr helps law firms grow through data-driven lead generation.",
   tableOfContent: {
     display: true,
     subItems: false,
@@ -99,55 +70,48 @@ const about: About = {
   },
   intro: {
     display: true,
-    title: "Introduction",
+    title: "Who We Are",
     description: (
       <>
-        Selene is a Jakarta-based design engineer with a passion for transforming complex challenges
-        into simple, elegant design solutions. Her work spans digital interfaces, interactive
-        experiences, and the convergence of design and technology.
+        Semperr is a data brokerage built for the legal industry. We connect law firms with
+        pre-qualified, high-intent leads — people actively seeking legal representation. Our
+        proprietary data sourcing and matching technology means your intake team spends less time
+        on cold outreach and more time signing retainers.
       </>
     ),
   },
   work: {
-    display: true, // set to false to hide this section
-    title: "Work Experience",
+    display: true,
+    title: "How We Work",
     experiences: [
       {
-        company: "FLY",
-        timeframe: "2022 - Present",
-        role: "Senior Design Engineer",
+        company: "Data Sourcing",
+        timeframe: "Step 1",
+        role: "Proprietary Lead Intelligence",
         achievements: [
           <>
-            Redesigned the UI/UX for the FLY platform, resulting in a 20% increase in user
-            engagement and 30% faster load times.
+            We aggregate and verify lead data from dozens of high-intent sources — court filings,
+            search behavior, form submissions, and more — so every lead we deliver is real and relevant.
           </>,
           <>
-            Spearheaded the integration of AI tools into design workflows, enabling designers to
-            iterate 50% faster.
+            Our data team continuously refines targeting to match your firm's practice areas,
+            geography, and ideal client profile.
           </>,
         ],
-        images: [
-          // optional: leave the array empty if you don't want to display images
-          {
-            src: "/images/projects/project-01/cover-01.jpg",
-            alt: "Once UI Project",
-            width: 16,
-            height: 9,
-          },
-        ],
+        images: [],
       },
       {
-        company: "Creativ3",
-        timeframe: "2018 - 2022",
-        role: "Lead Designer",
+        company: "Lead Delivery",
+        timeframe: "Step 2",
+        role: "Seamless Integration",
         achievements: [
           <>
-            Developed a design system that unified the brand across multiple platforms, improving
-            design consistency by 40%.
+            Qualified leads are delivered directly to your intake team in real time via your
+            preferred channel — CRM, email, phone, or custom API.
           </>,
           <>
-            Led a cross-functional team to launch a new product line, contributing to a 15% increase
-            in overall company revenue.
+            We work alongside your team to optimize conversion rates and ensure no opportunity
+            falls through the cracks.
           </>,
         ],
         images: [],
@@ -155,78 +119,38 @@ const about: About = {
     ],
   },
   studies: {
-    display: true, // set to false to hide this section
-    title: "Studies",
+    display: true,
+    title: "Why Law Firms Choose Us",
     institutions: [
       {
-        name: "University of Jakarta",
-        description: <>Studied software engineering.</>,
+        name: "Exclusive Partnerships",
+        description: <>We limit the number of firms we work with per market to protect lead quality and your competitive advantage.</>,
       },
       {
-        name: "Build the Future",
-        description: <>Studied online marketing and personal branding.</>,
+        name: "Transparent Reporting",
+        description: <>You always know where your leads come from, what they cost, and how they convert — no black boxes.</>,
       },
     ],
   },
   technical: {
-    display: true, // set to false to hide this section
-    title: "Technical skills",
+    display: true,
+    title: "Practice Areas We Serve",
     skills: [
       {
-        title: "Figma",
+        title: "Personal Injury",
         description: (
-          <>Able to prototype in Figma with Once UI with unnatural speed.</>
+          <>Auto accidents, slip and fall, medical malpractice, wrongful death — we source high-value PI leads at scale.</>
         ),
-        tags: [
-          {
-            name: "Figma",
-            icon: "figma",
-          },
-        ],
-        // optional: leave the array empty if you don't want to display images
-        images: [
-          {
-            src: "/images/projects/project-01/cover-02.jpg",
-            alt: "Project image",
-            width: 16,
-            height: 9,
-          },
-          {
-            src: "/images/projects/project-01/cover-03.jpg",
-            alt: "Project image",
-            width: 16,
-            height: 9,
-          },
-        ],
+        tags: [],
+        images: [],
       },
       {
-        title: "Next.js",
+        title: "Mass Tort",
         description: (
-          <>Building next gen apps with Next.js + Once UI + Supabase.</>
+          <>From emerging litigations to established MDLs, we connect your firm with claimants who qualify.</>
         ),
-        tags: [
-          {
-            name: "JavaScript",
-            icon: "javascript",
-          },
-          {
-            name: "Next.js",
-            icon: "nextjs",
-          },
-          {
-            name: "Supabase",
-            icon: "supabase",
-          },
-        ],
-        // optional: leave the array empty if you don't want to display images
-        images: [
-          {
-            src: "/images/projects/project-01/cover-04.jpg",
-            alt: "Project image",
-            width: 16,
-            height: 9,
-          },
-        ],
+        tags: [],
+        images: [],
       },
     ],
   },
@@ -234,68 +158,62 @@ const about: About = {
 
 const blog: Blog = {
   path: "/blog",
-  label: "Blog",
-  title: "Writing about design and tech...",
-  description: `Read what ${person.name} has been up to recently`,
-  // Create new blog posts by adding a new .mdx file to app/blog/posts
-  // All posts will be listed on the /blog route
+  label: "Insights",
+  title: "Insights for Law Firm Growth",
+  description: "Data-driven strategies, industry trends, and lead generation tactics for legal professionals.",
 };
 
 const work: Work = {
   path: "/work",
-  label: "Work",
-  title: `Projects – ${person.name}`,
-  description: `Design and dev projects by ${person.name}`,
-  // Create new project pages by adding a new .mdx file to app/blog/posts
-  // All projects will be listed on the /home and /work routes
+  label: "Case Studies",
+  title: "Case Studies — Semperr",
+  description: "See how we've helped law firms increase lead volume and sign more clients.",
 };
 
 const gallery: Gallery = {
   path: "/gallery",
-  label: "Gallery",
-  title: `Photo gallery – ${person.name}`,
-  description: `A photo collection by ${person.name}`,
-  // Images by https://lorant.one
-  // These are placeholder images, replace with your own
+  label: "Results",
+  title: "Results — Semperr",
+  description: "A look at the impact we've made for our law firm partners.",
   images: [
     {
       src: "/images/gallery/horizontal-1.jpg",
-      alt: "image",
+      alt: "Law firm growth metrics",
       orientation: "horizontal",
     },
     {
       src: "/images/gallery/vertical-4.jpg",
-      alt: "image",
+      alt: "Client success story",
       orientation: "vertical",
     },
     {
       src: "/images/gallery/horizontal-3.jpg",
-      alt: "image",
+      alt: "Lead volume dashboard",
       orientation: "horizontal",
     },
     {
       src: "/images/gallery/vertical-1.jpg",
-      alt: "image",
+      alt: "Partner firm spotlight",
       orientation: "vertical",
     },
     {
       src: "/images/gallery/vertical-2.jpg",
-      alt: "image",
+      alt: "Data sourcing process",
       orientation: "vertical",
     },
     {
       src: "/images/gallery/horizontal-2.jpg",
-      alt: "image",
+      alt: "Team collaboration",
       orientation: "horizontal",
     },
     {
       src: "/images/gallery/horizontal-4.jpg",
-      alt: "image",
+      alt: "Industry event",
       orientation: "horizontal",
     },
     {
       src: "/images/gallery/vertical-3.jpg",
-      alt: "image",
+      alt: "Semperr platform",
       orientation: "vertical",
     },
   ],
