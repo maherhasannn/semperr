@@ -3,7 +3,6 @@ import {
   Text,
   Button,
   Avatar,
-  RevealFx,
   Column,
   Badge,
   Row,
@@ -11,6 +10,7 @@ import {
   Meta,
   Line,
   Icon,
+  RevealFx,
 } from "@once-ui-system/core";
 import { home, about, person, baseURL, routes } from "@/resources";
 import { Mailchimp } from "@/components";

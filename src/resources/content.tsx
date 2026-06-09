@@ -165,9 +165,9 @@ const blog: Blog = {
 
 const work: Work = {
   path: "/work",
-  label: "Case Studies",
-  title: "Case Studies — Semperr",
-  description: "See how we've helped law firms increase lead volume and sign more clients.",
+  label: "Resources",
+  title: "Resources — Semperr",
+  description: "Tools and insights to help your firm measure and maximize lead generation ROI.",
 };
 
 const gallery: Gallery = {

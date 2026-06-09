@@ -53,7 +53,7 @@ export const Footer = () => {
               <Text variant="body-default-s" onBackground="neutral-weak">About</Text>
             </SmartLink>
             <SmartLink href="/work" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="neutral-weak">Case Studies</Text>
+              <Text variant="body-default-s" onBackground="neutral-weak">Resources</Text>
             </SmartLink>
             <SmartLink href="/blog" style={{ textDecoration: "none" }}>
               <Text variant="body-default-s" onBackground="neutral-weak">Insights</Text>
