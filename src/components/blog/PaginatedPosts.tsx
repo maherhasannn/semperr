@@ -32,8 +32,8 @@ export function PaginatedPosts({
   return (
     <>
       <Grid columns={columns} s={{ columns: 1 }} fillWidth marginBottom="40" gap="16">
-        {displayed.map((post) => (
-          <Post key={post.slug} post={post} thumbnail={thumbnail} direction={direction} />
+        {displayed.map((post, i) => (
+          <Post key={post.slug} post={post} thumbnail={thumbnail} direction={direction} index={i} />
         ))}
       </Grid>
       {page < totalPages && (
