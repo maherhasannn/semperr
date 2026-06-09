@@ -38,7 +38,7 @@ export async function GET() {
       <description><![CDATA[${post.metadata.summary}]]></description>
       ${post.metadata.image ? `<enclosure url="${baseURL}${post.metadata.image}" type="image/jpeg" />` : ""}
       ${post.metadata.tag ? `<category>${post.metadata.tag}</category>` : ""}
-      <author>${person.email || "noreply@example.com"} (${person.name})</author>
+      <author>${person.email || "noreply@example.com"} (${post.metadata.team?.[0]?.name || person.name})</author>
     </item>`,
       )
       .join("")}
