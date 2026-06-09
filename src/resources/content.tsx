@@ -37,7 +37,7 @@ const home: Home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: "Semperr — More Cases, Better Clients",
+  title: "Semperr — The Case Rests With Us",
   description: "Semperr is a data brokerage that helps law firms drive lead volume and connect with higher-value clients.",
   headline: <>The Case Rests With Us</>,
   featured: {
@@ -55,7 +55,7 @@ const home: Home = {
 const about: About = {
   path: "/about",
   label: "About",
-  title: "About Semperr",
+  title: "About — Built for Firms That Win | Semperr",
   description: "Learn how Semperr helps law firms grow through data-driven lead generation.",
   tableOfContent: {
     display: true,
@@ -159,22 +159,22 @@ const about: About = {
 const blog: Blog = {
   path: "/blog",
   label: "Insights",
-  title: "Insights for Law Firm Growth",
+  title: "Insights — Sharper Strategies for Sharper Firms | Semperr",
   description: "Data-driven strategies, industry trends, and lead generation tactics for legal professionals.",
 };
 
 const work: Work = {
   path: "/work",
   label: "Resources",
-  title: "Resources — Semperr",
+  title: "ROI Calculator — Know Your Numbers | Semperr",
   description: "Tools and insights to help your firm measure and maximize lead generation ROI.",
 };
 
 const gallery: Gallery = {
   path: "/gallery",
-  label: "Results",
-  title: "Results — Semperr",
-  description: "A look at the impact we've made for our law firm partners.",
+  label: "Request a Demo",
+  title: "Request a Demo — See Semperr in Action",
+  description: "Schedule a call to see how Semperr can deliver qualified leads to your firm.",
   images: [
     {
       src: "/images/gallery/horizontal-1.jpg",

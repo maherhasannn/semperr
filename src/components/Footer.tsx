@@ -58,8 +58,8 @@ export const Footer = () => {
             <SmartLink href="/blog" style={{ textDecoration: "none" }}>
               <Text variant="body-default-s" onBackground="neutral-weak">Insights</Text>
             </SmartLink>
-            <SmartLink href="/gallery" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="neutral-weak">Results</Text>
+            <SmartLink href="https://cal.com/maherhasan" style={{ textDecoration: "none" }}>
+              <Text variant="body-default-s" onBackground="neutral-weak">Request a Demo</Text>
             </SmartLink>
           </Column>
         </Column>
