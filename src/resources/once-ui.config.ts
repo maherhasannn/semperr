@@ -23,6 +23,7 @@ const routes: RoutesConfig = {
   "/gallery": false,
   "/terms": true,
   "/privacy": true,
+  "/pricing": true,
 };
 
 const display: DisplayConfig = {

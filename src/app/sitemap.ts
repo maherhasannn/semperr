@@ -12,8 +12,11 @@ export default async function sitemap() {
     lastModified: post.metadata.publishedAt,
   }));
 
+  const hiddenRoutes = ["/pricing"];
   const activeRoutes = Object.keys(routesConfig).filter(
-    (route) => routesConfig[route as keyof typeof routesConfig],
+    (route) =>
+      routesConfig[route as keyof typeof routesConfig] &&
+      !hiddenRoutes.includes(route),
   );
 
   const routes = activeRoutes.map((route) => ({
