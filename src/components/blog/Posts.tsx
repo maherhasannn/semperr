@@ -8,6 +8,7 @@ interface PostsProps {
   thumbnail?: boolean;
   direction?: "row" | "column";
   exclude?: string[];
+  indexOffset?: number;
 }
 
 export function Posts({
@@ -16,6 +17,7 @@ export function Posts({
   thumbnail = false,
   exclude = [],
   direction,
+  indexOffset = 0,
 }: PostsProps) {
   let allBlogs = getPosts(["src", "app", "blog", "posts"]);
 
@@ -37,7 +39,7 @@ export function Posts({
       {displayedBlogs.length > 0 && (
         <Grid columns={columns} s={{ columns: 1 }} fillWidth marginBottom="40" gap="16">
           {displayedBlogs.map((post, i) => (
-            <Post key={post.slug} post={post} thumbnail={thumbnail} direction={direction} index={i} />
+            <Post key={post.slug} post={post} thumbnail={thumbnail} direction={direction} index={indexOffset + i} />
           ))}
         </Grid>
       )}

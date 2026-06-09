@@ -39,13 +39,13 @@ export default function Blog() {
         {blog.title}
       </Heading>
       <Column fillWidth flex={1} gap="40">
-        <Posts range={[1, 1]} thumbnail />
-        <Posts range={[2, 3]} columns="2" thumbnail direction="column" />
+        <Posts range={[1, 1]} thumbnail indexOffset={0} />
+        <Posts range={[2, 3]} columns="2" thumbnail direction="column" indexOffset={1} />
         <Mailchimp marginBottom="l" />
         <Heading as="h2" variant="heading-strong-xl" marginLeft="l">
           Earlier posts
         </Heading>
-        <PaginatedPosts posts={earlierPosts} columns="2" perPage={10} />
+        <PaginatedPosts posts={earlierPosts} columns="2" perPage={10} indexOffset={3} />
       </Column>
     </Column>
   );

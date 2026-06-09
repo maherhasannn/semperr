@@ -14,6 +14,7 @@ interface PaginatedPostsProps {
   thumbnail?: boolean;
   direction?: "row" | "column";
   perPage?: number;
+  indexOffset?: number;
 }
 
 export function PaginatedPosts({
@@ -22,6 +23,7 @@ export function PaginatedPosts({
   thumbnail = false,
   direction,
   perPage = 10,
+  indexOffset = 0,
 }: PaginatedPostsProps) {
   const [page, setPage] = useState(1);
   const totalPages = Math.ceil(posts.length / perPage);
@@ -33,7 +35,7 @@ export function PaginatedPosts({
     <>
       <Grid columns={columns} s={{ columns: 1 }} fillWidth marginBottom="40" gap="16">
         {displayed.map((post, i) => (
-          <Post key={post.slug} post={post} thumbnail={thumbnail} direction={direction} index={i} />
+          <Post key={post.slug} post={post} thumbnail={thumbnail} direction={direction} index={indexOffset + i} />
         ))}
       </Grid>
       {page < totalPages && (
