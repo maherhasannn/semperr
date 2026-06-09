@@ -117,19 +117,17 @@ export default async function Blog({ params }: { params: Promise<{ slug: string 
               </Text>
             </Row>
           </Row>
-          {post.metadata.image && (
-            <Media
-              src={post.metadata.image}
-              alt={post.metadata.title}
-              aspectRatio="16/9"
-              priority
-              sizes="(min-width: 768px) 100vw, 768px"
-              border="neutral-alpha-weak"
-              radius="l"
-              marginTop="12"
-              marginBottom="8"
-            />
-          )}
+          <Media
+            src="/images/blog-article.png"
+            alt={post.metadata.title}
+            aspectRatio="16/9"
+            priority
+            sizes="(min-width: 768px) 100vw, 768px"
+            border="neutral-alpha-weak"
+            radius="l"
+            marginTop="12"
+            marginBottom="8"
+          />
           <Column as="article" maxWidth="s">
             <CustomMDX source={post.content} />
           </Column>
