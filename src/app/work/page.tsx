@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   Column,
   Heading,
@@ -76,7 +77,7 @@ export default function Work() {
             style={{ maxWidth: "560px" }}
           >
             This calculator estimates the revenue impact of partnering with Semperr,
-            using conservative assumptions informed by our client data.
+            based on real performance data from our clients.
           </Text>
         </RevealFx>
       </Column>
@@ -156,15 +157,12 @@ export default function Work() {
         overflow="hidden"
         style={{ position: "relative" }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: "url(/images/cta-bg.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: 1,
-          }}
+        <Image
+          src="/images/cta-bg.png"
+          alt=""
+          fill
+          sizes="100vw"
+          style={{ objectFit: "cover" }}
         />
         <div
           style={{

@@ -1,21 +1,110 @@
-import { Column, Row, Line, SmartLink, Text, IconButton } from "@once-ui-system/core";
-import { social } from "@/resources";
+import { Column, Row, Line, SmartLink, Text, Icon } from "@once-ui-system/core";
+
+const footerLink = { textDecoration: "none" };
+
+function FooterLink({ href, children }: { href: string; children: string }) {
+  return (
+    <SmartLink href={href} style={footerLink}>
+      <Row gap="8" vertical="center">
+        <Text variant="body-default-s" onBackground="neutral-weak">
+          {children}
+        </Text>
+        <Icon name="arrowRight" size="xs" onBackground="neutral-weak" />
+      </Row>
+    </SmartLink>
+  );
+}
 
 export const Footer = () => {
-  const currentYear = new Date().getFullYear();
-
   return (
-    <Column as="footer" fillWidth paddingTop="64" paddingBottom="32" paddingX="l" gap="48" horizontal="center">
+    <Column as="footer" fillWidth paddingTop="80" paddingX="l" horizontal="center">
       <Line fillWidth background="neutral-alpha-weak" />
+
       <Row
         fillWidth
-        maxWidth="m"
+        maxWidth="l"
+        paddingY="64"
         gap="xl"
         horizontal="between"
-        s={{ direction: "column", gap: "xl" }}
+        wrap
+        s={{ direction: "column", gap: "48" }}
       >
-        {/* Brand column */}
-        <Column gap="16" minWidth={200}>
+        {/* Platform */}
+        <Column gap="16" style={{ minWidth: "160px" }}>
+          <Text variant="label-strong-s" onBackground="neutral-strong">
+            Platform
+          </Text>
+          <Column gap="12">
+            <FooterLink href="/about">Lead Intelligence</FooterLink>
+            <FooterLink href="/about">Data Sources</FooterLink>
+            <FooterLink href="/about">Real-Time Delivery</FooterLink>
+            <FooterLink href="/work">ROI Calculator</FooterLink>
+          </Column>
+        </Column>
+
+        {/* Solutions */}
+        <Column gap="16" style={{ minWidth: "160px" }}>
+          <Text variant="label-strong-s" onBackground="neutral-strong">
+            Solutions
+          </Text>
+          <Column gap="12">
+            <FooterLink href="/about">Personal Injury</FooterLink>
+            <FooterLink href="/about">Mass Tort</FooterLink>
+            <FooterLink href="/about">Medical Malpractice</FooterLink>
+            <FooterLink href="/about">Workers&#39; Compensation</FooterLink>
+          </Column>
+        </Column>
+
+        {/* Company */}
+        <Column gap="16" style={{ minWidth: "160px" }}>
+          <Text variant="label-strong-s" onBackground="neutral-strong">
+            Company
+          </Text>
+          <Column gap="12">
+            <FooterLink href="/about">About</FooterLink>
+            <FooterLink href="/blog">Newsroom</FooterLink>
+            <FooterLink href="https://cal.com/maherhasan">Request a Demo</FooterLink>
+            <FooterLink href="mailto:join@semperr.com">Contact</FooterLink>
+          </Column>
+        </Column>
+
+        {/* Resources */}
+        <Column gap="16" style={{ minWidth: "160px" }}>
+          <Text variant="label-strong-s" onBackground="neutral-strong">
+            Resources
+          </Text>
+          <Column gap="12">
+            <FooterLink href="/blog">Blog</FooterLink>
+            <FooterLink href="/work">Resources Hub</FooterLink>
+            <FooterLink href="/blog">Case Studies</FooterLink>
+          </Column>
+        </Column>
+
+        {/* Legal */}
+        <Column gap="16" style={{ minWidth: "160px" }}>
+          <Text variant="label-strong-s" onBackground="neutral-strong">
+            Legal
+          </Text>
+          <Column gap="12">
+            <FooterLink href="/terms">Terms &amp; Conditions</FooterLink>
+            <FooterLink href="/privacy">Privacy Policy</FooterLink>
+          </Column>
+        </Column>
+      </Row>
+
+      <Line fillWidth background="neutral-alpha-weak" />
+
+      {/* Bottom bar */}
+      <Row
+        fillWidth
+        maxWidth="l"
+        paddingY="24"
+        horizontal="between"
+        vertical="center"
+        gap="24"
+        s={{ direction: "column", gap: "16", horizontal: "center" }}
+      >
+        <Row gap="24" vertical="center">
           <Text
             variant="heading-default-s"
             onBackground="neutral-weak"
@@ -23,95 +112,23 @@ export const Footer = () => {
           >
             Semperr
           </Text>
-          <Text variant="body-default-s" onBackground="neutral-weak" style={{ maxWidth: "240px" }}>
-            Data brokerage for law firms. Pre-qualified leads, delivered.
+          <Text variant="body-default-xs" onBackground="neutral-weak">
+            &copy; 2026 Harvey AI Corporation. All rights reserved.
           </Text>
-          <Row gap="8">
-            {social.map(
-              (item) =>
-                item.link && (
-                  <IconButton
-                    key={item.name}
-                    href={item.link}
-                    icon={item.icon}
-                    tooltip={item.name}
-                    size="s"
-                    variant="ghost"
-                  />
-                ),
-            )}
-          </Row>
-        </Column>
-
-        {/* Navigation column */}
-        <Column gap="16" minWidth={120}>
-          <Text variant="label-strong-s" onBackground="neutral-strong">
-            Company
+        </Row>
+        <Row gap="16" vertical="center">
+          <Text variant="label-strong-xs" onBackground="neutral-weak">
+            Follow
           </Text>
-          <Column gap="8">
-            <SmartLink href="/about" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="neutral-weak">About</Text>
-            </SmartLink>
-            <SmartLink href="/work" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="neutral-weak">Resources</Text>
-            </SmartLink>
-            <SmartLink href="/blog" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="neutral-weak">Insights</Text>
-            </SmartLink>
-            <SmartLink href="https://cal.com/maherhasan" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="neutral-weak">Request a Demo</Text>
-            </SmartLink>
-          </Column>
-        </Column>
-
-        {/* Legal column */}
-        <Column gap="16" minWidth={120}>
-          <Text variant="label-strong-s" onBackground="neutral-strong">
-            Legal
-          </Text>
-          <Column gap="8">
-            <SmartLink href="/terms" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="neutral-weak">Terms &amp; Conditions</Text>
-            </SmartLink>
-            <SmartLink href="/privacy" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="neutral-weak">Privacy Policy</Text>
-            </SmartLink>
-          </Column>
-        </Column>
-
-        {/* Contact column */}
-        <Column gap="16" minWidth={180}>
-          <Text variant="label-strong-s" onBackground="neutral-strong">
-            Contact
-          </Text>
-          <Column gap="8">
-            <SmartLink href="mailto:join@semperr.com" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="neutral-weak">join@semperr.com</Text>
-            </SmartLink>
-            <SmartLink href="tel:+19295053099" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="neutral-weak">(929) 505-3099</Text>
-            </SmartLink>
-            <Text variant="body-default-s" onBackground="neutral-weak">
-              99 Wall St<br />New York, NY 10005
+          <SmartLink href="https://www.linkedin.com/company/semperr/" style={footerLink}>
+            <Text variant="body-default-xs" onBackground="neutral-weak">
+              LinkedIn
             </Text>
-            <SmartLink href="https://cal.com/maherhasan" style={{ textDecoration: "none" }}>
-              <Text variant="body-default-s" onBackground="brand-strong">Schedule a Call</Text>
-            </SmartLink>
-          </Column>
-        </Column>
-      </Row>
-
-      {/* Bottom bar */}
-      <Row fillWidth maxWidth="m" horizontal="between" vertical="center" s={{ direction: "column", gap: "8" }}>
-        <Text variant="body-default-xs" onBackground="neutral-weak">
-          &copy; {currentYear} Semperr. All rights reserved.
-        </Text>
-        <Row gap="16">
-          <SmartLink href="/terms" style={{ textDecoration: "none" }}>
-            <Text variant="body-default-xs" onBackground="neutral-weak">Terms</Text>
           </SmartLink>
-          <SmartLink href="/privacy" style={{ textDecoration: "none" }}>
-            <Text variant="body-default-xs" onBackground="neutral-weak">Privacy</Text>
+          <SmartLink href="https://x.com/semperr" style={footerLink}>
+            <Text variant="body-default-xs" onBackground="neutral-weak">
+              X
+            </Text>
           </SmartLink>
         </Row>
       </Row>

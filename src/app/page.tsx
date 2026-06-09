@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   Heading,
   Text,
@@ -158,15 +159,12 @@ export default function Home() {
             position: "relative",
           }}
         >
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              backgroundImage: "url(/images/cta-bg.png)",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              opacity: 0.9,
-            }}
+          <Image
+            src="/images/cta-bg.png"
+            alt=""
+            fill
+            sizes="100vw"
+            style={{ objectFit: "cover", opacity: 0.9 }}
           />
           <div
             style={{

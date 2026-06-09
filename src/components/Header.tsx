@@ -1,9 +1,19 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
-import { Fade, Flex, Line, Row, SmartLink, Text, ToggleButton } from "@once-ui-system/core";
+import {
+  Column,
+  Fade,
+  Flex,
+  IconButton,
+  Line,
+  Row,
+  SmartLink,
+  Text,
+  ToggleButton,
+} from "@once-ui-system/core";
 
 import { routes, display, person, about, blog, work } from "@/resources";
 import { ThemeToggle } from "./ThemeToggle";
@@ -11,7 +21,7 @@ import styles from "./Header.module.scss";
 
 type TimeDisplayProps = {
   timeZone: string;
-  locale?: string; // Optionally allow locale, defaulting to 'en-GB'
+  locale?: string;
 };
 
 const TimeDisplay: React.FC<TimeDisplayProps> = ({ timeZone, locale = "en-GB" }) => {
@@ -44,13 +54,33 @@ export default TimeDisplay;
 
 export const Header = () => {
   const pathname = usePathname() ?? "";
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
+
+  useEffect(() => {
+    closeMobileMenu();
+  }, [pathname, closeMobileMenu]);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
 
   return (
     <>
-      <Fade s={{ hide: true }} fillWidth position="fixed" height="80" zIndex={9} />
+      {/* Desktop fade overlays */}
+      <Fade className={styles.desktopOnly} fillWidth position="fixed" height="80" zIndex={9} />
+
+      {/* Mobile bottom fade */}
       <Fade
-        hide
-        s={{ hide: false }}
+        className={styles.mobileOnly}
         fillWidth
         position="fixed"
         bottom="0"
@@ -58,9 +88,11 @@ export const Header = () => {
         height="80"
         zIndex={9}
       />
+
+      {/* Desktop header */}
       <Row
         fitHeight
-        className={styles.position}
+        className={`${styles.position} ${styles.desktopOnly}`}
         position="sticky"
         as="header"
         zIndex={9}
@@ -68,9 +100,6 @@ export const Header = () => {
         padding="8"
         horizontal="center"
         data-border="rounded"
-        s={{
-          position: "fixed",
-        }}
       >
         <Row paddingLeft="32" fillWidth vertical="center">
           <SmartLink href="/" style={{ textDecoration: "none" }}>
@@ -93,81 +122,40 @@ export const Header = () => {
             horizontal="center"
             zIndex={1}
           >
-            <Row gap="4" vertical="center" textVariant="body-default-s" suppressHydrationWarning>
+            <Row gap="4" vertical="center" textVariant="body-default-s">
               {routes["/"] && (
                 <ToggleButton prefixIcon="home" href="/" selected={pathname === "/"} />
               )}
               <Line background="neutral-alpha-medium" vert maxHeight="24" />
               {routes["/about"] && (
-                <>
-                  <Row s={{ hide: true }}>
-                    <ToggleButton
-                      prefixIcon="person"
-                      href="/about"
-                      label={about.label}
-                      selected={pathname === "/about"}
-                    />
-                  </Row>
-                  <Row hide s={{ hide: false }}>
-                    <ToggleButton
-                      prefixIcon="person"
-                      href="/about"
-                      selected={pathname === "/about"}
-                    />
-                  </Row>
-                </>
+                <ToggleButton
+                  prefixIcon="person"
+                  href="/about"
+                  label={about.label}
+                  selected={pathname === "/about"}
+                />
               )}
               {routes["/work"] && (
-                <>
-                  <Row s={{ hide: true }}>
-                    <ToggleButton
-                      prefixIcon="grid"
-                      href="/work"
-                      label={work.label}
-                      selected={pathname.startsWith("/work")}
-                    />
-                  </Row>
-                  <Row hide s={{ hide: false }}>
-                    <ToggleButton
-                      prefixIcon="grid"
-                      href="/work"
-                      selected={pathname.startsWith("/work")}
-                    />
-                  </Row>
-                </>
+                <ToggleButton
+                  prefixIcon="grid"
+                  href="/work"
+                  label={work.label}
+                  selected={pathname.startsWith("/work")}
+                />
               )}
               {routes["/blog"] && (
-                <>
-                  <Row s={{ hide: true }}>
-                    <ToggleButton
-                      prefixIcon="book"
-                      href="/blog"
-                      label={blog.label}
-                      selected={pathname.startsWith("/blog")}
-                    />
-                  </Row>
-                  <Row hide s={{ hide: false }}>
-                    <ToggleButton
-                      prefixIcon="book"
-                      href="/blog"
-                      selected={pathname.startsWith("/blog")}
-                    />
-                  </Row>
-                </>
+                <ToggleButton
+                  prefixIcon="book"
+                  href="/blog"
+                  label={blog.label}
+                  selected={pathname.startsWith("/blog")}
+                />
               )}
-              <Row s={{ hide: true }}>
-                <ToggleButton
-                  prefixIcon="calendar"
-                  href="https://cal.com/maherhasan"
-                  label="Request a Demo"
-                />
-              </Row>
-              <Row hide s={{ hide: false }}>
-                <ToggleButton
-                  prefixIcon="calendar"
-                  href="https://cal.com/maherhasan"
-                />
-              </Row>
+              <ToggleButton
+                prefixIcon="calendar"
+                href="https://cal.com/maherhasan"
+                label="Request a Demo"
+              />
               {display.themeSwitcher && (
                 <>
                   <Line background="neutral-alpha-medium" vert maxHeight="24" />
@@ -185,12 +173,117 @@ export const Header = () => {
             textVariant="body-default-s"
             gap="20"
           >
-            <Flex s={{ hide: true }}>
-              {display.time && <TimeDisplay timeZone={person.location} />}
-            </Flex>
+            {display.time && <TimeDisplay timeZone={person.location} />}
           </Flex>
         </Flex>
       </Row>
+
+      {/* Mobile bottom bar */}
+      <Row
+        as="header"
+        className={`${styles.mobileBar} ${styles.mobileOnly}`}
+        position="fixed"
+        bottom="0"
+        zIndex={10}
+        fillWidth
+        padding="8"
+        horizontal="center"
+      >
+        <Row
+          fillWidth
+          background="page"
+          border="neutral-alpha-weak"
+          radius="m-4"
+          shadow="l"
+          padding="4"
+          paddingX="16"
+          horizontal="between"
+          vertical="center"
+        >
+          <SmartLink href="/" style={{ textDecoration: "none" }}>
+            <Text
+              variant="heading-default-s"
+              onBackground="neutral-weak"
+              style={{ letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 400 }}
+            >
+              Semperr
+            </Text>
+          </SmartLink>
+          <Row gap="8" vertical="center">
+            {display.themeSwitcher && <ThemeToggle />}
+            <IconButton
+              icon={mobileMenuOpen ? "close" : "menu"}
+              variant="ghost"
+              size="m"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            />
+          </Row>
+        </Row>
+      </Row>
+
+      {/* Mobile fullscreen overlay menu */}
+      {mobileMenuOpen && (
+        <Column
+          className={styles.mobileOverlay}
+          position="fixed"
+          zIndex={9}
+          fillWidth
+          background="page"
+          horizontal="center"
+          paddingX="l"
+          paddingTop="64"
+          paddingBottom="104"
+          gap="8"
+          style={{ inset: 0, overflowY: "auto" }}
+        >
+          <Column fillWidth maxWidth="s" gap="8">
+            {routes["/"] && (
+              <ToggleButton
+                fillWidth
+                prefixIcon="home"
+                href="/"
+                label="Home"
+                selected={pathname === "/"}
+              />
+            )}
+            {routes["/about"] && (
+              <ToggleButton
+                fillWidth
+                prefixIcon="person"
+                href="/about"
+                label={about.label}
+                selected={pathname === "/about"}
+              />
+            )}
+            {routes["/work"] && (
+              <ToggleButton
+                fillWidth
+                prefixIcon="grid"
+                href="/work"
+                label={work.label}
+                selected={pathname.startsWith("/work")}
+              />
+            )}
+            {routes["/blog"] && (
+              <ToggleButton
+                fillWidth
+                prefixIcon="book"
+                href="/blog"
+                label={blog.label}
+                selected={pathname.startsWith("/blog")}
+              />
+            )}
+            <Line fillWidth background="neutral-alpha-weak" marginY="8" />
+            <ToggleButton
+              fillWidth
+              prefixIcon="calendar"
+              href="https://cal.com/maherhasan"
+              label="Request a Demo"
+            />
+          </Column>
+        </Column>
+      )}
     </>
   );
 };

@@ -8,14 +8,35 @@
     mask-size: 100% 100%;
 }
 
-@media (max-width: breakpoints.$s) {
-    .position {
-        top: auto;
-        bottom: var(--static-space-24);
-    }
+.desktopOnly {
+    display: flex;
 
-    .mask {
-        transform: rotate(180deg);
-        bottom: 0;
+    @include breakpoints.s {
+        display: none !important;
+    }
+}
+
+.mobileOnly {
+    display: none !important;
+
+    @include breakpoints.s {
+        display: flex !important;
+    }
+}
+
+.mobileBar {
+    bottom: var(--static-space-24);
+}
+
+.mobileOverlay {
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
     }
 }

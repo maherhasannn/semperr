@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   Column,
   Heading,
@@ -201,15 +202,12 @@ export default function Gallery() {
         overflow="hidden"
         style={{ position: "relative" }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: "url(/images/cta-bg.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: 1,
-          }}
+        <Image
+          src="/images/cta-bg.png"
+          alt=""
+          fill
+          sizes="100vw"
+          style={{ objectFit: "cover" }}
         />
         <div
           style={{

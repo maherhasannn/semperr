@@ -37,7 +37,7 @@ const home: Home = {
   path: "/",
   image: "/images/og/home.jpg",
   label: "Home",
-  title: "Semperr — The Case Rests With Us",
+  title: "Semperr | The Case Rests With Us",
   description: "Semperr is a data brokerage that helps law firms drive lead volume and connect with higher-value clients.",
   headline: <>The Case Rests With Us</>,
   featured: {
@@ -55,7 +55,7 @@ const home: Home = {
 const about: About = {
   path: "/about",
   label: "About",
-  title: "About — Built for Firms That Win | Semperr",
+  title: "About - Built for Firms That Win | Semperr",
   description: "Learn how Semperr helps law firms grow through data-driven lead generation.",
   tableOfContent: {
     display: true,

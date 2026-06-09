@@ -1,3 +1,4 @@
+import Image from "next/image";
 import {
   Button,
   Column,
@@ -120,15 +121,12 @@ export default function About() {
         overflow="hidden"
         style={{ position: "relative" }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: "url(/images/about-mission-bg.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center top",
-            opacity: 1,
-          }}
+        <Image
+          src="/images/about-mission-bg.png"
+          alt=""
+          fill
+          sizes="100vw"
+          style={{ objectFit: "cover", objectPosition: "center top" }}
         />
         <div
           style={{
@@ -233,15 +231,12 @@ export default function About() {
         overflow="hidden"
         style={{ position: "relative", minHeight: "600px" }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: "url(/images/about-values-bg.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: 1,
-          }}
+        <Image
+          src="/images/about-values-bg.png"
+          alt=""
+          fill
+          sizes="100vw"
+          style={{ objectFit: "cover" }}
         />
         <div
           style={{
@@ -354,15 +349,12 @@ export default function About() {
         overflow="hidden"
         style={{ position: "relative" }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: "url(/images/projects/project-01/hero-02.png)",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            opacity: 0.9,
-          }}
+        <Image
+          src="/images/projects/project-01/hero-02.png"
+          alt=""
+          fill
+          sizes="100vw"
+          style={{ objectFit: "cover", opacity: 0.9 }}
         />
         <div
           style={{

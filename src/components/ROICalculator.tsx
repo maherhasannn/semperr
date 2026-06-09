@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { Column, Row, Heading, Text, Line } from "@once-ui-system/core";
 import styles from "./ROICalculator.module.scss";
 
@@ -218,15 +219,12 @@ export function ROICalculator() {
               overflow="hidden"
               style={{ position: "relative", ...blurStyle }}
             >
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  backgroundImage: "url(/images/cta-bg.png)",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  opacity: 0.2,
-                }}
+              <Image
+                src="/images/cta-bg.png"
+                alt=""
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                style={{ objectFit: "cover", opacity: 0.2 }}
               />
               <div
                 style={{
@@ -356,7 +354,7 @@ export function ROICalculator() {
 
       {/* Disclaimer */}
       <Text variant="body-default-xs" onBackground="neutral-weak" align="center">
-        Results are estimates based on conservative assumptions informed by Semperr client data.
+        Results are estimates based on real performance data from Semperr clients.
         Actual results vary by practice area, geography, and firm capacity.
       </Text>
     </Column>
