@@ -10,6 +10,7 @@ import {
   Schema,
   Meta,
   Line,
+  Icon,
 } from "@once-ui-system/core";
 import { home, about, person, baseURL, routes } from "@/resources";
 import { Mailchimp } from "@/components";
@@ -71,38 +72,139 @@ export default function Home() {
             </Heading>
           </RevealFx>
           <RevealFx translateY="8" delay={0.2} fillWidth horizontal="center" paddingBottom="32">
-            <Text wrap="balance" onBackground="neutral-weak" variant="heading-default-xl">
+            <Text wrap="balance" onBackground="neutral-weak" variant="body-default-m">
               {home.subline}
             </Text>
-          </RevealFx>
-          <RevealFx paddingTop="12" delay={0.4} horizontal="center" paddingLeft="12">
-            <Button
-              id="about"
-              data-border="rounded"
-              href={about.path}
-              variant="secondary"
-              size="m"
-              weight="default"
-              arrowIcon
-            >
-              <Row gap="8" vertical="center" paddingRight="4">
-                {about.avatar.display && (
-                  <Avatar
-                    marginRight="8"
-                    style={{ marginLeft: "-0.75rem" }}
-                    src={person.avatar}
-                    size="m"
-                  />
-                )}
-                {about.title}
-              </Row>
-            </Button>
           </RevealFx>
         </Column>
       </Column>
       <RevealFx translateY="16" delay={0.6}>
         <Projects range={[1, 1]} />
       </RevealFx>
+
+      {/* Stats bar */}
+      <RevealFx translateY="8">
+        <Row
+          fillWidth
+          horizontal="center"
+          gap="xl"
+          paddingY="48"
+          s={{ direction: "column", gap: "l", horizontal: "center", align: "center" }}
+        >
+          {[
+            { value: "500+", label: "Law Firms Served" },
+            { value: "2M+", label: "Leads Delivered" },
+            { value: "35+", label: "States Covered" },
+            { value: "97%", label: "Client Retention" },
+          ].map((stat) => (
+            <Column key={stat.label} horizontal="center" align="center" gap="4">
+              <Text variant="display-strong-l" onBackground="brand-strong">
+                {stat.value}
+              </Text>
+              <Text variant="body-default-s" onBackground="neutral-weak">
+                {stat.label}
+              </Text>
+            </Column>
+          ))}
+        </Row>
+      </RevealFx>
+
+      <Projects range={[2, 2]} />
+
+      {/* Testimonial */}
+      <RevealFx translateY="8">
+        <Column
+          fillWidth
+          horizontal="center"
+          align="center"
+          paddingY="48"
+          paddingX="l"
+          gap="20"
+        >
+          <Text
+            variant="heading-default-l"
+            onBackground="neutral-strong"
+            wrap="balance"
+            style={{ fontStyle: "italic", textAlign: "center" }}
+          >
+            &ldquo;Semperr transformed our intake process. We went from chasing leads to choosing
+            clients — our caseload doubled in six months.&rdquo;
+          </Text>
+          <Column horizontal="center" align="center" gap="4">
+            <Text variant="body-strong-s" onBackground="neutral-strong">
+              Managing Partner
+            </Text>
+            <Text variant="body-default-s" onBackground="neutral-weak">
+              Top 50 Personal Injury Firm, Florida
+            </Text>
+          </Column>
+        </Column>
+      </RevealFx>
+
+      <Projects range={[3, 3]} />
+
+      {/* CTA banner */}
+      <RevealFx translateY="8" fillWidth>
+        <Column
+          fillWidth
+          horizontal="center"
+          align="center"
+          paddingY="80"
+          paddingX="l"
+          gap="24"
+          radius="xl"
+          overflow="hidden"
+          style={{
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: "url(/images/cta-bg.png)",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              opacity: 0.9,
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.85))",
+            }}
+          />
+          <Heading
+            as="h2"
+            variant="display-strong-m"
+            wrap="balance"
+            align="center"
+            style={{ position: "relative", zIndex: 1 }}
+          >
+            Ready to fill your pipeline?
+          </Heading>
+          <Text
+            variant="body-default-m"
+            onBackground="neutral-weak"
+            wrap="balance"
+            align="center"
+            style={{ position: "relative", zIndex: 1 }}
+          >
+            Schedule a call to see how Semperr can deliver qualified leads to your firm.
+          </Text>
+          <Button
+            href="https://cal.com/maherhasan"
+            variant="secondary"
+            size="m"
+            arrowIcon
+            style={{ position: "relative", zIndex: 1 }}
+          >
+            Schedule a Call
+          </Button>
+        </Column>
+      </RevealFx>
+
       {routes["/blog"] && (
         <Column fillWidth gap="24" marginBottom="l">
           <Row fillWidth paddingRight="64">
@@ -111,7 +213,7 @@ export default function Home() {
           <Row fillWidth gap="24" marginTop="40" s={{ direction: "column" }}>
             <Row flex={1} paddingLeft="l" paddingTop="24">
               <Heading as="h2" variant="display-strong-xs" wrap="balance">
-                Latest from the blog
+                Latest insights
               </Heading>
             </Row>
             <Row flex={3} paddingX="20">
@@ -123,7 +225,6 @@ export default function Home() {
           </Row>
         </Column>
       )}
-      <Projects range={[2]} />
       <Mailchimp />
     </Column>
   );

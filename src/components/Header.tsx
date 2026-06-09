@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { Fade, Flex, Line, Row, ToggleButton } from "@once-ui-system/core";
+import { Fade, Flex, Line, Row, SmartLink, Text, ToggleButton } from "@once-ui-system/core";
 
 import { routes, display, person, about, blog, work, gallery } from "@/resources";
 import { ThemeToggle } from "./ThemeToggle";
@@ -72,8 +72,16 @@ export const Header = () => {
           position: "fixed",
         }}
       >
-        <Row paddingLeft="12" fillWidth vertical="center" textVariant="body-default-s">
-          {display.location && <Row s={{ hide: true }}>{person.location}</Row>}
+        <Row paddingLeft="32" fillWidth vertical="center">
+          <SmartLink href="/" style={{ textDecoration: "none" }}>
+            <Text
+              variant="heading-default-s"
+              onBackground="neutral-weak"
+              style={{ letterSpacing: "0.15em", textTransform: "uppercase", fontWeight: 400 }}
+            >
+              Semperr
+            </Text>
+          </SmartLink>
         </Row>
         <Row fillWidth horizontal="center">
           <Row

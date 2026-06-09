@@ -13,9 +13,9 @@ const person: Person = {
 };
 
 const newsletter: Newsletter = {
-  display: true,
-  title: <>Stay ahead with Semperr Insights</>,
-  description: <>Weekly strategies and data trends to help your firm grow its caseload</>,
+  display: false,
+  title: <></>,
+  description: <></>,
 };
 
 const social: Social = [
@@ -39,7 +39,7 @@ const home: Home = {
   label: "Home",
   title: "Semperr — More Cases, Better Clients",
   description: "Semperr is a data brokerage that helps law firms drive lead volume and connect with higher-value clients.",
-  headline: <>Your firm deserves a fuller pipeline</>,
+  headline: <>The Case Rests With Us</>,
   featured: {
     display: false,
     title: <></>,
@@ -47,7 +47,7 @@ const home: Home = {
   },
   subline: (
     <>
-      We partner with law firms to unlock <Text as="span" size="xl" weight="strong">high-intent leads</Text> through proprietary data sourcing — so you can focus on practicing law, not chasing clients.
+      Top firms don't chase clients — they choose them. Semperr delivers <Text as="span" weight="strong">pre-qualified, high-intent leads</Text> so your team stays focused on the cases that matter.
     </>
   ),
 };
@@ -66,7 +66,7 @@ const about: About = {
   },
   calendar: {
     display: true,
-    link: "https://cal.com",
+    link: "https://cal.com/maherhasan",
   },
   intro: {
     display: true,
