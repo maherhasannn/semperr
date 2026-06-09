@@ -119,7 +119,7 @@ export default function Pricing() {
     >
       {/* Hero */}
       <Section border={false}>
-        <Column gap="24" horizontal="center" align="center" maxWidth="s">
+        <Column fillWidth gap="24" horizontal="center" align="center">
           <Text
             variant="label-strong-s"
             style={{
