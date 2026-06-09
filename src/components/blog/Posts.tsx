@@ -27,7 +27,9 @@ export function Posts({
   }
 
   const sortedBlogs = allBlogs.sort((a, b) => {
-    return new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime();
+    const diff = new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime();
+    if (diff !== 0) return diff;
+    return b.slug.localeCompare(a.slug);
   });
 
   const displayedBlogs = range

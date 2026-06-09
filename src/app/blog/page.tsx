@@ -17,7 +17,11 @@ export async function generateMetadata() {
 
 export default function Blog() {
   const allPosts = getPosts(["src", "app", "blog", "posts"])
-    .sort((a, b) => new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime());
+    .sort((a, b) => {
+      const diff = new Date(b.metadata.publishedAt).getTime() - new Date(a.metadata.publishedAt).getTime();
+      if (diff !== 0) return diff;
+      return b.slug.localeCompare(a.slug);
+    });
   const earlierPosts = allPosts.slice(3);
 
   return (
