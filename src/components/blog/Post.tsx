@@ -61,6 +61,20 @@ export default function Post({ post, thumbnail, direction, index = 0 }: PostProp
           <Text variant="heading-strong-l" wrap="balance">
             {post.metadata.title}
           </Text>
+          {post.metadata.summary && (
+            <Text
+              variant="body-default-s"
+              onBackground="neutral-weak"
+              style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+              }}
+            >
+              {post.metadata.summary}
+            </Text>
+          )}
           {post.metadata.tag && (
             <Text variant="label-strong-s" onBackground="neutral-weak">
               {post.metadata.tag}
