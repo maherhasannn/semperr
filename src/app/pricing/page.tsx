@@ -115,11 +115,7 @@ export default function Pricing() {
       paddingY="64"
       gap="0"
       horizontal="center"
-      data-theme="light"
-      data-neutral="gray"
-      data-brand="cyan"
-      data-accent="cyan"
-      style={{ background: "#ffffff", color: "#111", borderRadius: "1rem" }}
+      style={{ margin: "0 auto" }}
     >
       {/* Hero */}
       <Section border={false}>
