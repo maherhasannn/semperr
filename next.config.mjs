@@ -22,6 +22,15 @@ const nextConfig = {
     compiler: "modern",
     silenceDeprecations: ["legacy-js-api"],
   },
+  async redirects() {
+    return [
+      {
+        source: "/deck",
+        destination: "https://shorturl.at/mge0i",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default withMDX(nextConfig);
