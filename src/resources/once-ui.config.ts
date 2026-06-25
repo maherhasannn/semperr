@@ -24,6 +24,7 @@ const routes: RoutesConfig = {
   "/terms": true,
   "/privacy": true,
   "/pricing": true,
+  "/login": true,
 };
 
 const display: DisplayConfig = {

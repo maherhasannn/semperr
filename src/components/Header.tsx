@@ -56,6 +56,8 @@ export const Header = () => {
   const pathname = usePathname() ?? "";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  if (pathname === "/login") return null;
+
   const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
 
   useEffect(() => {
@@ -165,17 +167,20 @@ export const Header = () => {
             </Row>
           </Row>
         </Row>
-        <Flex fillWidth horizontal="end" vertical="center">
-          <Flex
-            paddingRight="12"
-            horizontal="end"
-            vertical="center"
-            textVariant="body-default-s"
-            gap="20"
+        <Row fillWidth horizontal="end" vertical="center" paddingRight="32">
+          <Row
+            background="page"
+            border="neutral-alpha-weak"
+            radius="m-4"
+            shadow="l"
+            padding="4"
           >
-            {display.time && <TimeDisplay timeZone={person.location} />}
-          </Flex>
-        </Flex>
+            <ToggleButton
+              href="/login"
+              label="Login"
+            />
+          </Row>
+        </Row>
       </Row>
 
       {/* Mobile bottom bar */}
@@ -280,6 +285,11 @@ export const Header = () => {
               prefixIcon="calendar"
               href="https://cal.com/maherhasan"
               label="Request a Demo"
+            />
+            <ToggleButton
+              fillWidth
+              href="/login"
+              label="Login"
             />
           </Column>
         </Column>

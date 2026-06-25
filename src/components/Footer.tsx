@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { Column, Row, Line, SmartLink, Text, IconButton } from "@once-ui-system/core";
 import { social } from "@/resources";
 
@@ -14,6 +17,9 @@ function FooterLink({ href, children }: { href: string; children: string }) {
 }
 
 export const Footer = () => {
+  const pathname = usePathname();
+  if (pathname === "/login") return null;
+
   return (
     <Column as="footer" fillWidth paddingTop="80" paddingX="l" horizontal="center">
       <Line fillWidth background="neutral-alpha-weak" />
