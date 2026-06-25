@@ -175,7 +175,7 @@ export default function LoginPage() {
                 </Row>
                 <Row horizontal="center">
                   <Button
-                    variant="ghost"
+                    variant="tertiary"
                     size="s"
                     onClick={() => {
                       setStep("email");
