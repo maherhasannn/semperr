@@ -13,7 +13,7 @@ import {
   Row,
   SmartLink,
 } from "@once-ui-system/core";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithOtp({ email });
+    const { error } = await getSupabase().auth.signInWithOtp({ email });
 
     if (error) {
       setError(error.message);
@@ -44,7 +44,7 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const { error } = await supabase.auth.verifyOtp({
+    const { error } = await getSupabase().auth.verifyOtp({
       email,
       token: otp,
       type: "email",
