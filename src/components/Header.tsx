@@ -56,8 +56,6 @@ export const Header = () => {
   const pathname = usePathname() ?? "";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  if (pathname === "/login") return null;
-
   const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
 
   useEffect(() => {
@@ -74,6 +72,8 @@ export const Header = () => {
       document.body.style.overflow = "";
     };
   }, [mobileMenuOpen]);
+
+  if (["/login", "/onboarding", "/dashboard"].includes(pathname) || pathname.startsWith("/admin")) return null;
 
   return (
     <>

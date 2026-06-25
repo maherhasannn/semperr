@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   Column,
-  Flex,
   Heading,
   Text,
   Input,
@@ -22,18 +21,51 @@ export default function LoginPage() {
   const [step, setStep] = useState<"email" | "otp">("email");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [firmName, setFirmName] = useState("");
 
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    const { error } = await getSupabase().auth.signInWithOtp({ email });
+    try {
+      await getSupabase().auth.signOut();
 
-    if (error) {
-      setError(error.message);
-    } else {
-      setStep("otp");
+      const res = await fetch("/api/verify-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+
+      if (!res.ok) {
+        setError("Unable to check account. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      const data = await res.json();
+
+      if (!data.exists) {
+        setError(
+          "No account found for this email. Contact your administrator to get started.",
+        );
+        setLoading(false);
+        return;
+      }
+
+      setFirmName(data.firmName || "");
+
+      const { error: otpError } = await getSupabase().auth.signInWithOtp({
+        email: email.trim(),
+      });
+
+      if (otpError) {
+        setError(otpError.message);
+      } else {
+        setStep("otp");
+      }
+    } catch {
+      setError("Something went wrong. Please try again.");
     }
 
     setLoading(false);
@@ -44,19 +76,52 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
 
-    const { error } = await getSupabase().auth.verifyOtp({
-      email,
-      token: otp,
-      type: "email",
-    });
+    try {
+      const { data: authData, error: authError } =
+        await getSupabase().auth.verifyOtp({
+          email: email.trim(),
+          token: otp,
+          type: "email",
+        });
 
-    if (error) {
-      setError(error.message);
-    } else {
-      router.push("/");
+      if (authError) {
+        setError(authError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (!authData.user) {
+        setError("Verification succeeded but no user returned. Try again.");
+        setLoading(false);
+        return;
+      }
+
+      const linkRes = await fetch("/api/auth/link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: authData.user.id,
+          email: email.trim(),
+        }),
+      });
+
+      if (!linkRes.ok) {
+        setError("Failed to link account. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      const linkData = await linkRes.json();
+
+      if (linkData.onboardingCompleted) {
+        router.replace("/dashboard");
+      } else {
+        router.replace("/onboarding");
+      }
+    } catch {
+      setError("Verification failed. Please try again.");
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -69,17 +134,13 @@ export default function LoginPage() {
         zIndex: 100,
       }}
     >
-      {/* Left panel — art/branding */}
       <Column
         fill
         flex={1}
         horizontal="center"
         vertical="center"
         padding="xl"
-        style={{
-          position: "relative",
-          overflow: "hidden",
-        }}
+        style={{ position: "relative", overflow: "hidden" }}
       >
         <Image
           src="/images/og/home.jpg"
@@ -113,12 +174,11 @@ export default function LoginPage() {
             wrap="balance"
             style={{ maxWidth: "320px" }}
           >
-            Data brokerage for law firms. Pre-qualified leads, delivered.
+            Pre-qualified leads, delivered exclusively to your firm.
           </Text>
         </Column>
       </Column>
 
-      {/* Right panel — login form */}
       <Column
         background="page"
         flex={1}
@@ -132,9 +192,14 @@ export default function LoginPage() {
             <Heading variant="display-strong-xs">Sign in</Heading>
             <Text variant="body-default-l" onBackground="neutral-weak">
               {step === "email"
-                ? "Enter your email to receive a sign-in code."
+                ? "Enter your email to access your firm portal."
                 : `We sent a code to ${email}`}
             </Text>
+            {step === "otp" && firmName && (
+              <Text variant="body-default-s" onBackground="brand-weak">
+                Signing in to {firmName}
+              </Text>
+            )}
           </Column>
 
           {step === "email" ? (
@@ -143,7 +208,7 @@ export default function LoginPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="Email address"
+                  label="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -151,7 +216,7 @@ export default function LoginPage() {
                 />
                 <Row height="48" vertical="center">
                   <Button type="submit" size="m" fillWidth disabled={loading}>
-                    {loading ? "Sending..." : "Continue"}
+                    {loading ? "Checking..." : "Continue"}
                   </Button>
                 </Row>
               </Column>
@@ -162,6 +227,7 @@ export default function LoginPage() {
                 <Input
                   id="otp"
                   type="text"
+                  label="Verification code"
                   placeholder="Enter 6-digit code"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}

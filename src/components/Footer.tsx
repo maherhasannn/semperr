@@ -18,7 +18,7 @@ function FooterLink({ href, children }: { href: string; children: string }) {
 
 export const Footer = () => {
   const pathname = usePathname();
-  if (pathname === "/login") return null;
+  if (["/login", "/onboarding", "/dashboard"].includes(pathname) || pathname?.startsWith("/admin")) return null;
 
   return (
     <Column as="footer" fillWidth paddingTop="80" paddingX="l" horizontal="center">

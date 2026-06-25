@@ -13,6 +13,7 @@
     "@mdx-js/loader": "^3.1.0",
     "@next/mdx": "^16.0.10",
     "@once-ui-system/core": "latest",
+    "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",
     "classnames": "^2.5.1",
     "cookie": "^1.0.2",
@@ -25,6 +26,7 @@
     "react-icons": "^5.5.0",
     "resend": "^6.14.0",
     "sass": "^1.86.3",
+    "stripe": "^22.3.0",
     "transliteration": "^2.3.5"
   },
   "devDependencies": {
