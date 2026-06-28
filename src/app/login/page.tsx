@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
@@ -17,6 +17,12 @@ import { getSupabase } from "@/lib/supabase";
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    getSupabase().auth.getUser().then(({ data: { user } }) => {
+      if (user) router.replace("/onboarding");
+    });
+  }, [router]);
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"email" | "otp">("email");
   const [loading, setLoading] = useState(false);
