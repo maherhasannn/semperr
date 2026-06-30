@@ -73,7 +73,7 @@ export const Header = () => {
     };
   }, [mobileMenuOpen]);
 
-  if (["/login", "/onboarding", "/dashboard"].includes(pathname) || pathname.startsWith("/admin")) return null;
+  if (["/login", "/signup"].includes(pathname)) return null;
 
   return (
     <>
