@@ -1,4 +1,6 @@
 import { Meta } from "@once-ui-system/core";
+import { redirect } from "next/navigation";
+import { createRouteClient } from "@/lib/supabase-server";
 import DashboardClient from "./dashboard-client";
 
 export async function generateMetadata() {
@@ -10,6 +12,15 @@ export async function generateMetadata() {
   });
 }
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabase = await createRouteClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   return <DashboardClient />;
 }

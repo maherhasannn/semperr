@@ -9,7 +9,8 @@ import {
   getFirmPaymentMessage,
   normalizeBuyingRuleList,
 } from "@/lib/firm-eligibility";
-import type { Firm, FirmBuyingRules, FirmUser } from "@/types/firm.types";
+import { normalizeNotificationTarget } from "@/lib/notification-targets";
+import type { Firm, FirmBuyingRules, FirmNotificationTarget, FirmUser } from "@/types/firm.types";
 
 function formatCurrency(cents: number) {
   return new Intl.NumberFormat("en-US", {
@@ -27,6 +28,7 @@ type DashboardState = {
     "id" | "name" | "status" | "payment_status" | "has_valid_payment_method" | "stripe_customer_id" | "created_at"
   >;
   buyingRules: FirmBuyingRules;
+  notificationTargets: FirmNotificationTarget[];
   leadHistory: Array<{
     id: string;
     state: string;
@@ -47,8 +49,11 @@ export default function DashboardClient() {
   const [draftCaseTypes, setDraftCaseTypes] = useState("");
   const [draftMinPrice, setDraftMinPrice] = useState("0");
   const [draftMaxPrice, setDraftMaxPrice] = useState("0");
+  const [draftEmailTarget, setDraftEmailTarget] = useState("");
+  const [draftPhoneTarget, setDraftPhoneTarget] = useState("");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [savingRules, setSavingRules] = useState(false);
+  const [savingTarget, setSavingTarget] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -82,6 +87,7 @@ export default function DashboardClient() {
       const [
         firmResult,
         rulesResult,
+        targetsResult,
         leadHistoryResult,
         transactionsResult,
       ] = await Promise.all([
@@ -98,6 +104,12 @@ export default function DashboardClient() {
           .eq("firm_id", firmId)
           .maybeSingle(),
         supabase
+          .from("firm_notification_targets")
+          .select("id, firm_id, channel, value, label, is_primary, active, created_at")
+          .eq("firm_id", firmId)
+          .order("is_primary", { ascending: false })
+          .order("created_at", { ascending: true }),
+        supabase
           .from("leads")
           .select("id, state, case_type, claimant_name, price_cents, delivered_at")
           .eq("firm_id", firmId)
@@ -109,6 +121,12 @@ export default function DashboardClient() {
 
       if (firmResult.error || !firmResult.data) {
         setError("We could not load your firm record.");
+        setLoading(false);
+        return;
+      }
+
+      if (targetsResult.error) {
+        setError("We could not load your notification recipients.");
         setLoading(false);
         return;
       }
@@ -131,6 +149,7 @@ export default function DashboardClient() {
         role: membership.role,
         firm,
         buyingRules,
+        notificationTargets: (targetsResult.data || []) as FirmNotificationTarget[],
         leadHistory: (leadHistoryResult.data || []) as DashboardState["leadHistory"],
         remainingBudgetCents: calculateRemainingBudget(transactionsResult.data || []),
       });
@@ -198,6 +217,106 @@ export default function DashboardClient() {
     setSavingRules(false);
   };
 
+  const handleAddNotificationTarget = async (channel: "email" | "sms") => {
+    if (!state) return;
+
+    const rawValue = channel === "email" ? draftEmailTarget : draftPhoneTarget;
+    const validation = normalizeNotificationTarget(channel, rawValue);
+    if (validation.error) return;
+    const value = validation.normalizedValue;
+
+    const currentCount = state.notificationTargets.filter((target) => target.channel === channel).length;
+    if (currentCount >= 10) {
+      setSaveMessage(`You can only have up to 10 ${channel === "email" ? "emails" : "phone numbers"}.`);
+      return;
+    }
+
+    if (
+      state.notificationTargets.some(
+        (target) => target.channel === channel && target.value.toLowerCase() === value.toLowerCase(),
+      )
+    ) {
+      setSaveMessage(`That ${channel === "email" ? "email" : "phone number"} is already added.`);
+      return;
+    }
+
+    setSavingTarget(channel);
+    setSaveMessage(null);
+
+    const supabase = getSupabase();
+    const { error } = await supabase.from("firm_notification_targets").insert({
+      firm_id: state.firm.id,
+      channel,
+      value,
+      label: channel === "email" ? "Dashboard email" : "Dashboard SMS",
+      is_primary: currentCount === 0,
+      active: true,
+    });
+
+    if (error) {
+      setSaveMessage(error.message);
+      setSavingTarget(null);
+      return;
+    }
+
+    setState((current) =>
+      current
+        ? {
+            ...current,
+            notificationTargets: [
+              ...current.notificationTargets,
+              {
+                id: crypto.randomUUID(),
+                firm_id: state.firm.id,
+                channel,
+                value,
+                label: channel === "email" ? "Dashboard email" : "Dashboard SMS",
+                is_primary: currentCount === 0,
+                active: true,
+                created_at: new Date().toISOString(),
+              },
+            ],
+          }
+        : current,
+    );
+
+    if (channel === "email") {
+      setDraftEmailTarget("");
+    } else {
+      setDraftPhoneTarget("");
+    }
+    setSaveMessage(`${channel === "email" ? "Email" : "Phone number"} added.`);
+    setSavingTarget(null);
+  };
+
+  const handleRemoveNotificationTarget = async (targetId: string) => {
+    if (!state) return;
+
+    setSavingTarget(targetId);
+    setSaveMessage(null);
+
+    const supabase = getSupabase();
+    const { error } = await supabase.from("firm_notification_targets").delete().eq("id", targetId);
+
+    if (error) {
+      setSaveMessage(error.message);
+      setSavingTarget(null);
+      return;
+    }
+
+    setState((current) =>
+      current
+        ? {
+            ...current,
+            notificationTargets: current.notificationTargets.filter((target) => target.id !== targetId),
+          }
+        : current,
+    );
+
+    setSaveMessage("Recipient removed.");
+    setSavingTarget(null);
+  };
+
   if (loading) {
     return (
       <Column maxWidth="m" gap="20" paddingY="xl">
@@ -227,10 +346,23 @@ export default function DashboardClient() {
     );
   }
 
-  const { firm, buyingRules, remainingBudgetCents, leadHistory } = state;
+  const { firm, buyingRules, notificationTargets, remainingBudgetCents, leadHistory } = state;
   const paymentMessage = getFirmPaymentMessage(firm);
   const paymentActive = firm.has_valid_payment_method && firm.payment_status === "valid";
   const paused = firm.status !== "active" || !paymentActive || remainingBudgetCents <= 0;
+  const emailTargets = notificationTargets.filter((target) => target.channel === "email");
+  const phoneTargets = notificationTargets.filter((target) => target.channel === "sms");
+  const canManageRecipients = state.role === "owner" || state.role === "admin";
+  const emailValidation = draftEmailTarget.trim()
+    ? normalizeNotificationTarget("email", draftEmailTarget)
+    : { normalizedValue: "", error: null as string | null };
+  const phoneValidation = draftPhoneTarget.trim()
+    ? normalizeNotificationTarget("sms", draftPhoneTarget)
+    : { normalizedValue: "", error: null as string | null };
+  const emailAddDisabled =
+    !canManageRecipients || savingTarget === "email" || emailTargets.length >= 10 || Boolean(emailValidation.error);
+  const phoneAddDisabled =
+    !canManageRecipients || savingTarget === "sms" || phoneTargets.length >= 10 || Boolean(phoneValidation.error);
 
   return (
     <Column
@@ -305,6 +437,169 @@ export default function DashboardClient() {
           <Button href="/dashboard/billing" variant="secondary" size="m">
             Add Payment Method
           </Button>
+        </Column>
+
+        <Column flex={1} gap="16" padding="32" radius="l" border="neutral-alpha-weak" background="neutral-alpha-weak">
+          <Row fillWidth horizontal="between" vertical="center">
+            <Text variant="body-strong-s" onBackground="neutral-strong">
+              Notification recipients
+            </Text>
+            <Badge background="surface" onBackground="neutral-strong">
+              {emailTargets.length}/10 emails · {phoneTargets.length}/10 phones
+            </Badge>
+          </Row>
+          <Text variant="body-default-s" onBackground="neutral-weak">
+            Zapier receives these recipients after a lead is routed. The dashboard blocks adds after 10 per type.
+          </Text>
+          <Column gap="12">
+            <div>
+              <label className="auth-label" htmlFor="notification-email">
+                Email recipient
+              </label>
+              <Row fillWidth gap="12" s={{ direction: "column" }}>
+                <input
+                  id="notification-email"
+                  className="auth-input"
+                  value={draftEmailTarget}
+                  onChange={(e) => setDraftEmailTarget(e.target.value)}
+                  onBlur={() => {
+                    if (emailValidation.normalizedValue) {
+                      setDraftEmailTarget(emailValidation.normalizedValue);
+                    }
+                  }}
+                  placeholder="alerts@firm.com"
+                  aria-invalid={Boolean(emailValidation.error)}
+                  disabled={!canManageRecipients || emailTargets.length >= 10}
+                />
+                <Button
+                  variant="secondary"
+                  size="m"
+                  onClick={() => handleAddNotificationTarget("email")}
+                  disabled={emailAddDisabled}
+                >
+                  {savingTarget === "email" ? "Adding…" : "Add email"}
+                </Button>
+              </Row>
+              {emailValidation.error ? (
+                <Text variant="body-default-xs" onBackground="danger-strong">
+                  {emailValidation.error}
+                </Text>
+              ) : draftEmailTarget.trim() ? (
+                <Text variant="body-default-xs" onBackground="neutral-weak">
+                  Will save as {emailValidation.normalizedValue}
+                </Text>
+              ) : null}
+            </div>
+            <div>
+              <label className="auth-label" htmlFor="notification-phone">
+                Phone recipient
+              </label>
+              <Row fillWidth gap="12" s={{ direction: "column" }}>
+                <input
+                  id="notification-phone"
+                  className="auth-input"
+                  value={draftPhoneTarget}
+                  onChange={(e) => setDraftPhoneTarget(e.target.value)}
+                  onBlur={() => {
+                    if (phoneValidation.normalizedValue) {
+                      setDraftPhoneTarget(phoneValidation.normalizedValue);
+                    }
+                  }}
+                  placeholder="+15551234567"
+                  aria-invalid={Boolean(phoneValidation.error)}
+                  disabled={!canManageRecipients || phoneTargets.length >= 10}
+                />
+                <Button
+                  variant="secondary"
+                  size="m"
+                  onClick={() => handleAddNotificationTarget("sms")}
+                  disabled={phoneAddDisabled}
+                >
+                  {savingTarget === "sms" ? "Adding…" : "Add phone"}
+                </Button>
+              </Row>
+              {phoneValidation.error ? (
+                <Text variant="body-default-xs" onBackground="danger-strong">
+                  {phoneValidation.error}
+                </Text>
+              ) : draftPhoneTarget.trim() ? (
+                <Text variant="body-default-xs" onBackground="neutral-weak">
+                  Will save as {phoneValidation.normalizedValue}
+                </Text>
+              ) : null}
+            </div>
+          </Column>
+          {!canManageRecipients && (
+            <Text variant="body-default-s" onBackground="neutral-weak">
+              Only owner and admin users can edit notification recipients.
+            </Text>
+          )}
+          <Line fillWidth background="neutral-alpha-weak" />
+          <Column gap="16">
+            <Column gap="8">
+              <Text variant="body-strong-s" onBackground="neutral-strong">
+                Email recipients
+              </Text>
+              {emailTargets.length > 0 ? (
+                emailTargets.map((target) => (
+                  <Row key={target.id} fillWidth horizontal="between" vertical="center" gap="12">
+                    <Column gap="2">
+                      <Text variant="body-default-s" onBackground="neutral-strong">
+                        {target.value}
+                      </Text>
+                      <Text variant="body-default-xs" onBackground="neutral-weak">
+                        {target.is_primary ? "Primary" : "Additional"}
+                      </Text>
+                    </Column>
+                    <Button
+                      variant="tertiary"
+                      size="s"
+                      onClick={() => handleRemoveNotificationTarget(target.id)}
+                      disabled={!canManageRecipients || savingTarget === target.id}
+                    >
+                      Remove
+                    </Button>
+                  </Row>
+                ))
+              ) : (
+                <Text variant="body-default-s" onBackground="neutral-weak">
+                  No email recipients yet.
+                </Text>
+              )}
+            </Column>
+
+            <Column gap="8">
+              <Text variant="body-strong-s" onBackground="neutral-strong">
+                Phone recipients
+              </Text>
+              {phoneTargets.length > 0 ? (
+                phoneTargets.map((target) => (
+                  <Row key={target.id} fillWidth horizontal="between" vertical="center" gap="12">
+                    <Column gap="2">
+                      <Text variant="body-default-s" onBackground="neutral-strong">
+                        {target.value}
+                      </Text>
+                      <Text variant="body-default-xs" onBackground="neutral-weak">
+                        {target.is_primary ? "Primary" : "Additional"}
+                      </Text>
+                    </Column>
+                    <Button
+                      variant="tertiary"
+                      size="s"
+                      onClick={() => handleRemoveNotificationTarget(target.id)}
+                      disabled={!canManageRecipients || savingTarget === target.id}
+                    >
+                      Remove
+                    </Button>
+                  </Row>
+                ))
+              ) : (
+                <Text variant="body-default-s" onBackground="neutral-weak">
+                  No phone recipients yet.
+                </Text>
+              )}
+            </Column>
+          </Column>
         </Column>
 
         <Column flex={1} gap="16" padding="32" radius="l" border="neutral-alpha-weak" background="neutral-alpha-weak">

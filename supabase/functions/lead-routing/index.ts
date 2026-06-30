@@ -47,10 +47,12 @@ type RoutingTransaction = {
 };
 
 type DeliveryTarget = {
-  email: string;
-  phone_number: string | null;
-  name: string | null;
-  role: string;
+  channel: "email" | "sms";
+  value: string;
+  label: string | null;
+  is_primary: boolean;
+  active: boolean;
+  created_at: string;
 };
 
 const corsHeaders = {
@@ -104,22 +106,33 @@ async function recordLeadWaste(
   if (error) throw new Error(error.message);
 }
 
-async function loadDeliveryTargets(supabase: ReturnType<typeof createClient>, firmId: string) {
+async function loadNotificationTargets(supabase: ReturnType<typeof createClient>, firmId: string) {
   const { data, error } = await supabase
-    .from("firm_users")
-    .select("email, phone_number, name, role")
+    .from("firm_notification_targets")
+    .select("channel, value, label, is_primary, active, created_at")
     .eq("firm_id", firmId)
-    .in("role", ["owner", "admin"]);
+    .eq("active", true)
+    .order("is_primary", { ascending: false })
+    .order("created_at", { ascending: true });
 
   if (error) throw new Error(error.message);
 
   const targets: DeliveryTarget[] = [];
   const seen = new Set<string>();
   for (const row of (data || []) as DeliveryTarget[]) {
-    const email = row.email.trim();
-    if (!email || seen.has(email.toLowerCase())) continue;
-    seen.add(email.toLowerCase());
-    targets.push(row);
+    const value = row.value.trim();
+    if (!value) continue;
+    const key = `${row.channel}:${value.toLowerCase()}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    targets.push({
+      channel: row.channel,
+      value,
+      label: row.label?.trim() || null,
+      is_primary: row.is_primary,
+      active: row.active,
+      created_at: row.created_at,
+    });
   }
 
   return targets;
@@ -323,20 +336,40 @@ Deno.serve(async (req) => {
       throw new Error(insertError?.message || "Failed to insert routed lead");
     }
 
-    const deliveryTargets = await loadDeliveryTargets(supabase, chosen.firm_id);
+    const notificationTargets = await loadNotificationTargets(supabase, chosen.firm_id);
+    const emailTargets = notificationTargets
+      .filter((target) => target.channel === "email")
+      .map((target) => target.value);
+    const phoneTargets = notificationTargets
+      .filter((target) => target.channel === "sms")
+      .map((target) => target.value);
 
     return new Response(
       JSON.stringify({
         routed: true,
         lead_id: insertedLead.id,
-        firm_id: chosen.firm_id,
-        firm_name: chosen.firm_name,
+        lead: {
+          id: insertedLead.id,
+          state: lead.state,
+          case_type: lead.case_type,
+          claimant_name: lead.claimant_name,
+          claimant_contact: lead.claimant_contact,
+          claimant_phone: lead.claimant_phone,
+          claimant_email: lead.claimant_email,
+          price_cents: lead.price_cents,
+          source_doc: lead.source_doc,
+          delivered_at: new Date().toISOString(),
+          route_rank: chosen.rank,
+        },
+        firm: {
+          id: chosen.firm_id,
+          name: chosen.firm_name,
+          rank: chosen.rank,
+        },
         rank: chosen.rank,
-        contacts: deliveryTargets,
-        email_targets: deliveryTargets.map((target) => target.email),
-        phone_targets: deliveryTargets
-          .map((target) => target.phone_number)
-          .filter((phone): phone is string => Boolean(phone?.trim())),
+        notification_targets: notificationTargets,
+        email_targets: emailTargets,
+        phone_targets: phoneTargets,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );

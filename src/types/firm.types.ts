@@ -1,6 +1,7 @@
 export type FirmStatus = "pending_verification" | "paused" | "active" | "suspended";
 export type FirmPaymentStatus = "missing" | "valid" | "invalid" | "card_failed";
 export type FirmUserRole = "owner" | "admin" | "member";
+export type NotificationChannel = "email" | "sms";
 export type LedgerEntryType = "topup" | "deduction" | "credit" | "auto_recharge";
 export type CaseLevel = 1 | 2;
 export type FirmTier = 1 | 2 | 3;
@@ -11,6 +12,11 @@ export type Firm = {
   states_covered: string[];
   bar_number: string | null;
   bar_state: string | null;
+  website_url: string | null;
+  primary_contact_phone: string | null;
+  primary_contact_title: string | null;
+  practice_areas: string[];
+  support_notes: string | null;
   tier: FirmTier;
   status: FirmStatus;
   payment_status: FirmPaymentStatus;
@@ -38,6 +44,17 @@ export type FirmDeliverySettings = {
   lead_delivery_enabled: boolean;
   daily_cap: number;
   monthly_cap: number;
+  created_at: string;
+};
+
+export type FirmNotificationTarget = {
+  id: string;
+  firm_id: string;
+  channel: NotificationChannel;
+  value: string;
+  label: string | null;
+  is_primary: boolean;
+  active: boolean;
   created_at: string;
 };
 
@@ -103,3 +120,21 @@ export type LedgerEntry = {
 export type Lead = Case;
 
 export type Transaction = LedgerEntry;
+
+export type FirmSupportRequestType =
+  | "firm_profile_update"
+  | "payment_change"
+  | "state_rank_change"
+  | "buying_rules_change";
+
+export type FirmSupportRequest = {
+  id: string;
+  firm_id: string;
+  requested_by_user_id: string;
+  request_type: FirmSupportRequestType;
+  details: Record<string, unknown>;
+  status: "open" | "approved" | "rejected";
+  created_at: string;
+  resolved_at: string | null;
+  resolved_by: string | null;
+};

@@ -73,7 +73,7 @@ export const Header = () => {
     };
   }, [mobileMenuOpen]);
 
-  if (["/login", "/signup"].includes(pathname)) return null;
+  if (["/login", "/signup"].includes(pathname) || pathname.startsWith("/dashboard")) return null;
 
   return (
     <>
@@ -175,10 +175,7 @@ export const Header = () => {
             shadow="l"
             padding="4"
           >
-            <ToggleButton
-              href="/login"
-              label="Login"
-            />
+            <ToggleButton href="/login" label="Login" />
           </Row>
         </Row>
       </Row>

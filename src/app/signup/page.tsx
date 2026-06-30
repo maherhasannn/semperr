@@ -11,6 +11,14 @@ export default function SignupPage() {
   const [firmName, setFirmName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [title, setTitle] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [barNumber, setBarNumber] = useState("");
+  const [barState, setBarState] = useState("");
+  const [statesCovered, setStatesCovered] = useState("");
+  const [practiceAreas, setPracticeAreas] = useState("");
+  const [supportNotes, setSupportNotes] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -23,7 +31,21 @@ export default function SignupPage() {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, firmName, email, password }),
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          firmName,
+          email,
+          password,
+          title,
+          phoneNumber,
+          websiteUrl,
+          barNumber,
+          barState,
+          statesCovered: statesCovered.split(",").map((value) => value.trim()).filter(Boolean),
+          practiceAreas: practiceAreas.split(",").map((value) => value.trim()).filter(Boolean),
+          supportNotes,
+        }),
       });
 
       const result = await res.json();
@@ -49,7 +71,7 @@ export default function SignupPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0A0B0D", color: "#C5CBD0", fontFamily: "'Inter', var(--font-body), sans-serif", fontSize: 15, position: "relative", overflow: "hidden" }}>
+    <div style={{ height: "100vh", background: "#0A0B0D", color: "#C5CBD0", fontFamily: "'Inter', var(--font-body), sans-serif", fontSize: 15, position: "relative", overflow: "hidden" }}>
       {/* Global dot pattern */}
       <div style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, backgroundImage: "radial-gradient(rgba(91,225,239,0.12) 1px, transparent 1px)", backgroundSize: "22px 22px", maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 70%)", WebkitMaskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 70%)" }} />
 
@@ -115,7 +137,7 @@ export default function SignupPage() {
 
         {/* Right: Signup form */}
         <div className="auth-form-side">
-          <div style={{ width: "100%", maxWidth: 400 }}>
+          <div className="auth-form-inner">
             <div className="auth-reveal auth-reveal-2">
               <h2 style={{ fontFamily: "'Libre Baskerville', var(--font-heading), serif", fontSize: 28, fontWeight: 700, color: "#F2F4F5", margin: 0, letterSpacing: "-0.01em" }}>
                 Request access
@@ -132,7 +154,6 @@ export default function SignupPage() {
             )}
 
             <form onSubmit={handleSubmit}>
-              {/* First + Last name */}
               <div className="auth-reveal auth-reveal-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
                 <div>
                   <label className="auth-label" htmlFor="firstName">First name</label>
@@ -147,6 +168,106 @@ export default function SignupPage() {
               <div className="auth-reveal auth-reveal-3" style={{ marginBottom: 20 }}>
                 <label className="auth-label" htmlFor="firmName">Firm name</label>
                 <input id="firmName" type="text" className="auth-input" placeholder="Acme Legal LLP" autoComplete="organization" value={firmName} onChange={(e) => setFirmName(e.target.value)} required />
+              </div>
+
+              <div className="auth-reveal auth-reveal-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
+                <div>
+                  <label className="auth-label" htmlFor="title">Your title</label>
+                  <input
+                    id="title"
+                    type="text"
+                    className="auth-input"
+                    placeholder="Managing partner"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="auth-label" htmlFor="phoneNumber">Direct phone</label>
+                  <input
+                    id="phoneNumber"
+                    type="tel"
+                    className="auth-input"
+                    placeholder="(555) 555-5555"
+                    autoComplete="tel"
+                    value={phoneNumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="auth-reveal auth-reveal-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
+                <div>
+                  <label className="auth-label" htmlFor="barState">Bar state</label>
+                  <input
+                    id="barState"
+                    type="text"
+                    className="auth-input"
+                    placeholder="CA"
+                    value={barState}
+                    onChange={(e) => setBarState(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="auth-label" htmlFor="barNumber">Bar number</label>
+                  <input
+                    id="barNumber"
+                    type="text"
+                    className="auth-input"
+                    placeholder="123456"
+                    value={barNumber}
+                    onChange={(e) => setBarNumber(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="auth-reveal auth-reveal-3" style={{ marginBottom: 20 }}>
+                <label className="auth-label" htmlFor="websiteUrl">Firm website</label>
+                <input
+                  id="websiteUrl"
+                  type="url"
+                  className="auth-input"
+                  placeholder="https://firm.com"
+                  value={websiteUrl}
+                  onChange={(e) => setWebsiteUrl(e.target.value)}
+                />
+              </div>
+
+              <div className="auth-reveal auth-reveal-3" style={{ marginBottom: 20 }}>
+                <label className="auth-label" htmlFor="statesCovered">States served</label>
+                <input
+                  id="statesCovered"
+                  type="text"
+                  className="auth-input"
+                  placeholder="CA, TX, FL"
+                  value={statesCovered}
+                  onChange={(e) => setStatesCovered(e.target.value)}
+                />
+              </div>
+
+              <div className="auth-reveal auth-reveal-3" style={{ marginBottom: 20 }}>
+                <label className="auth-label" htmlFor="practiceAreas">Practice areas</label>
+                <input
+                  id="practiceAreas"
+                  type="text"
+                  className="auth-input"
+                  placeholder="personal_injury, workers_comp"
+                  value={practiceAreas}
+                  onChange={(e) => setPracticeAreas(e.target.value)}
+                />
+              </div>
+
+              <div className="auth-reveal auth-reveal-3" style={{ marginBottom: 30 }}>
+                <label className="auth-label" htmlFor="supportNotes">Support notes</label>
+                <textarea
+                  id="supportNotes"
+                  className="auth-input"
+                  placeholder="Hours, routing restrictions, preferred contact method, special instructions"
+                  rows={4}
+                  value={supportNotes}
+                  onChange={(e) => setSupportNotes(e.target.value)}
+                  style={{ resize: "vertical", minHeight: 110 }}
+                />
               </div>
 
               <div className="auth-reveal auth-reveal-3" style={{ marginBottom: 20 }}>
@@ -193,7 +314,8 @@ export default function SignupPage() {
         .auth-grid {
           display: grid;
           grid-template-columns: 500px 1fr;
-          min-height: 100vh;
+          height: 100vh;
+          overflow: hidden;
         }
 
         .auth-panel {
@@ -205,6 +327,9 @@ export default function SignupPage() {
           background: #070809;
           border-right: 1px solid rgba(255,255,255,0.06);
           overflow: hidden;
+          height: 100vh;
+          position: sticky;
+          top: 0;
         }
 
         .auth-panel-overlay {
@@ -228,10 +353,24 @@ export default function SignupPage() {
 
         .auth-form-side {
           display: flex;
-          align-items: center;
-          justify-content: center;
+          align-items: flex-start;
+          justify-content: flex-start;
           padding: 48px 64px;
           position: relative;
+          min-height: 0;
+          height: 100vh;
+          overflow-y: auto;
+          overflow-x: hidden;
+          scrollbar-gutter: stable;
+          overscroll-behavior: contain;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .auth-form-inner {
+          width: 100%;
+          max-width: 720px;
+          margin: auto 0;
+          padding-bottom: 48px;
         }
 
         .auth-form-side::before {
@@ -349,13 +488,21 @@ export default function SignupPage() {
         @media (max-width: 900px) {
           .auth-grid {
             grid-template-columns: 1fr;
+            height: auto;
+            overflow: visible;
           }
           .auth-panel {
             display: none;
           }
           .auth-form-side {
+            height: auto;
             min-height: 100vh;
             padding: 32px 24px;
+          }
+          .auth-form-inner {
+            margin: 0;
+            max-width: none;
+            padding-bottom: 24px;
           }
         }
       `}</style>

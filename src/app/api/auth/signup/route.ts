@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase-server";
 import { sendWelcomeEmail } from "@/lib/email";
+import { normalizeNotificationTarget } from "@/lib/notification-targets";
 
 async function ensureFirmDefaults(
   supabase: ReturnType<typeof createServiceClient>,
@@ -19,9 +20,67 @@ async function ensureFirmDefaults(
   };
 }
 
+async function ensureNotificationTargets(
+  supabase: ReturnType<typeof createServiceClient>,
+  firmId: string,
+  email: string,
+  phoneNumber?: string | null,
+) {
+  const emailTarget = normalizeNotificationTarget("email", email);
+  if (emailTarget.error) {
+    return { error: emailTarget.error };
+  }
+
+  const targets = [
+    {
+      firm_id: firmId,
+      channel: "email",
+      value: emailTarget.normalizedValue,
+      label: "Primary account email",
+      is_primary: true,
+      active: true,
+    },
+  ];
+
+  if (typeof phoneNumber === "string" && phoneNumber.trim()) {
+    const phoneTarget = normalizeNotificationTarget("sms", phoneNumber);
+    if (phoneTarget.error) {
+      return { error: phoneTarget.error };
+    }
+    targets.push({
+      firm_id: firmId,
+      channel: "sms",
+      value: phoneTarget.normalizedValue,
+      label: "Primary account SMS",
+      is_primary: true,
+      active: true,
+    });
+  }
+
+  const { error } = await supabase.from("firm_notification_targets").upsert(targets, {
+    onConflict: "firm_id,channel,value",
+  });
+
+  return { error };
+}
+
 export async function POST(request: Request) {
   try {
-    const { firstName, lastName, firmName, email, password } = await request.json();
+    const {
+      firstName,
+      lastName,
+      firmName,
+      email,
+      password,
+      phoneNumber,
+      title,
+      websiteUrl,
+      barNumber,
+      barState,
+      statesCovered,
+      practiceAreas,
+      supportNotes,
+    } = await request.json();
 
     if (!firstName || !lastName || !firmName || !email || !password) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
@@ -63,10 +122,22 @@ export async function POST(request: Request) {
       }
 
       const defaults = await ensureFirmDefaults(supabase, existingUser.firm_id);
+      const notificationTargets = await ensureNotificationTargets(
+        supabase,
+        existingUser.firm_id,
+        email,
+        typeof phoneNumber === "string" ? phoneNumber : null,
+      );
       if (defaults.deliverySettingsError || defaults.buyingRulesError) {
         await supabase.from("firm_users").update({ user_id: null }).eq("id", existingUser.id);
         await supabase.auth.admin.deleteUser(authUser.user.id);
         return NextResponse.json({ error: "Failed to initialize firm settings" }, { status: 500 });
+      }
+
+      if (notificationTargets.error) {
+        await supabase.from("firm_users").update({ user_id: null }).eq("id", existingUser.id);
+        await supabase.auth.admin.deleteUser(authUser.user.id);
+        return NextResponse.json({ error: "Failed to create notification targets" }, { status: 500 });
       }
 
       return NextResponse.json({ success: true, linked: true });
@@ -79,7 +150,27 @@ export async function POST(request: Request) {
         status: "paused",
         payment_status: "missing",
         has_valid_payment_method: false,
-        states_covered: [],
+        states_covered: Array.isArray(statesCovered)
+          ? statesCovered
+              .map((value: unknown) => String(value).trim())
+              .filter(Boolean)
+          : [],
+        bar_number: typeof barNumber === "string" ? barNumber.trim() || null : null,
+        bar_state: typeof barState === "string" ? barState.trim().toUpperCase() || null : null,
+        website_url: typeof websiteUrl === "string" ? websiteUrl.trim() || null : null,
+        primary_contact_phone: typeof phoneNumber === "string" ? phoneNumber.trim() || null : null,
+        primary_contact_title: typeof title === "string" ? title.trim() || null : null,
+        practice_areas: Array.isArray(practiceAreas)
+          ? practiceAreas
+              .map((value: unknown) => String(value).trim())
+              .filter(Boolean)
+          : typeof practiceAreas === "string"
+            ? practiceAreas
+                .split(",")
+                .map((value) => value.trim())
+                .filter(Boolean)
+            : [],
+        support_notes: typeof supportNotes === "string" ? supportNotes.trim() || null : null,
       })
       .select("id")
       .single();
@@ -93,6 +184,7 @@ export async function POST(request: Request) {
       firm_id: firm.id,
       user_id: authUser.user.id,
       email,
+      phone_number: typeof phoneNumber === "string" ? phoneNumber.trim() || null : null,
       name: fullName,
       role: "owner",
       onboarding_completed: false,
@@ -119,6 +211,22 @@ export async function POST(request: Request) {
       await supabase.from("firms").delete().eq("id", firm.id);
       await supabase.auth.admin.deleteUser(authUser.user.id);
       return NextResponse.json({ error: "Failed to create buying rules" }, { status: 500 });
+    }
+
+    const notificationTargets = await ensureNotificationTargets(
+      supabase,
+      firm.id,
+      email,
+      typeof phoneNumber === "string" ? phoneNumber : null,
+    );
+
+    if (notificationTargets.error) {
+      await supabase.from("firm_buying_rules").delete().eq("firm_id", firm.id);
+      await supabase.from("firm_delivery_settings").delete().eq("firm_id", firm.id);
+      await supabase.from("firm_users").delete().eq("firm_id", firm.id);
+      await supabase.from("firms").delete().eq("id", firm.id);
+      await supabase.auth.admin.deleteUser(authUser.user.id);
+      return NextResponse.json({ error: "Failed to create notification targets" }, { status: 500 });
     }
 
     try {
