@@ -50,7 +50,13 @@ export function matchesBuyingRules(
   return stateAllowed && caseTypeAllowed && minPriceAllowed && maxPriceAllowed;
 }
 
-export function getFirmPaymentMessage(firm: Pick<Firm, "payment_status" | "has_valid_payment_method">) {
+export function getFirmPaymentMessage(
+  firm: Pick<Firm, "status" | "payment_status" | "has_valid_payment_method">,
+) {
+  if (firm.status === "pending_verification") {
+    return "Lead delivery is paused until this account is approved.";
+  }
+
   if (firm.payment_status === "card_failed") {
     return "Paused: card failed";
   }
@@ -76,7 +82,13 @@ export function evaluateFirmRoutingEligibility(
   snapshot: FirmRoutingSnapshot,
 ): FirmRoutingDecision {
   if (firm.status !== "active") {
-    return { eligible: false, pausedReason: "Paused: firm is not active" };
+    return {
+      eligible: false,
+      pausedReason:
+        firm.status === "pending_verification"
+          ? "Paused: awaiting approval"
+          : "Paused: firm is not active",
+    };
   }
 
   if (!firm.has_valid_payment_method || firm.payment_status !== "valid") {

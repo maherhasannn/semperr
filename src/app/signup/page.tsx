@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getSupabase } from "@/lib/supabase";
+import {
+  US_STATE_OPTIONS,
+  normalizeUsState,
+  normalizeUsStateList,
+  normalizeWebsiteUrl,
+} from "@/lib/firm-onboarding";
+import { PRACTICE_AREA_OPTIONS, normalizePracticeArea } from "@/lib/practice-areas";
 
 export default function SignupPage() {
   const [firstName, setFirstName] = useState("");
@@ -16,16 +23,172 @@ export default function SignupPage() {
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [barNumber, setBarNumber] = useState("");
   const [barState, setBarState] = useState("");
-  const [statesCovered, setStatesCovered] = useState("");
-  const [practiceAreas, setPracticeAreas] = useState("");
+  const [statesCovered, setStatesCovered] = useState<string[]>([]);
   const [supportNotes, setSupportNotes] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [websiteMetadata, setWebsiteMetadata] = useState<{
+    title: string;
+    description: string;
+    url: string;
+    favicon: string;
+  } | null>(null);
+  const [websiteMetadataLoading, setWebsiteMetadataLoading] = useState(false);
+  const [barStateOpen, setBarStateOpen] = useState(false);
+  const [statesPickerOpen, setStatesPickerOpen] = useState(false);
+  const [practiceAreaSearch, setPracticeAreaSearch] = useState("");
+  const [practiceAreasSelected, setPracticeAreasSelected] = useState<string[]>([]);
+  const barStatePickerRef = useRef<HTMLDivElement | null>(null);
+  const statesPickerRef = useRef<HTMLDivElement | null>(null);
+  const websiteValidation = normalizeWebsiteUrl(websiteUrl);
+  const barStateValidation = normalizeUsState(barState);
+  const statesCoveredValidation = normalizeUsStateList(statesCovered.join(", "));
+  const practiceAreaQuery = practiceAreaSearch.trim().toLowerCase();
+  const filteredPracticeAreas = PRACTICE_AREA_OPTIONS.filter((area) => {
+    const query = practiceAreaSearch.trim().toLowerCase();
+    return query ? area.toLowerCase().includes(query) : false;
+  }).sort((left, right) => {
+    const query = practiceAreaSearch.trim().toLowerCase();
+    if (!query) return 0;
+    const leftStarts = left.toLowerCase().startsWith(query);
+    const rightStarts = right.toLowerCase().startsWith(query);
+    if (leftStarts !== rightStarts) return leftStarts ? -1 : 1;
+    return left.localeCompare(right);
+  }).slice(0, 6);
+  const signupDisabled =
+    loading ||
+    Boolean(websiteValidation.error) ||
+    Boolean(barStateValidation.error) ||
+    Boolean(statesCoveredValidation.error) ||
+    practiceAreasSelected.length === 0;
+
+  useEffect(() => {
+    const normalizedUrl = websiteValidation.normalizedValue;
+    if (!normalizedUrl || websiteValidation.error) {
+      setWebsiteMetadata(null);
+      setWebsiteMetadataLoading(false);
+      return;
+    }
+
+    let active = true;
+    const timeout = window.setTimeout(async () => {
+      setWebsiteMetadataLoading(true);
+      try {
+        const response = await fetch(`/api/og/fetch?url=${encodeURIComponent(normalizedUrl)}`);
+        if (!response.ok) {
+          throw new Error("Failed to load metadata");
+        }
+
+        const data = (await response.json()) as {
+          title?: string;
+          description?: string;
+          url?: string;
+          favicon?: string;
+        };
+
+        if (!active) return;
+
+        setWebsiteMetadata({
+          title: data.title?.trim() || new URL(normalizedUrl).hostname,
+          description: data.description?.trim() || "",
+          url: data.url || normalizedUrl,
+          favicon: data.favicon?.trim() || "",
+        });
+      } catch {
+        if (!active) return;
+        setWebsiteMetadata({
+          title: new URL(normalizedUrl).hostname,
+          description: "",
+          url: normalizedUrl,
+          favicon: "",
+        });
+      } finally {
+        if (active) setWebsiteMetadataLoading(false);
+      }
+    }, 400);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timeout);
+    };
+  }, [websiteValidation.error, websiteValidation.normalizedValue]);
+
+  useEffect(() => {
+    function handlePointerDown(event: MouseEvent) {
+      const target = event.target as Node;
+
+      if (barStatePickerRef.current && !barStatePickerRef.current.contains(target)) {
+        setBarStateOpen(false);
+      }
+
+      if (statesPickerRef.current && !statesPickerRef.current.contains(target)) {
+        setStatesPickerOpen(false);
+      }
+    }
+
+    window.addEventListener("mousedown", handlePointerDown);
+    return () => window.removeEventListener("mousedown", handlePointerDown);
+  }, []);
+
+  const selectPracticeArea = (area: string) => {
+    setPracticeAreasSelected((current) => {
+      if (current.includes(area) || current.length >= 10) return current;
+      return [...current, area];
+    });
+    setPracticeAreaSearch("");
+  };
+
+  const handlePracticeAreaKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const exactMatch = PRACTICE_AREA_OPTIONS.find(
+        (area) => area.toLowerCase() === practiceAreaQuery,
+      );
+      const nextMatch = exactMatch || filteredPracticeAreas[0];
+      if (nextMatch) {
+        selectPracticeArea(nextMatch);
+      }
+      return;
+    }
+
+    if (event.key === "Backspace" && !practiceAreaSearch && practiceAreasSelected.length > 0) {
+      setPracticeAreasSelected((current) => current.slice(0, -1));
+    }
+  };
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
     setLoading(true);
+
+    const websiteTarget = normalizeWebsiteUrl(websiteUrl);
+    const barStateTarget = normalizeUsState(barState);
+    const statesCoveredTarget = normalizeUsStateList(statesCovered.join(", "));
+    const practiceAreasTarget = practiceAreasSelected.map((value) => normalizePracticeArea(value)).filter(Boolean);
+
+    if (websiteTarget.error) {
+      setError(websiteTarget.error);
+      setLoading(false);
+      return;
+    }
+
+    if (barStateTarget.error) {
+      setError(barStateTarget.error);
+      setLoading(false);
+      return;
+    }
+
+    if (statesCoveredTarget.error) {
+      setError(statesCoveredTarget.error);
+      setLoading(false);
+      return;
+    }
+
+    if (practiceAreasTarget.length === 0) {
+      setError("Select at least one practice area.");
+      setLoading(false);
+      return;
+    }
 
     try {
       const res = await fetch("/api/auth/signup", {
@@ -39,11 +202,11 @@ export default function SignupPage() {
           password,
           title,
           phoneNumber,
-          websiteUrl,
+          websiteUrl: websiteTarget.normalizedValue || null,
           barNumber,
-          barState,
-          statesCovered: statesCovered.split(",").map((value) => value.trim()).filter(Boolean),
-          practiceAreas: practiceAreas.split(",").map((value) => value.trim()).filter(Boolean),
+          barState: barStateTarget.normalizedValue || null,
+          statesCovered: statesCoveredTarget.normalizedValue,
+          practiceAreas: practiceAreasTarget,
           supportNotes,
         }),
       });
@@ -199,14 +362,40 @@ export default function SignupPage() {
               <div className="auth-reveal auth-reveal-3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 20 }}>
                 <div>
                   <label className="auth-label" htmlFor="barState">Bar state</label>
-                  <input
-                    id="barState"
-                    type="text"
-                    className="auth-input"
-                    placeholder="CA"
-                    value={barState}
-                    onChange={(e) => setBarState(e.target.value)}
-                  />
+                  <div className="state-picker" ref={barStatePickerRef}>
+                    <button
+                      type="button"
+                      className="state-picker-trigger"
+                      onClick={() => setBarStateOpen((current) => !current)}
+                    >
+                      <span>{barState || "Select a state"}</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.65, transform: barStateOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.18s ease" }}>
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
+                    {barStateOpen && (
+                      <div className="state-picker-panel state-picker-panel-single">
+                        {US_STATE_OPTIONS.map((state) => (
+                          <button
+                            key={state}
+                            type="button"
+                            className={`state-picker-option ${barState === state ? "is-selected" : ""}`}
+                            onClick={() => {
+                              setBarState(state);
+                              setBarStateOpen(false);
+                            }}
+                          >
+                            {state}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {barStateValidation.error ? (
+                    <p className="auth-help auth-help-error">{barStateValidation.error}</p>
+                  ) : barStateValidation.normalizedValue ? (
+                    <p className="auth-help">Will save as {barStateValidation.normalizedValue}</p>
+                  ) : null}
                 </div>
                 <div>
                   <label className="auth-label" htmlFor="barNumber">Bar number</label>
@@ -230,31 +419,190 @@ export default function SignupPage() {
                   placeholder="https://firm.com"
                   value={websiteUrl}
                   onChange={(e) => setWebsiteUrl(e.target.value)}
+                  onBlur={() => {
+                    if (websiteValidation.normalizedValue) {
+                      setWebsiteUrl(websiteValidation.normalizedValue);
+                    }
+                  }}
                 />
+                {websiteValidation.error ? (
+                  <p className="auth-help auth-help-error">{websiteValidation.error}</p>
+                ) : websiteValidation.normalizedValue ? (
+                  <>
+                    <p className="auth-help">Will save as {websiteValidation.normalizedValue}</p>
+                    <div className="website-preview">
+                      <div className="website-preview-header">
+                        <div className="website-preview-brand">
+                          <div className="website-preview-icon">
+                            {websiteMetadata?.favicon ? (
+                              <img
+                                src={`/api/og/proxy?url=${encodeURIComponent(websiteMetadata.favicon)}`}
+                                alt=""
+                                className="website-preview-icon-img"
+                              />
+                            ) : (
+                              <span aria-hidden="true">◌</span>
+                            )}
+                          </div>
+                          <div>
+                            <div className="website-preview-kicker">Website preview</div>
+                            <div className="website-preview-title">
+                              {websiteMetadata?.title ||
+                                (() => {
+                                  try {
+                                    return new URL(websiteValidation.normalizedValue).hostname;
+                                  } catch {
+                                    return websiteValidation.normalizedValue;
+                                  }
+                                })()}
+                            </div>
+                          </div>
+                        </div>
+                        <a
+                          href={websiteValidation.normalizedValue}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="website-preview-link"
+                        >
+                          Open
+                        </a>
+                      </div>
+                      {websiteMetadataLoading ? (
+                        <div className="website-preview-description">Loading metadata…</div>
+                      ) : websiteMetadata?.description ? (
+                        <div className="website-preview-description">{websiteMetadata.description}</div>
+                      ) : null}
+                      <div className="website-preview-url">{websiteValidation.normalizedValue}</div>
+                    </div>
+                  </>
+                ) : null}
               </div>
 
               <div className="auth-reveal auth-reveal-3" style={{ marginBottom: 20 }}>
                 <label className="auth-label" htmlFor="statesCovered">States served</label>
-                <input
-                  id="statesCovered"
-                  type="text"
-                  className="auth-input"
-                  placeholder="CA, TX, FL"
-                  value={statesCovered}
-                  onChange={(e) => setStatesCovered(e.target.value)}
-                />
+                <div className="state-picker state-picker-multi" ref={statesPickerRef}>
+                  <button
+                    type="button"
+                    className="state-picker-trigger state-picker-trigger-multi"
+                    onClick={() => setStatesPickerOpen((current) => !current)}
+                  >
+                    <span>
+                      {statesCovered.length > 0
+                        ? `${statesCovered.length} state${statesCovered.length === 1 ? "" : "s"} selected`
+                        : "Choose states served"}
+                    </span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.65, transform: statesPickerOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.18s ease" }}>
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </button>
+                  {statesCovered.length > 0 && (
+                    <div className="state-chip-row">
+                      {statesCovered.map((state) => (
+                        <button
+                          key={state}
+                          type="button"
+                          className="state-chip is-selected"
+                          onClick={() => {
+                            setStatesCovered((current) => current.filter((value) => value !== state));
+                          }}
+                        >
+                          {state}
+                          <span aria-hidden="true">×</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {statesPickerOpen && (
+                    <div className="state-picker-panel state-picker-panel-grid">
+                      {US_STATE_OPTIONS.map((state) => {
+                        const selected = statesCovered.includes(state);
+                        return (
+                          <button
+                            key={state}
+                            type="button"
+                            className={`state-chip ${selected ? "is-selected" : ""}`}
+                            onClick={() => {
+                              setStatesCovered((current) =>
+                                current.includes(state)
+                                  ? current.filter((value) => value !== state)
+                                  : [...current, state],
+                              );
+                            }}
+                          >
+                            {state}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+                {statesCoveredValidation.error ? (
+                  <p className="auth-help auth-help-error">{statesCoveredValidation.error}</p>
+                ) : statesCoveredValidation.normalizedValue.length > 0 ? (
+                  <p className="auth-help">
+                    Will save as {statesCoveredValidation.normalizedValue.join(", ")}
+                  </p>
+                ) : null}
               </div>
 
               <div className="auth-reveal auth-reveal-3" style={{ marginBottom: 20 }}>
                 <label className="auth-label" htmlFor="practiceAreas">Practice areas</label>
-                <input
-                  id="practiceAreas"
-                  type="text"
-                  className="auth-input"
-                  placeholder="personal_injury, workers_comp"
-                  value={practiceAreas}
-                  onChange={(e) => setPracticeAreas(e.target.value)}
-                />
+                <div className="practice-auto">
+                  <div className="practice-auto-input-row">
+                    <input
+                      id="practiceAreas"
+                      type="text"
+                      className="auth-input"
+                      placeholder="Start typing a practice area"
+                      value={practiceAreaSearch}
+                      onChange={(e) => setPracticeAreaSearch(e.target.value)}
+                      onKeyDown={handlePracticeAreaKeyDown}
+                    />
+                  </div>
+                  {practiceAreaQuery ? (
+                    <div className="practice-suggestions">
+                      {filteredPracticeAreas.length > 0 ? (
+                        filteredPracticeAreas.map((area) => (
+                          <button
+                            key={area}
+                            type="button"
+                            className="practice-suggestion"
+                            onClick={() => selectPracticeArea(area)}
+                          >
+                            {area}
+                          </button>
+                        ))
+                      ) : (
+                        <div className="practice-suggestion-empty">No matches found.</div>
+                      )}
+                    </div>
+                  ) : null}
+                  {practiceAreasSelected.length > 0 && (
+                    <div className="state-chip-row">
+                      {practiceAreasSelected.map((area) => (
+                        <button
+                          key={area}
+                          type="button"
+                          className="state-chip is-selected"
+                          onClick={() => {
+                            setPracticeAreasSelected((current) => current.filter((value) => value !== area));
+                          }}
+                        >
+                          {area}
+                          <span aria-hidden="true">×</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {practiceAreasSelected.length === 0 ? (
+                  <p className="auth-help auth-help-error">Pick at least one practice area.</p>
+                ) : (
+                  <p className="auth-help">
+                    Selected: {practiceAreasSelected.join(", ")}
+                  </p>
+                )}
+                <p className="auth-help">Type to autocomplete. Press Enter to select the best match. Curated list only.</p>
               </div>
 
               <div className="auth-reveal auth-reveal-3" style={{ marginBottom: 30 }}>
@@ -281,7 +629,12 @@ export default function SignupPage() {
               </div>
 
               <div className="auth-reveal auth-reveal-4">
-                <button type="submit" className="auth-btn-primary" disabled={loading} style={{ opacity: loading ? 0.7 : 1, cursor: loading ? "default" : "pointer" }}>
+                <button
+                  type="submit"
+                  className="auth-btn-primary"
+                  disabled={signupDisabled}
+                  style={{ opacity: signupDisabled ? 0.7 : 1, cursor: signupDisabled ? "default" : "pointer" }}
+                >
                   {loading ? "Creating account…" : "Create account"}
                   {!loading && (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -406,6 +759,144 @@ export default function SignupPage() {
           outline: none;
         }
 
+        .state-picker {
+          position: relative;
+        }
+
+        .state-picker-trigger {
+          width: 100%;
+          padding: 14px 16px;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+          border: 1px solid rgba(255,255,255,0.11);
+          border-radius: 14px;
+          color: #F2F4F5;
+          font-size: 15px;
+          font-family: inherit;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          transition: all 0.2s ease;
+          outline: none;
+        }
+
+        .state-picker-trigger:hover {
+          border-color: rgba(91,225,239,0.28);
+          background: rgba(255,255,255,0.05);
+        }
+
+        .state-picker-trigger:focus-visible {
+          border-color: rgba(91,225,239,0.45);
+          box-shadow: 0 0 0 3px rgba(91,225,239,0.08);
+        }
+
+        .state-picker-option,
+        .state-chip {
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.03);
+          color: #EDEFF1;
+          border-radius: 999px;
+          padding: 11px 14px;
+          font-size: 13px;
+          line-height: 1;
+          cursor: pointer;
+          transition: all 0.18s ease;
+          text-align: left;
+        }
+
+        .state-picker-option:hover,
+        .state-chip:hover {
+          transform: translateY(-1px);
+          border-color: rgba(91,225,239,0.28);
+          background: rgba(91,225,239,0.08);
+        }
+
+        .state-picker-option.is-selected,
+        .state-chip.is-selected {
+          border-color: rgba(91,225,239,0.48);
+          background: rgba(91,225,239,0.12);
+          color: #F8FEFF;
+          box-shadow: inset 0 0 0 1px rgba(91,225,239,0.10);
+        }
+
+        .state-chip-row {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .state-chip {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+
+        .state-chip span {
+          font-size: 14px;
+          line-height: 1;
+          opacity: 0.78;
+        }
+
+        .practice-auto {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .practice-auto-input-row {
+          display: block;
+        align-items: start;
+        }
+
+        .practice-suggestions {
+          margin-top: 10px;
+          padding: 10px;
+          border: 1px solid rgba(255,255,255,0.09);
+          border-radius: 14px;
+          background: rgba(8,9,11,0.94);
+          box-shadow: 0 18px 54px rgba(0,0,0,0.35);
+          display: grid;
+          gap: 8px;
+          max-height: 228px;
+          overflow: auto;
+        }
+
+        .practice-suggestion {
+          width: 100%;
+          text-align: left;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.03);
+          color: #EDEFF1;
+          border-radius: 12px;
+          padding: 11px 14px;
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.18s ease;
+        }
+
+        .practice-suggestion:hover {
+          border-color: rgba(91,225,239,0.28);
+          background: rgba(91,225,239,0.08);
+        }
+
+        .practice-suggestion-empty {
+          font-size: 13px;
+          color: rgba(255,255,255,0.56);
+          padding: 4px 2px;
+        }
+
+        .state-picker-panel::-webkit-scrollbar {
+          width: 10px;
+        }
+
+        .state-picker-panel::-webkit-scrollbar-thumb {
+          background: rgba(255,255,255,0.10);
+          border-radius: 999px;
+        }
+
         .auth-input::placeholder {
           color: #4a5058;
         }
@@ -414,6 +905,98 @@ export default function SignupPage() {
           border-color: rgba(91,225,239,0.45);
           background: rgba(255,255,255,0.035);
           box-shadow: 0 0 0 3px rgba(91,225,239,0.08), 0 0 20px rgba(91,225,239,0.04);
+        }
+
+        .auth-help {
+          margin: 8px 0 0;
+          font-size: 12px;
+          line-height: 1.4;
+          color: rgba(255,255,255,0.58);
+        }
+
+        .auth-help-error {
+          color: #ef4444;
+        }
+
+        .website-preview {
+          margin-top: 12px;
+          padding: 12px 14px;
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: 14px;
+          background: rgba(255,255,255,0.02);
+        }
+
+        .website-preview-header {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+          margin-bottom: 12px;
+        }
+
+        .website-preview-brand {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          min-width: 0;
+        }
+
+        .website-preview-icon {
+          width: 34px;
+          height: 34px;
+          border-radius: 10px;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(255,255,255,0.03);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: rgba(255,255,255,0.58);
+          flex: none;
+          overflow: hidden;
+        }
+
+        .website-preview-icon-img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+
+        .website-preview-kicker {
+          font-size: 11px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.42);
+          margin-bottom: 4px;
+        }
+
+        .website-preview-title {
+          font-size: 13px;
+          color: #F2F4F5;
+          font-weight: 600;
+          word-break: break-word;
+        }
+
+        .website-preview-link {
+          color: #5BE1EF;
+          text-decoration: none;
+          font-size: 11px;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+
+        .website-preview-url {
+          font-size: 12px;
+          color: rgba(255,255,255,0.52);
+          word-break: break-all;
+          margin-top: 8px;
+        }
+
+        .website-preview-description {
+          font-size: 12px;
+          line-height: 1.5;
+          color: rgba(255,255,255,0.68);
+          word-break: break-word;
         }
 
         .auth-btn-primary {

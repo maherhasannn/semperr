@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase-server";
 import { sendWelcomeEmail } from "@/lib/email";
 import { normalizeNotificationTarget } from "@/lib/notification-targets";
+import { normalizeUsState, normalizeUsStateList, normalizeWebsiteUrl } from "@/lib/firm-onboarding";
 
 async function ensureFirmDefaults(
   supabase: ReturnType<typeof createServiceClient>,
@@ -86,6 +87,27 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
+    const websiteTarget = normalizeWebsiteUrl(typeof websiteUrl === "string" ? websiteUrl : "");
+    if (websiteTarget.error) {
+      return NextResponse.json({ error: websiteTarget.error }, { status: 400 });
+    }
+
+    const barStateTarget = normalizeUsState(typeof barState === "string" ? barState : "");
+    if (barStateTarget.error) {
+      return NextResponse.json({ error: barStateTarget.error }, { status: 400 });
+    }
+
+    const statesCoveredTarget = normalizeUsStateList(
+      Array.isArray(statesCovered)
+        ? statesCovered.map((value: unknown) => String(value).trim()).join(", ")
+        : typeof statesCovered === "string"
+          ? statesCovered
+          : "",
+    );
+    if (statesCoveredTarget.error) {
+      return NextResponse.json({ error: statesCoveredTarget.error }, { status: 400 });
+    }
+
     const supabase = createServiceClient();
 
     const { data: authUser, error: authError } = await supabase.auth.admin.createUser({
@@ -147,17 +169,17 @@ export async function POST(request: Request) {
       .from("firms")
       .insert({
         name: firmName,
-        status: "paused",
+        status: "pending_verification",
         payment_status: "missing",
         has_valid_payment_method: false,
-        states_covered: Array.isArray(statesCovered)
-          ? statesCovered
-              .map((value: unknown) => String(value).trim())
-              .filter(Boolean)
-          : [],
+        approved_at: null,
+        gated_until: null,
+        approval_email_sent_at: null,
+        welcome_email_sent_at: null,
+        states_covered: statesCoveredTarget.normalizedValue,
         bar_number: typeof barNumber === "string" ? barNumber.trim() || null : null,
-        bar_state: typeof barState === "string" ? barState.trim().toUpperCase() || null : null,
-        website_url: typeof websiteUrl === "string" ? websiteUrl.trim() || null : null,
+        bar_state: barStateTarget.normalizedValue || null,
+        website_url: websiteTarget.normalizedValue || null,
         primary_contact_phone: typeof phoneNumber === "string" ? phoneNumber.trim() || null : null,
         primary_contact_title: typeof title === "string" ? title.trim() || null : null,
         practice_areas: Array.isArray(practiceAreas)

@@ -9,7 +9,7 @@ async function updateFirmPaymentState(
     stripe_customer_id?: string;
     payment_status: "valid" | "invalid" | "card_failed" | "missing";
     has_valid_payment_method: boolean;
-    status: "active" | "paused";
+    status: "active" | "paused" | "pending_verification";
   },
 ) {
   await createServiceClient().from("firms").update(state).eq("id", firmId);
@@ -38,11 +38,20 @@ async function handlePaymentMethodSetup(session: Stripe.Checkout.Session) {
     },
   });
 
+  const service = createServiceClient();
+  const { data: firm } = await service
+    .from("firms")
+    .select("id, status")
+    .eq("id", firmId)
+    .maybeSingle();
+
+  if (!firm) return;
+
   await updateFirmPaymentState(firmId, {
     stripe_customer_id: customerId,
     payment_status: "valid",
     has_valid_payment_method: true,
-    status: "active",
+    status: firm.status === "pending_verification" ? "pending_verification" : "active",
   });
 }
 
@@ -58,10 +67,16 @@ async function handlePaymentFailure(customerId: string | null | undefined) {
 
   if (!firm) return;
 
+  const { data: currentFirm } = await service
+    .from("firms")
+    .select("id, status")
+    .eq("id", firm.id)
+    .maybeSingle();
+
   await updateFirmPaymentState(firm.id, {
     payment_status: "card_failed",
     has_valid_payment_method: false,
-    status: "paused",
+    status: currentFirm?.status === "pending_verification" ? "pending_verification" : "paused",
   });
 }
 

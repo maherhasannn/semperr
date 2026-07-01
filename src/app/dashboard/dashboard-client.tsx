@@ -25,7 +25,15 @@ type DashboardState = {
   role: string;
   firm: Pick<
     Firm,
-    "id" | "name" | "status" | "payment_status" | "has_valid_payment_method" | "stripe_customer_id" | "created_at"
+    | "id"
+    | "name"
+    | "status"
+    | "payment_status"
+    | "has_valid_payment_method"
+    | "stripe_customer_id"
+    | "approved_at"
+    | "gated_until"
+    | "created_at"
   >;
   buyingRules: FirmBuyingRules;
   notificationTargets: FirmNotificationTarget[];
@@ -94,7 +102,7 @@ export default function DashboardClient() {
         supabase
           .from("firms")
           .select(
-            "id, name, status, payment_status, has_valid_payment_method, stripe_customer_id, created_at",
+            "id, name, status, payment_status, has_valid_payment_method, stripe_customer_id, approved_at, gated_until, created_at",
           )
           .eq("id", firmId)
           .single(),
@@ -349,6 +357,7 @@ export default function DashboardClient() {
   const { firm, buyingRules, notificationTargets, remainingBudgetCents, leadHistory } = state;
   const paymentMessage = getFirmPaymentMessage(firm);
   const paymentActive = firm.has_valid_payment_method && firm.payment_status === "valid";
+  const pendingApproval = firm.status === "pending_verification";
   const paused = firm.status !== "active" || !paymentActive || remainingBudgetCents <= 0;
   const emailTargets = notificationTargets.filter((target) => target.channel === "email");
   const phoneTargets = notificationTargets.filter((target) => target.channel === "sms");
@@ -410,12 +419,17 @@ export default function DashboardClient() {
             <Text variant="body-strong-s" onBackground="neutral-strong">
               Payment status
             </Text>
-            <Badge background={paused ? "surface" : "brand-alpha-weak"} onBackground="neutral-strong">
-              {paused ? "Paused" : "Active"}
+            <Badge
+              background={pendingApproval ? "surface" : paused ? "surface" : "brand-alpha-weak"}
+              onBackground="neutral-strong"
+            >
+              {pendingApproval ? "Pending approval" : paused ? "Paused" : "Active"}
             </Badge>
           </Row>
           <Text variant="body-default-m" onBackground="neutral-weak">
-            {paymentMessage}
+            {pendingApproval
+              ? "Your account is waiting on manual approval from Jerry Gustafson."
+              : paymentMessage}
           </Text>
           <Line fillWidth background="neutral-alpha-weak" />
           <Row fillWidth horizontal="between">

@@ -53,15 +53,19 @@ async function extractMetadata(html: string) {
     || html.match(/<meta[^>]*property="og:description"[^>]*content="([^"]+)"[^>]*>/i);
   const imageMatch = html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]+)"[^>]*>/i)
     || html.match(/<meta[^>]*content="([^"]+)"[^>]*property="og:image"[^>]*>/i);
+  const faviconMatch = html.match(/<link[^>]*rel=["'][^"']*(?:icon|shortcut icon|apple-touch-icon)[^"']*["'][^>]*href=["']([^"']+)["'][^>]*>/i)
+    || html.match(/<link[^>]*href=["']([^"']+)["'][^>]*rel=["'][^"']*(?:icon|shortcut icon|apple-touch-icon)[^"']*["'][^>]*>/i);
 
   const title = titleMatch?.[1]?.trim() || '';
   const description = descMatch?.[1]?.trim() || '';
   const image = imageMatch?.[1]?.trim() || '';
+  const favicon = faviconMatch?.[1]?.trim() || '';
 
   return {
     title: decodeHTMLEntities(title),
     description: decodeHTMLEntities(description),
     image: image,
+    favicon,
   };
 }
 
@@ -82,9 +86,14 @@ export async function GET(request: Request) {
 
     const html = await response.text();
     const metadata = await extractMetadata(html);
+    const resolvedUrl = new URL(url);
+    const favicon = metadata.favicon
+      ? new URL(metadata.favicon, resolvedUrl).toString()
+      : new URL('/favicon.ico', resolvedUrl).toString();
 
     return NextResponse.json({
       ...metadata,
+      favicon,
       url,
     });
   } catch (error) {

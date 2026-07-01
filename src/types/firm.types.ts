@@ -22,6 +22,10 @@ export type Firm = {
   payment_status: FirmPaymentStatus;
   has_valid_payment_method: boolean;
   stripe_customer_id: string | null;
+  approved_at: string | null;
+  gated_until: string | null;
+  approval_email_sent_at: string | null;
+  welcome_email_sent_at: string | null;
   created_at: string;
 };
 
