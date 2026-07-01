@@ -1,8 +1,0 @@
-{
-  "crons": [
-    {
-      "path": "/api/internal/firms/process-gates",
-      "schedule": "*/5 * * * *"
-    }
-  ]
-}
