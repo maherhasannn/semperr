@@ -1,6 +1,10 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let _resend: Resend | null = null;
+function getResend() {
+  _resend ??= new Resend(process.env.RESEND_API_KEY);
+  return _resend;
+}
 const RELATIONSHIP_MANAGER_NAME = "Jerry Gustafson";
 
 function tierLabel(tier: number) {
@@ -52,7 +56,7 @@ export async function sendNewLeadEmail(
     )
     .join("");
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: "Semperr <no-reply@semperr.com>",
     to,
     subject: `New lead for ${firmName} — ${claimant} (${lead.state})`,
@@ -154,7 +158,7 @@ export async function sendFirmApprovedEmail(
   const tierText = tierLabel(tier);
   const tierDescription = tierCopy(tier);
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: "Semperr <no-reply@semperr.com>",
     to,
     subject: `${firmName} has been manually approved`,
@@ -240,7 +244,7 @@ export async function sendWelcomeEmail(
 ) {
   const greeting = firstName?.trim() || "there";
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: "Semperr <no-reply@semperr.com>",
     to,
     subject: `Welcome to Semperr, ${firmName}`,
@@ -315,7 +319,7 @@ export async function sendFirmActivatedEmail(
   const tierText = tierLabel(tier);
   const tierDescription = tierCopy(tier);
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: "Semperr <no-reply@semperr.com>",
     to,
     subject: `${firmName} is now active`,
