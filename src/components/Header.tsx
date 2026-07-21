@@ -15,6 +15,8 @@ import {
   ToggleButton,
 } from "@once-ui-system/core";
 
+import { ThinkingOrb } from "thinking-orbs";
+
 import { routes, display, person, about, blog, work } from "@/resources";
 import { ThemeToggle } from "./ThemeToggle";
 import styles from "./Header.module.scss";
@@ -131,9 +133,13 @@ export const Header = () => {
               <Line background="neutral-alpha-medium" vert maxHeight="24" />
               {routes["/about"] && (
                 <ToggleButton
-                  prefixIcon="person"
                   href="/about"
-                  label={about.label}
+                  label={
+                    <Row gap="8" vertical="center">
+                      <ThinkingOrb state="working" size={20} />
+                      {about.label}
+                    </Row>
+                  }
                   selected={pathname === "/about"}
                 />
               )}
@@ -252,9 +258,13 @@ export const Header = () => {
             {routes["/about"] && (
               <ToggleButton
                 fillWidth
-                prefixIcon="person"
                 href="/about"
-                label={about.label}
+                label={
+                  <Row gap="8" vertical="center">
+                    <ThinkingOrb state="working" size={20} />
+                    {about.label}
+                  </Row>
+                }
                 selected={pathname === "/about"}
               />
             )}
