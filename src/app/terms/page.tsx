@@ -1,4 +1,5 @@
-import { Column, Heading, Text, Meta } from "@once-ui-system/core";
+import { Column, Heading, Text } from "@once-ui-system/core";
+import { Meta } from "@/utils/meta";
 import { baseURL } from "@/resources";
 
 export async function generateMetadata() {

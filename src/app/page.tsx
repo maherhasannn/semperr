@@ -8,12 +8,12 @@ import {
   Badge,
   Row,
   Schema,
-  Meta,
   Line,
   Icon,
   RevealFx,
 } from "@once-ui-system/core";
 import { home, about, person, baseURL, routes } from "@/resources";
+import { Meta } from "@/utils/meta";
 import { Mailchimp } from "@/components";
 import { Projects } from "@/components/work/Projects";
 import { Posts } from "@/components/blog/Posts";

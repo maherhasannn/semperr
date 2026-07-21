@@ -5,13 +5,13 @@ import {
   Text,
   Button,
   Row,
-  Meta,
   Schema,
   RevealFx,
   Line,
   Icon,
 } from "@once-ui-system/core";
 import { baseURL, gallery, person, about } from "@/resources";
+import { Meta } from "@/utils/meta";
 
 export async function generateMetadata() {
   return Meta.generate({

@@ -25,6 +25,12 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/:path*",
+        has: [{ type: "host", value: "semperr.vercel.app" }],
+        destination: "https://www.semperr.com/:path*",
+        permanent: true,
+      },
+      {
         source: "/deck",
         destination: "https://shorturl.at/mge0i",
         permanent: false,

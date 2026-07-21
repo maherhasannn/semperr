@@ -1,4 +1,5 @@
-import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
+import { Column, Heading, Schema } from "@once-ui-system/core";
+import { Meta } from "@/utils/meta";
 import { Mailchimp } from "@/components";
 import { Posts } from "@/components/blog/Posts";
 import { PaginatedPosts } from "@/components/blog/PaginatedPosts";

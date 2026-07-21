@@ -3,7 +3,6 @@ import {
   Column,
   Heading,
   Text,
-  Meta,
   Schema,
   Row,
   Line,
@@ -11,6 +10,7 @@ import {
   Button,
 } from "@once-ui-system/core";
 import { baseURL, about, person, work } from "@/resources";
+import { Meta } from "@/utils/meta";
 import { ROICalculator } from "@/components/ROICalculator";
 
 export async function generateMetadata() {

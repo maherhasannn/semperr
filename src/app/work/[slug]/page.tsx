@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { getPosts } from "@/utils/utils";
 import {
-  Meta,
   Schema,
   AvatarGroup,
   Button,
@@ -16,6 +15,7 @@ import {
   Line,
 } from "@once-ui-system/core";
 import { baseURL, about, person, work } from "@/resources";
+import { Meta } from "@/utils/meta";
 import { formatDate } from "@/utils/formatDate";
 import { ScrollToHash, CustomMDX } from "@/components";
 import { Metadata } from "next";

@@ -4,13 +4,13 @@ import {
   Column,
   Heading,
   Text,
-  Meta,
   Schema,
   Row,
   Line,
   RevealFx,
 } from "@once-ui-system/core";
 import { baseURL, about, person } from "@/resources";
+import { Meta } from "@/utils/meta";
 
 export async function generateMetadata() {
   return Meta.generate({
