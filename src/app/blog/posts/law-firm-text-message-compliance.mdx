@@ -1,0 +1,122 @@
+---
+title: "Law Firm Text Message Compliance: The Carrier Rule Most Intake Teams Miss"
+subtitle: "TCPA consent isn't the only hurdle — carrier registration requirements are silently blocking legal marketing texts before they ever reach a prospect"
+summary: "Law firm text message compliance now requires A2P 10DLC carrier registration, not just TCPA consent. Here's what firms are getting wrong."
+publishedAt: "2026-09-06"
+tag: "Data & Compliance"
+image: "/images/blog-featured-2.png"
+team:
+  - name: "Faith"
+    role: "Data & Compliance Lead"
+    avatar: "/images/avatars/faith.svg"
+    linkedIn: ""
+---
+
+A firm can have airtight TCPA consent, a documented opt-in flow, and a fully trained intake team — and still have half its intake texts silently filtered by carriers before they ever land on a prospect's phone. That's the blind spot in most conversations about **law firm text message compliance**: everyone focuses on consent law and nobody registers their messaging campaigns with the carriers actually delivering the texts.
+
+This isn't a hypothetical. Since 2023, AT&T, T-Mobile, and Verizon have progressively tightened enforcement of A2P (application-to-person) messaging rules, and unregistered business texting now gets throttled, filtered, or blocked outright. For law firms running high-volume intake on personal injury, mass tort, or employment cases, that's not a compliance footnote — it's a direct hit to conversion rates nobody notices until someone audits delivery logs.
+
+## What Law Firm Text Message Compliance Actually Requires
+
+Most compliance conversations at law firms stop at consent: did the prospect agree to be texted, and was that consent documented under [TCPA compliance](/blog/tcpa-compliance-law-firms) standards. That's necessary, but it's only half the picture.
+
+The other half is carrier-level. Wireless carriers require businesses sending application-to-person text messages — anything from a marketing campaign to an automated appointment reminder — to register their brand and campaign type through **The Campaign Registry (TCR)**, the industry-wide database carriers use to vet A2P traffic. This is separate and independent from TCPA consent requirements.
+
+A compliant texting program today means satisfying both layers simultaneously:
+
+- **Legal consent layer** — prior express written consent under TCPA, documented and retained
+- **Carrier registration layer** — a registered brand and campaign with the correct use-case classification (e.g., "customer care," "marketing," or "mixed")
+
+Firms that nail the first and skip the second still end up non-compliant in practice, because their messages simply don't reach the recipient.
+
+## A2P 10DLC: The Registration Rule Most Firms Have Never Heard Of
+
+A2P 10DLC — application-to-person messaging over 10-digit long code numbers — is the framework carriers adopted to distinguish legitimate business texting from spam and phishing traffic. Every business sending A2P texts through a standard 10-digit number is expected to register.
+
+### How Campaign Registration Actually Works
+
+Registration happens in two steps. First, a brand registration establishes your firm's legal identity, EIN, and business classification with TCR. Second, a campaign registration declares what kind of messages you'll send — intake follow-up, appointment reminders, case status updates — under that brand.
+
+Carriers assign a trust score to each registered brand based on business verification data. Higher trust scores get better throughput and lower filtering rates. Unregistered or poorly verified senders get throttled by default, and increasingly, blocked entirely on major carrier networks.
+
+The practical impact for legal intake: a firm running unregistered texting to purchased or self-generated leads may see delivery rates drop 30-60% with zero visibility into why, because carriers don't notify senders when messages are filtered — they just don't arrive.
+
+## Why Intake Teams Get This Wrong
+
+Most law firms outsource their texting infrastructure to a CRM or intake platform and assume the vendor handles carrier registration automatically. Sometimes that's true. Often it isn't, or the registration covers only a generic use case that doesn't match how the firm actually communicates with prospects.
+
+A few patterns show up repeatedly during vendor audits:
+
+1. **The platform is registered, but the firm isn't.** Some texting platforms register their own brand generically, which caps every client's throughput and trust score rather than establishing your firm's individual sender reputation.
+2. **The wrong campaign classification.** A firm registered under "customer care" but actually running cold outreach to purchased leads is misclassified — and misclassification risks suspension when carriers audit traffic patterns.
+3. **No registration at all for a secondary number.** Firms that add a second texting line for a new practice area often forget registration applies per number, not per firm.
+
+This is the same due-diligence gap covered in our guide to [data broker compliance for law firms](/blog/data-broker-compliance-law-firms): vendors rarely volunteer the compliance gaps in their own infrastructure, and firms rarely ask until deliverability tanks.
+
+## Law Firm Text Message Compliance vs. TCPA: Two Different Problems
+
+It's worth stating plainly because the two get conflated constantly: TCPA governs whether you're *legally allowed* to text someone. Carrier registration governs whether the text *actually arrives*. A firm can violate either independently of the other.
+
+- **TCPA violation, registration compliant:** Texting a cell phone without proper consent, even though your carrier registration is in good standing. This exposes the firm to statutory damages of $500-$1,500 per message under [TCPA compliance for law firms](/blog/tcpa-compliance-law-firms) rules.
+- **Registration violation, TCPA compliant:** Fully consented texting sent through an unregistered or misclassified campaign. No statutory penalty here, but messages get filtered, throttled, or the number gets flagged as spam — quietly killing your response rates.
+
+Firms auditing their [law firm Do Not Call compliance](/blog/law-firm-do-not-call-compliance) posture should treat carrier registration as part of the same review cycle rather than a separate technical concern owned entirely by IT or a vendor.
+
+## Building a Compliant Texting Program for Your Intake Team
+
+A working SMS compliance program covers both layers without requiring a dedicated compliance hire. The build-out looks like this:
+
+**Consent and documentation:**
+- Capture and timestamp opt-in consent at the point of lead generation, naming your firm specifically
+- Include clear opt-out language ("Reply STOP to unsubscribe") on every outbound campaign
+- Retain consent records for at least four years, matching TCPA's statute of limitations
+
+**Carrier registration:**
+- Confirm brand registration exists under your firm's legal name and EIN, not just your CRM vendor's umbrella brand
+- Match campaign classification to actual use case — don't register "customer care" traffic that's really lead nurturing
+- Register every 10-digit number your intake team texts from, including secondary lines for new practice areas
+- Monitor delivery and filtering rates monthly; a sudden drop is often a registration or trust-score issue, not a list-quality problem
+
+Firms that already built strong consent infrastructure for [TCPA compliance](/blog/tcpa-compliance-law-firms) are typically one step away from full compliance — the missing piece is almost always the carrier-side registration, not the legal consent layer.
+
+## What Happens When Firms Skip Registration
+
+The consequences aren't statutory damages, which is exactly why this problem persists longer than it should. There's no class action for unregistered A2P traffic. Instead, the cost shows up as degraded performance that's easy to misattribute.
+
+Filtered messages look identical to ignored messages from the sender's side — both result in no reply. Firms routinely blame lead quality, script wording, or timing for conversion drops that are actually delivery failures happening upstream at the carrier level. Given how much [speed to lead](/blog/speed-to-lead-law-firms) matters for conversion, a text that never arrives is functionally worse than a slow response — it's a dead end that never registers as one.
+
+Industry coverage from the [National Law Review](https://natlawreview.com) has tracked increasing carrier enforcement against unregistered A2P senders across regulated industries, with law firms and financial services flagged as high-volume categories carriers scrutinize closely given their outbound texting volume.
+
+## Where This Fits Into a Broader Compliance Picture
+
+Text message compliance for law firms doesn't exist in isolation from the rest of your intake operation. The [ABA's Model Rules of Professional Conduct](https://www.americanbar.org/groups/professional_responsibility/publications/model_rules_of_professional_conduct/) still govern the content of what you send — Rule 7.3's solicitation restrictions apply to a text message exactly as they apply to a phone call. Getting the carrier and consent layers right doesn't excuse a text that violates state bar solicitation rules on timing or content.
+
+The [Clio Legal Trends Report](https://www.clio.com/resources/legal-trends/) has consistently found that faster, more accessible communication channels — including texting — correlate directly with higher client acquisition rates. That's exactly why the delivery-layer problem matters so much: firms investing in texting as a conversion channel are undermining their own ROI when messages silently fail to reach the recipient.
+
+## Where Semperr Fits
+
+Compliance built into lead sourcing only solves half the equation if your firm's own texting infrastructure isn't registered correctly on the delivery side. Semperr delivers leads with documented, firm-specific consent so your outbound texting starts from a clean legal foundation — but pairing that with correct carrier registration is what actually gets your messages read.
+
+If your firm wants a lead pipeline built for compliant intake from the ground up, [schedule a call](https://cal.com/maherhasan).
+
+## Frequently Asked Questions
+
+### What is law firm text message compliance?
+
+Law firm text message compliance covers two separate requirements: legal consent under TCPA to text a prospect, and carrier-level registration of your firm's brand and campaign through The Campaign Registry. A firm can satisfy one requirement and still fail the other, resulting in either legal exposure or filtered message delivery.
+
+### What is A2P 10DLC and does it apply to law firms?
+
+A2P 10DLC is the carrier framework governing application-to-person text messages sent over standard 10-digit phone numbers. It applies to any law firm texting prospects or clients from a regular business number, including intake follow-up, appointment reminders, and marketing messages, and requires brand and campaign registration with wireless carriers.
+
+### Why are my law firm's text messages not getting delivered?
+
+Undelivered texts are frequently a carrier filtering issue rather than a consent or list-quality problem. Unregistered senders, or those registered under the wrong campaign classification, get throttled or blocked by carrier spam filters with no notification to the sender, which makes the failure easy to misdiagnose as a lead-quality issue.
+
+### Is carrier registration the same as TCPA compliance?
+
+No. TCPA compliance governs whether you have legal consent to text a consumer, while carrier registration through A2P 10DLC governs whether wireless carriers will actually deliver that message. Both are required for a fully compliant and functional law firm texting program.
+
+### How often should firms review their text message compliance setup?
+
+Firms should review consent documentation and carrier registration status at least quarterly, and immediately after adding any new practice area, texting platform, or phone number. Monitoring delivery and filtering rates monthly catches registration or trust-score issues before they meaningfully damage intake conversion.
