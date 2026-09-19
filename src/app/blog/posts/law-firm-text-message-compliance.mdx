@@ -1,0 +1,116 @@
+---
+title: "Law Firm Text Message Compliance: The Rules Your Intake Team Is Ignoring"
+subtitle: "TCPA consent, 10DLC registration, and the carrier filtering rules that decide whether your SMS campaigns ever reach a lead"
+summary: "Law firm text message compliance explained: TCPA consent rules, 10DLC registration, and the carrier filters that block noncompliant SMS."
+publishedAt: "2026-09-19"
+tag: "Data & Compliance"
+image: "/images/blog-featured.png"
+team:
+  - name: "Faith"
+    role: "Data & Compliance Lead"
+    avatar: "/images/avatars/faith.svg"
+    linkedIn: ""
+---
+
+A lead fills out a form at 11 p.m., and your intake team's first move is a text: "Thanks for reaching out — when's a good time to talk?" It feels harmless. It is also one of the most legally exposed messages a law firm sends, and **law firm text message compliance** has quietly become one of the highest-risk gaps in modern intake operations. Most firms have a TCPA policy for phone calls. Almost none have one built specifically for SMS.
+
+That gap matters because texting isn't a subset of calling under the law — it's its own regulatory track, with its own consent standard, its own carrier enforcement layer, and its own paper trail that plaintiffs' attorneys have gotten very good at requesting in discovery. Consumers also expect it: [Clio's Legal Trends Report](https://www.clio.com/resources/legal-trends/) has repeatedly found that speed and channel flexibility, texting included, shape whether a prospective client hires the first firm that responds.
+
+## Why Law Firm Text Message Compliance Is Suddenly a Litigation Risk
+
+Text message lawsuits under the Telephone Consumer Protection Act have grown faster than call-based claims for three straight years, driven by how cheap it is to send a bulk SMS blast and how easy it is to prove one happened. Every message lives on a server somewhere with a timestamp attached. The [Thomson Reuters Institute](https://www.thomsonreuters.com/en/institute.html) has flagged this shift toward text-based consumer litigation as one of the more consistent trends in plaintiff-side case volume over recent years.
+
+Law firms are unusually exposed here for a simple reason: they buy leads from multiple vendors, route them into shared CRMs, and often can't reconstruct exactly which consent record covers which phone number by the time a text goes out. **Law firm text message compliance** failures rarely come from malicious intent — they come from consent records that exist somewhere in the pipeline but never make it to the person hitting send.
+
+The firms getting sued aren't the ones ignoring the rules. They're the ones who assumed a lead form checkbox covered every downstream message, including reminders, drip sequences, and re-engagement texts sent weeks later.
+
+## The Legal Framework: TCPA, 10DLC, and Carrier Rules
+
+Three separate systems govern whether a law firm's text reaches a prospective client, and firms tend to only know about one of them.
+
+- **TCPA** sets the legal consent standard for automated or marketing text messages, with statutory damages of $500–$1,500 per violation, per message.
+- **10DLC registration** is the carrier-run system (run through The Campaign Registry, used by AT&T, Verizon, and T-Mobile) that determines whether your messages get delivered at all, throttled, or blocked outright.
+- **State mini-TCPA statutes**, increasingly common, layer additional consent and disclosure requirements on top of the federal baseline, similar to how state privacy laws have expanded beyond CCPA.
+
+A firm can be perfectly TCPA-compliant on paper and still have its texts silently filtered because it never completed carrier registration — which means the compliance conversation has to cover legal consent and technical deliverability at the same time, not one or the other.
+
+### Where This Overlaps With Voice Compliance — and Where It Doesn't
+
+Firms that have already built out [TCPA compliance for outbound calls](/blog/tcpa-compliance-law-firms) often assume the same consent record covers texting. It usually doesn't. The FCC treats prior express written consent for calls and texts as separately scoped unless the consent language explicitly names both channels, and a lead who agreed to be called is not automatically a lead who agreed to be texted.
+
+The same separation shows up with [Do Not Call compliance](/blog/law-firm-do-not-call-compliance): the National Do Not Call Registry governs live and automated calls, but courts have generally not extended registry protections to texts in the same way, which is exactly why plaintiffs' firms default to TCPA text claims instead.
+
+## SMS Opt-In Consent: What "Express Written Consent" Actually Requires
+
+Marketing texts — anything promotional, including "check out our results" or "here's why you should choose our firm" — require prior express written consent under TCPA. That standard has specific components, and generic lead forms usually miss at least one:
+
+1. **Clear and conspicuous disclosure** that the consumer is agreeing to receive text messages, not buried in a wall of terms and conditions.
+2. **Identification of the specific business** doing the texting — not a lead aggregator's name, not a marketing partner's brand.
+3. **No conditioning of service** on agreeing to receive texts — consent can't be a required checkbox to submit the form.
+4. **A written or electronic record** the firm can produce if the consent is ever challenged.
+
+Purely informational or transactional texts — confirming an appointment, sending a document request — fall under a lower consent bar, but firms routinely blur the line by mixing case-status updates with soft marketing language in the same thread, which pulls the whole conversation back under the stricter standard. Attorney marketing texts also sit alongside solicitation rules generally, and firms building consent language should cross-check it against the [ABA's Model Rule 7.3](https://www.americanbar.org/groups/professional_responsibility/publications/model_rules_of_professional_conduct/rule_7_3_solicitation_of_clients/) on client solicitation, since state bars increasingly apply it to digital outreach.
+
+The practical fix most compliance leads land on: capture SMS opt-in as its own explicit checkbox, separate from call consent, with a timestamp, the exact disclosure language shown, and the source URL or campaign ID — the same rigor firms are learning to apply after [data broker compliance](/blog/data-broker-compliance-law-firms) reviews exposed how thin most purchased-lead consent trails actually are.
+
+## 10DLC Registration: The Technical Compliance Layer Everyone Skips
+
+Even a fully consented, perfectly worded text campaign goes nowhere if the sending number isn't registered. Since 2021, carriers have required businesses sending application-to-person (A2P) text traffic over standard 10-digit long codes to register their brand and campaigns through The Campaign Registry.
+
+Unregistered or misclassified traffic gets throttled to a few messages per minute, filtered as spam, or blocked entirely — carriers made this stricter in 2024 and 2025 specifically to cut down on unregistered legal and financial marketing traffic, two of the categories they treat as highest-risk. A firm can have airtight TCPA consent and still see single-digit delivery rates because the campaign was registered under the wrong use case (e.g., "customer care" instead of "marketing").
+
+Getting this right requires:
+
+- Registering the firm's brand entity with accurate business details (mismatched EIN or address information is the most common rejection reason)
+- Selecting the correct campaign use case for each message type — mixing intake reminders and marketing content under one campaign registration is a frequent cause of throttling
+- Reviewing message content for carrier-flagged terms, since certain phrasing in legal marketing (settlement amounts, "free case review" language) trips automated filters more than firms expect
+
+## Building a Law Firm Text Message Compliance Checklist for Intake
+
+Compliance breaks down most often at the intake layer, where speed is rewarded and paperwork isn't. Firms that have gotten serious about this build the check into the workflow rather than relying on training alone — the same principle behind well-run [speed-to-lead programs](/blog/speed-to-lead-law-firms), where the fastest response isn't valuable if it's also the noncompliant one.
+
+A working checklist covers:
+
+- **Separate consent capture** for calls versus texts, timestamped and stored with the lead record
+- **Campaign registration confirmed** before any new SMS sequence goes live, not after delivery problems show up
+- **Content review** for every automated drip sequence, checking for marketing language that should trigger the stricter consent standard
+- **Opt-out handling** that actually works — "STOP" must be honored immediately and firm-wide, not just within one campaign or vendor tool
+- **Vendor audits** for any purchased-lead source, confirming the consent language the lead agreed to before the number ever reaches your CRM
+
+Firms running this through intake automation platforms have an advantage here: consent fields and campaign tagging can be enforced at the system level instead of depending on an intake rep remembering the rule on message forty of a Friday shift.
+
+## What Happens When You Get It Wrong
+
+The cost isn't hypothetical. TCPA text claims settle in the range of a few hundred to several million dollars depending on class size, since each message to each recipient is a separate violation that multiplies fast across a purchased-lead list. Beyond the settlement, firms face the discovery cost of reconstructing consent records across every vendor and CRM touchpoint involved — often the more expensive part of the exposure.
+
+There's a second, quieter cost: carriers that flag a firm's number for spam-like sending patterns can blacklist it across their network, which kills legitimate intake texts along with the noncompliant ones. Rebuilding sender reputation after a carrier block can take months, during which every text-based touchpoint in the intake funnel underperforms.
+
+## Where This Fits Into Your Broader Compliance Program
+
+Text message rules shouldn't sit in isolation from the rest of a firm's outbound compliance posture. The same governance that covers [call recording consent](/blog/law-firm-call-recording-compliance) — location-based rules, documented consent, vendor accountability — should extend to SMS, because regulators and plaintiffs' attorneys increasingly treat a firm's entire outbound communication stack as one connected system when building a claim.
+
+Firms buying leads from outside vendors carry extra exposure here, since **law firm text message compliance** depends on consent language the firm itself never wrote. Building compliant intake starts with knowing exactly where your leads come from, what they agreed to, and how fast your team can act on that information without cutting corners on consent.
+
+That's the standard Semperr holds every lead to — pre-qualified, high-intent, and delivered with a consent trail your intake team can actually stand behind. [Schedule a call](https://cal.com/maherhasan) to see how a cleaner lead pipeline removes the guesswork from your compliance program.
+
+## Frequently Asked Questions
+
+### Do law firms need separate consent for texts and phone calls?
+
+Yes. The FCC generally treats prior express written consent for calls and text messages as separately scoped, so a lead who agreed to receive phone calls has not automatically consented to receive texts. Firms should capture SMS opt-in as its own disclosure and checkbox, not as an assumed extension of call consent.
+
+### What is 10DLC registration and why does it matter for law firms?
+
+10DLC registration is the carrier-administered system that authorizes a business to send application-to-person text traffic over a standard 10-digit number. Without it, carriers throttle, filter, or block messages outright, meaning a firm can have fully compliant consent and still fail to reach leads due to unregistered sending infrastructure.
+
+### How much can a TCPA text message violation cost a law firm?
+
+TCPA violations carry statutory damages of $500 to $1,500 per message, and because each text to each recipient counts separately, exposure scales quickly across a purchased-lead list. Class-action settlements involving law firm text campaigns have ranged from six figures to several million dollars depending on list size and violation count.
+
+### Does an opt-out request have to be honored across every campaign?
+
+Yes. A "STOP" reply must be treated as a firm-wide opt-out, not a campaign-specific one, and must take effect immediately. Continuing to text a number that opted out — even through a different sequence or vendor tool — is itself a separate compliance failure.
+
+### Are appointment reminder texts held to the same standard as marketing texts?
+
+No, purely informational or transactional texts fall under a lower consent bar than marketing messages. However, firms that mix case-status updates with promotional language in the same thread risk pulling the entire conversation back under the stricter marketing consent standard, so keeping transactional and marketing content separate matters.
